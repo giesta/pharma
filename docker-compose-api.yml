@@ -1,0 +1,32 @@
+version: '3.7'
+services:  
+  app:
+    build:
+      context: backend
+      dockerfile: .docker/Dockerfile
+    image: 'pharmaapp'
+    networks:
+      - filesapp_internal
+    ports:
+      - "5000:80"
+    volumes:
+      - ./backend:/var/www/html
+    environment:
+      APP_URL: http://localhost:5000
+  db:
+    image: mysql:5.7
+    restart: always
+    networks:
+      - filesapp_internal
+    ports: 
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: 'pharma_db'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+      MYSQL_ROOT_PASSWORD: ""
+    volumes:
+      - ./backend/db:/var/lib/mysql
+
+networks:
+  filesapp_internal:
+    driver: "bridge"

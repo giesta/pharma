@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+
+  # Service
+  client:
+    stdin_open: true
+    build:
+      context: ./ui-app
+    container_name: ui-app
+    volumes:
+      - ./ui-app/:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    depends_on:
+      - app
+    environment:
+      NODE_ENV: dev
+    networks:
+      - filesapp_internal

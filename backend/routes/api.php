@@ -2,9 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\DiseaseController;
-use App\Http\Controllers\Api\DrugController;
-use App\Http\Controllers\Api\TreatmentController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,8 +19,29 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('diseases', DiseaseController::class);
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'auth',
+    'namespace' => 'App\Http\Controllers\Api'
+],function($router){
+    Route::post('login', 'JwtAuthController@login');
+    Route::post('register', 'JwtAuthController@register');
+    
+});
 
-Route::apiResource('drugs', DrugController::class);
+Route::group(['middleware' => 'jwt.auth',
+    'namespace' => 'App\Http\Controllers\Api',
 
-Route::apiResource('treatments', TreatmentController::class);
+], function () {
+
+    Route::get('logout', 'JwtAuthController@logout');
+    Route::get('me', 'JwtAuthController@me');
+    Route::get('refresh', 'JwtAuthController@refresh');
+
+    Route::apiResource('diseases', DiseaseController::class);
+
+    Route::apiResource('drugs', DrugController::class);
+
+    Route::apiResource('treatments', TreatmentController::class);
+
+});

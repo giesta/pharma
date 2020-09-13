@@ -2,6 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\DiseaseController;
+use App\Http\Controllers\Api\DrugController;
+use App\Http\Controllers\Api\TreatmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +20,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::apiResource('diseases', DiseaseController::class);
+
+Route::apiResource('drugs', DrugController::class);
+
+Route::apiResource('treatments', TreatmentController::class);

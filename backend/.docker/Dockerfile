@@ -25,6 +25,10 @@ COPY .docker/vhost.conf /etc/apache2/sites-available/000-default.conf
 RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY vendor /var/www/html/vendor
+COPY storage /var/www/html/storage
 
 RUN chown -R www-data:www-data /var/www/html \
+    && chown -R www-data:www-data /var/www/html/vendor \
+    && chown -R www-data:www-data /var/www/html/storage \
     && a2enmod rewrite

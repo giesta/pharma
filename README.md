@@ -1,5 +1,5 @@
 # pharma
-Laravel+React+Docker <br>
+Laravel 8+React+Docker+JWT <br>
 ```
 $ cp .env.example .env
 $ composer install

@@ -8,6 +8,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use App\Models\Disease;
 use App\Http\Resources\Disease as DiseaseResource;
+use App\Http\Requests\TokenRequest;
 
 class DiseaseController extends Controller
 {
@@ -16,7 +17,7 @@ class DiseaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(TokenRequest $request)
     {
         return DiseaseResource::collection(Disease::all());
     }
@@ -27,7 +28,7 @@ class DiseaseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request): DiseaseResource
+    public function store(TokenRequest $request): DiseaseResource
     {
         return new DiseaseResource(
             Disease::create($request->only(['name', 'description', 'symptoms']))
@@ -37,7 +38,7 @@ class DiseaseController extends Controller
     /**
      * Return the specified resource.
      */
-    public function show(Disease $disease): DiseaseResource
+    public function show(TokenRequest $request, Disease $disease): DiseaseResource
     {
         return new DiseaseResource($disease);
     }
@@ -49,7 +50,7 @@ class DiseaseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TokenRequest $request, $id)
     {    
         $disease = Disease::findOrFail($id);
          
@@ -64,7 +65,7 @@ class DiseaseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(TokenRequest $request, $id)
     {
         $disease = Disease::findOrFail($id);
         $disease->delete();

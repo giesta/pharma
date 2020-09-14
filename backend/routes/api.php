@@ -22,21 +22,29 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth',
-    'namespace' => 'App\Http\Controllers\Api'
+    'namespace' => 'App\Http\Controllers\Auth'
 ],function($router){
     Route::post('login', 'JwtAuthController@login');
     Route::post('register', 'JwtAuthController@register');
     
 });
 
+Route::group([
+    'middleware' => 'jwt.auth',
+    'prefix' => 'auth',
+    'namespace' => 'App\Http\Controllers\Auth'
+],function($router){
+    Route::get('logout', 'JwtAuthController@logout');
+    Route::get('me', 'JwtAuthController@me');
+    Route::get('refresh', 'JwtAuthController@refresh');
+    
+});
+
+
 Route::group(['middleware' => 'jwt.auth',
     'namespace' => 'App\Http\Controllers\Api',
 
 ], function () {
-
-    Route::get('logout', 'JwtAuthController@logout');
-    Route::get('me', 'JwtAuthController@me');
-    Route::get('refresh', 'JwtAuthController@refresh');
 
     Route::apiResource('diseases', DiseaseController::class);
 
@@ -45,3 +53,11 @@ Route::group(['middleware' => 'jwt.auth',
     Route::apiResource('treatments', TreatmentController::class);
 
 });
+
+// Fallback route incase anything goes wrong
+Route::fallback(function(){
+    return response()->json([
+        'status'=>'Error',
+        'message' => 'Resource not found.'
+    ], 404);
+})->name('fallback');

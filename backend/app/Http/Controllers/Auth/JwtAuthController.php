@@ -1,6 +1,6 @@
 <?php
  
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Auth;
  
 use JWTAuth;
 use Validator;
@@ -11,7 +11,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ResponseApiToken;
-use App\Http\Requests\Auth\TokenRequest;
+use App\Http\Requests\TokenRequest;
  
 class JwtAuthController extends Controller
 {
@@ -100,7 +100,7 @@ class JwtAuthController extends Controller
 
     }
   
-    public function me(TokenRequest $request)
+    public function me(Request $request)
     {
         $user = JWTAuth::authenticate($request->token);
 

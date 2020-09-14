@@ -8,6 +8,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use App\Models\Drug;
 use App\Http\Resources\Drug as DrugResource;
+use App\Http\Requests\TokenRequest;
 
 class DrugController extends Controller
 {
@@ -16,7 +17,7 @@ class DrugController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(TokenRequest $request)
     {
         return DrugResource::collection(Drug::all());
     }
@@ -27,7 +28,7 @@ class DrugController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request):DrugResource
+    public function store(TokenRequest $request):DrugResource
     {
         return new DrugResource(
             Drug::create($request->only(['name', 'substance', 'indication', 'contraindication', 'reaction', 'use']))
@@ -40,7 +41,7 @@ class DrugController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Drug $drug):DrugResource
+    public function show(TokenRequest $request, Drug $drug):DrugResource
     {
         return new DrugResource($drug);
     }
@@ -52,7 +53,7 @@ class DrugController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(TokenRequest $request, $id)
     {
         $drug = Drug::findOrFail($id);
          
@@ -67,7 +68,7 @@ class DrugController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(TokenRequest $request, $id)
     {
         $drug = Drug::findOrFail($id);
         $drug->delete();

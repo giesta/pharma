@@ -8,6 +8,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use App\Models\Treatment;
 use App\Http\Resources\Treatment as TreatmentResource;
+use App\Http\Requests\TokenRequest;
 
 class TreatmentController extends Controller
 {
@@ -16,7 +17,7 @@ class TreatmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(TokenRequest $request)
     {
         return TreatmentResource::collection(Treatment::all());
     }
@@ -27,7 +28,7 @@ class TreatmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request):TreatmentResource
+    public function store(TokenRequest $request):TreatmentResource
     {
         return new TreatmentResource(
             Treatment::create($request->only(['title', 'description', 'algorithm']))
@@ -40,7 +41,7 @@ class TreatmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Treatment $treatment):TreatmentResource
+    public function show(TokenRequest $request, Treatment $treatment):TreatmentResource
     {
         return new TreatmentResource($treatment);
     }
@@ -52,7 +53,7 @@ class TreatmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Treatment $treatment)
+    public function update(TokenRequest $request, Treatment $treatment)
     {
         $treatment->update($request->only(['title', 'description', 'algorithm']));
 
@@ -65,7 +66,7 @@ class TreatmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(TokenRequest $request, $id)
     {
         $treatment = Treatment::findOrFail($id);
         $treatment->delete();

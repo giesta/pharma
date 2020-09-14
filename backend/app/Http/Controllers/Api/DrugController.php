@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use JWTAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -19,7 +20,8 @@ class DrugController extends Controller
      */
     public function index(TokenRequest $request)
     {
-        return DrugResource::collection(Drug::all());
+        $user = JWTAuth::authenticate($request->token);
+        return DrugResource::collection($user->drugs);
     }
 
     /**
@@ -30,8 +32,9 @@ class DrugController extends Controller
      */
     public function store(TokenRequest $request):DrugResource
     {
+        $user = JWTAuth::authenticate($request->token);
         return new DrugResource(
-            Drug::create($request->only(['name', 'substance', 'indication', 'contraindication', 'reaction', 'use']))
+            Drug::create(array_merge($request->all(), ['user_id' => $user->id]))
         );
     }
 
@@ -41,9 +44,10 @@ class DrugController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(TokenRequest $request, Drug $drug):DrugResource
+    public function show(TokenRequest $request, $id):DrugResource
     {
-        return new DrugResource($drug);
+        $user = JWTAuth::authenticate($request->token);
+        return new DrugResource($user->drugs()->find($id));
     }
 
     /**
@@ -55,7 +59,8 @@ class DrugController extends Controller
      */
     public function update(TokenRequest $request, $id)
     {
-        $drug = Drug::findOrFail($id);
+        $user = JWTAuth::authenticate($request->token);
+        $drug = $user->drugs()->find($id);
          
         $drug->update($request->only(['name', 'substance', 'indication', 'contraindication', 'reaction', 'use']));
 
@@ -70,7 +75,15 @@ class DrugController extends Controller
      */
     public function destroy(TokenRequest $request, $id)
     {
-        $drug = Drug::findOrFail($id);
+        $user = JWTAuth::authenticate($request->token);
+        $drug = $user->drugs()->find($id);
+        if ($drug === null) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Drug not found"
+            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR );
+        }
+        $drug->diseases()->wherePivot('drug_id','=',$id)->delete();
         $drug->delete();
 
         return response()->noContent();

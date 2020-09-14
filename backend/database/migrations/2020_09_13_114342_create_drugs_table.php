@@ -21,7 +21,14 @@ class CreateDrugsTable extends Migration
             $table->string('contraindication');
             $table->string('reaction');
             $table->string('use');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
+
+            $table->index('user_id');
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('no action')
+                ->onUpdate('no action');
         });
     }
 

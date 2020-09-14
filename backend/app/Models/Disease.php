@@ -9,7 +9,7 @@ class Disease extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 'description', 'symptoms', 'treatment_id',
+        'name', 'description', 'symptoms', 'treatment_id', 'user_id',
     ];
 
     public function treatments(){

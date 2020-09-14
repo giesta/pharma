@@ -18,7 +18,14 @@ class CreateDiseasesTable extends Migration
             $table->string('name')->unique();
             $table->text('description');
             $table->string('symptoms');
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
+
+            $table->index('user_id');
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('no action')
+                ->onUpdate('no action');
         });
     }
 

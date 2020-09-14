@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use JWTAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -19,7 +20,8 @@ class DiseaseController extends Controller
      */
     public function index(TokenRequest $request)
     {
-        return DiseaseResource::collection(Disease::all());
+        $user = JWTAuth::authenticate($request->token);
+        return DiseaseResource::collection($user->diseases);
     }
 
     /**
@@ -30,17 +32,19 @@ class DiseaseController extends Controller
      */
     public function store(TokenRequest $request): DiseaseResource
     {
+        $user = JWTAuth::authenticate($request->token);
         return new DiseaseResource(
-            Disease::create($request->only(['name', 'description', 'symptoms']))
+            Disease::create(array_merge($request->all(), ['user_id' => $user->id]))
         );
     }
 
     /**
      * Return the specified resource.
      */
-    public function show(TokenRequest $request, Disease $disease): DiseaseResource
+    public function show(TokenRequest $request, $id): DiseaseResource
     {
-        return new DiseaseResource($disease);
+        $user = JWTAuth::authenticate($request->token);
+        return new DiseaseResource($user->diseases()->find($id));
     }
 
     /**
@@ -52,7 +56,8 @@ class DiseaseController extends Controller
      */
     public function update(TokenRequest $request, $id)
     {    
-        $disease = Disease::findOrFail($id);
+        $user = JWTAuth::authenticate($request->token);
+        $disease = $user->diseases()->find($id);
          
         $disease->update($request->only(['name', 'description', 'symptoms']));
 
@@ -67,7 +72,16 @@ class DiseaseController extends Controller
      */
     public function destroy(TokenRequest $request, $id)
     {
-        $disease = Disease::findOrFail($id);
+        $user = JWTAuth::authenticate($request->token);
+        $disease = $user->diseases()->find($id);
+        if ($disease === null) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Disease not found"
+            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR );
+        }
+        $disease->drugs()->wherePivot('disease_id','=',$id)->delete();
+        //Invoice::find($id)->delete();
         $disease->delete();
 
         return response()->noContent();

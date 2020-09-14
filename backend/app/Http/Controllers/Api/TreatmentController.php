@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use App\Models\Treatment;
+use App\Models\User;
 use App\Http\Resources\Treatment as TreatmentResource;
 use App\Http\Requests\TokenRequest;
+use JWTAuth;
 
 class TreatmentController extends Controller
 {
@@ -19,7 +22,8 @@ class TreatmentController extends Controller
      */
     public function index(TokenRequest $request)
     {
-        return TreatmentResource::collection(Treatment::all());
+        $user = JWTAuth::authenticate($request->token);
+        return TreatmentResource::collection($user->treatments);        
     }
 
     /**
@@ -30,8 +34,9 @@ class TreatmentController extends Controller
      */
     public function store(TokenRequest $request):TreatmentResource
     {
+        $user = JWTAuth::authenticate($request->token);
         return new TreatmentResource(
-            Treatment::create($request->only(['title', 'description', 'algorithm']))
+            Treatment::create(array_merge($request->all(), ['user_id' => $user->id]))
         );
     }
 
@@ -41,9 +46,10 @@ class TreatmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(TokenRequest $request, Treatment $treatment):TreatmentResource
+    public function show(TokenRequest $request, $id):TreatmentResource
     {
-        return new TreatmentResource($treatment);
+        $user = JWTAuth::authenticate($request->token);
+        return new TreatmentResource($user->treatments()->find($id));
     }
 
     /**
@@ -53,9 +59,11 @@ class TreatmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(TokenRequest $request, Treatment $treatment)
+    public function update(TokenRequest $request, $id)
     {
-        $treatment->update($request->only(['title', 'description', 'algorithm']));
+        $user = JWTAuth::authenticate($request->token);
+        $treatment = $user->treatments()->find($id);
+        $treatment->update($request->only(['title', 'description', 'algorithm', 'disease_id']));
 
         return new TreatmentResource($treatment);
     }
@@ -68,9 +76,15 @@ class TreatmentController extends Controller
      */
     public function destroy(TokenRequest $request, $id)
     {
-        $treatment = Treatment::findOrFail($id);
+        $user = JWTAuth::authenticate($request->token);
+        $treatment = $user->treatments()->find($id);
+        if ($treatment === null) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Treatment not found"
+            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR );
+        }
         $treatment->delete();
-
         return response()->noContent();
     }
 }

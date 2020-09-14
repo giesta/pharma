@@ -17,8 +17,22 @@ class CreateTreatmentsTable extends Migration
             $table->id();
             $table->string('title')->unique();
             $table->string('description');
-            $table->string('algorithm');
+            $table->string('algorithm'); 
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('disease_id');           
             $table->timestamps();
+
+            $table->index('user_id');
+            $table->foreign('user_id')
+                ->references('id')->on('users')
+                ->onDelete('no action')
+                ->onUpdate('no action');
+
+            $table->index('disease_id');
+            $table->foreign('disease_id')->references('id')->on('diseases')
+            ->onDelete('no action')
+            ->onUpdate('no action');
+                
         });
     }
 

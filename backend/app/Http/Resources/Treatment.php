@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Disease as DiseaseResource;
 
 class Treatment extends JsonResource
 {
@@ -18,7 +19,8 @@ class Treatment extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'algorithm' => $this->algorithm
+            'algorithm' => $this->algorithm,
+            'disease' => new DiseaseResource($this->disease),
         ];
     }
 }

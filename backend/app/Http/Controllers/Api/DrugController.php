@@ -21,7 +21,7 @@ class DrugController extends Controller
     public function index(TokenRequest $request)
     {
         $user = JWTAuth::authenticate($request->token);
-        return DrugResource::collection($user->drugs);
+        return DrugResource::collection($user->drugs()->with('diseases')->get());
     }
 
     /**
@@ -47,7 +47,7 @@ class DrugController extends Controller
     public function show(TokenRequest $request, $id):DrugResource
     {
         $user = JWTAuth::authenticate($request->token);
-        return new DrugResource($user->drugs()->find($id));
+        return new DrugResource($user->drugs()->with('diseases')->find($id));
     }
 
     /**

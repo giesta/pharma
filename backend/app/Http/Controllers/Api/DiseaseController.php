@@ -21,7 +21,7 @@ class DiseaseController extends Controller
     public function index(TokenRequest $request)
     {
         $user = JWTAuth::authenticate($request->token);
-        return DiseaseResource::collection($user->diseases);
+        return DiseaseResource::collection($user->diseases()->with('drugs')->get());
     }
 
     /**
@@ -44,7 +44,7 @@ class DiseaseController extends Controller
     public function show(TokenRequest $request, $id): DiseaseResource
     {
         $user = JWTAuth::authenticate($request->token);
-        return new DiseaseResource($user->diseases()->find($id));
+        return new DiseaseResource($user->diseases()->with('drugs')->find($id));
     }
 
     /**

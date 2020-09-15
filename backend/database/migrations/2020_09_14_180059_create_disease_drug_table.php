@@ -13,7 +13,7 @@ class CreateDiseasesDrugsTable extends Migration
      */
     public function up()
     {
-        Schema::create('diseases_drugs', function (Blueprint $table) {
+        Schema::create('disease_drug', function (Blueprint $table) {
             $table->id();
 
             $table->unsignedBigInteger('disease_id');

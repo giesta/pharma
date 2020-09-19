@@ -14,9 +14,11 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use App\Http\Traits\ResponserApi;
 
 class Handler extends ExceptionHandler
 {
+    use ResponserApi;
     /**
      * A list of the exception types that are not reported.
      *
@@ -69,57 +71,32 @@ class Handler extends ExceptionHandler
      * @throws \Throwable
      */
     public function render($request, Throwable $exception)
-    {
+    {    
         if ($exception instanceof MethodNotAllowedHttpException) {
-            return response()->json([
-                'status' => 'error',
-                'message' => "Method Not Allowed"
-            ], JsonResponse::HTTP_METHOD_NOT_ALLOWED);
+            return $this->errorResponse('The specified method for the request is invalid', JsonResponse::HTTP_METHOD_NOT_ALLOWED);
         }
+
         if ($exception instanceof NotFoundHttpException) {
-            return response()->json([
-                'status' => 'error',
-                'message' => "Not Found"
-            ], JsonResponse::HTTP_NOT_FOUND);
+            return $this->errorResponse('The specified URL cannot be found', $exception->getStatusCode());
         }
         if ($exception instanceof ModelNotFoundException) {
-            return response()->json([
-                'status' => 'error',
-                'message' => "No Results"
-            ], JsonResponse::HTTP_NOT_FOUND);
+            return $this->errorResponse('Entry for '.str_replace('App\\Models\\', '', $exception->getModel()).' not found', 404);
         }
-        if ($exception instanceof ValidationException) {
-            return response()->json([
-                'status' => 'error',
-                'message' => [
-                    'errors' => $exception->getMessage(),
-                    'fields' => $exception->validator->getMessageBag()->toArray()
-                ]
-            ], JsonResponse::HTTP_PRECONDITION_FAILED);
-        }
-
         if ($exception instanceof UnauthorizedHttpException) {
-            $previous_exception = $exception->getPrevious();
-            switch ($previous_exception) {
-                case $previous_exception instanceof TokenExpiredException:
-                case $previous_exception instanceof TokenInvalidException:
-                case $previous_exception instanceof TokenBlacklistedException:
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => "{$exception->getMessage()}"
-                    ], JsonResponse::HTTP_UNAUTHORIZED);
-                    break;
-                default:
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => "{$exception->getMessage()}"
-                    ], JsonResponse::HTTP_UNAUTHORIZED);
-                    break;
-            }
+            return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
         }
 
-        return parent::render($request, $exception);
-    }
+        if($exception instanceof ValidationException){
+
+            return $this->errorResponse($exception->errors(), 422);
+        }        
+
+        if (config('app.debug')) {
+            return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());           
+        }
+
+        return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
+   }
 
     /**
      * Convert an authentication exception into an unauthenticated response.
@@ -129,9 +106,7 @@ class Handler extends ExceptionHandler
      * @return \Illuminate\Http\Response
      */
     protected function unauthenticated($request, AuthenticationException $exception)
-    {
-        
-            return response()->json(['error' => 'Unauthenticated.'], 401);
-        
+    {        
+        return response()->json(['error' => 'Unauthenticated.'], 401);        
     }
 }

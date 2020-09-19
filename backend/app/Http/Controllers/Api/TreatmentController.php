@@ -9,8 +9,12 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use App\Models\Treatment;
 use App\Models\User;
+use App\Models\Disease;
 use App\Http\Resources\Treatment as TreatmentResource;
 use App\Http\Requests\TokenRequest;
+use App\Http\Requests\StoreTreatmentRequest;
+use Illuminate\Database\Eloquent\Exception;
+use \Illuminate\Database\QueryException;
 use JWTAuth;
 
 class TreatmentController extends Controller
@@ -32,11 +36,18 @@ class TreatmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TokenRequest $request):TreatmentResource
+    public function store(StoreTreatmentRequest $request):TreatmentResource
     {
         $user = JWTAuth::authenticate($request->token);
+        $disease = Disease::findOrFail($request->disease_id);
+        try{
+            $treatment = Treatment::create(array_merge($request->all(), ['user_id' => $user->id]));
+        }catch (QueryException $ex) { // Anything that went wrong
+            abort(500, "Could not create Treatment");
+        }
+        
         return new TreatmentResource(
-            Treatment::create(array_merge($request->all(), ['user_id' => $user->id]))
+            $treatment
         );
     }
 
@@ -49,7 +60,7 @@ class TreatmentController extends Controller
     public function show(TokenRequest $request, $id):TreatmentResource
     {
         $user = JWTAuth::authenticate($request->token);
-        return new TreatmentResource($user->treatments()->find($id));
+        return new TreatmentResource($user->treatments()->findOrFail($id));
     }
 
     /**
@@ -62,8 +73,13 @@ class TreatmentController extends Controller
     public function update(TokenRequest $request, $id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $treatment = $user->treatments()->find($id);
-        $treatment->update($request->only(['title', 'description', 'algorithm', 'disease_id']));
+        $treatment = $user->treatments()->findOrFail($id);
+        try{
+            $treatment->update($request->only(['title', 'description', 'algorithm', 'disease_id']));
+        }
+        catch (QueryException $ex) { // Anything that went wrong
+            abort(500, "Could not update Treatment");
+        }        
 
         return new TreatmentResource($treatment);
     }
@@ -77,13 +93,7 @@ class TreatmentController extends Controller
     public function destroy(TokenRequest $request, $id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $treatment = $user->treatments()->find($id);
-        if ($treatment === null) {
-            return response()->json([
-                'status' => 'error',
-                'message' => "Treatment not found"
-            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR );
-        }
+        $treatment = $user->treatments()->findOrFail($id);
         $treatment->delete();
         return response()->noContent();
     }

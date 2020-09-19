@@ -92,15 +92,20 @@ class JwtAuthController extends Controller
     public function refresh(TokenRequest $request)
     {
         try {
-            return $this->respondWithToken(auth()->refresh());
+            return $this->respondWithToken(JWTAuth::refresh(JWTAuth::getToken()));
+            $user = JWTAuth::setToken($refreshed)->toUser();
+            $request->headers->set('Authorization','Bearer '.$refreshed);
 
         } catch (JWTException $e) {
-            return $this->json(['message' => "Error: {$e->getMessage()}"], 500);
+            return response()->json([
+                'code'   => 103,
+                'message' => 'Token cannot be refreshed, please Login again'
+            ]);
         }
 
     }
   
-    public function me(Request $request)
+    public function me(TokenRequest $request)
     {
         $user = JWTAuth::authenticate($request->token);
 

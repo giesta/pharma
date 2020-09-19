@@ -10,8 +10,13 @@ use Illuminate\Http\Response;
 use App\Models\Drug;
 use App\Http\Resources\Drug as DrugResource;
 use App\Http\Requests\TokenRequest;
+use App\Http\Requests\StoreDrugRequest;
+use Illuminate\Database\Eloquent\ErrorException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Validator;
+use \Illuminate\Database\QueryException;
 
-class DrugController extends Controller
+class DrugController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -30,11 +35,16 @@ class DrugController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TokenRequest $request):DrugResource
+    public function store(StoreDrugRequest $request)
     {
         $user = JWTAuth::authenticate($request->token);
+        try{
+            $drug = Drug::create(array_merge($request->all(), ['user_id' => $user->id]));        
+        }catch (QueryException $ex) { // Anything that went wrong
+            abort(500, "Could not create Drug");
+        }
         return new DrugResource(
-            Drug::create(array_merge($request->all(), ['user_id' => $user->id]))
+            $drug
         );
     }
 
@@ -44,10 +54,13 @@ class DrugController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(TokenRequest $request, $id):DrugResource
+    public function show(TokenRequest $request, $id)
     {
-        $user = JWTAuth::authenticate($request->token);
-        return new DrugResource($user->drugs()->with('diseases')->find($id));
+        $user = JWTAuth::authenticate($request->token);        
+        $drugs = $user->drugs()->with('diseases')->findOrFail($id);
+
+        return new DrugResource($drugs);
+       
     }
 
     /**
@@ -60,9 +73,13 @@ class DrugController extends Controller
     public function update(TokenRequest $request, $id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $drug = $user->drugs()->find($id);
-         
-        $drug->update($request->only(['name', 'substance', 'indication', 'contraindication', 'reaction', 'use']));
+        $drug = $user->drugs()->findOrFail($id);
+        try{
+            $drug->update($request->only(['name', 'substance', 'indication', 'contraindication', 'reaction', 'use'])); 
+        }
+        catch (QueryException $ex) { // Anything that went wrong
+            abort(500, "Could not update Drug");
+        }       
 
         return new DrugResource($drug);
     }
@@ -76,16 +93,11 @@ class DrugController extends Controller
     public function destroy(TokenRequest $request, $id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $drug = $user->drugs()->find($id);
-        if ($drug === null) {
-            return response()->json([
-                'status' => 'error',
-                'message' => "Drug not found"
-            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR );
-        }
+        $drug = $user->drugs()->findOrFail($id);
         $drug->diseases()->wherePivot('drug_id','=',$id)->delete();
         $drug->delete();
 
         return response()->noContent();
     }
+
 }

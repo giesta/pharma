@@ -9,7 +9,9 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use App\Models\Disease;
 use App\Http\Resources\Disease as DiseaseResource;
+use App\Http\Requests\StoreDiseaseRequest;
 use App\Http\Requests\TokenRequest;
+use \Illuminate\Database\QueryException;
 
 class DiseaseController extends Controller
 {
@@ -30,11 +32,16 @@ class DiseaseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TokenRequest $request): DiseaseResource
+    public function store(StoreDiseaseRequest $request): DiseaseResource
     {
         $user = JWTAuth::authenticate($request->token);
+        try{
+            $disease = Disease::create(array_merge($request->all(), ['user_id' => $user->id]));
+        }catch (QueryException $ex) { // Anything that went wrong
+            abort(500, "Could not create Disease");
+        }
         return new DiseaseResource(
-            Disease::create(array_merge($request->all(), ['user_id' => $user->id]))
+            $disease
         );
     }
 
@@ -44,7 +51,7 @@ class DiseaseController extends Controller
     public function show(TokenRequest $request, $id): DiseaseResource
     {
         $user = JWTAuth::authenticate($request->token);
-        return new DiseaseResource($user->diseases()->with('drugs')->find($id));
+        return new DiseaseResource($user->diseases()->with('drugs')->findOrFail($id));
     }
 
     /**
@@ -57,9 +64,13 @@ class DiseaseController extends Controller
     public function update(TokenRequest $request, $id)
     {    
         $user = JWTAuth::authenticate($request->token);
-        $disease = $user->diseases()->find($id);
-         
-        $disease->update($request->only(['name', 'description', 'symptoms']));
+        $disease = $user->diseases()->findOrFail($id);
+        try{         
+            $disease->update($request->only(['name', 'description', 'symptoms']));
+        }
+        catch (QueryException $ex) { // Anything that went wrong
+            abort(500, "Could not update Disease");
+        }
 
         return new DiseaseResource($disease);
     }
@@ -73,15 +84,8 @@ class DiseaseController extends Controller
     public function destroy(TokenRequest $request, $id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $disease = $user->diseases()->find($id);
-        if ($disease === null) {
-            return response()->json([
-                'status' => 'error',
-                'message' => "Disease not found"
-            ], JsonResponse::HTTP_INTERNAL_SERVER_ERROR );
-        }
+        $disease = $user->diseases()->findOrFail($id);
         $disease->drugs()->wherePivot('disease_id','=',$id)->delete();
-        //Invoice::find($id)->delete();
         $disease->delete();
 
         return response()->noContent();

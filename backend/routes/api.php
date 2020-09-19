@@ -58,6 +58,6 @@ Route::group(['middleware' => 'jwt.auth',
 Route::fallback(function(){
     return response()->json([
         'status'=>'Error',
-        'message' => 'Resource not found.'
+        'message' => 'Page Not Found.'
     ], 404);
 })->name('fallback');

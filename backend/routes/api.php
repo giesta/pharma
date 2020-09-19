@@ -53,11 +53,3 @@ Route::group(['middleware' => 'jwt.auth',
     Route::apiResource('treatments', TreatmentController::class);
 
 });
-
-// Fallback route incase anything goes wrong
-Route::fallback(function(){
-    return response()->json([
-        'status'=>'Error',
-        'message' => 'Page Not Found.'
-    ], 404);
-})->name('fallback');

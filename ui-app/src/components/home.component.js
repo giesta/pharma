@@ -11,29 +11,14 @@ export default class Home extends Component {
     };
   }
 
-  componentDidMount() {
-    UserService.getPublicContent().then(
-      response => {
-        this.setState({
-          content: response.data
-        });
-      },
-      error => {
-        this.setState({
-          content:
-            (error.response && error.response.data) ||
-            error.message ||
-            error.toString()
-        });
-      }
-    );
-  }
 
   render() {
     return (
       <div className="container">
         <header>
-          <h3></h3>
+          <h3>
+              Home
+          </h3>
         </header>
       </div>
     );

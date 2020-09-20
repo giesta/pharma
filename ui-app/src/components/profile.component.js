@@ -7,17 +7,8 @@ export default class Profile extends Component {
     super(props);
 
     this.state = {
-      currentUser:[]
+      currentUser:AuthService.getCurrentUser()
     };
-  }
-
-  componentDidMount() {
-    UserService.getCurrentUser().then(response=>{
-      alert(response.data);
-      this.setState({
-        currentUser: response.data.user,
-      });
-    });
   }
 
   render() {
@@ -28,24 +19,30 @@ export default class Profile extends Component {
         <header className="jumbotron">
           <h3>
               {console.log(currentUser)}
-            <strong>{currentUser.name}</strong> Profile
+            <strong>{currentUser.user.name}</strong> Profile
           </h3>
         </header>
-        <p>
-          <strong>Token:</strong>{" "}
-        </p>
-        <p>
-          <strong>Id:</strong>{" "}
-          {currentUser.id}
-        </p>
-        <p>
-          <strong>Email:</strong>{" "}
-          {currentUser.email}
-        </p>
-        <strong>Authorities:</strong>
-        <ul>
+        <div class="row top-buffer">
+            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col cell" style={{"word-wrap": "break-word"}}> <p>
+            <strong>Token:</strong>{" "}
+                </p>{currentUser.access_token}{" "}
+                    <p>
+                    <strong>Id:</strong>{" "}
+                    {currentUser.user.id}
+                    </p>
+                    <p>
+                    <strong>Email:</strong>{" "}
+                    {currentUser.user.email}
+                    </p>
+                    <strong>Authorities:</strong>
+                    <ul>
+                    
+                    </ul>
+            </div>
+        </div>
+       
+            
           
-        </ul>
       </div>
     );
   }

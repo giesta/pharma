@@ -4,7 +4,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import AuthService from "./services/auth.service";
-import UserService from "./services/user.service";
 
 import Login from "./components/login.component";
 import Register from "./components/register.component";
@@ -25,7 +24,13 @@ class App extends Component {
   }
 
   componentDidMount() {
-    
+    const user = AuthService.getCurrentUser();
+    if(user){
+      this.setState({
+        currentUser: user,
+      });
+    }
+      
   }
 
   logOut() {
@@ -39,7 +44,7 @@ class App extends Component {
       <div>
         <nav className="navbar navbar-expand navbar-dark bg-dark">
           <Link to={"/"} className="navbar-brand">
-            bezKoder
+            Code Of Universe
           </Link>
           <div className="navbar-nav mr-auto">
             <li className="nav-item">
@@ -77,7 +82,7 @@ class App extends Component {
             <div className="navbar-nav ml-auto">
               <li className="nav-item">
                 <Link to={"/profile"} className="nav-link">
-                  
+                  {currentUser.user.name}
                 </Link>
               </li>
               <li className="nav-item">

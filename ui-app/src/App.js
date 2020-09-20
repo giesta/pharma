@@ -10,6 +10,7 @@ import Register from "./components/register.component";
 import Home from "./components/home.component";
 import Profile from "./components/profile.component";
 import BoardUser from "./components/board-user.component";
+import DrugsList from "./components/drugs/drugs-list.component";
 
 class App extends Component {
   constructor(props) {
@@ -52,6 +53,11 @@ class App extends Component {
                 Home
               </Link>
             </li>
+              <li className="nav-item">
+                <Link to={"/drugs"} className="nav-link">
+                  Drugs
+                </Link>
+              </li>
 
             {showModeratorBoard && (
               <li className="nav-item">
@@ -115,6 +121,7 @@ class App extends Component {
             <Route exact path="/register" component={Register} />
             <Route exact path="/profile" component={Profile} />
             <Route path="/user" component={BoardUser} />
+            <Route exact path="/drugs" component={DrugsList} />
           </Switch>
         </div>
       </div>

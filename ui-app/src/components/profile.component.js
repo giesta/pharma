@@ -22,8 +22,8 @@ export default class Profile extends Component {
             <strong>{currentUser.user.name}</strong> Profile
           </h3>
         </header>
-        <div class="row top-buffer">
-            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-4 col cell" style={{"word-wrap": "break-word"}}> <p>
+        <div className="row top-buffer">
+            <div className="col-xs-12 col-sm-6 col-md-4 col-lg-4 col cell" style={{"wordWrap": "break-word"}}> <p>
             <strong>Token:</strong>{" "}
                 </p>{currentUser.access_token}{" "}
                     <p>

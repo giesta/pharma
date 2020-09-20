@@ -23,7 +23,7 @@ class DrugController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(TokenRequest $request)
+    public function index(Request $request)
     {
         $user = JWTAuth::authenticate($request->token);
         return DrugResource::collection($user->drugs()->with('diseases')->get());

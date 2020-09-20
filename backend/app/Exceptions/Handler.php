@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use \Illuminate\Database\QueryException;
 use App\Http\Traits\ResponserApi;
 
 class Handler extends ExceptionHandler
@@ -89,13 +90,17 @@ class Handler extends ExceptionHandler
         if($exception instanceof ValidationException){
 
             return $this->errorResponse($exception->errors(), 422);
-        }        
+        }    
+        if($exception instanceof QueryException){
+
+            return $this->errorResponse("No Connection with DataBase", 500);
+        }      
 
         if (config('app.debug')) {
             return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());           
         }
 
-        return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
+        return $this->errorResponse($exception->getMessage(), 500);
    }
 
     /**

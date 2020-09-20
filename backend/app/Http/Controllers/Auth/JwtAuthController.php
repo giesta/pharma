@@ -105,7 +105,7 @@ class JwtAuthController extends Controller
 
     }
   
-    public function me(TokenRequest $request)
+    public function me(Request $request)
     {
         $user = JWTAuth::authenticate($request->token);
 

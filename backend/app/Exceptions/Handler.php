@@ -73,7 +73,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {    
         if ($exception instanceof MethodNotAllowedHttpException) {
-            return $this->errorResponse('The specified method for the request is invalid', JsonResponse::HTTP_METHOD_NOT_ALLOWED);
+            return $this->errorResponse($exception->getMessage(), JsonResponse::HTTP_METHOD_NOT_ALLOWED);
         }
 
         if ($exception instanceof NotFoundHttpException) {

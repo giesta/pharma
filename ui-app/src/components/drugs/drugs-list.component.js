@@ -1,18 +1,36 @@
 import React, { useEffect } from 'react';
-import MaterialTable from 'material-table';
+import BootstrapTable from 'react-bootstrap-table-next';
 import DrugsDataService from "../../services/drugs/list.service";
 
 export default function MaterialTableDemo() {
-  const [state, setState] = React.useState({
-    columns: [
-      { title: 'Name', field: 'name' },
-      { title: 'Substance', field: 'substance' },
-      { title: 'Indication', field: 'indication' },
-      { title: 'Contraindication', field: 'contraindication'},
-      { title: 'Reactions', field: 'reactions'},
-      { title: 'Use', field: 'use'},
-    ],
-    data: [ ],
+  const [drug, setDrug] = React.useState({
+    columns: [{  
+    dataField: 'id',  
+    text: 'Id' },  
+{  
+ dataField: 'name',  
+  text: 'Name',  
+  sort:true}, {  
+  dataField: 'substance',  
+  text: 'Substance',  
+  sort: true  },  
+{  dataField: 'indication',  
+text: 'Indication',  
+sort: true  },  
+{  dataField: 'contraindication',  
+text: 'Contraindication',  
+sort: true  
+ },  
+{  
+dataField: 'reaction',  
+ text: 'Reaction',  
+sort: true  
+ },   {  
+ dataField: 'use',  
+text: 'Use',  
+ sort: true }
+  ]  ,
+    data: [],
   });
   useEffect(()=>{
         retrieveDrugs();
@@ -20,8 +38,11 @@ export default function MaterialTableDemo() {
   const retrieveDrugs = () => {
     DrugsDataService.getAll()
       .then(response => {
-        setState(response.data);
-        console.log(response.data);
+        console.log(response.data.data);
+        
+          setDrug({...drug, data: response.data.data});
+        
+        
       })
       .catch(e => {
         console.log(e);
@@ -29,47 +50,44 @@ export default function MaterialTableDemo() {
   };
 
   return (
-    <MaterialTable
-      title="Drugs"
-      columns={state.columns}
-      data={state.data}
-      editable={{
-        onRowAdd: (newData) =>
-          new Promise((resolve) => {
-            setTimeout(() => {
-              resolve();
-              setState((prevState) => {
-                const data = [...prevState.data];
-                data.push(newData);
-                return { ...prevState, data };
-              });
-            }, 600);
-          }),
-        onRowUpdate: (newData, oldData) =>
-          new Promise((resolve) => {
-            setTimeout(() => {
-              resolve();
-              if (oldData) {
-                setState((prevState) => {
-                  const data = [...prevState.data];
-                  data[data.indexOf(oldData)] = newData;
-                  return { ...prevState, data };
-                });
-              }
-            }, 600);
-          }),
-        onRowDelete: (oldData) =>
-          new Promise((resolve) => {
-            setTimeout(() => {
-              resolve();
-              setState((prevState) => {
-                const data = [...prevState.data];
-                data.splice(data.indexOf(oldData), 1);
-                return { ...prevState, data };
-              });
-            }, 600);
-          }),
-      }}
-    />
+    <div>{drug?(
+      <div className="container">  
+
+        <div className="row" className="hdr">    
+
+          <div className="col-sm-12 btn btn-info">    
+
+            React Bootstrap Table with Searching and Custom Pagination   
+            {console.log(drug)}
+
+              </div>    
+
+             </div>    
+
+              <div  style={{ marginTop: 20 }}>  
+
+            <BootstrapTable   
+
+            striped  
+
+            hover  
+
+            keyField='id'   
+
+           data={ drug.data }   
+
+          columns={ drug.columns } ></BootstrapTable>  
+
+        </div>  
+
+ </div>  
+    ):(<div>
+      <br />
+      <p>Please click on a Tutorial...</p>
+    </div>)
+      
+    }</div>
+    
+    
   );
 }

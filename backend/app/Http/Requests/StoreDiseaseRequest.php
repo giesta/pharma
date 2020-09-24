@@ -25,7 +25,7 @@ class StoreDiseaseRequest extends FormRequest
     {
         return [
             'token' => 'required',
-            'name' => 'required|unique:diseases|max:255',
+            'name' => 'required|max:255',
         ];
     }
 }

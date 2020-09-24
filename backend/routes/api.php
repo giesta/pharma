@@ -35,8 +35,9 @@ Route::group([
     'namespace' => 'App\Http\Controllers\Auth'
 ],function($router){
     Route::get('logout', 'JwtAuthController@logout');
-    Route::get('me', 'JwtAuthController@me');
+    Route::get('getMe', 'JwtAuthController@getMe');
     Route::get('refresh', 'JwtAuthController@refresh');
+    Route::resource('users', JwtAuthController::class);
     
 });
 
@@ -49,6 +50,7 @@ Route::group(['middleware' => 'jwt.auth',
     Route::apiResource('diseases', DiseaseController::class);    
     Route::apiResource('drugs', DrugController::class);
     Route::resource('diseases.drugs', DiseaseDrugController::class);
+    Route::apiResource('users', UserController::class);
 
     Route::apiResource('treatments', TreatmentController::class);
 

@@ -25,8 +25,13 @@ class DrugController extends ApiController
      */
     public function index(TokenRequest $request)
     {
+
         $user = JWTAuth::authenticate($request->token);
-        return DrugResource::collection($user->drugs()->with('diseases')->get());
+        if($user->role ==="admin"){
+            return DrugResource::collection(Drug::all());
+        }else{
+            return DrugResource::collection($user->drugs()->with('diseases')->get());
+        }        
     }
 
     /**
@@ -56,10 +61,14 @@ class DrugController extends ApiController
      */
     public function show(TokenRequest $request, $id)
     {
-        $user = JWTAuth::authenticate($request->token);        
-        $drugs = $user->drugs()->with('diseases')->findOrFail($id);
-
-        return new DrugResource($drugs);
+        $user = JWTAuth::authenticate($request->token);
+        if($user->role ==="admin"){
+            $drugs = Drug::with('diseases')->findOrFail($id);
+            return new DrugResource($drugs);
+        }else{      
+            $drugs = $user->drugs()->with('diseases')->findOrFail($id);
+            return new DrugResource($drugs);
+        }
        
     }
 
@@ -73,7 +82,11 @@ class DrugController extends ApiController
     public function update(TokenRequest $request, $id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $drug = $user->drugs()->findOrFail($id);
+        if($user->role ==="admin"){
+            $drug = Drug::findOrFail($id);
+        }else{
+            $drug = $user->drugs()->findOrFail($id);
+        }        
         try{
             $drug->update($request->only(['name', 'substance', 'indication', 'contraindication', 'reaction', 'use'])); 
         }
@@ -93,11 +106,14 @@ class DrugController extends ApiController
     public function destroy(TokenRequest $request, $id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $drug = $user->drugs()->findOrFail($id);
+        if($user->role ==="admin"){
+            $drug = Drug::findOrFail($id);
+        }else{
+            $drug = $user->drugs()->findOrFail($id);
+        } 
         $drug->diseases()->wherePivot('drug_id','=',$id)->delete();
         $drug->delete();
-
-        return response()->noContent();
+        return response()->noContent();        
     }
 
 }

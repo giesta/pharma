@@ -27,7 +27,11 @@ class TreatmentController extends Controller
     public function index(TokenRequest $request)
     {
         $user = JWTAuth::authenticate($request->token);
-        return TreatmentResource::collection($user->treatments);        
+        if($user->role ==="admin"){
+            return TreatmentResource::collection(Treatment::all());
+        }else{
+            return TreatmentResource::collection($user->treatments);  
+        }      
     }
 
     /**
@@ -60,7 +64,12 @@ class TreatmentController extends Controller
     public function show(TokenRequest $request, $id):TreatmentResource
     {
         $user = JWTAuth::authenticate($request->token);
-        return new TreatmentResource($user->treatments()->findOrFail($id));
+        if($user->role ==="admin"){
+            $treatment = Treatment::findOrFail($id);
+            return new TreatmentResource($treatment);
+        }else{ 
+            return new TreatmentResource($user->treatments()->findOrFail($id));
+        }
     }
 
     /**
@@ -73,7 +82,11 @@ class TreatmentController extends Controller
     public function update(TokenRequest $request, $id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $treatment = $user->treatments()->findOrFail($id);
+        if($user->role ==="admin"){
+            $treatment = Treatment::findOrFail($id);
+        }else{
+            $treatment = $user->treatments()->findOrFail($id);
+        }
         try{
             $treatment->update($request->only(['title', 'description', 'algorithm', 'disease_id']));
         }
@@ -93,7 +106,11 @@ class TreatmentController extends Controller
     public function destroy(TokenRequest $request, $id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $treatment = $user->treatments()->findOrFail($id);
+        if($user->role ==="admin"){
+            $treatment = Treatment::findOrFail($id);
+        }else{
+            $treatment = $user->treatments()->findOrFail($id);
+        }
         $treatment->delete();
         return response()->noContent();
     }

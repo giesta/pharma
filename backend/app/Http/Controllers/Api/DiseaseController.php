@@ -23,7 +23,11 @@ class DiseaseController extends Controller
     public function index(TokenRequest $request)
     {
         $user = JWTAuth::authenticate($request->token);
-        return DiseaseResource::collection($user->diseases()->with('drugs')->get());
+        if($user->role ==="admin"){
+            return DiseaseResource::collection(Disease::all());
+        }else{
+            return DiseaseResource::collection($user->diseases()->with('drugs')->get());
+        }
     }
 
     /**
@@ -51,7 +55,12 @@ class DiseaseController extends Controller
     public function show(TokenRequest $request, $id): DiseaseResource
     {
         $user = JWTAuth::authenticate($request->token);
-        return new DiseaseResource($user->diseases()->with('drugs')->findOrFail($id));
+        if($user->role ==="admin"){
+            $disease = Disease::with('drugs')->findOrFail($id);
+            return new DiseaseResource($disease);
+        }else{ 
+            return new DiseaseResource($user->diseases()->with('drugs')->findOrFail($id));
+        }
     }
 
     /**
@@ -64,7 +73,11 @@ class DiseaseController extends Controller
     public function update(TokenRequest $request, $id)
     {    
         $user = JWTAuth::authenticate($request->token);
-        $disease = $user->diseases()->findOrFail($id);
+        if($user->role ==="admin"){
+            $disease = Disease::findOrFail($id);
+        }else{
+            $disease = $user->diseases()->findOrFail($id);
+        }
         try{         
             $disease->update($request->only(['name', 'description', 'symptoms']));
         }
@@ -84,7 +97,11 @@ class DiseaseController extends Controller
     public function destroy(TokenRequest $request, $id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $disease = $user->diseases()->findOrFail($id);
+        if($user->role ==="admin"){
+            $disease = Disease::findOrFail($id);
+        }else{
+            $disease = $user->diseases()->findOrFail($id);
+        }
         $disease->drugs()->wherePivot('disease_id','=',$id)->delete();
         $disease->delete();
 

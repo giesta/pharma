@@ -25,7 +25,7 @@ class StoreDrugRequest extends FormRequest
     {
         return [
             'token' => 'required',
-            'name' => 'required|max:255',
+            'name' => 'required|unique:drugs|max:255',
             'substance' => 'required|max:255',
             'indication' => 'required|max:255',
             'use' => 'required',

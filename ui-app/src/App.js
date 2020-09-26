@@ -3,7 +3,12 @@ import { Switch, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
+import { Navbar, NavItem, NavDropdown, MenuItem, Nav } from 'react-bootstrap';
+
+
 import AuthService from "./services/auth.service";
+
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 import Login from "./components/login.component";
 import Register from "./components/register.component";
@@ -38,82 +43,50 @@ class App extends Component {
     AuthService.logout();
   }
 
+  
+
   render() {
     const { currentUser, showModeratorBoard, showAdminBoard } = this.state;
 
     return (
+      
       <div>
-        <nav className="navbar navbar-expand navbar-dark bg-dark">
-          <Link to={"/"} className="navbar-brand">
-            Code Of Universe
-          </Link>
-          <div className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <Link to={"/home"} className="nav-link">
-                Home
-              </Link>
-            </li>
-              <li className="nav-item">
-                <Link to={"/drugs"} className="nav-link">
-                  Drugs
-                </Link>
-              </li>
+   <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+  <Navbar.Brand href="https://www.youtube.com/watch?v=6B_6K-splRU">Code Of Universe</Navbar.Brand>
+  <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+  <Navbar.Collapse id="responsive-navbar-nav">
 
-            {showModeratorBoard && (
-              <li className="nav-item">
-                <Link to={"/mod"} className="nav-link">
-                  Moderator Board
-                </Link>
-              </li>
-            )}
-
-            {showAdminBoard && (
-              <li className="nav-item">
-                <Link to={"/admin"} className="nav-link">
-                  Admin Board
-                </Link>
-              </li>
-            )}
-
-            {currentUser && (
-              <li className="nav-item">
-                <Link to={"/user"} className="nav-link">
-                  User
-                </Link>
-              </li>
-            )}
-          </div>
-
-          {currentUser ? (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/profile"} className="nav-link">
-                  {currentUser.user.name}
-                </Link>
-              </li>
-              <li className="nav-item">
-                <a href="/login" className="nav-link" onClick={this.logOut}>
-                  LogOut
-                </a>
-              </li>
-            </div>
+    <Nav className="mr-auto">
+    <Nav.Link href={"/"}>Home</Nav.Link>
+      <Nav.Link href={"/drugs"}>Drugs</Nav.Link>
+      <Nav.Link href="#pricing">Pricing</Nav.Link>
+      <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
+        <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+        <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
+        <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+        <NavDropdown.Divider />
+        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+      </NavDropdown>
+    </Nav>
+    
+    {currentUser ? (
+      <Nav>
+              <Nav.Link href={"/profile"}>{currentUser.user.name}</Nav.Link>
+              <Nav.Link eventKey={2} href="/login" onClick={this.logOut}>
+              LogOut
+      </Nav.Link>
+      </Nav>
           ) : (
-            <div className="navbar-nav ml-auto">
-              <li className="nav-item">
-                <Link to={"/login"} className="nav-link">
-                  Login
-                </Link>
-              </li>
-
-              <li className="nav-item">
-                <Link to={"/register"} className="nav-link">
-                  Sign Up
-                </Link>
-              </li>
-            </div>
+<Nav>
+              <Nav.Link href={"/login"}>Login</Nav.Link>
+              <Nav.Link eventKey={2} href={"/register"}>
+              Sign Up
+      </Nav.Link>
+      </Nav>            
           )}
-        </nav>
-
+    
+  </Navbar.Collapse>
+</Navbar>        
         <div className="container mt-3">
           <Switch>
             <Route exact path={["/", "/home"]} component={Home} />

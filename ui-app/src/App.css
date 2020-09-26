@@ -68,3 +68,16 @@ label {
   -webkit-border-radius: 50%;
   border-radius: 50%;
 }
+@media (min-width: 768px) {
+  .d-md-table-header-group {
+    display: table-header-group !important;
+  }
+}
+.react-bootstrap-table table {
+  table-layout: auto;
+}
+.table-column{
+  white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

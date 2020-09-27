@@ -1,21 +1,41 @@
 import React, { useCallback, useEffect } from 'react';
+import AuthService from "../../services/auth.service";
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator'; 
 import DrugsDataService from "../../services/drugs/list.service";
 import Fa from 'module';
-import { Table, Spinner, Modal, Button } from "react-bootstrap";
+import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle } from "react-icons/bs";
 
 export default function MaterialTableDemo() {
+
+  const initialDrugState = {  
+    id: null,  
+    name: "",
+    substance: "",
+    indication: "",
+    contraindication: "",
+    reaction: "",
+    use: ""
+  };
+
+  const [drug, setDrug] = React.useState(initialDrugState);
+  const [submitted, setSubmitted] = React.useState(false);
+
   const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
   
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [drug, setDrug] = React.useState({
+  const [drugs, setDrugs] = React.useState({
     data: [],
   });
+
+  const handleInputChange = event => {
+    const { name, value } = event.target;
+    setDrug({ ...drug, [name]: value });
+  };
   useEffect(()=>{
         retrieveDrugs();
   }, []);
@@ -24,8 +44,7 @@ export default function MaterialTableDemo() {
       .then(response => {
         console.log(response.data.data);
         
-          setDrug({...drug, data: response.data.data});
-        
+          setDrugs({...drugs, data: response.data.data});
         
       })
       .catch(e => {
@@ -88,10 +107,45 @@ text: 'Contraindication',
  }
 ];
 
+const saveDrug = () => {
+  var data = {
+    token: AuthService.getCurrentUser().access_token,
+    name: drug.name,
+    substance: drug.substance,
+    indication: drug.indication,
+    contraindication: drug.contraindication,
+    reaction: drug.reaction,
+    use: drug.use
+  };
+  console.log(data);
+  DrugsDataService.create(data)
+    .then(response => {
+      setDrug({
+        id: response.data.id,
+        name: response.data.name,
+        substance: response.data.substance,
+        indication: response.data.indication,
+        contraindication: response.data.contraindication,
+        reaction: response.data.reaction,
+        use: response.data.use
+      });
+      setSubmitted(true);
+      console.log(response.data);
+    })
+    .catch(e => {
+      console.log(e);
+    });
+};
+
+const newDrug = () => {
+  setDrug(initialDrugState);
+  setSubmitted(false);
+};
+
 
   return (
-    <div>{drug?(
-      drug.data.length==0?(
+    <div>{drugs?(
+      drugs.data.length==0?(
         <div className="text-center">
           <Spinner animation="grow" role="status">
             <span className="sr-only">Loading...</span>
@@ -110,7 +164,7 @@ text: 'Contraindication',
   </thead>
   <tbody>
 
-  {drug.data.map((field)=>
+  {drugs.data.map((field)=>
         <tr>
         <td>{field.id}</td>
         <td>{field.name}</td>
@@ -125,19 +179,47 @@ text: 'Contraindication',
   </tbody>
 </Table>
 <Modal show={show} onHide={handleClose} id = {id}>
-        <Modal.Header closeButton>
-  <Modal.Title>Modal heading {id}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+  <Modal.Header closeButton>
+    <Modal.Title>Drug info {id}</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+  <Form>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Name</Form.Label>
+    <Form.Control type="text" placeholder="" id="name" required value={drug.name} onChange={handleInputChange} name="name"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Substance</Form.Label>
+    <Form.Control type="text" placeholder="" id="substance" required value={drug.substance} onChange={handleInputChange} name="substance"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Indication</Form.Label>
+    <Form.Control type="text" placeholder="" id="indication" required value={drug.indication} onChange={handleInputChange} name="indication"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Contraindication</Form.Label>
+    <Form.Control type="text" placeholder="" id="contraindication" required value={drug.contraindication} onChange={handleInputChange} name="contraindication"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Reaction</Form.Label>
+    <Form.Control type="text" placeholder="" id="reaction" required value={drug.reaction} onChange={handleInputChange} name="reaction"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Use</Form.Label>
+    <Form.Control type="text" placeholder="" id="use" required value={drug.use} onChange={handleInputChange} name="use"/>
+  </Form.Group>
+</Form>
+        </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={ saveDrug}>
             Save Changes
           </Button>
         </Modal.Footer>
       </Modal>
+      
 </>
   </div>  )
     ):(<div>

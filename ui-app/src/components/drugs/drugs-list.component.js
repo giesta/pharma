@@ -5,7 +5,7 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import DrugsDataService from "../../services/drugs/list.service";
 import Fa from 'module';
 import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form } from "react-bootstrap";
-import { BsPen, BsTrash, BsInfoCircle } from "react-icons/bs";
+import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
 export default function MaterialTableDemo() {
 
@@ -131,6 +131,9 @@ const saveDrug = () => {
       });
       setSubmitted(true);
       console.log(response.data);
+      handleClose();
+      drugs.data.push(response.data.data);
+      setDrugs({...drugs, data: drugs.data});
     })
     .catch(e => {
       console.log(e);
@@ -145,14 +148,20 @@ const newDrug = () => {
 
   return (
     <div>{drugs?(
-      drugs.data.length==0?(
+      drugs.data.length==0?(        
         <div className="text-center">
           <Spinner animation="grow" role="status">
             <span className="sr-only">Loading...</span>
           </Spinner>
         </div>
-      ):(
+      ):(        
       <div className="container">  
+      <div className="mb-3">
+      <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
+              function(event){setShow(true)}}>
+                <BsPlus></BsPlus>
+            </button>
+      </div>
       <>
  <Table striped bordered hover responsive="lg">
   <thead>
@@ -214,7 +223,7 @@ const newDrug = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={ saveDrug}>
+          <Button variant="primary" onClick={saveDrug}>
             Save Changes
           </Button>
         </Modal.Footer>

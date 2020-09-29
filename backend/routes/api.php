@@ -26,17 +26,17 @@ Route::group([
 ],function($router){
     Route::post('login', 'JwtAuthController@login');
     Route::post('register', 'JwtAuthController@register');
-    
+    Route::get('refresh', 'JwtAuthController@refresh');
 });
 
 Route::group([
-    'middleware' => 'jwt.auth',
+    
     'prefix' => 'auth',
     'namespace' => 'App\Http\Controllers\Auth'
 ],function($router){
     Route::get('logout', 'JwtAuthController@logout');
     Route::get('getMe', 'JwtAuthController@getMe');
-    Route::get('refresh', 'JwtAuthController@refresh');
+    
     Route::resource('users', JwtAuthController::class);
     
 });

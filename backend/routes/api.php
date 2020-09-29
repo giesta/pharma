@@ -42,7 +42,7 @@ Route::group([
 });
 
 
-Route::group(['middleware' => ['jwt.auth', 'jwt.test'],
+Route::group(['middleware' => 'jwt.auth',
     'namespace' => 'App\Http\Controllers\Api',
 
 ], function () {

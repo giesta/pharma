@@ -49,9 +49,9 @@ class UserController extends Controller
      * @param int $id
      * @return UserResource
      */
-    public function show(TokenRequest $request, int $id)
+    public function show(int $id)
     {
-        $userCurrent = JWTAuth::authenticate($request->token);
+        $userCurrent = auth()->user();
         if($userCurrent->id === $id || $userCurrent->role === "admin"){
             $user = User::findOrFail($id);
             return new UserResource($user);

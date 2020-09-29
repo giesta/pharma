@@ -100,7 +100,7 @@ class Handler extends ExceptionHandler
             return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());           
         }
 
-        return $this->errorResponse($exception->getMessage(), 500);
+        return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
    }
 
     /**

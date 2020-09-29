@@ -24,10 +24,13 @@ export default function MaterialTableDemo() {
 
   const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
+  const [confirm, setConfirm] = React.useState(false);
   
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const handleCloseConfirm = () => setConfirm(false);
+  const handleConfirm = () => setConfirm(true);
   const [drugs, setDrugs] = React.useState({
     data: [],
   });
@@ -64,7 +67,8 @@ export default function MaterialTableDemo() {
               function(event){ setId(row); setShow(true)}}>
                 <BsPen></BsPen>
             </button>
-            <button type="button" className="btn btn-outline-danger btn-sm ml-2 ts-buttom" size="sm">
+            <button type="button" className="btn btn-outline-danger btn-sm ml-2 ts-buttom" size="sm"onClick={
+              function(event){ setId(row); setConfirm(true)}}>
             <BsTrash></BsTrash>
             </button>
         </div>
@@ -72,8 +76,8 @@ export default function MaterialTableDemo() {
 });
 
 const deleteItemFromState = (id) => {
-  const updatedItems = drug.data.filter(item => item.id !== id)
-  setDrug({ data: updatedItems })
+  const updatedItems = drugs.data.filter(x=>x.id!=id)
+  setDrugs({ data: updatedItems })
 }
 
 const columns = [{  
@@ -134,6 +138,17 @@ const saveDrug = () => {
       handleClose();
       drugs.data.push(response.data.data);
       setDrugs({...drugs, data: drugs.data});
+    })
+    .catch(e => {
+      console.log(e);
+    });
+};
+
+const deleteDrug = (id) => {
+  DrugsDataService.remove(id)
+    .then(() => {
+      deleteItemFromState(id);
+      handleCloseConfirm();
     })
     .catch(e => {
       console.log(e);
@@ -225,6 +240,23 @@ const newDrug = () => {
           </Button>
           <Button variant="primary" onClick={saveDrug}>
             Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+  <Modal show={confirm} onHide={handleCloseConfirm} id = {id}>
+  <Modal.Header closeButton>
+    <Modal.Title>Drug info {id}</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+  Are you sure?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseConfirm}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={()=>deleteDrug(id)}>
+            Delete
           </Button>
         </Modal.Footer>
       </Modal>

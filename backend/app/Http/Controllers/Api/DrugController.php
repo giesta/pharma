@@ -90,9 +90,9 @@ class DrugController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TokenRequest $request, $id)
+    public function destroy(Request $request, $id)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         $drug = $user->drugs()->findOrFail($id);
         $drug->diseases()->wherePivot('drug_id','=',$id)->delete();
         $drug->delete();

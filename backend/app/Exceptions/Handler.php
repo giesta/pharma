@@ -85,16 +85,20 @@ class Handler extends ExceptionHandler
         if ($exception instanceof UnauthorizedHttpException) {
             return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
         }
+        if ($exception instanceof TokenBlacklistedException) {
+            return $this->errorResponse($exception->getMessage(), 401);
+        }
+        if ($exception instanceof TokenExpiredException) {
+            return $this->errorResponse($exception->getMessage(), 401);
+        }
+        if ($exception instanceof TokenInvalidException) {
+            return $this->errorResponse($exception->getMessage(), 401);
+        }
 
         if($exception instanceof ValidationException){
 
             return $this->errorResponse($exception->errors(), 422);
-        }        
-
-        if (config('app.debug')) {
-            return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());           
-        }
-
+        } 
         return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
    }
 

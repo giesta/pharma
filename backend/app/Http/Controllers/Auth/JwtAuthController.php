@@ -90,7 +90,7 @@ class JwtAuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh(TokenRequest $request)
+    public function refresh(Request $request)
     {
         try {
             return $this->respondWithToken(JWTAuth::refresh(JWTAuth::getToken()));

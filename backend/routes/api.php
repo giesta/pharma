@@ -26,7 +26,7 @@ Route::group([
 ],function($router){
     Route::post('login', 'JwtAuthController@login');
     Route::post('register', 'JwtAuthController@register');
-    Route::get('refresh', 'JwtAuthController@refresh');
+    
 });
 
 Route::group([
@@ -36,7 +36,7 @@ Route::group([
 ],function($router){
     Route::get('logout', 'JwtAuthController@logout');
     Route::get('getMe', 'JwtAuthController@getMe');
-    
+    Route::get('refresh', 'JwtAuthController@refresh');
     //Route::resource('users', JwtAuthController::class);
     
 });

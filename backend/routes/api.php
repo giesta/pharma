@@ -30,19 +30,19 @@ Route::group([
 });
 
 Route::group([
-    
+    'middleware' => 'jwt.auth',
     'prefix' => 'auth',
     'namespace' => 'App\Http\Controllers\Auth'
 ],function($router){
     Route::get('logout', 'JwtAuthController@logout');
     Route::get('getMe', 'JwtAuthController@getMe');
     
-    Route::resource('users', JwtAuthController::class);
+    //Route::resource('users', JwtAuthController::class);
     
 });
 
 
-Route::group(['middleware' => 'jwt.auth',
+Route::group(['middleware' => ['jwt.auth', 'jwt.test'],
     'namespace' => 'App\Http\Controllers\Api',
 
 ], function () {

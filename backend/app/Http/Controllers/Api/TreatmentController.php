@@ -26,7 +26,7 @@ class TreatmentController extends Controller
      */
     public function index(TokenRequest $request)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             return TreatmentResource::collection(Treatment::all());
         }else{
@@ -42,7 +42,7 @@ class TreatmentController extends Controller
      */
     public function store(StoreTreatmentRequest $request):TreatmentResource
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         $disease = Disease::findOrFail($request->disease_id);
         try{
             $treatment = Treatment::create(array_merge($request->all(), ['user_id' => $user->id]));
@@ -63,7 +63,7 @@ class TreatmentController extends Controller
      */
     public function show(TokenRequest $request, $id):TreatmentResource
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             $treatment = Treatment::findOrFail($id);
             return new TreatmentResource($treatment);
@@ -81,7 +81,7 @@ class TreatmentController extends Controller
      */
     public function update(TokenRequest $request, $id)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             $treatment = Treatment::findOrFail($id);
         }else{
@@ -105,7 +105,7 @@ class TreatmentController extends Controller
      */
     public function destroy(TokenRequest $request, $id)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             $treatment = Treatment::findOrFail($id);
         }else{

@@ -20,9 +20,9 @@ class DiseaseDrugController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(TokenRequest $request, $id)
+    public function index(Request $request, $id)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             return new DiseaseDrugsResource(Disease::with('drugs')->findOrFail($id));
         }else{
@@ -36,9 +36,9 @@ class DiseaseDrugController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TokenRequest $request, $disease_id)
+    public function store(Request $request, $disease_id)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             $disease = Disease::findOrFail($disease_id);
             $drug = Drug::findOrFail($request->drug_id);
@@ -59,9 +59,9 @@ class DiseaseDrugController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(TokenRequest $request, $disease_id, $drug_id)
+    public function show(Request $request, $disease_id, $drug_id)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             $diseases = Disease::findOrFail($disease_id);
         }else{
@@ -77,10 +77,9 @@ class DiseaseDrugController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(TokenRequest $request, $disease_id, $drug_id)
+    public function update(Request $request, $disease_id, $drug_id)
     {
-        $user = JWTAuth::authenticate($request->token);
-
+        $user = auth()->user();
         if($user->role ==="admin"){
             $disease = Disease::findOrFail($disease_id);
             $drug = Drug::findOrFail($request->drug_id); 
@@ -112,9 +111,9 @@ class DiseaseDrugController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TokenRequest $request, $disease_id, $drug_id)
+    public function destroy(Request $request, $disease_id, $drug_id)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             $disease = Disease::findOrFail($disease_id);
         }else{

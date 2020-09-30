@@ -22,9 +22,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(TokenRequest $request)
+    public function index(Request $request)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role === "admin"){
         return UserResource::collection(User::where('id', '!=', $user->id)->get());
         }else{
@@ -67,7 +67,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(TokenRequest $request, $id)
+    public function update(Request $request, $id)
     {
         //$userCurrent = JWTAuth::authenticate($request->token);
         $validator = Validator::make($request->all(), [
@@ -81,7 +81,7 @@ class UserController extends Controller
             ]);
         } else {
             try {
-                $userCurrent = JWTAuth::authenticate($request->token);
+                $userCurrent = auth()->user();
                 if($userCurrent->id === $id || $userCurrent->role === "admin"){
                     $user = User::findOrFail($id);
                     $user->update($request->only(['name', 'email']));
@@ -101,10 +101,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TokenRequest $request, $id)
+    public function destroy(Request $request, $id)
     {
         try {
-            $userCurrent = JWTAuth::authenticate($request->token);
+            $userCurrent = auth()->user();
             if($userCurrent->id != $id && $userCurrent->role === "admin"){
                 $user = User::findOrFail($id);
                 $user->delete();

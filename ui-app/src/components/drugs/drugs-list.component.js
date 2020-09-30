@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
-import AuthService from "../../services/auth.service";
-import paginationFactory from 'react-bootstrap-table2-paginator'; 
+import AuthService from "../../services/auth.service"; 
 import DrugsDataService from "../../services/drugs/list.service";
-import Fa from 'module';
 import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 

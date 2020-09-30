@@ -15,7 +15,7 @@ class CreateDiseasesTable extends Migration
     {
         Schema::create('diseases', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->text('description');
             $table->string('symptoms');
             $table->unsignedBigInteger('user_id');

@@ -18,16 +18,20 @@ export default function MaterialTableDemo() {
 
   const [drug, setDrug] = React.useState(initialDrugState);
   const [submitted, setSubmitted] = React.useState(false);
+  const [noData, setNoData] = React.useState('');
 
   const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
+  const [info, setInfo] = React.useState(false);
   
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleCloseConfirm = () => setConfirm(false);
   const handleConfirm = () => setConfirm(true);
+  const handleCloseInfo = () => setInfo(false);
+  const handleInfo = () => setInfo(true);
   const [drugs, setDrugs] = React.useState({
     data: [],
   });
@@ -44,7 +48,12 @@ export default function MaterialTableDemo() {
       .then(response => {
         console.log(response.data.data);
         
+        if(response.data.data.length !== 0){
           setDrugs({...drugs, data: response.data.data});
+        }else{
+          setNoData("No data");
+        }
+          
         
       })
       .catch(e => {
@@ -57,7 +66,7 @@ export default function MaterialTableDemo() {
     return (
         <div>
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
-              function(event){ setId(row); setShow(true)}}>
+              function(event){ setId(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
@@ -73,7 +82,7 @@ export default function MaterialTableDemo() {
 });
 
 const deleteItemFromState = (id) => {
-  const updatedItems = drugs.data.filter(x=>x.id!=id)
+  const updatedItems = drugs.data.filter(x=>x.id!==id)
   setDrugs({ data: updatedItems })
 }
 
@@ -159,8 +168,14 @@ const newDrug = () => {
 
 
   return (
-    <div>{drugs?(
-      drugs.data.length==0?(        
+    <div><div className="mb-3">
+    <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
+            function(event){setShow(true)}}>
+              <BsPlus></BsPlus>
+          </button>
+    </div>
+      {drugs?(
+      drugs.data.length===0 && noData===''?(        
         <div className="text-center">
           <Spinner animation="grow" role="status">
             <span className="sr-only">Loading...</span>
@@ -168,12 +183,7 @@ const newDrug = () => {
         </div>
       ):(        
       <div className="container">  
-      <div className="mb-3">
-      <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
-              function(event){setShow(true)}}>
-                <BsPlus></BsPlus>
-            </button>
-      </div>
+      
       <>
  <Table striped bordered hover responsive="lg">
   <thead>
@@ -196,7 +206,8 @@ const newDrug = () => {
         <td>{field.use}</td>
         <td>{GetActionFormat(field.id)}</td>
       </tr>
-      )}  
+      )  
+  }
   </tbody>
 </Table>
 <Modal show={show} onHide={handleClose} id = {id}>
@@ -254,6 +265,45 @@ const newDrug = () => {
           </Button>
           <Button variant="primary" onClick={()=>deleteDrug(id)}>
             Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={info} onHide={handleCloseInfo} id = {id}>
+  <Modal.Header closeButton>
+    <Modal.Title>Drug info {id}</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+  <Form>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Name</Form.Label>
+    <Form.Control type="text" placeholder="" required value={drug.name} onChange={handleInputChange} name="name"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Substance</Form.Label>
+    <Form.Control type="text" placeholder="" required value={drug.substance} onChange={handleInputChange} name="substance"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Indication</Form.Label>
+    <Form.Control type="text" placeholder="" required value={drug.indication} onChange={handleInputChange} name="indication"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Contraindication</Form.Label>
+    <Form.Control type="text" placeholder="" required value={drug.contraindication} onChange={handleInputChange} name="contraindication"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Reaction</Form.Label>
+    <Form.Control type="text" placeholder="" required value={drug.reaction} onChange={handleInputChange} name="reaction"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Use</Form.Label>
+    <Form.Control type="text" placeholder="" required value={drug.use} onChange={handleInputChange} name="use"/>
+  </Form.Group>
+</Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseInfo}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>

@@ -26,8 +26,8 @@ class DrugController extends ApiController
     public function index(Request $request)
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
-            return DrugResource::collection(Drug::all());
+        if($user->role =="admin"){
+            return DrugResource::collection(Drug::with('diseases')->get());
         }else{
             return DrugResource::collection($user->drugs()->with('diseases')->get());
         }        
@@ -105,7 +105,6 @@ class DrugController extends ApiController
     public function destroy(Request $request, $id)
     {
         $user = auth()->user();
-        $drug = $user->drugs()->findOrFail($id);
         if($user->role ==="admin"){
             $drug = Drug::findOrFail($id);
         }else{

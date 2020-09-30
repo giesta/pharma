@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
 import AuthService from "../../services/auth.service";
-import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator'; 
 import DrugsDataService from "../../services/drugs/list.service";
 import Fa from 'module';

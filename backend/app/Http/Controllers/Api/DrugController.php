@@ -25,8 +25,7 @@ class DrugController extends ApiController
      */
     public function index(Request $request)
     {
-
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             return DrugResource::collection(Drug::all());
         }else{
@@ -42,7 +41,7 @@ class DrugController extends ApiController
      */
     public function store(StoreDrugRequest $request)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         try{
             $drug = Drug::create(array_merge($request->all(), ['user_id' => $user->id]));        
         }catch (QueryException $ex) { // Anything that went wrong
@@ -59,9 +58,9 @@ class DrugController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(TokenRequest $request, $id)
+    public function show(Request $request, $id)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             $drugs = Drug::with('diseases')->findOrFail($id);
             return new DrugResource($drugs);
@@ -79,9 +78,9 @@ class DrugController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(TokenRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             $drug = Drug::findOrFail($id);
         }else{
@@ -112,7 +111,7 @@ class DrugController extends ApiController
         }else{
             $drug = $user->drugs()->findOrFail($id);
         } 
-        $drug->diseases()->wherePivot('drug_id','=',$id)->delete();
+        $drug->diseases()->detach();
         $drug->delete();
         return response()->noContent();        
     }

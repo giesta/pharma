@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use \Illuminate\Database\QueryException;
 use App\Http\Traits\ResponserApi;
 
 class Handler extends ExceptionHandler
@@ -73,7 +74,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {    
         if ($exception instanceof MethodNotAllowedHttpException) {
-            return $this->errorResponse('The specified method for the request is invalid', JsonResponse::HTTP_METHOD_NOT_ALLOWED);
+            return $this->errorResponse($exception->getMessage(), JsonResponse::HTTP_METHOD_NOT_ALLOWED);
         }
 
         if ($exception instanceof NotFoundHttpException) {
@@ -98,7 +99,16 @@ class Handler extends ExceptionHandler
         if($exception instanceof ValidationException){
 
             return $this->errorResponse($exception->errors(), 422);
-        } 
+        }    
+        if($exception instanceof QueryException){
+
+            return $this->errorResponse("Problem with DataBase", 500);
+        }      
+
+        if (config('app.debug')) {
+            return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());           
+        }
+
         return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
    }
 

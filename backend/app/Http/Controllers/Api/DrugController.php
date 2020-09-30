@@ -23,7 +23,7 @@ class DrugController extends ApiController
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(TokenRequest $request)
+    public function index(Request $request)
     {
 
         $user = JWTAuth::authenticate($request->token);
@@ -103,9 +103,10 @@ class DrugController extends ApiController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TokenRequest $request, $id)
+    public function destroy(Request $request, $id)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
+        $drug = $user->drugs()->findOrFail($id);
         if($user->role ==="admin"){
             $drug = Drug::findOrFail($id);
         }else{

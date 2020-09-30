@@ -23,7 +23,11 @@ class DiseaseDrugController extends Controller
     public function index(TokenRequest $request, $id)
     {
         $user = JWTAuth::authenticate($request->token);
-        return new DiseaseDrugsResource($user->diseases()->with('drugs')->findOrFail($id));
+        if($user->role ==="admin"){
+            return new DiseaseDrugsResource(Disease::with('drugs')->findOrFail($id));
+        }else{
+            return new DiseaseDrugsResource($user->diseases()->with('drugs')->findOrFail($id));
+        }
     }
 
     /**
@@ -35,7 +39,13 @@ class DiseaseDrugController extends Controller
     public function store(TokenRequest $request, $disease_id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $disease = Disease::findOrFail($disease_id);
+        if($user->role ==="admin"){
+            $disease = Disease::findOrFail($disease_id);
+            $drug = Drug::findOrFail($request->drug_id);
+        }else{
+            $disease = $user->diseases()->findOrFail($disease_id);
+            $drug = $user->drugs()->findOrFail($request->drug_id);
+        }
 
         $disease->drugs()->attach($request->drug_id);
         return new DiseaseResource(
@@ -52,7 +62,11 @@ class DiseaseDrugController extends Controller
     public function show(TokenRequest $request, $disease_id, $drug_id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $diseases = $user->diseases()->findOrFail($disease_id);
+        if($user->role ==="admin"){
+            $diseases = Disease::findOrFail($disease_id);
+        }else{
+            $diseases = $user->diseases()->findOrFail($disease_id);
+        }
         return new DrugResource($diseases->drugs()->findOrFail($drug_id));
     }
 
@@ -66,9 +80,15 @@ class DiseaseDrugController extends Controller
     public function update(TokenRequest $request, $disease_id, $drug_id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $disease = Disease::findOrFail($disease_id); 
-        $detachDrug = $disease->drugs()->findOrFail($drug_id)      ; 
-        $drug = Drug::findOrFail($request->drug_id);
+
+        if($user->role ==="admin"){
+            $disease = Disease::findOrFail($disease_id);
+            $drug = Drug::findOrFail($request->drug_id); 
+        }else{
+            $disease = $user->diseases()->findOrFail($disease_id);
+            $drug = $user->drugs()->findOrFail($request->drug_id); 
+        }         
+        $detachDrug = $disease->drugs()->findOrFail($drug_id);
         try{
             $disease->drugs()->detach($drug_id);
             $attachedIds = $disease->drugs->pluck('id');
@@ -95,7 +115,12 @@ class DiseaseDrugController extends Controller
     public function destroy(TokenRequest $request, $disease_id, $drug_id)
     {
         $user = JWTAuth::authenticate($request->token);
-        $disease = Disease::findOrFail($disease_id);
+        if($user->role ==="admin"){
+            $disease = Disease::findOrFail($disease_id);
+        }else{
+            $disease = $user->diseases()->findOrFail($disease_id);
+        }
+        //$disease = Disease::findOrFail($disease_id);
         $drug = $disease->drugs()->findOrFail($drug_id);
         $disease->drugs()->detach($drug_id);
         return response()->noContent();

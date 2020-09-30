@@ -40,6 +40,7 @@ class JwtAuthController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
+        $user->role = "pharmacist";
         $user->save();
   
         if ($this->token) {
@@ -80,7 +81,7 @@ class JwtAuthController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Sorry, the user cannot be logged out'
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], 422);
         }
     }
 
@@ -89,7 +90,7 @@ class JwtAuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh(TokenRequest $request)
+    public function refresh(Request $request)
     {
         try {
             return $this->respondWithToken(JWTAuth::refresh(JWTAuth::getToken()));
@@ -105,10 +106,11 @@ class JwtAuthController extends Controller
 
     }
   
-    public function me(Request $request)
+    public function getMe(TokenRequest $request)
     {
         $user = JWTAuth::authenticate($request->token);
 
         return response()->json(['user' => $user]);
     }
+    
 }

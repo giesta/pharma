@@ -86,6 +86,15 @@ class Handler extends ExceptionHandler
         if ($exception instanceof UnauthorizedHttpException) {
             return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
         }
+        if ($exception instanceof TokenBlacklistedException) {
+            return $this->errorResponse($exception->getMessage(), 401);
+        }
+        if ($exception instanceof TokenExpiredException) {
+            return $this->errorResponse($exception->getMessage(), 401);
+        }
+        if ($exception instanceof TokenInvalidException) {
+            return $this->errorResponse($exception->getMessage(), 401);
+        }
 
         if($exception instanceof ValidationException){
 
@@ -93,7 +102,7 @@ class Handler extends ExceptionHandler
         }    
         if($exception instanceof QueryException){
 
-            return $this->errorResponse("No Connection with DataBase", 500);
+            return $this->errorResponse("Problem with DataBase", 500);
         }      
 
         if (config('app.debug')) {

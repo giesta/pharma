@@ -8,7 +8,6 @@ import { Navbar, NavItem, NavDropdown, MenuItem, Nav } from 'react-bootstrap';
 
 import AuthService from "./services/auth.service";
 
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 import Login from "./components/login.component";
 import Register from "./components/register.component";

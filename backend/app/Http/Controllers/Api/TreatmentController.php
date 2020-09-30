@@ -24,13 +24,13 @@ class TreatmentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(TokenRequest $request)
+    public function index(Request $request)
     {
         $user = auth()->user();
         if($user->role ==="admin"){
-            return TreatmentResource::collection(Treatment::with('diseases')->get());
+            return TreatmentResource::collection(Treatment::all());
         }else{
-            return TreatmentResource::collection($user->treatments()->with('diseases')->get());  
+            return TreatmentResource::collection($user->treatments);  
         }      
     }
 
@@ -61,11 +61,11 @@ class TreatmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(TokenRequest $request, $id):TreatmentResource
+    public function show(Request $request, $id):TreatmentResource
     {
         $user = auth()->user();
         if($user->role ==="admin"){
-            $treatment = Treatment::with('diseases')->findOrFail($id);
+            $treatment = Treatment::findOrFail($id);
             return new TreatmentResource($treatment);
         }else{ 
             return new TreatmentResource($user->treatments()->findOrFail($id));
@@ -79,7 +79,7 @@ class TreatmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(TokenRequest $request, $id)
+    public function update(Request $request, $id)
     {
         $user = auth()->user();
         if($user->role ==="admin"){
@@ -103,7 +103,7 @@ class TreatmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TokenRequest $request, $id)
+    public function destroy(Request $request, $id)
     {
         $user = auth()->user();
         if($user->role ==="admin"){

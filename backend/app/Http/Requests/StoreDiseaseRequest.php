@@ -24,7 +24,6 @@ class StoreDiseaseRequest extends FormRequest
     public function rules()
     {
         return [
-            'token' => 'required',
             'name' => 'required|unique:diseases|max:255',
         ];
     }

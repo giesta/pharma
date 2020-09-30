@@ -20,9 +20,9 @@ class DiseaseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(TokenRequest $request)
+    public function index(Request $request)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             return DiseaseResource::collection(Disease::all());
         }else{
@@ -38,7 +38,7 @@ class DiseaseController extends Controller
      */
     public function store(StoreDiseaseRequest $request): DiseaseResource
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         try{
             $disease = Disease::create(array_merge($request->all(), ['user_id' => $user->id]));
         }catch (QueryException $ex) { // Anything that went wrong
@@ -52,9 +52,9 @@ class DiseaseController extends Controller
     /**
      * Return the specified resource.
      */
-    public function show(TokenRequest $request, $id): DiseaseResource
+    public function show(Request $request, $id): DiseaseResource
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             $disease = Disease::with('drugs')->findOrFail($id);
             return new DiseaseResource($disease);
@@ -70,9 +70,9 @@ class DiseaseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(TokenRequest $request, $id)
+    public function update(Request $request, $id)
     {    
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             $disease = Disease::findOrFail($id);
         }else{
@@ -94,15 +94,15 @@ class DiseaseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TokenRequest $request, $id)
+    public function destroy(Request $request, $id)
     {
-        $user = JWTAuth::authenticate($request->token);
+        $user = auth()->user();
         if($user->role ==="admin"){
             $disease = Disease::findOrFail($id);
         }else{
             $disease = $user->diseases()->findOrFail($id);
         }
-        $disease->drugs()->wherePivot('disease_id','=',$id)->delete();
+        $disease->drugs()->detach();
         $disease->delete();
 
         return response()->noContent();

@@ -24,7 +24,7 @@ class DiseaseController extends Controller
     {
         $user = auth()->user();
         if($user->role ==="admin"){
-            return DiseaseResource::collection(Disease::all());
+            return DiseaseResource::collection(Disease::with('drugs')->get());
         }else{
             return DiseaseResource::collection($user->diseases()->with('drugs')->get());
         }

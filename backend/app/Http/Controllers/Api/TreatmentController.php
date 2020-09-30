@@ -28,9 +28,9 @@ class TreatmentController extends Controller
     {
         $user = auth()->user();
         if($user->role ==="admin"){
-            return TreatmentResource::collection(Treatment::all());
+            return TreatmentResource::collection(Treatment::with('diseases')->get());
         }else{
-            return TreatmentResource::collection($user->treatments);  
+            return TreatmentResource::collection($user->treatments()->with('diseases')->get());  
         }      
     }
 
@@ -65,7 +65,7 @@ class TreatmentController extends Controller
     {
         $user = auth()->user();
         if($user->role ==="admin"){
-            $treatment = Treatment::findOrFail($id);
+            $treatment = Treatment::with('diseases')->findOrFail($id);
             return new TreatmentResource($treatment);
         }else{ 
             return new TreatmentResource($user->treatments()->findOrFail($id));

@@ -24,7 +24,7 @@ class StoreTreatmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|unique:treatments|max:255',
+            'title' => 'required|max:255',
             'description'=>'required',
             'disease_id' => 'required',
         ];

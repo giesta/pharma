@@ -24,7 +24,7 @@ class StoreDrugRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|unique:drugs|max:255',
+            'name' => 'required|max:255',
             'substance' => 'required|max:255',
             'indication' => 'required|max:255',
             'use' => 'required',

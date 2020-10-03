@@ -26,11 +26,18 @@ export default function MaterialTableDemo() {
   const [info, setInfo] = React.useState(false);
   
 
-  const handleClose = () => setShow(false);
+  const handleClose = () =>{
+    newDrug();
+    setShow(false);
+    
+  };
   const handleShow = () => setShow(true);
   const handleCloseConfirm = () => setConfirm(false);
   const handleConfirm = () => setConfirm(true);
-  const handleCloseInfo = () => setInfo(false);
+  const handleCloseInfo = () => {
+    newDrug();
+    setInfo(false);
+  };
   const handleInfo = () => setInfo(true);
   const [drugs, setDrugs] = React.useState({
     data: [],
@@ -66,15 +73,15 @@ export default function MaterialTableDemo() {
     return (
         <div>
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
-              function(event){ setId(row); setInfo(true)}}>
+              function(event){ setDrug(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
-              function(event){ setId(row); setShow(true)}}>
+              function(event){ setDrug(row); setShow(true)}}>
                 <BsPen></BsPen>
             </button>
             <button type="button" className="btn btn-outline-danger btn-sm ml-2 ts-buttom" size="sm"onClick={
-              function(event){ setId(row); setConfirm(true)}}>
+              function(event){ setId(row.id); setConfirm(true)}}>
             <BsTrash></BsTrash>
             </button>
         </div>
@@ -82,6 +89,7 @@ export default function MaterialTableDemo() {
 });
 
 const deleteItemFromState = (id) => {
+  console.log(id);
   const updatedItems = drugs.data.filter(x=>x.id!==id)
   setDrugs({ data: updatedItems })
 }
@@ -131,7 +139,6 @@ const saveDrug = () => {
   DrugsDataService.create(data)
     .then(response => {
       setDrug({
-        id: response.data.id,
         name: response.data.name,
         substance: response.data.substance,
         indication: response.data.indication,
@@ -144,6 +151,40 @@ const saveDrug = () => {
       handleClose();
       drugs.data.push(response.data.data);
       setDrugs({...drugs, data: drugs.data});
+    })
+    .catch(e => {
+      console.log(e);
+    });
+};
+
+const updateDrug = () => {
+  var data = {
+    id: drug.id,
+    name: drug.name,
+    substance: drug.substance,
+    indication: drug.indication,
+    contraindication: drug.contraindication,
+    reaction: drug.reaction,
+    use: drug.use
+  };
+  console.log(data);
+  DrugsDataService.update(data.id, data)
+    .then(response => {
+      setDrug({
+        id: response.data.id,
+        name: response.data.name,
+        substance: response.data.substance,
+        indication: response.data.indication,
+        contraindication: response.data.contraindication,
+        reaction: response.data.reaction,
+        use: response.data.use
+      });
+      setSubmitted(true);
+      console.log(response.data);
+      handleClose();
+      const updatedItems = drugs.data.filter(x=>x.id!==drug.id)
+      updatedItems.push(drug);
+      setDrugs({...drugs, data: updatedItems});
     })
     .catch(e => {
       console.log(e);
@@ -204,15 +245,15 @@ const newDrug = () => {
         <td>{field.contraindication}</td>
         <td>{field.reaction}</td>
         <td>{field.use}</td>
-        <td>{GetActionFormat(field.id)}</td>
+        <td>{GetActionFormat(field)}</td>
       </tr>
       )  
   }
   </tbody>
 </Table>
-<Modal show={show} onHide={handleClose} id = {id}>
+<Modal show={show} onHide={handleClose}>
   <Modal.Header closeButton>
-    <Modal.Title>Drug info {id}</Modal.Title>
+    <Modal.Title>Drug info {drug.id}</Modal.Title>
   </Modal.Header>
   <Modal.Body>
   <Form>
@@ -246,15 +287,18 @@ const newDrug = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={saveDrug}>
-            Save Changes
-          </Button>
+          {drug.id===null?(<Button variant="primary" onClick={saveDrug}>
+            Create Drug
+          </Button>):(<Button variant="primary" onClick={updateDrug}>
+            Update Drug
+          </Button>)}
+          
         </Modal.Footer>
       </Modal>
 
   <Modal show={confirm} onHide={handleCloseConfirm} id = {id}>
   <Modal.Header closeButton>
-    <Modal.Title>Drug info {id}</Modal.Title>
+    <Modal.Title>Drug Delete {id}</Modal.Title>
   </Modal.Header>
   <Modal.Body>
   Are you sure?
@@ -269,35 +313,35 @@ const newDrug = () => {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={info} onHide={handleCloseInfo} id = {id}>
+      <Modal show={info} onHide={handleCloseInfo}>
   <Modal.Header closeButton>
-    <Modal.Title>Drug info {id}</Modal.Title>
+    <Modal.Title>Drug info {drug.id}</Modal.Title>
   </Modal.Header>
   <Modal.Body>
   <Form>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Name</Form.Label>
-    <Form.Control type="text" placeholder="" required value={drug.name} onChange={handleInputChange} name="name"/>
+    <Form.Control type="text" placeholder="" required value={drug.name} onChange={handleInputChange} readOnly name="name"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Substance</Form.Label>
-    <Form.Control type="text" placeholder="" required value={drug.substance} onChange={handleInputChange} name="substance"/>
+    <Form.Control type="text" placeholder="" required value={drug.substance} onChange={handleInputChange} readOnly name="substance"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Indication</Form.Label>
-    <Form.Control type="text" placeholder="" required value={drug.indication} onChange={handleInputChange} name="indication"/>
+    <Form.Control type="text" placeholder="" required value={drug.indication} onChange={handleInputChange} readOnly name="indication"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Contraindication</Form.Label>
-    <Form.Control type="text" placeholder="" required value={drug.contraindication} onChange={handleInputChange} name="contraindication"/>
+    <Form.Control type="text" placeholder="" required value={drug.contraindication} onChange={handleInputChange} readOnly name="contraindication"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Reaction</Form.Label>
-    <Form.Control type="text" placeholder="" required value={drug.reaction} onChange={handleInputChange} name="reaction"/>
+    <Form.Control type="text" placeholder="" required value={drug.reaction} onChange={handleInputChange} readOnly name="reaction"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Use</Form.Label>
-    <Form.Control type="text" placeholder="" required value={drug.use} onChange={handleInputChange} name="use"/>
+    <Form.Control type="text" placeholder="" required value={drug.use} onChange={handleInputChange} readOnly name="use"/>
   </Form.Group>
 </Form>
         </Modal.Body>

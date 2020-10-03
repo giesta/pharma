@@ -16,6 +16,7 @@ import Profile from "./components/profile.component";
 import BoardUser from "./components/board-user.component";
 import DrugsList from "./components/drugs/drugs-list.component";
 import DiseasesList from "./components/diseases/diseases-list.component";
+import TreatmentsList from "./components/treatments/treatments-list.component";
 
 class App extends Component {
   constructor(props) {
@@ -60,6 +61,7 @@ class App extends Component {
     <Nav.Link href={"/"}>Home</Nav.Link>
       <Nav.Link href={"/drugs"}>Drugs</Nav.Link>
       <Nav.Link href={"/diseases"}>Diseases</Nav.Link>
+      <Nav.Link href={"/treatments"}>Treatments</Nav.Link>
       <Nav.Link href="#pricing">Pricing</Nav.Link>
       <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
         <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
@@ -97,6 +99,7 @@ class App extends Component {
             <Route path="/user" component={BoardUser} />
             <Route exact path="/drugs" component={DrugsList} />
             <Route exact path="/diseases" component={DiseasesList} />
+            <Route exact path="/treatments" component={TreatmentsList} />
           </Switch>
         </div>
       </div>

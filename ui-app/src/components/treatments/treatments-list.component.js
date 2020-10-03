@@ -1,19 +1,19 @@
 import React, { useCallback, useEffect } from 'react';
 import AuthService from "../../services/auth.service"; 
-import diseasesDataService from "../../services/diseases/list.service";
+import TreatmentsDataService from "../../services/treatments/list.service";
 import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
-export default function DiseasesTable() {
+export default function MaterialTableDemo() {
 
-  const initialDiseaseState = {  
+  const initialTreatmentState = {  
     id: null,  
-    name: "",
+    title: "",
     description: "",
-    symptoms: "",
+    algorithm: "",
   };
 
-  const [disease, setDisease] = React.useState(initialDiseaseState);
+  const [treatment, setTreatment] = React.useState(initialTreatmentState);
   const [submitted, setSubmitted] = React.useState(false);
   const [noData, setNoData] = React.useState('');
 
@@ -24,7 +24,7 @@ export default function DiseasesTable() {
   
 
   const handleClose = () =>{
-    newDisease();
+    newTreatment();
     setShow(false);
     
   };
@@ -32,28 +32,28 @@ export default function DiseasesTable() {
   const handleCloseConfirm = () => setConfirm(false);
   const handleConfirm = () => setConfirm(true);
   const handleCloseInfo = () => {
-    newDisease();
+    newTreatment();
     setInfo(false);
   };
   const handleInfo = () => setInfo(true);
-  const [diseases, setDiseases] = React.useState({
+  const [Treatments, setTreatments] = React.useState({
     data: [],
   });
 
   const handleInputChange = event => {
     const { name, value } = event.target;
-    setDisease({ ...disease, [name]: value });
+    setTreatment({ ...treatment, [name]: value });
   };
   useEffect(()=>{
-        retrieveDiseases();
+        retrieveTreatments();
   }, []);
-  const retrieveDiseases = () => {
-    diseasesDataService.getAll()
+  const retrieveTreatments = () => {
+    TreatmentsDataService.getAll()
       .then(response => {
         console.log(response.data.data);
         
         if(response.data.data.length !== 0){
-          setDiseases({...diseases, data: response.data.data});
+          setTreatments({...Treatments, data: response.data.data});
         }else{
           setNoData("No data");
         }
@@ -70,11 +70,11 @@ export default function DiseasesTable() {
     return (
         <div>
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
-              function(event){ setDisease(row); setInfo(true)}}>
+              function(event){ setTreatment(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
-              function(event){ setDisease(row); setShow(true)}}>
+              function(event){ setTreatment(row); setShow(true)}}>
                 <BsPen></BsPen>
             </button>
             <button type="button" className="btn btn-outline-danger btn-sm ml-2 ts-buttom" size="sm"onClick={
@@ -87,86 +87,85 @@ export default function DiseasesTable() {
 
 const deleteItemFromState = (id) => {
   console.log(id);
-  const updatedItems = diseases.data.filter(x=>x.id!==id)
-  setDiseases({ data: updatedItems })
+  const updatedItems = Treatments.data.filter(x=>x.id!==id)
+  setTreatments({ data: updatedItems })
 }
 
 const columns = [{  
     dataField: 'id',  
     text: 'Id' },  
   {  
-    dataField: 'name',  
-    text: 'Name',  
+    dataField: 'title',  
+    text: 'Title',  
     sort:true}, {  
     dataField: 'description',  
     text: 'Description',  
     sort: true  },  
-  { dataField: 'symptoms',  
-    text: 'Symptoms',  
-    sort: true  },  
-  {
+  { dataField: 'algorithm',  
+    text: 'Algorithm',  
+    sort: true  },    
+ {
     text: 'Actions',
     dataField: 'Actions',
     editable: false 
-    }
-  
+ }
 ];
 
-const saveDisease = () => {
+const saveTreatment = () => {
   var data = {
-    name: disease.name,
-    description: disease.description,
-    symptoms: disease.symptoms
+    title: treatment.title,
+    description: treatment.description,
+    algorithm: treatment.algorithm,
   };
   console.log(data);
-  diseasesDataService.create(data)
+  TreatmentsDataService.create(data)
     .then(response => {
-      setDisease({
-        name: response.data.name,
+      setTreatment({
+        title: response.data.title,
         description: response.data.description,
-        symptoms: response.data.symptoms,
+        algorithm: response.data.algorithm,
       });
       setSubmitted(true);
       console.log(response.data);
       handleClose();
-      diseases.data.push(response.data.data);
-      setDiseases({...diseases, data: diseases.data});
+      Treatments.data.push(response.data.data);
+      setTreatments({...Treatments, data: Treatments.data});
     })
     .catch(e => {
       console.log(e);
     });
 };
 
-const updateDisease = () => {
+const updateTreatment = () => {
   var data = {
-    id: disease.id,
-    name: disease.name,
-    description: disease.description,
-    symptoms: disease.symptoms,
+    id: treatment.id,
+    title: treatment.title,
+    description: treatment.description,
+    algorithm: treatment.algorithm,
   };
   console.log(data);
-  diseasesDataService.update(data.id, data)
+  TreatmentsDataService.update(data.id, data)
     .then(response => {
-      setDisease({
+      setTreatment({
         id: response.data.id,
-        name: response.data.name,
+        title: response.data.title,
         description: response.data.description,
-        symptoms: response.data.symptoms,
+        algorithm: response.data.algorithm,
       });
       setSubmitted(true);
       console.log(response.data);
       handleClose();
-      const updatedItems = diseases.data.filter(x=>x.id!==disease.id)
-      updatedItems.push(disease);
-      setDiseases({...diseases, data: updatedItems});
+      const updatedItems = Treatments.data.filter(x=>x.id!==treatment.id)
+      updatedItems.push(treatment);
+      setTreatments({...Treatments, data: updatedItems});
     })
     .catch(e => {
       console.log(e);
     });
 };
 
-const deleteDisease = (id) => {
-  diseasesDataService.remove(id)
+const deleteTreatment = (id) => {
+  TreatmentsDataService.remove(id)
     .then(() => {
       deleteItemFromState(id);
       handleCloseConfirm();
@@ -176,8 +175,8 @@ const deleteDisease = (id) => {
     });
 };
 
-const newDisease = () => {
-  setDisease(initialDiseaseState);
+const newTreatment = () => {
+  setTreatment(initialTreatmentState);
   setSubmitted(false);
 };
 
@@ -189,8 +188,8 @@ const newDisease = () => {
               <BsPlus></BsPlus>
           </button>
     </div>
-      {diseases?(
-      diseases.data.length===0 && noData===''?(        
+      {Treatments?(
+      Treatments.data.length===0 && noData===''?(        
         <div className="text-center">
           <Spinner animation="grow" role="status">
             <span className="sr-only">Loading...</span>
@@ -210,12 +209,12 @@ const newDisease = () => {
   </thead>
   <tbody>
 
-  {diseases.data.map((field)=>
+  {Treatments.data.map((field)=>
         <tr>
         <td>{field.id}</td>
-        <td>{field.name}</td>
+        <td>{field.title}</td>
         <td>{field.description}</td>
-        <td>{field.symptoms}</td>
+        <td>{field.algorithm}</td>
         <td>{GetActionFormat(field)}</td>
       </tr>
       )  
@@ -224,21 +223,21 @@ const newDisease = () => {
 </Table>
 <Modal show={show} onHide={handleClose}>
   <Modal.Header closeButton>
-    <Modal.Title>Disease info {disease.id}</Modal.Title>
+    <Modal.Title>Treatment info {treatment.id}</Modal.Title>
   </Modal.Header>
   <Modal.Body>
   <Form>
   <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Name</Form.Label>
-    <Form.Control type="text" placeholder="" required value={disease.name} onChange={handleInputChange} name="name"/>
+    <Form.Label>Title</Form.Label>
+    <Form.Control type="text" placeholder="" required value={treatment.title} onChange={handleInputChange} name="title"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Description</Form.Label>
-    <Form.Control type="text"  as="textarea" placeholder="" required value={disease.description} onChange={handleInputChange} name="description"/>
+    <Form.Control type="text" as="textarea" placeholder="" required value={treatment.description} onChange={handleInputChange} name="description"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Symptoms</Form.Label>
-    <Form.Control type="text" placeholder="" required value={disease.symptoms} onChange={handleInputChange} name="symptoms"/>
+    <Form.Label>Algorithm</Form.Label>
+    <Form.Control type="text" placeholder="" required value={treatment.algorithm} onChange={handleInputChange} name="algorithm"/>
   </Form.Group>  
 </Form>
         </Modal.Body>
@@ -246,17 +245,18 @@ const newDisease = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          {disease.id===null?(<Button variant="primary" onClick={saveDisease}>
-            Create Disease
-          </Button>):(<Button variant="primary" onClick={updateDisease}>
-            Update Disease
-          </Button>)}          
+          {treatment.id===null?(<Button variant="primary" onClick={saveTreatment}>
+            Create Treatment
+          </Button>):(<Button variant="primary" onClick={updateTreatment}>
+            Update Treatment
+          </Button>)}
+          
         </Modal.Footer>
       </Modal>
 
   <Modal show={confirm} onHide={handleCloseConfirm} id = {id}>
   <Modal.Header closeButton>
-    <Modal.Title>Disease Delete {id}</Modal.Title>
+    <Modal.Title>Treatment Delete {id}</Modal.Title>
   </Modal.Header>
   <Modal.Body>
   Are you sure?
@@ -265,7 +265,7 @@ const newDisease = () => {
           <Button variant="secondary" onClick={handleCloseConfirm}>
             Close
           </Button>
-          <Button variant="primary" onClick={()=>deleteDisease(id)}>
+          <Button variant="primary" onClick={()=>deleteTreatment(id)}>
             Delete
           </Button>
         </Modal.Footer>
@@ -273,21 +273,21 @@ const newDisease = () => {
 
       <Modal show={info} onHide={handleCloseInfo}>
   <Modal.Header closeButton>
-    <Modal.Title>Disease info {disease.id}</Modal.Title>
+    <Modal.Title>Treatment info {treatment.id}</Modal.Title>
   </Modal.Header>
   <Modal.Body>
   <Form>
   <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Name</Form.Label>
-    <Form.Control type="text" placeholder="" required value={disease.name} onChange={handleInputChange} disabled name="name"/>
+    <Form.Label>Title</Form.Label>
+    <Form.Control type="text" placeholder="" required value={treatment.title} onChange={handleInputChange} disabled name="title"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Description</Form.Label>
-    <Form.Control type="text" as="textarea" placeholder="" required value={disease.description} onChange={handleInputChange} disabled name="description"/>
+    <Form.Control type="text" as="textarea" placeholder="" required value={treatment.description} onChange={handleInputChange} disabled name="description"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Symptoms</Form.Label>
-    <Form.Control type="text" placeholder="" required value={disease.symptoms} onChange={handleInputChange} disabled name="symptoms"/>
+    <Form.Label>Algorithm</Form.Label>
+    <Form.Control type="text" placeholder="" required value={treatment.algorithm} onChange={handleInputChange} disabled name="algorithm"/>
   </Form.Group>  
 </Form>
         </Modal.Body>

@@ -321,27 +321,27 @@ const newDrug = () => {
   <Form>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Name</Form.Label>
-    <Form.Control type="text" placeholder="" required value={drug.name} onChange={handleInputChange} readOnly name="name"/>
+    <Form.Control type="text" placeholder="" required value={drug.name} onChange={handleInputChange} disabled name="name"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Substance</Form.Label>
-    <Form.Control type="text" placeholder="" required value={drug.substance} onChange={handleInputChange} readOnly name="substance"/>
+    <Form.Control type="text" placeholder="" required value={drug.substance} onChange={handleInputChange} disabled name="substance"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Indication</Form.Label>
-    <Form.Control type="text" placeholder="" required value={drug.indication} onChange={handleInputChange} readOnly name="indication"/>
+    <Form.Control type="text" placeholder="" required value={drug.indication} onChange={handleInputChange} disabled name="indication"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Contraindication</Form.Label>
-    <Form.Control type="text" placeholder="" required value={drug.contraindication} onChange={handleInputChange} readOnly name="contraindication"/>
+    <Form.Control type="text" placeholder="" required value={drug.contraindication} onChange={handleInputChange} disabled name="contraindication"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Reaction</Form.Label>
-    <Form.Control type="text" placeholder="" required value={drug.reaction} onChange={handleInputChange} readOnly name="reaction"/>
+    <Form.Control type="text" placeholder="" required value={drug.reaction} onChange={handleInputChange} disabled name="reaction"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Use</Form.Label>
-    <Form.Control type="text" placeholder="" required value={drug.use} onChange={handleInputChange} readOnly name="use"/>
+    <Form.Control type="text" placeholder="" required value={drug.use} onChange={handleInputChange} disabled name="use"/>
   </Form.Group>
 </Form>
         </Modal.Body>

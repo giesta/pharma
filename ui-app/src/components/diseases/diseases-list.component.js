@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect } from 'react';
-import AuthService from "../../services/auth.service"; 
 import diseasesDataService from "../../services/diseases/list.service";
 import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
@@ -28,9 +27,7 @@ export default function DiseasesTable() {
     setShow(false);
     
   };
-  const handleShow = () => setShow(true);
   const handleCloseConfirm = () => setConfirm(false);
-  const handleConfirm = () => setConfirm(true);
   const handleCloseInfo = () => {
     newDisease();
     setInfo(false);

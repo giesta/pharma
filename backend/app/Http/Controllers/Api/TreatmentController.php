@@ -13,7 +13,7 @@ use App\Models\Disease;
 use App\Http\Resources\Treatment as TreatmentResource;
 use App\Http\Requests\TokenRequest;
 use App\Http\Requests\StoreTreatmentRequest;
-use Illuminate\Database\Eloquent\Exception;
+use \Illuminate\Database\Eloquent\Exception;
 use \Illuminate\Database\QueryException;
 use JWTAuth;
 
@@ -40,12 +40,16 @@ class TreatmentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTreatmentRequest $request):TreatmentResource
+    public function store(StoreTreatmentRequest $request)
     {
         $user = auth()->user();
         $disease = Disease::findOrFail($request->disease_id);
+        if(!$request->hasFile('algorithm')) {
+            return response()->json(['upload_file_not_found'], 400);
+        }
+        $path = $request->file('algorithm')->store('public/algorithms');
         try{
-            $treatment = Treatment::create(array_merge($request->all(), ['user_id' => $user->id]));
+            $treatment = Treatment::create(array_merge($request->all(), ['user_id' => $user->id, 'algorithm'=>$path]));
         }catch (QueryException $ex) { // Anything that went wrong
             abort(500, "Could not create Treatment");
         }

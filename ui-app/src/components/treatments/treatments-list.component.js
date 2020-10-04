@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect } from 'react';
 import AuthService from "../../services/auth.service"; 
 import TreatmentsDataService from "../../services/treatments/list.service";
-import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form } from "react-bootstrap";
+import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form, Image } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
+import ImageUploading from 'react-images-uploading';
 
 export default function MaterialTableDemo() {
 
@@ -15,12 +16,22 @@ export default function MaterialTableDemo() {
 
   const [treatment, setTreatment] = React.useState(initialTreatmentState);
   const [submitted, setSubmitted] = React.useState(false);
+  const [selectedFile, setSelectedFile] = React.useState(null);
   const [noData, setNoData] = React.useState('');
+  const [images, setImages] = React.useState([]);
+  const [url, setUrl] = React.useState(null);
+  const maxNumber = 69;
 
   const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
+
+  const onChange = (imageList, addUpdateIndex) => {
+    // data for submit
+    console.log(imageList, addUpdateIndex);
+    setImages(imageList);
+  };
   
 
   const handleClose = () =>{
@@ -42,6 +53,13 @@ export default function MaterialTableDemo() {
 
   const handleInputChange = event => {
     const { name, value } = event.target;
+    
+    if(event.target.files!==undefined && event.target.files!==null ){
+        console.log(event.target.files[0]);
+        setSelectedFile(event.target.files[0]);
+        setUrl(URL.createObjectURL(event.target.files[0]));
+    }
+    
     setTreatment({ ...treatment, [name]: value });
   };
   useEffect(()=>{
@@ -100,11 +118,8 @@ const columns = [{
     sort:true}, {  
     dataField: 'description',  
     text: 'Description',  
-    sort: true  },  
-  { dataField: 'algorithm',  
-    text: 'Algorithm',  
     sort: true  },    
- {
+    {
     text: 'Actions',
     dataField: 'Actions',
     editable: false 
@@ -112,12 +127,20 @@ const columns = [{
 ];
 
 const saveTreatment = () => {
-  var data = {
-    title: treatment.title,
-    description: treatment.description,
-    algorithm: treatment.algorithm,
-  };
-  console.log(data);
+    const data = new FormData();
+    console.log(treatment.algorithm);
+    data.append('Content-Type','multipart/formdata');
+    if(selectedFile!==null){
+        data.append("algorithm", selectedFile);        
+    }    
+    data.append("title", treatment.title);
+    data.append("description", treatment.description);
+    data.append("disease_id", 4);
+  
+  // Display the values
+for (var value of data.values()) {
+    console.log(value); 
+ }
   TreatmentsDataService.create(data)
     .then(response => {
       setTreatment({
@@ -126,7 +149,7 @@ const saveTreatment = () => {
         algorithm: response.data.algorithm,
       });
       setSubmitted(true);
-      console.log(response.data);
+      setUrl(null);
       handleClose();
       Treatments.data.push(response.data.data);
       setTreatments({...Treatments, data: Treatments.data});
@@ -214,7 +237,6 @@ const newTreatment = () => {
         <td>{field.id}</td>
         <td>{field.title}</td>
         <td>{field.description}</td>
-        <td>{field.algorithm}</td>
         <td>{GetActionFormat(field)}</td>
       </tr>
       )  
@@ -226,7 +248,7 @@ const newTreatment = () => {
     <Modal.Title>Treatment info {treatment.id}</Modal.Title>
   </Modal.Header>
   <Modal.Body>
-  <Form>
+  <Form encType="multipart/form-data">
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Title</Form.Label>
     <Form.Control type="text" placeholder="" required value={treatment.title} onChange={handleInputChange} name="title"/>
@@ -235,10 +257,11 @@ const newTreatment = () => {
     <Form.Label>Description</Form.Label>
     <Form.Control type="text" as="textarea" placeholder="" required value={treatment.description} onChange={handleInputChange} name="description"/>
   </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Algorithm</Form.Label>
-    <Form.Control type="text" placeholder="" required value={treatment.algorithm} onChange={handleInputChange} name="algorithm"/>
-  </Form.Group>  
+  <Form.Group >    
+    <Form.File id="exampleFormControlFile1" label="Algorithm" onChange={handleInputChange} name="algorithm"/>
+  </Form.Group> 
+  {url===null?(<Image src={treatment.algorithm} fluid/>):(<Image src={url} fluid/>)} 
+  
 </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -289,6 +312,7 @@ const newTreatment = () => {
     <Form.Label>Algorithm</Form.Label>
     <Form.Control type="text" placeholder="" required value={treatment.algorithm} onChange={handleInputChange} disabled name="algorithm"/>
   </Form.Group>  
+  <Image src={treatment.algorithm} fluid/>
 </Form>
         </Modal.Body>
         <Modal.Footer>

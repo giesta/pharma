@@ -26,7 +26,7 @@ class StoreTreatmentRequest extends FormRequest
         return [
             'title' => 'required|max:255',
             'description'=>'required',
-            'disease_id' => 'required',
+            'disease_id' => '',
         ];
     }
 }

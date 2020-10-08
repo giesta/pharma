@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
-import AuthService from "../../services/auth.service"; 
 import TreatmentsDataService from "../../services/treatments/list.service";
+import DiseasesDataService from "../../services/diseases/list.service";
 import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form, Image } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
-import ImageUploading from 'react-images-uploading';
 
 export default function MaterialTableDemo() {
 
@@ -12,6 +11,8 @@ export default function MaterialTableDemo() {
     title: "",
     description: "",
     algorithm: "",
+    disease_id: "",
+    disease: null
   };
 
   const [treatment, setTreatment] = React.useState(initialTreatmentState);
@@ -50,13 +51,16 @@ export default function MaterialTableDemo() {
   const [Treatments, setTreatments] = React.useState({
     data: [],
   });
-
+  const [Diseases, setDiseases] = React.useState({
+    data: [],
+  });
   const handleInputChange = event => {
     const { name, value } = event.target;
     
     if(event.target.files!==undefined && event.target.files!==null ){
-        console.log(event.target.files[0]);
+      //console.log("Yra");
         setSelectedFile(event.target.files[0]);
+        //console.log(event.target.files[0]);
         setUrl(URL.createObjectURL(event.target.files[0]));
     }
     
@@ -64,19 +68,31 @@ export default function MaterialTableDemo() {
   };
   useEffect(()=>{
         retrieveTreatments();
+        retrieveDiseases();
   }, []);
   const retrieveTreatments = () => {
     TreatmentsDataService.getAll()
-      .then(response => {
-        console.log(response.data.data);
-        
+      .then(response => {   
+        //console.log(response.data.data)     
         if(response.data.data.length !== 0){
           setTreatments({...Treatments, data: response.data.data});
         }else{
           setNoData("No data");
-        }
-          
-        
+        }       
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
+  const retrieveDiseases = () => {
+    DiseasesDataService.getAll()
+      .then(response => {        
+        if(response.data.data.length !== 0){
+          setDiseases({...Diseases, data: response.data.data});
+        }else{
+          setNoData("No data");
+        }        
       })
       .catch(e => {
         console.log(e);
@@ -104,7 +120,6 @@ export default function MaterialTableDemo() {
 });
 
 const deleteItemFromState = (id) => {
-  console.log(id);
   const updatedItems = Treatments.data.filter(x=>x.id!==id)
   setTreatments({ data: updatedItems })
 }
@@ -118,7 +133,10 @@ const columns = [{
     sort:true}, {  
     dataField: 'description',  
     text: 'Description',  
-    sort: true  },    
+    sort: true  }, {  
+    dataField: 'disease',  
+    text: 'Disease',  
+    sort: true  },   
     {
     text: 'Actions',
     dataField: 'Actions',
@@ -128,25 +146,20 @@ const columns = [{
 
 const saveTreatment = () => {
     const data = new FormData();
-    console.log(treatment.algorithm);
     data.append('Content-Type','multipart/formdata');
     if(selectedFile!==null){
         data.append("algorithm", selectedFile);        
-    }    
+    } 
     data.append("title", treatment.title);
     data.append("description", treatment.description);
-    data.append("disease_id", 4);
-  
-  // Display the values
-for (var value of data.values()) {
-    console.log(value); 
- }
-  TreatmentsDataService.create(data)
+    data.append("disease_id", treatment.disease_id);
+TreatmentsDataService.create(data)
     .then(response => {
       setTreatment({
-        title: response.data.title,
-        description: response.data.description,
-        algorithm: response.data.algorithm,
+        title: response.data.data.title,
+        description: response.data.data.description,
+        algorithm: response.data.data.algorithm,
+        disease: response.data.data.disease
       });
       setSubmitted(true);
       setUrl(null);
@@ -160,26 +173,30 @@ for (var value of data.values()) {
 };
 
 const updateTreatment = () => {
-  var data = {
-    id: treatment.id,
-    title: treatment.title,
-    description: treatment.description,
-    algorithm: treatment.algorithm,
-  };
-  console.log(data);
-  TreatmentsDataService.update(data.id, data)
+  const data = new FormData();
+  data.append('Content-Type','multipart/formdata');
+  data.append('_method', 'PUT');
+  console.log(treatment);
+  if(selectedFile!==null){
+      data.append("algorithm", selectedFile);        
+  } 
+  data.set("title", treatment.title);
+  data.set("description", treatment.description);
+  data.set("disease_id", treatment.disease_id);
+  TreatmentsDataService.update(treatment.id, data)
     .then(response => {
+      console.log(response.data)
       setTreatment({
-        id: response.data.id,
-        title: response.data.title,
-        description: response.data.description,
-        algorithm: response.data.algorithm,
+        title: response.data.data.title,
+        description: response.data.data.description,
+        algorithm: response.data.data.algorithm,
+        disease: response.data.data.disease
       });
       setSubmitted(true);
-      console.log(response.data);
+      setUrl(null);
       handleClose();
       const updatedItems = Treatments.data.filter(x=>x.id!==treatment.id)
-      updatedItems.push(treatment);
+      updatedItems.push(response.data.data);
       setTreatments({...Treatments, data: updatedItems});
     })
     .catch(e => {
@@ -237,6 +254,7 @@ const newTreatment = () => {
         <td>{field.id}</td>
         <td>{field.title}</td>
         <td>{field.description}</td>
+        <td>{field.disease.name}</td>
         <td>{GetActionFormat(field)}</td>
       </tr>
       )  
@@ -257,6 +275,26 @@ const newTreatment = () => {
     <Form.Label>Description</Form.Label>
     <Form.Control type="text" as="textarea" placeholder="" required value={treatment.description} onChange={handleInputChange} name="description"/>
   </Form.Group>
+  
+    {treatment.disease!==null?(
+      <Form.Group controlId="exampleForm.ControlSelect1">
+      <Form.Label>Disease</Form.Label>
+    <Form.Control as="select"defaultValue={treatment.disease.id} onChange={handleInputChange} name="disease_id"> 
+    {Diseases.data.map((x)=>
+        <option value={x.id}>{x.name}</option>
+      )  
+  }
+  </Form.Control>
+  </Form.Group>
+    ):(<Form.Group controlId="exampleForm.ControlSelect1">
+    <Form.Label>Disease</Form.Label>
+  <Form.Control as="select" onChange={handleInputChange} name="disease_id"> 
+  {Diseases.data.map((x)=>
+      <option value={x.id}>{x.name}</option>
+    )  
+}
+</Form.Control>
+</Form.Group>)}  
   <Form.Group >    
     <Form.File id="exampleFormControlFile1" label="Algorithm" onChange={handleInputChange} name="algorithm"/>
   </Form.Group> 
@@ -272,11 +310,9 @@ const newTreatment = () => {
             Create Treatment
           </Button>):(<Button variant="primary" onClick={updateTreatment}>
             Update Treatment
-          </Button>)}
-          
+          </Button>)}          
         </Modal.Footer>
       </Modal>
-
   <Modal show={confirm} onHide={handleCloseConfirm} id = {id}>
   <Modal.Header closeButton>
     <Modal.Title>Treatment Delete {id}</Modal.Title>
@@ -302,15 +338,25 @@ const newTreatment = () => {
   <Form>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Title</Form.Label>
-    <Form.Control type="text" placeholder="" required value={treatment.title} onChange={handleInputChange} disabled name="title"/>
+    <Form.Control type="text" placeholder="" value={treatment.title} onChange={handleInputChange} disabled name="title"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Description</Form.Label>
-    <Form.Control type="text" as="textarea" placeholder="" required value={treatment.description} onChange={handleInputChange} disabled name="description"/>
+    <Form.Control type="text" as="textarea" placeholder="" value={treatment.description} onChange={handleInputChange} disabled name="description"/>
   </Form.Group>
+  {
+    treatment.disease!== null?(<Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Disease</Form.Label>
+    <Form.Control type="text" placeholder="" value={treatment.disease.name} onChange={handleInputChange} disabled name="algorithm"/>
+  </Form.Group>):(<Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Disease</Form.Label>
+    <Form.Control type="text" placeholder="" onChange={handleInputChange} disabled name="algorithm"/>
+  </Form.Group>)
+  }
+  
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Algorithm</Form.Label>
-    <Form.Control type="text" placeholder="" required value={treatment.algorithm} onChange={handleInputChange} disabled name="algorithm"/>
+    <Form.Control type="text" placeholder="" value={treatment.algorithm} onChange={handleInputChange} disabled name="algorithm"/>
   </Form.Group>  
   <Image src={treatment.algorithm} fluid/>
 </Form>

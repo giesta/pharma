@@ -83,7 +83,7 @@ class TreatmentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreTreatmentRequest $request, $id)
     {
         $user = auth()->user();
         if($user->role ==="admin"){
@@ -91,13 +91,22 @@ class TreatmentController extends Controller
         }else{
             $treatment = $user->treatments()->findOrFail($id);
         }
-        try{
-            $treatment->update($request->only(['title', 'description', 'algorithm', 'disease_id']));
+        if($request->hasFile('algorithm')) {
+            $path = $request->file('algorithm')->store('public/algorithms');
+            try{
+            $treatment->update(array_merge($request->all(), ['algorithm'=>$path]));
+            }
+            catch (QueryException $ex) { // Anything that went wrong
+                abort(500, "Could not update Treatment");
+            } 
+        }else{
+            try{
+                $treatment->update($request->only(['title', 'description', 'disease_id']));
+            }
+            catch (QueryException $ex) { // Anything that went wrong
+                abort(500, "Could not update Treatment");
+            }
         }
-        catch (QueryException $ex) { // Anything that went wrong
-            abort(500, "Could not update Treatment");
-        }        
-
         return new TreatmentResource($treatment);
     }
 

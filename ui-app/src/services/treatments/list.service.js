@@ -13,7 +13,7 @@ const create = data => {
 };
 
 const update = (id, data) => {
-  return http.put(`/treatments/${id}`, data);
+  return http.post(`/treatments/${id}`, data);
 };
 
 const remove = id => {

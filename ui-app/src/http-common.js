@@ -7,7 +7,7 @@ if(user && user.access_token){
   token = user.access_token;
 }
 export default axios.create({
-  baseURL: "http://127.0.0.1:8000/api",
+  baseURL: "http://20.52.35.177:3000/api",
   headers: {
     "Content-type": "application/json",
     Authorization: 'Bearer ' + token

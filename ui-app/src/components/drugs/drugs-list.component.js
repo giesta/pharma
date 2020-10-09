@@ -4,7 +4,7 @@ import DrugsDataService from "../../services/drugs/list.service";
 import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
-export default function MaterialTableDemo() {
+export default function DrugsTable() {
 
   const initialDrugState = {  
     id: null,  

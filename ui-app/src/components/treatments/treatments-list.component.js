@@ -4,7 +4,7 @@ import DiseasesDataService from "../../services/diseases/list.service";
 import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form, Image } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
-export default function MaterialTableDemo() {
+export default function TreatmentsTable() {
 
   const initialTreatmentState = {  
     id: null,  
@@ -185,7 +185,6 @@ const updateTreatment = () => {
   data.set("disease_id", treatment.disease_id);
   TreatmentsDataService.update(treatment.id, data)
     .then(response => {
-      console.log(response.data)
       setTreatment({
         title: response.data.data.title,
         description: response.data.data.description,

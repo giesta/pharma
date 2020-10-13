@@ -4,7 +4,7 @@ import DiseasesDataService from "../../services/diseases/list.service";
 import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form, Image } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
-export default function TreatmentsTable() {
+export default function MaterialTableDemo() {
 
   const initialTreatmentState = {  
     id: null,  
@@ -27,6 +27,26 @@ export default function TreatmentsTable() {
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
+
+  const [validated, setValidated] = React.useState(false);
+
+  const handleSubmit = (event) => {
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }else{
+      if(treatment.id===null){
+        saveTreatment();
+      }else{
+        handleInputChange(event); 
+        updateTreatment();
+      } 
+    }
+
+    setValidated(true);
+       
+  };
 
   const onChange = (imageList, addUpdateIndex) => {
     // data for submit
@@ -65,6 +85,7 @@ export default function TreatmentsTable() {
     }
     
     setTreatment({ ...treatment, [name]: value });
+    console.log(treatment);
   };
   useEffect(()=>{
         retrieveTreatments();
@@ -108,7 +129,8 @@ export default function TreatmentsTable() {
                 <BsInfoCircle></BsInfoCircle>
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
-              function(event){ setTreatment(row); setShow(true)}}>
+              function(event){ setTreatment(row);
+              setShow(true);}}>
                 <BsPen></BsPen>
             </button>
             <button type="button" className="btn btn-outline-danger btn-sm ml-2 ts-buttom" size="sm"onClick={
@@ -182,7 +204,10 @@ const updateTreatment = () => {
   } 
   data.set("title", treatment.title);
   data.set("description", treatment.description);
-  data.set("disease_id", treatment.disease_id);
+  if(treatment.disease_id!=null){
+    data.set("disease_id", treatment.disease_id);
+  }
+  
   TreatmentsDataService.update(treatment.id, data)
     .then(response => {
       setTreatment({
@@ -264,53 +289,78 @@ const newTreatment = () => {
   <Modal.Header closeButton>
     <Modal.Title>Treatment info {treatment.id}</Modal.Title>
   </Modal.Header>
-  <Modal.Body>
-  <Form encType="multipart/form-data">
+  <Form encType="multipart/form-data" noValidate validated={validated} onSubmit={handleSubmit}>
+  <Modal.Body>  
+  <Form.Group >   
+  {treatment.id===null?(<Form.Control type = "file" id="exampleFormControlFile1"  label="Algorithm" required onChange={handleInputChange} name="algorithm"/> ):(<Form.Control type = "file" id="exampleFormControlFile1"  label="Algorithm" onChange={handleInputChange} name="algorithm"/> )} 
+       
+    <Form.Control.Feedback type="invalid">
+    File is a required field.
+    </Form.Control.Feedback>
+    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+  </Form.Group>  
+  {url===null?(<Image src={treatment.algorithm} fluid/>):(<Image src={url} fluid/>)}
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Title</Form.Label>
-    <Form.Control type="text" placeholder="" required value={treatment.title} onChange={handleInputChange} name="title"/>
+    <Form.Control required type="text" placeholder=""  value={treatment.title} onChange={handleInputChange} name="title"/>
+    <Form.Control.Feedback type="invalid">
+    Title is a required field.
+    </Form.Control.Feedback>
+    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Description</Form.Label>
     <Form.Control type="text" as="textarea" placeholder="" required value={treatment.description} onChange={handleInputChange} name="description"/>
+    <Form.Control.Feedback type="invalid">
+      Description is a required field.
+    </Form.Control.Feedback>
+    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
   
     {treatment.disease!==null?(
       <Form.Group controlId="exampleForm.ControlSelect1">
-      <Form.Label>Disease</Form.Label>
-    <Form.Control as="select"defaultValue={treatment.disease.id} onChange={handleInputChange} name="disease_id"> 
+      <Form.Label>Disease</Form.Label>     
+    <Form.Control as="select" required defaultValue={treatment.disease.id} onChange={handleInputChange} name="disease_id"> 
     {Diseases.data.map((x)=>
         <option value={x.id}>{x.name}</option>
       )  
   }
   </Form.Control>
+  <Form.Control.Feedback type="invalid">
+      Description is a required field.
+    </Form.Control.Feedback>
   </Form.Group>
-    ):(<Form.Group controlId="exampleForm.ControlSelect1">
+    ):(
+      
+    <Form.Group controlId="exampleForm.ControlSelect1"> {console.log("nera")}
     <Form.Label>Disease</Form.Label>
-  <Form.Control as="select" onChange={handleInputChange} name="disease_id"> 
+  <Form.Control as="select" required onChange={handleInputChange} name="disease_id"> 
+  <option value="" disabled selected>Select your option</option>
   {Diseases.data.map((x)=>
       <option value={x.id}>{x.name}</option>
     )  
 }
 </Form.Control>
+<Form.Control.Feedback type="invalid">
+      Disease is a required field.
+    </Form.Control.Feedback>
+<Form.Control.Feedback>Looks good!</Form.Control.Feedback>
 </Form.Group>)}  
-  <Form.Group >    
-    <Form.File id="exampleFormControlFile1" label="Algorithm" onChange={handleInputChange} name="algorithm"/>
-  </Form.Group> 
-  {url===null?(<Image src={treatment.algorithm} fluid/>):(<Image src={url} fluid/>)} 
+   
   
-</Form>
+
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          {treatment.id===null?(<Button variant="primary" onClick={saveTreatment}>
+          {treatment.id===null?(<Button type="submit" variant="primary">
             Create Treatment
-          </Button>):(<Button variant="primary" onClick={updateTreatment}>
+          </Button>):(<Button type="submit" variant="primary">
             Update Treatment
           </Button>)}          
         </Modal.Footer>
+        </Form>
       </Modal>
   <Modal show={confirm} onHide={handleCloseConfirm} id = {id}>
   <Modal.Header closeButton>
@@ -336,6 +386,11 @@ const newTreatment = () => {
   <Modal.Body>
   <Form>
   <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Algorithm</Form.Label>
+    <Form.Control type="text" placeholder="" value={treatment.algorithm} onChange={handleInputChange} disabled name="algorithm"/>
+  </Form.Group>  
+  <Image src={treatment.algorithm} fluid/>
+  <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Title</Form.Label>
     <Form.Control type="text" placeholder="" value={treatment.title} onChange={handleInputChange} disabled name="title"/>
   </Form.Group>
@@ -351,13 +406,7 @@ const newTreatment = () => {
     <Form.Label>Disease</Form.Label>
     <Form.Control type="text" placeholder="" onChange={handleInputChange} disabled name="algorithm"/>
   </Form.Group>)
-  }
-  
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Algorithm</Form.Label>
-    <Form.Control type="text" placeholder="" value={treatment.algorithm} onChange={handleInputChange} disabled name="algorithm"/>
-  </Form.Group>  
-  <Image src={treatment.algorithm} fluid/>
+  } 
 </Form>
         </Modal.Body>
         <Modal.Footer>

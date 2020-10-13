@@ -5,8 +5,8 @@ import { Card, Modal, ListGroup, ListGroupItem } from "react-bootstrap";
 export default function Treatment(props) {
 
     return (
-             <Card style={{ width: '18rem' }}>
-             <Card.Img variant="top" src={props.algorithm} />
+             <Card style={{ width: '18rem' },{flex:1}}>
+             <Card.Img variant="top" src={props.algorithm} style={{height: '40vh'}} />
              <Card.Body>
                <Card.Title>{props.title}</Card.Title>
                <Card.Text>

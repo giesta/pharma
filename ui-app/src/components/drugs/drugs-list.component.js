@@ -25,6 +25,25 @@ export default function DrugsTable() {
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
   
+  const [validated, setValidated] = React.useState(false);
+
+  const handleSubmit = (event) => {
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }else{
+      if(drug.id===null){
+        saveDrug();
+      }else{
+        handleInputChange(event); 
+        updateDrug();
+      } 
+    }
+
+    setValidated(true);
+       
+  };
 
   const handleClose = () =>{
     newDrug();
@@ -255,45 +274,68 @@ const newDrug = () => {
   <Modal.Header closeButton>
     <Modal.Title>Drug info {drug.id}</Modal.Title>
   </Modal.Header>
-  <Modal.Body>
-  <Form>
+  <Form noValidate validated={validated} onSubmit={handleSubmit}> 
+  <Modal.Body>  
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Name</Form.Label>
     <Form.Control type="text" placeholder="" required value={drug.name} onChange={handleInputChange} name="name"/>
+    <Form.Control.Feedback type="invalid">
+      Name is a required field.
+    </Form.Control.Feedback>
+    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Substance</Form.Label>
     <Form.Control type="text" placeholder="" required value={drug.substance} onChange={handleInputChange} name="substance"/>
+    <Form.Control.Feedback type="invalid">
+      Substance is a required field.
+    </Form.Control.Feedback>
+    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Indication</Form.Label>
     <Form.Control type="text" placeholder="" required value={drug.indication} onChange={handleInputChange} name="indication"/>
+    <Form.Control.Feedback type="invalid">
+      Indication is a required field.
+    </Form.Control.Feedback>
+    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Contraindication</Form.Label>
     <Form.Control type="text" placeholder="" required value={drug.contraindication} onChange={handleInputChange} name="contraindication"/>
+    <Form.Control.Feedback type="invalid">
+      Contraindication is a required field.
+    </Form.Control.Feedback>
+    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Reaction</Form.Label>
     <Form.Control type="text" placeholder="" required value={drug.reaction} onChange={handleInputChange} name="reaction"/>
+    <Form.Control.Feedback type="invalid">
+      Reaction is a required field.
+    </Form.Control.Feedback>
+    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Use</Form.Label>
     <Form.Control type="text" placeholder="" required value={drug.use} onChange={handleInputChange} name="use"/>
+    <Form.Control.Feedback type="invalid">
+      Use is a required field.
+    </Form.Control.Feedback>
+    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
-</Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          {drug.id===null?(<Button variant="primary" onClick={saveDrug}>
+          {drug.id===null?(<Button type = "submit" variant="primary">
             Create Drug
-          </Button>):(<Button variant="primary" onClick={updateDrug}>
+          </Button>):(<Button type = "submit" variant="primary">
             Update Drug
-          </Button>)}
-          
+          </Button>)}          
         </Modal.Footer>
+        </Form>
       </Modal>
 
   <Modal show={confirm} onHide={handleCloseConfirm} id = {id}>

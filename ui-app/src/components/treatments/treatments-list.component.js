@@ -346,9 +346,6 @@ const newTreatment = () => {
     </Form.Control.Feedback>
 <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
 </Form.Group>)}  
-   
-  
-
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>

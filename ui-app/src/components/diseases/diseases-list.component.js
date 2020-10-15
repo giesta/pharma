@@ -21,6 +21,26 @@ export default function DiseasesTable() {
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
   
+  const [validated, setValidated] = React.useState(false);
+
+  const handleSubmit = (event) => {
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }else{
+      if(disease.id===null){
+        saveDisease();
+      }else{
+        handleInputChange(event); 
+        updateDisease();
+      } 
+    }
+
+    setValidated(true);
+       
+  };
+
 
   const handleClose = () =>{
     newDisease();
@@ -223,32 +243,46 @@ const newDisease = () => {
   <Modal.Header closeButton>
     <Modal.Title>Disease info {disease.id}</Modal.Title>
   </Modal.Header>
+  <Form noValidate validated={validated} onSubmit={handleSubmit}>
   <Modal.Body>
-  <Form>
+  
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Name</Form.Label>
     <Form.Control type="text" placeholder="" required value={disease.name} onChange={handleInputChange} name="name"/>
+    <Form.Control.Feedback type="invalid">
+      Name is a required field.
+    </Form.Control.Feedback>
+    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Description</Form.Label>
     <Form.Control type="text"  as="textarea" placeholder="" required value={disease.description} onChange={handleInputChange} name="description"/>
+    <Form.Control.Feedback type="invalid">
+      Description is a required field.
+    </Form.Control.Feedback>
+    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Symptoms</Form.Label>
     <Form.Control type="text" placeholder="" required value={disease.symptoms} onChange={handleInputChange} name="symptoms"/>
+    <Form.Control.Feedback type="invalid">
+      Symptoms is a required field.
+    </Form.Control.Feedback>
+    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>  
-</Form>
+
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          {disease.id===null?(<Button variant="primary" onClick={saveDisease}>
+          {disease.id===null?(<Button type = "submit" variant="primary">
             Create Disease
-          </Button>):(<Button variant="primary" onClick={updateDisease}>
+          </Button>):(<Button type = "submit" variant="primary">
             Update Disease
           </Button>)}          
         </Modal.Footer>
+        </Form>
       </Modal>
 
   <Modal show={confirm} onHide={handleCloseConfirm} id = {id}>

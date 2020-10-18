@@ -124,4 +124,23 @@ class DiseaseDrugController extends Controller
         $disease->drugs()->detach($drug_id);
         return response()->noContent();
     }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteMany(Request $request, $id)
+    {
+        $user = auth()->user();
+        if($user->role ==="admin"){
+            $disease = Disease::findOrFail($id);
+        }else{
+            $disease = $user->diseases()->findOrFail($id);
+        }
+        //$disease = Disease::findOrFail($disease_id);
+        //$drug = $disease->drugs()->findOrFail($drug_id);
+        $disease->drugs()->detach();
+        return response()->noContent();
+    }
 }

@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import diseasesDataService from "../../services/diseases/list.service";
+import DrugsDataService from "../../services/drugs/list.service";
+import DiseaseDrugDataService from "../../services/diseases/disease.drug.service";
 import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
@@ -10,16 +12,21 @@ export default function DiseasesTable() {
     name: "",
     description: "",
     symptoms: "",
+    drugs: []
   };
 
   const [disease, setDisease] = React.useState(initialDiseaseState);
   const [submitted, setSubmitted] = React.useState(false);
   const [noData, setNoData] = React.useState('');
+  const [drugs, setDrugs] = React.useState({
+    data: [],
+  });
 
   const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
+  const [selectedDrugs, setSelectedDrugs] = React.useState([]);
   
   const [validated, setValidated] = React.useState(false);
 
@@ -45,25 +52,50 @@ export default function DiseasesTable() {
   const handleClose = () =>{
     newDisease();
     setShow(false);
-    
+    setValidated(false);
   };
   const handleCloseConfirm = () => setConfirm(false);
   const handleCloseInfo = () => {
     newDisease();
     setInfo(false);
+    setValidated(false);
   };
   const handleInfo = () => setInfo(true);
   const [diseases, setDiseases] = React.useState({
     data: [],
   });
 
+  const AddSelectedDrugs = event => {
+    const selectedDrugs = [...event.target.selectedOptions].map(o => o.value)
+    setSelectedDrugs(selectedDrugs);
+  };
   const handleInputChange = event => {
     const { name, value } = event.target;
-    setDisease({ ...disease, [name]: value });
+    setDisease({ ...disease,  [name]: value});   
   };
   useEffect(()=>{
         retrieveDiseases();
+        retrieveDrugs();
   }, []);
+
+  const retrieveDrugs = () => {
+    DrugsDataService.getAll()
+      .then(response => {
+        console.log(response.data.data);
+        
+        if(response.data.data.length !== 0){
+          setDrugs({...drugs, data: response.data.data});
+        }else{
+          setNoData("No data");
+        }
+          
+        
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
   const retrieveDiseases = () => {
     diseasesDataService.getAll()
       .then(response => {
@@ -135,7 +167,6 @@ const saveDisease = () => {
     description: disease.description,
     symptoms: disease.symptoms
   };
-  console.log(data);
   diseasesDataService.create(data)
     .then(response => {
       setDisease({
@@ -143,11 +174,20 @@ const saveDisease = () => {
         description: response.data.description,
         symptoms: response.data.symptoms,
       });
-      setSubmitted(true);
-      console.log(response.data);
+      console.log(selectedDrugs);
+      selectedDrugs.map((x)=>{
+        var data2={
+          drug_id:x
+        };
+        DiseaseDrugDataService.create(response.data.data.id, data2)
+        .then(resp =>{
+          diseases.data = diseases.data.filter(x=>x.id!==resp.data.data.id)
+          diseases.data.push(resp.data.data);   
+          setDiseases({...diseases, data: diseases.data});       
+        });        
+      });
       handleClose();
-      diseases.data.push(response.data.data);
-      setDiseases({...diseases, data: diseases.data});
+            
     })
     .catch(e => {
       console.log(e);
@@ -161,21 +201,26 @@ const updateDisease = () => {
     description: disease.description,
     symptoms: disease.symptoms,
   };
-  console.log(data);
   diseasesDataService.update(data.id, data)
-    .then(response => {
-      setDisease({
-        id: response.data.id,
-        name: response.data.name,
-        description: response.data.description,
-        symptoms: response.data.symptoms,
-      });
+    .then(() => {      
+      if(selectedDrugs !== []){
+        DiseaseDrugDataService.remove(disease.id).then(()=>{
+          selectedDrugs.map((x)=>{
+          var data2={
+            drug_id:x
+          };          
+            DiseaseDrugDataService.create(disease.id, data2)
+            .then(resp =>{
+              setDisease({ ...disease, drugs: resp.data.data.drugs }); 
+              const updatedItems = diseases.data.filter(x=>x.id!==disease.id)
+              updatedItems.push(resp.data.data);
+              setDiseases({...diseases, data: updatedItems});        
+            });        
+          });
+        });          
+      }      
       setSubmitted(true);
-      console.log(response.data);
       handleClose();
-      const updatedItems = diseases.data.filter(x=>x.id!==disease.id)
-      updatedItems.push(disease);
-      setDiseases({...diseases, data: updatedItems});
     })
     .catch(e => {
       console.log(e);
@@ -259,7 +304,7 @@ const newDisease = () => {
     <Form.Control type="text"  as="textarea" placeholder="" required value={disease.description} onChange={handleInputChange} name="description"/>
     <Form.Control.Feedback type="invalid">
       Description is a required field.
-    </Form.Control.Feedback>
+    </Form.Control.Feedback >
     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
@@ -269,16 +314,43 @@ const newDisease = () => {
       Symptoms is a required field.
     </Form.Control.Feedback>
     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-  </Form.Group>  
-
+  </Form.Group>
+  {(disease.drugs!==null&&disease.drugs!==undefined)?(
+      <Form.Group controlId="exampleForm.ControlSelect1">
+      <Form.Label>Drug</Form.Label>     
+    <Form.Control as="select" multiple required defaultValue={disease.drugs.map(item=>item.id)} onChange={AddSelectedDrugs} name="drugs_id"> 
+    {drugs.data.map((x)=>
+        <option value={x.id}>{x.name}</option>
+      )  
+  }
+  </Form.Control>
+  <Form.Control.Feedback type="invalid">
+      Description is a required field.
+    </Form.Control.Feedback>
+  </Form.Group>
+    ):(
+      
+    <Form.Group controlId="exampleForm.ControlSelect1"> 
+    <Form.Label>Drug</Form.Label>
+  <Form.Control as="select" multiple required onChange={AddSelectedDrugs} name="drugs_id">   
+  {drugs.data.map((x)=>
+      <option value={x.id}>{x.name}</option>
+    )  
+}
+</Form.Control>
+<Form.Control.Feedback type="invalid">
+      Drug is a required field.
+    </Form.Control.Feedback>
+<Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+</Form.Group>)} 
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          {disease.id===null?(<Button type = "submit" variant="primary">
+          {disease.id===null?(<Button variant="primary" onClick={handleSubmit}>
             Create Disease
-          </Button>):(<Button type = "submit" variant="primary">
+          </Button>):(<Button variant="primary" onClick={handleSubmit}>
             Update Disease
           </Button>)}          
         </Modal.Footer>

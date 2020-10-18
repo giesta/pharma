@@ -58,7 +58,7 @@ export default function MaterialTableDemo() {
   const handleClose = () =>{
     newTreatment();
     setShow(false);
-    
+    setValidated(false);
   };
   const handleShow = () => setShow(true);
   const handleCloseConfirm = () => setConfirm(false);

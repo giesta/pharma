@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import AuthService from "../../services/auth.service"; 
 import DrugsDataService from "../../services/drugs/list.service";
 import DiseasesDataService from "../../services/diseases/list.service";
-import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form } from "react-bootstrap";
+import { Table, Spinner, Modal, Button, Badge, FormControl, Form } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
 export default function DrugsTable() {
@@ -445,6 +445,14 @@ const newDrug = () => {
     <Form.Label>Use</Form.Label>
     <Form.Control type="text" placeholder="" required value={drug.use} onChange={handleInputChange} disabled name="use"/>
   </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Drugs</Form.Label>
+  {drug.diseases.map((x)=>
+      <Badge pill variant="dark">
+      {x.name}
+    </Badge>
+    )  
+} </Form.Group>
 </Form>
         </Modal.Body>
         <Modal.Footer>

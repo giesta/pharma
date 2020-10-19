@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import diseasesDataService from "../../services/diseases/list.service";
 import DrugsDataService from "../../services/drugs/list.service";
-import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form } from "react-bootstrap";
+import { Table, Spinner, Modal, Button, Badge, FormControl, Form } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
 export default function DiseasesTable() {
@@ -370,7 +370,15 @@ const newDisease = () => {
   <Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Symptoms</Form.Label>
     <Form.Control type="text" placeholder="" required value={disease.symptoms} onChange={handleInputChange} disabled name="symptoms"/>
-  </Form.Group>  
+  </Form.Group> 
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Drugs</Form.Label>
+  {disease.drugs.map((x)=>
+      <Badge pill variant="dark">
+      {x.name}
+    </Badge>
+    )  
+} </Form.Group>
 </Form>
         </Modal.Body>
         <Modal.Footer>

@@ -41,11 +41,12 @@ class DiseaseController extends Controller
         $user = auth()->user();
         try{
             $disease = Disease::create(array_merge($request->all(), ['user_id' => $user->id]));
+            $disease->drugs()->attach(json_decode($request->drugs));
         }catch (QueryException $ex) { // Anything that went wrong
-            abort(500, "Could not create Disease");
+            abort(500, $ex->getMessage());
         }
         return new DiseaseResource(
-            $disease
+            $user->diseases()->with('drugs')->findOrFail($disease->id)
         );
     }
 
@@ -80,12 +81,13 @@ class DiseaseController extends Controller
         }
         try{         
             $disease->update($request->only(['name', 'description', 'symptoms']));
+            $disease->drugs()->sync(json_decode($request->drugs));
         }
         catch (QueryException $ex) { // Anything that went wrong
             abort(500, "Could not update Disease");
         }
 
-        return new DiseaseResource($disease);
+        return new DiseaseResource($user->diseases()->with('drugs')->findOrFail($disease->id));
     }
 
     /**

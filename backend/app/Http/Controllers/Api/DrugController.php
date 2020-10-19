@@ -43,12 +43,13 @@ class DrugController extends ApiController
     {
         $user = auth()->user();
         try{
-            $drug = Drug::create(array_merge($request->all(), ['user_id' => $user->id]));        
+            $drug = Drug::create(array_merge($request->all(), ['user_id' => $user->id]));  
+            $drug->diseases()->attach(json_decode($request->diseases));      
         }catch (QueryException $ex) { // Anything that went wrong
             abort(500, "Could not create Drug");
         }
         return new DrugResource(
-            $drug
+            $user->drugs()->with('diseases')->findOrFail($drug->id)
         );
     }
 
@@ -87,13 +88,14 @@ class DrugController extends ApiController
             $drug = $user->drugs()->findOrFail($id);
         }        
         try{
-            $drug->update($request->only(['name', 'substance', 'indication', 'contraindication', 'reaction', 'use'])); 
+            $drug->update($request->only(['name', 'substance', 'indication', 'contraindication', 'reaction', 'use']));
+            $drug->diseases()->sync(json_decode($request->diseases)); 
         }
         catch (QueryException $ex) { // Anything that went wrong
             abort(500, "Could not update Drug");
         }       
 
-        return new DrugResource($drug);
+        return new DrugResource($user->drugs()->with('diseases')->findOrFail($drug->id));
     }
 
     /**

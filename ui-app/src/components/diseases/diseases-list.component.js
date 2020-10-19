@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import diseasesDataService from "../../services/diseases/list.service";
 import DrugsDataService from "../../services/drugs/list.service";
-import DiseaseDrugDataService from "../../services/diseases/disease.drug.service";
 import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
@@ -43,9 +42,7 @@ export default function DiseasesTable() {
         updateDisease();
       } 
     }
-
-    setValidated(true);
-       
+    setValidated(true);       
   };
 
 
@@ -165,29 +162,23 @@ const saveDisease = () => {
   var data = {
     name: disease.name,
     description: disease.description,
-    symptoms: disease.symptoms
+    symptoms: disease.symptoms,
+    drugs: JSON.stringify(selectedDrugs)
   };
   diseasesDataService.create(data)
     .then(response => {
+      console.log(response.data.data.id);
       setDisease({
-        name: response.data.name,
-        description: response.data.description,
-        symptoms: response.data.symptoms,
+        id : response.data.data.id,
+        name: response.data.data.name,
+        description: response.data.data.description,
+        symptoms: response.data.data.symptoms,
+        drugs: response.data.data.drugs
       });
-      console.log(selectedDrugs);
-      selectedDrugs.map((x)=>{
-        var data2={
-          drug_id:x
-        };
-        DiseaseDrugDataService.create(response.data.data.id, data2)
-        .then(resp =>{
-          diseases.data = diseases.data.filter(x=>x.id!==resp.data.data.id)
-          diseases.data.push(resp.data.data);   
-          setDiseases({...diseases, data: diseases.data});       
-        });        
-      });
-      handleClose();
-            
+      diseases.data.push(response.data.data);
+      setDiseases({...diseases, data: diseases.data});
+      setSubmitted(true);
+      handleClose();            
     })
     .catch(e => {
       console.log(e);
@@ -200,25 +191,13 @@ const updateDisease = () => {
     name: disease.name,
     description: disease.description,
     symptoms: disease.symptoms,
+    drugs: JSON.stringify(selectedDrugs)
   };
   diseasesDataService.update(data.id, data)
-    .then(() => {      
-      if(selectedDrugs !== []){
-        DiseaseDrugDataService.remove(disease.id).then(()=>{
-          selectedDrugs.map((x)=>{
-          var data2={
-            drug_id:x
-          };          
-            DiseaseDrugDataService.create(disease.id, data2)
-            .then(resp =>{
-              setDisease({ ...disease, drugs: resp.data.data.drugs }); 
-              const updatedItems = diseases.data.filter(x=>x.id!==disease.id)
-              updatedItems.push(resp.data.data);
-              setDiseases({...diseases, data: updatedItems});        
-            });        
-          });
-        });          
-      }      
+    .then((resp) => {  
+      const updatedItems = diseases.data.filter(x=>x.id!==disease.id)
+      updatedItems.push(resp.data.data);
+      setDiseases({...diseases, data: updatedItems});         
       setSubmitted(true);
       handleClose();
     })
@@ -317,7 +296,7 @@ const newDisease = () => {
   </Form.Group>
   {(disease.drugs!==null&&disease.drugs!==undefined)?(
       <Form.Group controlId="exampleForm.ControlSelect1">
-      <Form.Label>Drug</Form.Label>     
+      <Form.Label>Drugs</Form.Label>     
     <Form.Control as="select" multiple required defaultValue={disease.drugs.map(item=>item.id)} onChange={AddSelectedDrugs} name="drugs_id"> 
     {drugs.data.map((x)=>
         <option value={x.id}>{x.name}</option>
@@ -325,13 +304,13 @@ const newDisease = () => {
   }
   </Form.Control>
   <Form.Control.Feedback type="invalid">
-      Description is a required field.
+      Drugs is a required field.
     </Form.Control.Feedback>
   </Form.Group>
     ):(
       
     <Form.Group controlId="exampleForm.ControlSelect1"> 
-    <Form.Label>Drug</Form.Label>
+    <Form.Label>Drugs</Form.Label>
   <Form.Control as="select" multiple required onChange={AddSelectedDrugs} name="drugs_id">   
   {drugs.data.map((x)=>
       <option value={x.id}>{x.name}</option>
@@ -339,7 +318,7 @@ const newDisease = () => {
 }
 </Form.Control>
 <Form.Control.Feedback type="invalid">
-      Drug is a required field.
+      Drugs is a required field.
     </Form.Control.Feedback>
 <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
 </Form.Group>)} 

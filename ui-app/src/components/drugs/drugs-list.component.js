@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import AuthService from "../../services/auth.service"; 
 import DrugsDataService from "../../services/drugs/list.service";
+import DiseasesDataService from "../../services/diseases/list.service";
 import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
@@ -13,19 +14,29 @@ export default function DrugsTable() {
     indication: "",
     contraindication: "",
     reaction: "",
-    use: ""
+    use: "",
+    diseases: []
   };
 
   const [drug, setDrug] = React.useState(initialDrugState);
   const [submitted, setSubmitted] = React.useState(false);
   const [noData, setNoData] = React.useState('');
+  const [diseases, setDiseases] = React.useState({
+    data: [],
+  });
 
   const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
+  const [selectedDiseases, setSelectedDiseases] = React.useState([]);
   
   const [validated, setValidated] = React.useState(false);
+
+  const AddSelectedDiseases = event => {
+    const selectedDiseases = [...event.target.selectedOptions].map(o => o.value)
+    setSelectedDiseases(selectedDiseases);
+  };
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -40,15 +51,13 @@ export default function DrugsTable() {
         updateDrug();
       } 
     }
-
-    setValidated(true);
-       
+    setValidated(true);       
   };
 
   const handleClose = () =>{
     newDrug();
     setShow(false);
-    
+    setValidated(false);
   };
   const handleShow = () => setShow(true);
   const handleCloseConfirm = () => setConfirm(false);
@@ -68,6 +77,7 @@ export default function DrugsTable() {
   };
   useEffect(()=>{
         retrieveDrugs();
+        retrieveDiseases();
   }, []);
   const retrieveDrugs = () => {
     DrugsDataService.getAll()
@@ -76,6 +86,23 @@ export default function DrugsTable() {
         
         if(response.data.data.length !== 0){
           setDrugs({...drugs, data: response.data.data});
+        }else{
+          setNoData("No data");
+        }
+          
+        
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+  const retrieveDiseases = () => {
+    DiseasesDataService.getAll()
+      .then(response => {
+        console.log(response.data.data);
+        
+        if(response.data.data.length !== 0){
+          setDiseases({...diseases, data: response.data.data});
         }else{
           setNoData("No data");
         }
@@ -152,7 +179,8 @@ const saveDrug = () => {
     indication: drug.indication,
     contraindication: drug.contraindication,
     reaction: drug.reaction,
-    use: drug.use
+    use: drug.use,
+    diseases: JSON.stringify(selectedDiseases)
   };
   console.log(data);
   DrugsDataService.create(data)
@@ -163,10 +191,12 @@ const saveDrug = () => {
         indication: response.data.indication,
         contraindication: response.data.contraindication,
         reaction: response.data.reaction,
-        use: response.data.use
+        use: response.data.use,
+        diseases: response.data.diseases,
       });
-      setSubmitted(true);
+      
       console.log(response.data);
+      setSubmitted(true);
       handleClose();
       drugs.data.push(response.data.data);
       setDrugs({...drugs, data: drugs.data});
@@ -184,7 +214,8 @@ const updateDrug = () => {
     indication: drug.indication,
     contraindication: drug.contraindication,
     reaction: drug.reaction,
-    use: drug.use
+    use: drug.use,
+    diseases: JSON.stringify(selectedDiseases)
   };
   console.log(data);
   DrugsDataService.update(data.id, data)
@@ -196,7 +227,8 @@ const updateDrug = () => {
         indication: response.data.indication,
         contraindication: response.data.contraindication,
         reaction: response.data.reaction,
-        use: response.data.use
+        use: response.data.use,
+        diseases: response.data.diseases,
       });
       setSubmitted(true);
       console.log(response.data);
@@ -324,14 +356,42 @@ const newDrug = () => {
     </Form.Control.Feedback>
     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
+  {(drug.diseases!==null&&drug.diseases!==undefined)?(
+      <Form.Group controlId="exampleForm.ControlSelect1">
+      <Form.Label>Diseases</Form.Label>     
+    <Form.Control as="select" multiple required defaultValue={drug.diseases.map(item=>item.id)} onChange={AddSelectedDiseases} name="diseases_id"> 
+    {diseases.data.map((x)=>
+        <option value={x.id}>{x.name}</option>
+      )  
+  }
+  </Form.Control>
+  <Form.Control.Feedback type="invalid">
+      Diseases is a required field.
+    </Form.Control.Feedback>
+  </Form.Group>
+    ):(
+      
+    <Form.Group controlId="exampleForm.ControlSelect1"> 
+    <Form.Label>Diseases</Form.Label>
+  <Form.Control as="select" multiple required onChange={AddSelectedDiseases} name="diseases_id">   
+  {diseases.data.map((x)=>
+      <option value={x.id}>{x.name}</option>
+    )  
+}
+</Form.Control>
+<Form.Control.Feedback type="invalid">
+      Diseases is a required field.
+    </Form.Control.Feedback>
+<Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+</Form.Group>)} 
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          {drug.id===null?(<Button type = "submit" variant="primary">
+          {drug.id===null?(<Button  variant="primary" onClick={handleSubmit}>
             Create Drug
-          </Button>):(<Button type = "submit" variant="primary">
+          </Button>):(<Button  variant="primary" onClick={handleSubmit}>
             Update Drug
           </Button>)}          
         </Modal.Footer>

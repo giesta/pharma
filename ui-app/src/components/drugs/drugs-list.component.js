@@ -221,20 +221,20 @@ const updateDrug = () => {
   DrugsDataService.update(data.id, data)
     .then(response => {
       setDrug({
-        id: response.data.id,
-        name: response.data.name,
-        substance: response.data.substance,
-        indication: response.data.indication,
-        contraindication: response.data.contraindication,
-        reaction: response.data.reaction,
-        use: response.data.use,
-        diseases: response.data.diseases,
+        id: response.data.data.id,
+        name: response.data.data.name,
+        substance: response.data.data.substance,
+        indication: response.data.data.indication,
+        contraindication: response.data.data.contraindication,
+        reaction: response.data.data.reaction,
+        use: response.data.data.use,
+        diseases: response.data.data.diseases,
       });
       setSubmitted(true);
-      console.log(response.data);
+      console.log();
       handleClose();
       const updatedItems = drugs.data.filter(x=>x.id!==drug.id)
-      updatedItems.push(drug);
+      updatedItems.push(response.data.data);
       setDrugs({...drugs, data: updatedItems});
     })
     .catch(e => {
@@ -359,30 +359,23 @@ const newDrug = () => {
   {(drug.diseases!==null&&drug.diseases!==undefined)?(
       <Form.Group controlId="exampleForm.ControlSelect1">
       <Form.Label>Diseases</Form.Label>     
-    <Form.Control as="select" multiple required defaultValue={drug.diseases.map(item=>item.id)} onChange={AddSelectedDiseases} name="diseases_id"> 
+    <Form.Control as="select" multiple defaultValue={drug.diseases.map(item=>item.id)} onChange={AddSelectedDiseases} name="diseases_id"> 
     {diseases.data.map((x)=>
         <option value={x.id}>{x.name}</option>
       )  
   }
-  </Form.Control>
-  <Form.Control.Feedback type="invalid">
-      Diseases is a required field.
-    </Form.Control.Feedback>
+  </Form.Control>  
   </Form.Group>
     ):(
       
     <Form.Group controlId="exampleForm.ControlSelect1"> 
     <Form.Label>Diseases</Form.Label>
-  <Form.Control as="select" multiple required onChange={AddSelectedDiseases} name="diseases_id">   
+  <Form.Control as="select" multiple onChange={AddSelectedDiseases} name="diseases_id">   
   {diseases.data.map((x)=>
       <option value={x.id}>{x.name}</option>
     )  
 }
 </Form.Control>
-<Form.Control.Feedback type="invalid">
-      Diseases is a required field.
-    </Form.Control.Feedback>
-<Form.Control.Feedback>Looks good!</Form.Control.Feedback>
 </Form.Group>)} 
         </Modal.Body>
         <Modal.Footer>
@@ -445,14 +438,15 @@ const newDrug = () => {
     <Form.Label>Use</Form.Label>
     <Form.Control type="text" placeholder="" required value={drug.use} onChange={handleInputChange} disabled name="use"/>
   </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Drugs</Form.Label>
+  {drug.diseases!==null && drug.diseases!==undefined?(<Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Diseases</Form.Label>
   {drug.diseases.map((x)=>
       <Badge pill variant="dark">
       {x.name}
     </Badge>
     )  
-} </Form.Group>
+} </Form.Group>):('')}
+  
 </Form>
         </Modal.Body>
         <Modal.Footer>

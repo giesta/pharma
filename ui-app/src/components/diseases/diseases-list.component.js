@@ -297,29 +297,23 @@ const newDisease = () => {
   {(disease.drugs!==null&&disease.drugs!==undefined)?(
       <Form.Group controlId="exampleForm.ControlSelect1">
       <Form.Label>Drugs</Form.Label>     
-    <Form.Control as="select" multiple required defaultValue={disease.drugs.map(item=>item.id)} onChange={AddSelectedDrugs} name="drugs_id"> 
+    <Form.Control as="select" multiple defaultValue={disease.drugs.map(item=>item.id)} onChange={AddSelectedDrugs} name="drugs_id"> 
     {drugs.data.map((x)=>
         <option value={x.id}>{x.name}</option>
       )  
   }
   </Form.Control>
-  <Form.Control.Feedback type="invalid">
-      Drugs is a required field.
-    </Form.Control.Feedback>
   </Form.Group>
     ):(
       
     <Form.Group controlId="exampleForm.ControlSelect1"> 
     <Form.Label>Drugs</Form.Label>
-  <Form.Control as="select" multiple required onChange={AddSelectedDrugs} name="drugs_id">   
+  <Form.Control as="select" multiple onChange={AddSelectedDrugs} name="drugs_id">   
   {drugs.data.map((x)=>
       <option value={x.id}>{x.name}</option>
     )  
 }
 </Form.Control>
-<Form.Control.Feedback type="invalid">
-      Drugs is a required field.
-    </Form.Control.Feedback>
 <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
 </Form.Group>)} 
         </Modal.Body>
@@ -371,14 +365,14 @@ const newDisease = () => {
     <Form.Label>Symptoms</Form.Label>
     <Form.Control type="text" placeholder="" required value={disease.symptoms} onChange={handleInputChange} disabled name="symptoms"/>
   </Form.Group> 
-  <Form.Group controlId="exampleForm.ControlInput1">
+  {disease.drugs!==null && disease.drugs!==undefined?(<Form.Group controlId="exampleForm.ControlInput1">
     <Form.Label>Drugs</Form.Label>
   {disease.drugs.map((x)=>
       <Badge pill variant="dark">
       {x.name}
     </Badge>
     )  
-} </Form.Group>
+} </Form.Group>):('')}
 </Form>
         </Modal.Body>
         <Modal.Footer>

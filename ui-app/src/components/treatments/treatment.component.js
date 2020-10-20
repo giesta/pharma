@@ -9,14 +9,14 @@ export default function Treatment(props) {
              <Card.Img variant="top" src={props.algorithm} style={{height: '40vh'}} />
              <Card.Body>
                <Card.Title>{props.title}</Card.Title>
-               <Card.Text>
+               <Card.Text style={{height: '10vh'}}>
                  {props.description}
                </Card.Text>
              </Card.Body>
              <ListGroup className="list-group-flush">
         <ListGroupItem>{props.disease.name}</ListGroupItem>
-               <ListGroupItem>Dapibus ac facilisis in</ListGroupItem>
-               <ListGroupItem>Vestibulum at eros</ListGroupItem>
+            <ListGroupItem>{props.disease.description}</ListGroupItem>
+            <ListGroupItem>{props.disease.symptoms}</ListGroupItem>               
              </ListGroup>
              <Card.Body>
                <Card.Link href="#">Card Link</Card.Link>

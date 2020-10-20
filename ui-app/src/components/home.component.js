@@ -3,7 +3,7 @@ import React, { useCallback, useEffect } from 'react';
 import TreatmentsDataService from "../services/treatments/list.service";
 import UserService from "../services/user.service";
 import TreatmentCard from "./treatments/treatment.component";
-import {CardDeck } from "react-bootstrap";
+import {CardDeck, CardColumns } from "react-bootstrap";
 
 export default function HomePage() {
   const initialTreatmentState = {  
@@ -46,19 +46,14 @@ const retrieveTreatments = () => {
               Home
           </h3>
         </header>
-        <CardDeck>
-        
+        <CardColumns>        
           {Treatments.data.map((field)=>
-          <div class="col-xs-6 col-md-4">
+          <div>
              {TreatmentCard(field)}
              </div>
       )  
-  }
-  
-  </CardDeck>
-        
-
-   
+  }  
+  </CardColumns>   
       </div>
     );
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,8 +14,8 @@ use App\Models\Disease;
 use App\Http\Resources\Treatment as TreatmentResource;
 use App\Http\Requests\TokenRequest;
 use App\Http\Requests\StoreTreatmentRequest;
-use \Illuminate\Database\Eloquent\Exception;
-use \Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\Exception;
+use Illuminate\Database\QueryException;
 use JWTAuth;
 
 class TreatmentController extends Controller
@@ -94,7 +95,8 @@ class TreatmentController extends Controller
         if($request->hasFile('algorithm')) {
             $path = $request->file('algorithm')->store('public/algorithms');
             try{
-            $treatment->update(array_merge($request->all(), ['algorithm'=>$path]));
+                Storage::delete($treatment->algorithm);
+                $treatment->update(array_merge($request->all(), ['algorithm'=>$path]));
             }
             catch (QueryException $ex) { // Anything that went wrong
                 abort(500, "Could not update Treatment");
@@ -124,6 +126,7 @@ class TreatmentController extends Controller
         }else{
             $treatment = $user->treatments()->findOrFail($id);
         }
+        Storage::delete($treatment->algorithm);
         $treatment->delete();
         return response()->noContent();
     }

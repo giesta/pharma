@@ -17,6 +17,7 @@ import BoardUser from "./components/board-user.component";
 import DrugsList from "./components/drugs/drugs-list.component";
 import DiseasesList from "./components/diseases/diseases-list.component";
 import TreatmentsList from "./components/treatments/treatments-list.component";
+import Treatment from "./components/treatments/treatment.component";
 
 class App extends Component {
   constructor(props) {
@@ -100,6 +101,7 @@ class App extends Component {
             <Route exact path="/drugs" component={DrugsList} />
             <Route exact path="/diseases" component={DiseasesList} />
             <Route exact path="/treatments" component={TreatmentsList} />
+            <Route exact path="/treatments/:id" component={Treatment} />
           </Switch>
         </div>
       </div>

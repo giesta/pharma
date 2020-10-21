@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 
 import TreatmentsDataService from "../services/treatments/list.service";
 import UserService from "../services/user.service";
-import TreatmentCard from "./treatments/treatment.component";
+import TreatmentCard from "./treatments/treatment-card.component";
 import {CardDeck, CardColumns } from "react-bootstrap";
 
 export default function HomePage() {
@@ -46,14 +46,14 @@ const retrieveTreatments = () => {
               Home
           </h3>
         </header>
-        <CardColumns>        
+        <CardDeck>        
           {Treatments.data.map((field)=>
-          <div>
+          <div class="col-xs-6 col-md-4">
              {TreatmentCard(field)}
              </div>
       )  
   }  
-  </CardColumns>   
+  </CardDeck>   
       </div>
     );
 }

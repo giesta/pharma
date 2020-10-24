@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
-import DiseasesDataService from "../../services/diseases/list.service";
-import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form, Image } from "react-bootstrap";
+import DrugsDataService from "../../services/diseases/disease.drug.service";
+import { Col, Row, Spinner, Modal, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
 export default function Treatment(props) {
@@ -14,44 +14,66 @@ export default function Treatment(props) {
     disease_id: "",
     disease: null
   };
+  const initialDrugState = {  
+    id: null,  
+    name: "",
+    substance: "",
+    indication: "",
+    contraindication: "",
+    reaction: "",
+    use: "",
+    diseases: []
+  };
 
   const [currentTreatment, setCurrentTreatment] = React.useState(initialTreatmentState);
+  const [currentDrugs, setCurrentDrugs] = React.useState([]);
+  const [drug, setDrug] = React.useState(initialDrugState);
+  const [show, setShow] = React.useState(false);
   const [submitted, setSubmitted] = React.useState(false);
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [noData, setNoData] = React.useState('');
   const [images, setImages] = React.useState([]);
   const [url, setUrl] = React.useState(null);
-
-  const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
 
   
-
-  const handleClose = () =>{
-    newTreatment();
-  };
   const handleShow = () => setShow(true);
   const handleCloseConfirm = () => setConfirm(false);
   const handleConfirm = () => setConfirm(true);
-  const handleCloseInfo = () => {
-    newTreatment();
-    setInfo(false);
+  const handleClose = () =>{
+    newDrug();
+    setShow(false);
   };
-  const handleInfo = () => setInfo(true);
-  const [Diseases, setDiseases] = React.useState({
-    data: [],
-  });
+  const newDrug = () => {
+    setDrug(initialDrugState);
+    setSubmitted(false);
+  };
   useEffect(()=>{
         getTreatment(props.match.params.id);
   }, [props.match.params.id]);
   const getTreatment = (id) => {
     TreatmentsDataService.get(id)
       .then(response => {   
-        console.log(response.data.data)     
+        //console.log(response.data.data)     
         if(response.data.data.length !== 0){
           setCurrentTreatment(response.data.data);
+          getDrugs(response.data.data.disease.id);
+        }else{
+          setNoData("No data");
+        }       
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+  const getDrugs = (id) => {
+    DrugsDataService.get(id)
+      .then(response => {   
+        //console.log(response.data.data)     
+        if(response.data.data.length !== 0){
+          setCurrentDrugs(...currentDrugs, response.data.data);
         }else{
           setNoData("No data");
         }       
@@ -69,15 +91,9 @@ const newTreatment = () => {
 
 
   return (
-    <div><div className="mb-3">
-    <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
-            function(event){setShow(true)}}>
-              <BsPlus></BsPlus>
-          </button>
-    </div>
-    {console.log(currentTreatment)}
+    <div>
       {currentTreatment?(
-      currentTreatment===null?(        
+      currentTreatment.disease===null?(        
         <div className="text-center">
           <Spinner animation="grow" role="status">
             <span className="sr-only">Loading...</span>
@@ -87,8 +103,105 @@ const newTreatment = () => {
       <div className="container">  
       
       <>
-      <Image src={currentTreatment.algorithm} fluid/>
-
+      <Row>
+        <Col md={{ span: 6, offset: 3 }}><Image src={currentTreatment.algorithm} fluid/></Col>        
+        </Row>
+        <Row>
+        <Col className="mt-1" md={{ span: 6, offset: 3 }}>
+        <Jumbotron fluid>
+        <Container>
+          <h1>{currentTreatment.title}</h1>
+          <p>
+            {currentTreatment.description}
+          </p>
+        </Container>
+      </Jumbotron>
+          </Col>        
+        </Row>
+    <Row className="justify-content-md-center">
+    <Col md="auto">
+    <ListGroup className="mt-1">
+      <ListGroup.Item variant="light">Drugs</ListGroup.Item>
+      {currentDrugs.drugs!==undefined?currentDrugs.drugs.map((field)=>
+      <ListGroup.Item action onClick={function(event){ setDrug(field); setShow(true)}}>{field.name}</ListGroup.Item>
+      ):''}
+    </ListGroup>
+    </Col>
+    
+      
+    
+    <Col md="auto">
+    {currentTreatment.disease!==null?(
+    <Card border="light" className="mt-1" style={{ width: '18rem' }}>
+  <Card.Body>
+    <Card.Title>Disease</Card.Title>
+    <Card.Subtitle className="mb-2 text-muted">{currentTreatment.disease.name}</Card.Subtitle>
+    <Card.Text>
+    <div>
+              <label>
+                <strong>Description:</strong>
+              </label>{" "}
+              {currentTreatment.disease.description}
+            </div>
+    <div>
+              <label>
+                <strong>Symptoms:</strong>
+              </label>{" "}
+              <Badge variant="secondary">{currentTreatment.disease.symptoms}</Badge>
+              </div>
+    </Card.Text>
+  </Card.Body>
+</Card>):('')}
+    </Col>
+  </Row>
+      
+  <Modal show={show} onHide={handleClose}>
+  <Modal.Header closeButton>
+    <Modal.Title>Drug info {drug.id}</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+  <Form>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Name</Form.Label>
+    <Form.Control type="text"  value={drug.name} disabled name="name"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Substance</Form.Label>
+    <Form.Control type="text" value={drug.substance} disabled name="substance"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Indication</Form.Label>
+    <Form.Control type="text" value={drug.indication} disabled name="indication"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Contraindication</Form.Label>
+    <Form.Control type="text" value={drug.contraindication} disabled name="contraindication"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Adverse effect</Form.Label>
+    <Form.Control type="text" value={drug.reaction} disabled name="reaction"/>
+  </Form.Group>
+  <Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Use</Form.Label>
+    <Form.Control type="text" value={drug.use} disabled name="use"/>
+  </Form.Group>
+  {drug.diseases!==null && drug.diseases!==undefined?(<Form.Group controlId="exampleForm.ControlInput1">
+    <Form.Label>Diseases</Form.Label>
+  {drug.diseases.map((x)=>
+      <Badge pill variant="dark">
+      {x.name}
+    </Badge>
+    )  
+} </Form.Group>):('')}
+  
+</Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
   
 </>

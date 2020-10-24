@@ -351,9 +351,9 @@ const newTreatment = () => {
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          {treatment.id===null?(<Button type="submit" variant="primary">
+          {treatment.id===null?(<Button variant="primary" onClick={handleSubmit}>
             Create Treatment
-          </Button>):(<Button type="submit" variant="primary">
+          </Button>):(<Button variant="primary" onClick={handleSubmit}>
             Update Treatment
           </Button>)}          
         </Modal.Footer>

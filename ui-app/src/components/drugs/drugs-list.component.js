@@ -341,10 +341,10 @@ const newDrug = () => {
     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Reaction</Form.Label>
+    <Form.Label>Adverse effect</Form.Label>
     <Form.Control type="text" placeholder="" required value={drug.reaction} onChange={handleInputChange} name="reaction"/>
     <Form.Control.Feedback type="invalid">
-      Reaction is a required field.
+      Adverse effect is a required field.
     </Form.Control.Feedback>
     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
   </Form.Group>
@@ -431,7 +431,7 @@ const newDrug = () => {
     <Form.Control type="text" placeholder="" required value={drug.contraindication} onChange={handleInputChange} disabled name="contraindication"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Reaction</Form.Label>
+    <Form.Label>Adverse effect</Form.Label>
     <Form.Control type="text" placeholder="" required value={drug.reaction} onChange={handleInputChange} disabled name="reaction"/>
   </Form.Group>
   <Form.Group controlId="exampleForm.ControlInput1">

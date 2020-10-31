@@ -81,3 +81,8 @@ label {
     text-overflow: ellipsis;
     overflow: hidden;
 }
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}

@@ -18,6 +18,7 @@ import DrugsList from "./components/drugs/drugs-list.component";
 import DiseasesList from "./components/diseases/diseases-list.component";
 import TreatmentsList from "./components/treatments/treatments-list.component";
 import Treatment from "./components/treatments/treatment.component";
+import UsersList from "./components/users/users-list.component";
 
 class App extends Component {
   constructor(props) {
@@ -63,6 +64,7 @@ class App extends Component {
       <Nav.Link href={"/drugs"}>Drugs</Nav.Link>
       <Nav.Link href={"/diseases"}>Diseases</Nav.Link>
       <Nav.Link href={"/treatments"}>Treatments</Nav.Link>
+      <Nav.Link href={"/users"}>Users</Nav.Link>
       <Nav.Link href="#pricing">Pricing</Nav.Link>
       <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
         <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
@@ -102,11 +104,16 @@ class App extends Component {
             <Route exact path="/diseases" component={DiseasesList} />
             <Route exact path="/treatments" component={TreatmentsList} />
             <Route exact path="/treatments/:id" component={Treatment} />
+            <Route exact path="/users" component={UsersList} />
           </Switch>
         </div>
-        <footer className='footer mt-auto py-3 bg-dark text-white'>
-        <div className='container'>Place sticky footer content here.</div>
+        <div class="wrapper">
+        <footer className='footer d-flex flex-column mt-auto py-3 bg-dark text-white navbar navbar-inverse fixed-bottom'>
+        <div className='container'>Place sticky footer content here.
+        <p class="navbar-text">© Random</p>
+        </div>
       </footer>
+      </div>
       </div>
     );
   }

@@ -93,7 +93,7 @@ class App extends Component {
     
   </Navbar.Collapse>
 </Navbar>        
-        <div className="container mt-3">
+        <div className="container main-container mt-3">
           <Switch>
             <Route exact path={["/", "/home"]} component={Home} />
             <Route exact path="/login" component={Login} />
@@ -107,8 +107,8 @@ class App extends Component {
             <Route exact path="/users" component={UsersList} />
           </Switch>
         </div>
-        <div class="wrapper">
-        <footer className='footer d-flex flex-column mt-auto py-3 bg-dark text-white navbar navbar-inverse fixed-bottom'>
+        <div className="wrapper">
+        <footer className='footer d-flex flex-column mt-auto py-3 bg-dark text-white navbar navbar-inverse'>
         <div className='container'>Place sticky footer content here.
         <p class="navbar-text">© Random</p>
         </div>

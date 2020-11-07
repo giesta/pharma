@@ -44,9 +44,7 @@ class App extends Component {
 
   logOut() {
     AuthService.logout();
-  }
-
-  
+  } 
 
   render() {
     const { currentUser, showModeratorBoard, showAdminBoard } = this.state;

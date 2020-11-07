@@ -77,7 +77,7 @@ export default function DrugsTable() {
   };
   useEffect(()=>{
         retrieveDrugs();
-        retrieveDiseases();
+        
   }, []);
   const retrieveDrugs = () => {
     DrugsDataService.getAll()
@@ -86,11 +86,10 @@ export default function DrugsTable() {
         
         if(response.data.data.length !== 0){
           setDrugs({...drugs, data: response.data.data});
+          retrieveDiseases();
         }else{
           setNoData("No data");
-        }
-          
-        
+        }       
       })
       .catch(e => {
         console.log(e);

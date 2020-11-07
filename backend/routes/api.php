@@ -26,8 +26,11 @@ Route::group([
 ],function($router){
     Route::post('login', 'JwtAuthController@login');
     Route::post('register', 'JwtAuthController@register');
-    
+    Route::post('refresh', 'JwtAuthController@refresh');
 });
+
+//Route::get('auth/refresh', ['middleware' => 'jwt.refresh', function() {}]);
+
 
 Route::group([
     'middleware' => 'jwt.auth',
@@ -36,7 +39,7 @@ Route::group([
 ],function($router){
     Route::get('logout', 'JwtAuthController@logout');
     Route::get('getMe', 'JwtAuthController@getMe');
-    Route::get('refresh', 'JwtAuthController@refresh');
+    //Route::get('refresh', 'JwtAuthController@refresh');
     //Route::resource('users', JwtAuthController::class);
     
 });

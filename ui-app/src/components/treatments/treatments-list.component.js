@@ -88,8 +88,7 @@ export default function MaterialTableDemo() {
     console.log(treatment);
   };
   useEffect(()=>{
-        retrieveTreatments();
-        retrieveDiseases();
+        retrieveTreatments();        
   }, []);
   const retrieveTreatments = () => {
     TreatmentsDataService.getAll()
@@ -97,6 +96,7 @@ export default function MaterialTableDemo() {
         //console.log(response.data.data)     
         if(response.data.data.length !== 0){
           setTreatments({...Treatments, data: response.data.data});
+          retrieveDiseases();
         }else{
           setNoData("No data");
         }       

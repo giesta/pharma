@@ -71,8 +71,7 @@ export default function DiseasesTable() {
     setDisease({ ...disease,  [name]: value});   
   };
   useEffect(()=>{
-        retrieveDiseases();
-        retrieveDrugs();
+        retrieveDiseases();        
   }, []);
 
   const retrieveDrugs = () => {
@@ -100,6 +99,7 @@ export default function DiseasesTable() {
         
         if(response.data.data.length !== 0){
           setDiseases({...diseases, data: response.data.data});
+          retrieveDrugs();
         }else{
           setNoData("No data");
         }

@@ -93,3 +93,6 @@ label {
   bottom: 0;
   width: 100%;
  }
+ .table-col{
+   min-width: 137px;
+ }

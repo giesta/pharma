@@ -114,7 +114,7 @@ export default function DiseasesTable() {
   const GetActionFormat = useCallback((row) =>{
     
     return (
-        <div>
+      <td class="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
               function(event){ setDisease(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
@@ -127,7 +127,7 @@ export default function DiseasesTable() {
               function(event){ setId(row.id); setConfirm(true)}}>
             <BsTrash></BsTrash>
             </button>
-        </div>
+        </td>
     );
 });
 
@@ -257,7 +257,7 @@ const newDisease = () => {
         <td>{field.name}</td>
         <td>{field.description}</td>
         <td>{field.symptoms}</td>
-        <td>{GetActionFormat(field)}</td>
+        {GetActionFormat(field)}
       </tr>
       )  
   }

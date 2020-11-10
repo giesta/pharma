@@ -80,7 +80,7 @@ export default function UsersTable() {
   const GetActionFormat = useCallback((row) =>{
     
     return (
-        <div>
+      <td class="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
               function(event){ setUser(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
@@ -93,7 +93,7 @@ export default function UsersTable() {
               function(event){ setId(row.id); setConfirm(true)}}>
             <BsTrash></BsTrash>
             </button>
-        </div>
+        </td>
     );
 });
 
@@ -191,7 +191,7 @@ const newUser = () => {
         <td>{field.id}</td>
         <td>{field.name}</td>
         <td>{field.email}</td>
-        <td>{GetActionFormat(field)}</td>
+        {GetActionFormat(field)}
       </tr>
       )  
   }

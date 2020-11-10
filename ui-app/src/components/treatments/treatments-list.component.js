@@ -123,7 +123,7 @@ export default function MaterialTableDemo() {
   const GetActionFormat = useCallback((row) =>{
     
     return (
-        <div>
+        <td class="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
               function(event){ setTreatment(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
@@ -137,7 +137,7 @@ export default function MaterialTableDemo() {
               function(event){ setId(row.id); setConfirm(true)}}>
             <BsTrash></BsTrash>
             </button>
-        </div>
+        </td>
     );
 });
 
@@ -263,7 +263,7 @@ const newTreatment = () => {
       <div className="container">  
       
       <>
- <Table striped bordered hover responsive="lg">
+ <Table striped bordered hover responsive="xl">
   <thead>
     <tr>
       {columns.map((field)=>
@@ -279,7 +279,7 @@ const newTreatment = () => {
         <td>{field.title}</td>
         <td>{field.description}</td>
         <td>{field.disease.name}</td>
-        <td>{GetActionFormat(field)}</td>
+        {GetActionFormat(field)}
       </tr>
       )  
   }

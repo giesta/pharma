@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
 import DiseasesDataService from "../../services/diseases/list.service";
+import TreatmentTable from "../table.component.js";
+import TreatmentDelete from "../delete-modal.component.js";
 import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form, Image } from "react-bootstrap";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
@@ -147,8 +149,8 @@ const deleteItemFromState = (id) => {
 }
 
 const columns = [{  
-    dataField: 'id',  
-    text: 'Id' },  
+    dataField: '',  
+    text: 'No' },  
   {  
     dataField: 'title',  
     text: 'Title',  
@@ -263,28 +265,8 @@ const newTreatment = () => {
       <div className="container">  
       
       <>
- <Table striped bordered hover responsive="xl">
-  <thead>
-    <tr>
-      {columns.map((field)=>
-        <th>{field.text}</th>
-      )}
-    </tr>
-  </thead>
-  <tbody>
+ {TreatmentTable(columns, Treatments, GetActionFormat)}
 
-  {Treatments.data.map((field)=>
-        <tr>
-        <td>{field.id}</td>
-        <td>{field.title}</td>
-        <td>{field.description}</td>
-        <td>{field.disease.name}</td>
-        {GetActionFormat(field)}
-      </tr>
-      )  
-  }
-  </tbody>
-</Table>
 <Modal show={show} onHide={handleClose}>
   <Modal.Header closeButton>
     <Modal.Title>Treatment info {treatment.id}</Modal.Title>
@@ -359,26 +341,12 @@ const newTreatment = () => {
         </Modal.Footer>
         </Form>
       </Modal>
-  <Modal show={confirm} onHide={handleCloseConfirm} id = {id}>
-  <Modal.Header closeButton>
-    <Modal.Title>Treatment Delete {id}</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-  Are you sure?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseConfirm}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={()=>deleteTreatment(id)}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      
+  {TreatmentDelete(id, "Treatment", deleteTreatment, handleCloseConfirm, confirm)}
 
       <Modal show={info} onHide={handleCloseInfo}>
   <Modal.Header closeButton>
-    <Modal.Title>Treatment info {treatment.id}</Modal.Title>
+    <Modal.Title>Info</Modal.Title>
   </Modal.Header>
   <Modal.Body>
   <Form>

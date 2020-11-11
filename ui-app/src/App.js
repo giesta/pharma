@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { Switch, Route, Link } from "react-router-dom";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import { Navbar, NavItem, NavDropdown, MenuItem, Nav } from 'react-bootstrap';
 
-
+import ProtectedRoute from "./services/private-route"
 import AuthService from "./services/auth.service";
 
 
@@ -26,7 +27,7 @@ class App extends Component {
     this.logOut = this.logOut.bind(this);
 
     this.state = {
-      showModeratorBoard: false,
+      showPharmacistBoard: false,
       showAdminBoard: false,
       currentUser: undefined,
     };
@@ -35,8 +36,10 @@ class App extends Component {
   componentDidMount() {
     const user = AuthService.getCurrentUser();
     if(user){
-      this.setState({
+      this.setState({        
         currentUser: user,
+        showAdminBoard: user.user.role==="admin",
+        showPharmacistBoard: user.user.role==="pharmacist",
       });
     }
       
@@ -47,7 +50,7 @@ class App extends Component {
   } 
 
   render() {
-    const { currentUser, showModeratorBoard, showAdminBoard } = this.state;
+    const { currentUser, showPharmacistBoard, showAdminBoard } = this.state;
 
     return (
       
@@ -59,18 +62,10 @@ class App extends Component {
 
     <Nav className="mr-auto">
     <Nav.Link href={"/"}>Home</Nav.Link>
-      <Nav.Link href={"/drugs"}>Drugs</Nav.Link>
-      <Nav.Link href={"/diseases"}>Diseases</Nav.Link>
-      <Nav.Link href={"/treatments"}>Treatments</Nav.Link>
-      <Nav.Link href={"/users"}>Users</Nav.Link>
-      <Nav.Link href="#pricing">Pricing</Nav.Link>
-      <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-        <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-        <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-        <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-        <NavDropdown.Divider />
-        <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
-      </NavDropdown>
+      {(showPharmacistBoard ||showAdminBoard) && (<Nav.Link href={"/drugs"}>Drugs</Nav.Link>)}
+      {(showPharmacistBoard ||showAdminBoard) && (<Nav.Link href={"/diseases"}>Diseases</Nav.Link>)}
+      {(showPharmacistBoard ||showAdminBoard) && (<Nav.Link href={"/treatments"}>Treatments</Nav.Link>)}
+      {showAdminBoard && (<Nav.Link href={"/users"}>Users</Nav.Link>)}
     </Nav>
     
     {currentUser ? (
@@ -96,19 +91,19 @@ class App extends Component {
             <Route exact path={["/", "/home"]} component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
-            <Route exact path="/profile" component={Profile} />
-            <Route path="/user" component={BoardUser} />
-            <Route exact path="/drugs" component={DrugsList} />
-            <Route exact path="/diseases" component={DiseasesList} />
-            <Route exact path="/treatments" component={TreatmentsList} />
-            <Route exact path="/treatments/:id" component={Treatment} />
-            <Route exact path="/users" component={UsersList} />
+            <ProtectedRoute exact path="/profile" component={Profile} roles={["admin", "pharmacist"]}/> 
+            <ProtectedRoute path="/user" component={BoardUser} roles={["admin", "pharmacist"]}/> 
+            <ProtectedRoute exact path="/drugs" component={DrugsList} roles={["admin", "pharmacist"]}/> 
+            <ProtectedRoute exact path="/diseases" component={DiseasesList} roles={["admin", "pharmacist"]}/> 
+            <ProtectedRoute exact path="/treatments" component={TreatmentsList} roles={["admin", "pharmacist"]}/> 
+            <ProtectedRoute exact path="/treatments/:id" component={Treatment} roles={["admin", "pharmacist"]}/>            
+            <ProtectedRoute path="/users" component={UsersList} roles={["admin"]}/>
           </Switch>
         </div>
         <div className="wrapper">
         <footer className='footer d-flex flex-column mt-auto py-3 bg-dark text-white navbar navbar-inverse'>
         <div className='container'>Place sticky footer content here.
-        <p class="navbar-text">© Random</p>
+        <p className="navbar-text">© Code Of Universe</p>
         </div>
       </footer>
       </div>

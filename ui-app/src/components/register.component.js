@@ -191,7 +191,7 @@ export default class Register extends Component {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="password">CPassword</label>
+                  <label htmlFor="password">Retype Password</label>
                   <Input
                     type="password"
                     className="form-control"

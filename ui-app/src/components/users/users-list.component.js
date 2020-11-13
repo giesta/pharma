@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
-import AuthService from "../../services/auth.service"; 
 import UsersDataService from "../../services/users/users.service";
-import { Table, Spinner, Modal, Button, Badge, FormControl, Form } from "react-bootstrap";
-import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
+import { Table, Spinner, Modal, Button, Form } from "react-bootstrap";
+import { BsPen, BsTrash, BsInfoCircle} from "react-icons/bs";
 
 export default function UsersTable() {
 
@@ -13,8 +12,6 @@ export default function UsersTable() {
   };
 
   const [user, setUser] = React.useState(initialUserState);
-  const [submitted, setSubmitted] = React.useState(false);
-  const [noData, setNoData] = React.useState('');
   const [users, setUsers] = React.useState({
     data: [],
   });
@@ -43,14 +40,11 @@ export default function UsersTable() {
     setShow(false);
     setValidated(false);
   };
-  const handleShow = () => setShow(true);
   const handleCloseConfirm = () => setConfirm(false);
-  const handleConfirm = () => setConfirm(true);
   const handleCloseInfo = () => {
     newUser();
     setInfo(false);
   };
-  const handleInfo = () => setInfo(true);
 
   const handleInputChange = event => {
     const { name, value } = event.target;
@@ -61,16 +55,10 @@ export default function UsersTable() {
   }, []);
   const retrieveUsers = () => {
     UsersDataService.getAll()
-      .then(response => {
-        console.log(response.data.data);
-        
+      .then(response => {        
         if(response.data.data.length !== 0){
           setUsers({...users, data: response.data.data});
-        }else{
-          setNoData("No data");
-        }
-          
-        
+        }       
       })
       .catch(e => {
         console.log(e);
@@ -98,7 +86,6 @@ export default function UsersTable() {
 });
 
 const deleteItemFromState = (id) => {
-  console.log(id);
   const updatedItems = users.data.filter(x=>x.id!==id)
   setUsers({ data: updatedItems })
 }
@@ -126,7 +113,6 @@ const updateUser = () => {
     name: user.name,
     email: user.email
   };
-  console.log(data);
   UsersDataService.update(data.id, data)
     .then(response => {
       setUser({
@@ -134,8 +120,6 @@ const updateUser = () => {
         name: response.data.data.name,
         email: response.data.data.email,
       });
-      setSubmitted(true);
-      console.log();
       handleClose();
       const updatedItems = users.data.filter(x=>x.id!==user.id)
       updatedItems.push(response.data.data);
@@ -159,14 +143,13 @@ const deleteUser = (id) => {
 
 const newUser = () => {
   setUser(initialUserState);
-  setSubmitted(false);
 };
 
 
   return (
     <div>
       {users?(
-      users.data.length===0 && noData===''?(        
+      users.data.length===0?(        
         <div className="text-center">
           <Spinner animation="grow" role="status">
             <span className="sr-only">Loading...</span>

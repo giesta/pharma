@@ -49,10 +49,10 @@ export default function CreateModal(show, handleClose, treatment, validated, han
     ):(      
         <Form.Group controlId="exampleForm.ControlSelect1">
             <Form.Label>Disease</Form.Label>
-            <Form.Control as="select" required onChange={handleInputChange} name="disease_id"> 
-                <option value="" disabled selected>Select your option</option>
+            <Form.Control as="select" required onChange={handleInputChange} name="disease_id" defaultValue={'DEFAULT'}> 
+                <option value="DEFAULT" disabled>Select your option</option>
                 {diseases.data.map((x)=>
-                    <option value={x.id}>{x.name}</option>
+                    <option key={x.id} value={x.id}>{x.name}</option>
                 )}
             </Form.Control>
             <Form.Control.Feedback type="invalid">

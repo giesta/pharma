@@ -77,7 +77,7 @@ export default class Register extends Component {
   }
   vconfirmPassword = (confirm_password) => {
     if (this.state.password !== undefined && confirm_password !== undefined) {
-      if (this.state.password != confirm_password) {
+      if (this.state.password !== confirm_password) {
       return (
         <div className="alert alert-danger" role="alert">
           Passwords do not match.

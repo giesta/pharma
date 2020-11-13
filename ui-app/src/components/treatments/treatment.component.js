@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
 import DrugsDataService from "../../services/diseases/disease.drug.service";
-import { Col, Row, Spinner, Modal, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form } from "react-bootstrap";
-import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
+import Spinner from "../layout/spinner.component";
+import { Col, Row, Modal, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form } from "react-bootstrap";
 
 export default function Treatment(props) {
 
@@ -29,131 +29,94 @@ export default function Treatment(props) {
   const [currentDrugs, setCurrentDrugs] = React.useState([]);
   const [drug, setDrug] = React.useState(initialDrugState);
   const [show, setShow] = React.useState(false);
-  const [submitted, setSubmitted] = React.useState(false);
-  const [selectedFile, setSelectedFile] = React.useState(null);
-  const [noData, setNoData] = React.useState('');
-  const [images, setImages] = React.useState([]);
-  const [url, setUrl] = React.useState(null);
-  const [id, setId] = React.useState(0);
-  const [confirm, setConfirm] = React.useState(false);
-  const [info, setInfo] = React.useState(false);
-
-  
-  const handleShow = () => setShow(true);
-  const handleCloseConfirm = () => setConfirm(false);
-  const handleConfirm = () => setConfirm(true);
+ 
   const handleClose = () =>{
     newDrug();
     setShow(false);
   };
   const newDrug = () => {
     setDrug(initialDrugState);
-    setSubmitted(false);
   };
   useEffect(()=>{
+    
         getTreatment(props.match.params.id);
   }, [props.match.params.id]);
-  const getTreatment = (id) => {
+  const getTreatment = useCallback((id)=> {
     TreatmentsDataService.get(id)
-      .then(response => {   
-        //console.log(response.data.data)     
-        if(response.data.data.length !== 0){
+      .then(response => {
+        if (response.data.data.length !== 0) {
           setCurrentTreatment(response.data.data);
           getDrugs(response.data.data.disease.id);
-        }else{
-          setNoData("No data");
-        }       
+        }
       })
       .catch(e => {
         console.log(e);
       });
-  };
+  });
+  
   const getDrugs = (id) => {
     DrugsDataService.get(id)
-      .then(response => {   
-        //console.log(response.data.data)     
+      .then(response => {    
         if(response.data.data.length !== 0){
           setCurrentDrugs(...currentDrugs, response.data.data);
-        }else{
-          setNoData("No data");
-        }       
+        }      
       })
       .catch(e => {
         console.log(e);
       });
   };
-
-
-const newTreatment = () => {
-  setCurrentTreatment(initialTreatmentState);
-  setSubmitted(false);
-};
-
-
   return (
     <div>
       {currentTreatment?(
       currentTreatment.disease===null?(        
-        <div className="text-center">
-          <Spinner animation="grow" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </div>
+        <Spinner></Spinner>
       ):(        
-      <div className="container">  
-      
+      <div className="container">     
       <>
       <Row>
         <Col md={{ span: 6, offset: 3 }}><Image src={currentTreatment.algorithm} fluid/></Col>        
-        </Row>
-        <Row>
+      </Row>
+      <Row>
         <Col className="mt-1" md={{ span: 6, offset: 3 }}>
-        <Jumbotron fluid>
-        <Container>
-          <h1>{currentTreatment.title}</h1>
-          <p>
-            {currentTreatment.description}
-          </p>
-        </Container>
-      </Jumbotron>
+         <Jumbotron fluid>
+          <Container>
+            <h1>{currentTreatment.title}</h1>
+            <p>
+              {currentTreatment.description}
+            </p>
+          </Container>
+         </Jumbotron>
           </Col>        
         </Row>
-    <Row className="justify-content-md-center">
-    <Col md="auto">
-    <ListGroup className="mt-1">
-      <ListGroup.Item variant="light">Drugs</ListGroup.Item>
-      {currentDrugs.drugs!==undefined?currentDrugs.drugs.map((field)=>
-      <ListGroup.Item action onClick={function(event){ setDrug(field); setShow(true)}}>{field.name}</ListGroup.Item>
-      ):''}
-    </ListGroup>
-    </Col>
-    
-      
-    
-    <Col md="auto">
-    {currentTreatment.disease!==null?(
-    <Card border="light" className="mt-1" style={{ width: '18rem' }}>
-  <Card.Body>
-    <Card.Title>Disease</Card.Title>
-    <Card.Subtitle className="mb-2 text-muted">{currentTreatment.disease.name}</Card.Subtitle>
-    <Card.Text>
-    <div>
+      <Row className="justify-content-md-center">
+        <Col md="auto">
+         <ListGroup className="mt-1">
+         <ListGroup.Item variant="light">Drugs</ListGroup.Item>
+          {currentDrugs.drugs!==undefined&&currentDrugs.drugs.map((field)=>
+         <ListGroup.Item key={field.id} action onClick={function(event){ setDrug(field); setShow(true)}}>{field.name}</ListGroup.Item>
+          )}
+          </ListGroup>
+        </Col>   
+        <Col md="auto">
+          {currentTreatment.disease!==null&&(
+        <Card border="light" className="mt-1" style={{ width: '18rem' }}>
+          <Card.Body>
+          <Card.Title>Disease</Card.Title>
+          <Card.Subtitle className="mb-2 text-muted">{currentTreatment.disease.name}</Card.Subtitle>
+          <Card.Text>
               <label>
                 <strong>Description:</strong>
               </label>{" "}
-              {currentTreatment.disease.description}
-            </div>
-    <div>
+                {currentTreatment.disease.description}
               <label>
                 <strong>Symptoms:</strong>
               </label>{" "}
               <Badge variant="secondary">{currentTreatment.disease.symptoms}</Badge>
-              </div>
-    </Card.Text>
-  </Card.Body>
-</Card>):('')}
-    </Col>
-  </Row>
+          </Card.Text>
+          </Card.Body>
+        </Card>)}
+        </Col>
+      </Row>
       
   <Modal show={show} onHide={handleClose}>
   <Modal.Header closeButton>
@@ -208,7 +171,7 @@ const newTreatment = () => {
   </div>  )
     ):(<div>
       <br />
-      <p>Please click on a Tutorial...</p>
+      <p>Some Went Wrong...</p>
     </div>)
       
     }</div>

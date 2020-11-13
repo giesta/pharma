@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 
 import { Table } from "react-bootstrap";
 
@@ -6,16 +6,16 @@ export default function TableOfItems(columns, treatments, GetActionFormat) {
 
     return (
         <Table striped bordered hover responsive="xl">
-        <thead>
-          <tr>
-            {columns.map((field)=>
-              <th>{field.text}</th>
-            )}
-          </tr>
-        </thead>
-        <tbody>      
-        {
-        treatments.data.map((field, count=0)=>
+          <thead>
+            <tr>
+              {columns.map((field)=>
+                <th>{field.text}</th>
+              )}
+            </tr>
+          </thead>
+          <tbody>      
+          {
+            treatments.data.map((field, count=0)=>
               <tr>
               <td>{++count}</td>
               <td>{field.title}</td>
@@ -24,7 +24,7 @@ export default function TableOfItems(columns, treatments, GetActionFormat) {
               {GetActionFormat(field)}
             </tr>
             )  
-        }
+          }
         </tbody>
       </Table>
     );

@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from 'react';
+import React from 'react';
 
-import { Switch, Route, Redirect } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 
 import AuthService from "./auth.service";
 

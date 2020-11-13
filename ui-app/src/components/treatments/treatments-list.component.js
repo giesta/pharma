@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
 import DiseasesDataService from "../../services/diseases/list.service";
-import TreatmentTable from "../table.component.js";
-import TreatmentDelete from "../delete-modal.component.js";
-import { Table, Spinner, Modal, Button, InputGroup, FormControl, Form, Image } from "react-bootstrap";
+import TreatmentTable from "./table.component";
+import TreatmentDelete from "../delete-modal.component";
+import TreatmentCreateUpdate from "./create-update-modal.component";
+import TreatmentInfo from "./info-modal.component";
+import Spinner from "../layout/spinner.component";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
-export default function MaterialTableDemo() {
+
+export default function TreatmentList() {
 
   const initialTreatmentState = {  
     id: null,  
@@ -16,14 +19,30 @@ export default function MaterialTableDemo() {
     disease_id: "",
     disease: null
   };
+  const columns = [{  
+      dataField: '',  
+      text: 'No' },  
+    {  
+      dataField: 'title',  
+      text: 'Title',  
+      sort:true}, {  
+      dataField: 'description',  
+      text: 'Description',  
+      sort: true  }, {  
+      dataField: 'disease',  
+      text: 'Disease',  
+      sort: true  },   
+      {
+      text: 'Actions',
+      dataField: 'Actions',
+      editable: false 
+    }
+  ];
 
   const [treatment, setTreatment] = React.useState(initialTreatmentState);
-  const [submitted, setSubmitted] = React.useState(false);
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [noData, setNoData] = React.useState('');
-  const [images, setImages] = React.useState([]);
   const [url, setUrl] = React.useState(null);
-  const maxNumber = 69;
 
   const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
@@ -45,31 +64,18 @@ export default function MaterialTableDemo() {
         updateTreatment();
       } 
     }
-
-    setValidated(true);
-       
+    setValidated(true);       
   };
-
-  const onChange = (imageList, addUpdateIndex) => {
-    // data for submit
-    console.log(imageList, addUpdateIndex);
-    setImages(imageList);
-  };
-  
-
   const handleClose = () =>{
     newTreatment();
     setShow(false);
     setValidated(false);
   };
-  const handleShow = () => setShow(true);
   const handleCloseConfirm = () => setConfirm(false);
-  const handleConfirm = () => setConfirm(true);
   const handleCloseInfo = () => {
     newTreatment();
     setInfo(false);
   };
-  const handleInfo = () => setInfo(true);
   const [Treatments, setTreatments] = React.useState({
     data: [],
   });
@@ -77,28 +83,24 @@ export default function MaterialTableDemo() {
     data: [],
   });
   const handleInputChange = event => {
-    const { name, value } = event.target;
-    
+    const { name, value } = event.target;    
     if(event.target.files!==undefined && event.target.files!==null ){
-      //console.log("Yra");
         setSelectedFile(event.target.files[0]);
-        //console.log(event.target.files[0]);
         setUrl(URL.createObjectURL(event.target.files[0]));
-    }
-    
+    }    
     setTreatment({ ...treatment, [name]: value });
     console.log(treatment);
   };
   useEffect(()=>{
+    
         retrieveTreatments();        
   }, []);
-  const retrieveTreatments = () => {
+
+  const retrieveTreatments = useCallback(() => {
     TreatmentsDataService.getAll()
-      .then(response => {   
-        //console.log(response.data.data)     
+      .then(response => {    
         if(response.data.data.length !== 0){
-          setTreatments({...Treatments, data: response.data.data});
-          
+          setTreatments({...Treatments, data: response.data.data});          
         }else{
           setNoData("No data");
         }  
@@ -107,8 +109,8 @@ export default function MaterialTableDemo() {
       .catch(e => {
         console.log(e);
       });
-  };
-
+  });
+  
   const retrieveDiseases = () => {
     DiseasesDataService.getAll()
       .then(response => {        
@@ -122,11 +124,10 @@ export default function MaterialTableDemo() {
         console.log(e);
       });
   };
-
   const GetActionFormat = useCallback((row) =>{
     
     return (
-        <td class="table-col">
+        <td className="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
               function(event){ setTreatment(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
@@ -148,27 +149,6 @@ const deleteItemFromState = (id) => {
   const updatedItems = Treatments.data.filter(x=>x.id!==id)
   setTreatments({ data: updatedItems })
 }
-
-const columns = [{  
-    dataField: '',  
-    text: 'No' },  
-  {  
-    dataField: 'title',  
-    text: 'Title',  
-    sort:true}, {  
-    dataField: 'description',  
-    text: 'Description',  
-    sort: true  }, {  
-    dataField: 'disease',  
-    text: 'Disease',  
-    sort: true  },   
-    {
-    text: 'Actions',
-    dataField: 'Actions',
-    editable: false 
- }
-];
-
 const saveTreatment = () => {
     const data = new FormData();
     data.append('Content-Type','multipart/formdata');
@@ -186,7 +166,6 @@ TreatmentsDataService.create(data)
         algorithm: response.data.data.algorithm,
         disease: response.data.data.disease
       });
-      setSubmitted(true);
       setUrl(null);
       handleClose();
       Treatments.data.push(response.data.data);
@@ -201,7 +180,6 @@ const updateTreatment = () => {
   const data = new FormData();
   data.append('Content-Type','multipart/formdata');
   data.append('_method', 'PUT');
-  console.log(treatment);
   if(selectedFile!==null){
       data.append("algorithm", selectedFile);        
   } 
@@ -219,7 +197,6 @@ const updateTreatment = () => {
         algorithm: response.data.data.algorithm,
         disease: response.data.data.disease
       });
-      setSubmitted(true);
       setUrl(null);
       handleClose();
       const updatedItems = Treatments.data.filter(x=>x.id!==treatment.id)
@@ -241,13 +218,9 @@ const deleteTreatment = (id) => {
       console.log(e);
     });
 };
-
 const newTreatment = () => {
   setTreatment(initialTreatmentState);
-  setSubmitted(false);
 };
-
-
   return (
     <div><div className="mb-3">
     <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
@@ -257,136 +230,24 @@ const newTreatment = () => {
     </div>
       {Treatments?(
       Treatments.data.length===0 && noData===''?(        
-        <div className="text-center">
-          <Spinner animation="grow" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </div>
+        <Spinner></Spinner>
       ):(        
       <div className="container">  
       
       <>
- {TreatmentTable(columns, Treatments, GetActionFormat)}
+  {TreatmentTable(columns, Treatments, GetActionFormat)}
 
-<Modal show={show} onHide={handleClose}>
-  <Modal.Header closeButton>
-    <Modal.Title>Treatment info {treatment.id}</Modal.Title>
-  </Modal.Header>
-  <Form encType="multipart/form-data" noValidate validated={validated} onSubmit={handleSubmit}>
-  <Modal.Body>  
-  <Form.Group >   
-  {treatment.id===null?(<Form.Control type = "file" id="exampleFormControlFile1"  label="Algorithm" required onChange={handleInputChange} name="algorithm"/> ):(<Form.Control type = "file" id="exampleFormControlFile1"  label="Algorithm" onChange={handleInputChange} name="algorithm"/> )} 
-       
-    <Form.Control.Feedback type="invalid">
-    File is a required field.
-    </Form.Control.Feedback>
-    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-  </Form.Group>  
-  {url===null?(<Image src={treatment.algorithm} fluid/>):(<Image src={url} fluid/>)}
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Title</Form.Label>
-    <Form.Control required type="text" placeholder=""  value={treatment.title} onChange={handleInputChange} name="title"/>
-    <Form.Control.Feedback type="invalid">
-    Title is a required field.
-    </Form.Control.Feedback>
-    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-  </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Description</Form.Label>
-    <Form.Control type="text" as="textarea" placeholder="" required value={treatment.description} onChange={handleInputChange} name="description"/>
-    <Form.Control.Feedback type="invalid">
-      Description is a required field.
-    </Form.Control.Feedback>
-    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-  </Form.Group>
-  
-    {treatment.disease!==null?(
-      <Form.Group controlId="exampleForm.ControlSelect1">
-      <Form.Label>Disease</Form.Label>     
-    <Form.Control as="select" required defaultValue={treatment.disease.id} onChange={handleInputChange} name="disease_id"> 
-    {Diseases.data.map((x)=>
-        <option value={x.id}>{x.name}</option>
-      )  
-  }
-  </Form.Control>
-  <Form.Control.Feedback type="invalid">
-      Description is a required field.
-    </Form.Control.Feedback>
-  </Form.Group>
-    ):(
-      
-    <Form.Group controlId="exampleForm.ControlSelect1"> {console.log("nera")}
-    <Form.Label>Disease</Form.Label>
-  <Form.Control as="select" required onChange={handleInputChange} name="disease_id"> 
-  <option value="" disabled selected>Select your option</option>
-  {Diseases.data.map((x)=>
-      <option value={x.id}>{x.name}</option>
-    )  
-}
-</Form.Control>
-<Form.Control.Feedback type="invalid">
-      Disease is a required field.
-    </Form.Control.Feedback>
-<Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-</Form.Group>)}  
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          {treatment.id===null?(<Button variant="primary" onClick={handleSubmit}>
-            Create Treatment
-          </Button>):(<Button variant="primary" onClick={handleSubmit}>
-            Update Treatment
-          </Button>)}          
-        </Modal.Footer>
-        </Form>
-      </Modal>
+  {TreatmentCreateUpdate(show, handleClose, treatment, validated, handleSubmit, handleInputChange, Diseases, url)}
       
   {TreatmentDelete(id, "Treatment", deleteTreatment, handleCloseConfirm, confirm)}
 
-      <Modal show={info} onHide={handleCloseInfo}>
-  <Modal.Header closeButton>
-    <Modal.Title>Info</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-  <Form>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Algorithm</Form.Label>
-    <Form.Control type="text" placeholder="" value={treatment.algorithm} onChange={handleInputChange} disabled name="algorithm"/>
-  </Form.Group>  
-  <Image src={treatment.algorithm} fluid/>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Title</Form.Label>
-    <Form.Control type="text" placeholder="" value={treatment.title} onChange={handleInputChange} disabled name="title"/>
-  </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Description</Form.Label>
-    <Form.Control type="text" as="textarea" placeholder="" value={treatment.description} onChange={handleInputChange} disabled name="description"/>
-  </Form.Group>
-  {
-    treatment.disease!== null?(<Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Disease</Form.Label>
-    <Form.Control type="text" placeholder="" value={treatment.disease.name} onChange={handleInputChange} disabled name="algorithm"/>
-  </Form.Group>):(<Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Disease</Form.Label>
-    <Form.Control type="text" placeholder="" onChange={handleInputChange} disabled name="algorithm"/>
-  </Form.Group>)
-  } 
-</Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseInfo}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+  {TreatmentInfo(info, treatment, handleCloseInfo)}
       
 </>
   </div>  )
     ):(<div>
       <br />
-      <p>Please click on a Tutorial...</p>
+      <p>Some Went Wrong...</p>
     </div>)
       
     }</div>

@@ -4,11 +4,8 @@ import { Switch, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import { Navbar, NavItem, NavDropdown, MenuItem, Nav } from 'react-bootstrap';
-
 import ProtectedRoute from "./services/private-route"
 import AuthService from "./services/auth.service";
-
 
 import Login from "./components/login.component";
 import Register from "./components/register.component";
@@ -20,7 +17,8 @@ import DiseasesList from "./components/diseases/diseases-list.component";
 import TreatmentsList from "./components/treatments/treatments-list.component";
 import Treatment from "./components/treatments/treatment.component";
 import UsersList from "./components/users/users-list.component";
-import Footer from "./components/footer.component";
+import Footer from "./components/layout/footer.component";
+import MainNavbar from "./components/layout/navbar.component";
 
 class App extends Component {
   constructor(props) {
@@ -56,37 +54,9 @@ class App extends Component {
     return (
       
       <div>
-   <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-  <Navbar.Brand href="https://www.youtube.com/watch?v=6B_6K-splRU">Code Of Universe</Navbar.Brand>
-  <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-  <Navbar.Collapse id="responsive-navbar-nav">
 
-    <Nav className="mr-auto">
-    <Nav.Link href={"/"}>Home</Nav.Link>
-      {(showPharmacistBoard ||showAdminBoard) && (<Nav.Link href={"/drugs"}>Drugs</Nav.Link>)}
-      {(showPharmacistBoard ||showAdminBoard) && (<Nav.Link href={"/diseases"}>Diseases</Nav.Link>)}
-      {(showPharmacistBoard ||showAdminBoard) && (<Nav.Link href={"/treatments"}>Treatments</Nav.Link>)}
-      {showAdminBoard && (<Nav.Link href={"/users"}>Users</Nav.Link>)}
-    </Nav>
-    
-    {currentUser ? (
-      <Nav>
-              <Nav.Link href={"/profile"}>{currentUser.user.name}</Nav.Link>
-              <Nav.Link eventKey={2} href="/login" onClick={this.logOut}>
-              LogOut
-      </Nav.Link>
-      </Nav>
-          ) : (
-<Nav>
-              <Nav.Link href={"/login"}>Login</Nav.Link>
-              <Nav.Link eventKey={2} href={"/register"}>
-              Sign Up
-      </Nav.Link>
-      </Nav>            
-          )}
-    
-  </Navbar.Collapse>
-</Navbar>        
+   {MainNavbar(showPharmacistBoard, showAdminBoard, currentUser, this.logOut)} 
+
         <div className="container main-container mt-3">
           <Switch>
             <Route exact path={["/", "/home"]} component={Home} />

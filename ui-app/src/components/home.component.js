@@ -25,9 +25,8 @@ export default function HomePage() {
 }, []);
 
 const retrieveTreatments = () => {
-  TreatmentsDataService.getAll()
-    .then(response => {   
-      //console.log(response.data.data)     
+  TreatmentsDataService.getAllPublic()
+    .then(response => {    
       if(response.data.data.length !== 0){
         setTreatments({...Treatments, data: response.data.data});
       }else{

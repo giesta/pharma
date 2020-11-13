@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -27,9 +28,8 @@ Route::group([
     Route::post('login', 'JwtAuthController@login');
     Route::post('register', 'JwtAuthController@register');
     Route::post('refresh', 'JwtAuthController@refresh');
+    
 });
-
-//Route::get('auth/refresh', ['middleware' => 'jwt.refresh', function() {}]);
 
 
 Route::group([
@@ -38,10 +38,7 @@ Route::group([
     'namespace' => 'App\Http\Controllers\Auth'
 ],function($router){
     Route::get('logout', 'JwtAuthController@logout');
-    Route::get('getMe', 'JwtAuthController@getMe');
-    //Route::get('refresh', 'JwtAuthController@refresh');
-    //Route::resource('users', JwtAuthController::class);
-    
+    Route::get('getMe', 'JwtAuthController@getMe');    
 });
 
 
@@ -57,5 +54,12 @@ Route::group(['middleware' => 'jwt.auth',
     Route::apiResource('users', UserController::class);
 
     Route::apiResource('treatments', TreatmentController::class);
+
+});
+Route::group(['namespace' => 'App\Http\Controllers\Api',
+
+], function () {
+
+    Route::get('treatments', 'TreatmentController@index');
 
 });

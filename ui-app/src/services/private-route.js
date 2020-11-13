@@ -9,7 +9,7 @@ export default function PrivateRoute({ component: Component, roles, ...rest }) {
       <Route
         {...rest}
         render={props =>
-            roles.some(cred=> cred === AuthService.getCurrentUser().user.role) ? (
+           AuthService.getCurrentUser()!==null && roles.some(cred=> cred === AuthService.getCurrentUser().user.role) ? (
             <Component {...props} />
           ) : (
             <Redirect

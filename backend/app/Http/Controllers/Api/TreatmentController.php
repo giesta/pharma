@@ -28,10 +28,12 @@ class TreatmentController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
+        if($user !== null && $user->role ==="admin"){
             return TreatmentResource::collection(Treatment::all());
-        }else{
+        }else if($user !== null && $user->role ==="pharmacist"){
             return TreatmentResource::collection($user->treatments);  
+        }else{
+            return TreatmentResource::collection(Treatment::all());
         }      
     }
 

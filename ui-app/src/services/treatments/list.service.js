@@ -1,4 +1,10 @@
 import http from "../../http-common";
+import httpPublic from "../../http-public";
+
+
+const getAllPublic = () => {
+  return httpPublic.get("/treatments");
+};
 
 const getAll = () => {
   return http.get("/treatments");
@@ -29,6 +35,7 @@ const findByName = name => {
 };
 
 export default {
+  getAllPublic,
   getAll,
   get,
   create,

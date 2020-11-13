@@ -20,6 +20,7 @@ import DiseasesList from "./components/diseases/diseases-list.component";
 import TreatmentsList from "./components/treatments/treatments-list.component";
 import Treatment from "./components/treatments/treatment.component";
 import UsersList from "./components/users/users-list.component";
+import Footer from "./components/footer.component";
 
 class App extends Component {
   constructor(props) {
@@ -100,13 +101,7 @@ class App extends Component {
             <ProtectedRoute path="/users" component={UsersList} roles={["admin"]}/>
           </Switch>
         </div>
-        <div className="wrapper">
-        <footer className='footer d-flex flex-column mt-auto py-3 bg-dark text-white navbar navbar-inverse'>
-        <div className='container'>Place sticky footer content here.
-        <p className="navbar-text">© Code Of Universe</p>
-        </div>
-      </footer>
-      </div>
+        <Footer></Footer>
       </div>
     );
   }

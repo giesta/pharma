@@ -1,7 +1,6 @@
-import React, { useCallback, useEffect } from 'react';
+import React, {useEffect } from 'react';
 
 import TreatmentsDataService from "../services/treatments/list.service";
-import UserService from "../services/user.service";
 import TreatmentCard from "./treatments/treatment-card.component";
 import {CardDeck, CardColumns } from "react-bootstrap";
 

@@ -8,14 +8,10 @@ export default function TreatmentCard(props) {
              <Card style={{ width: '18rem' },{flex:1}}>
              <Card.Img variant="top" src={props.algorithm} style={{height: '40vh'}} />
              <Card.Body>
-               <Card.Title>{props.title}</Card.Title>
-               <Card.Text style={{height: '10vh'}}>
-                 {props.description}
-               </Card.Text>
+               <Card.Title>{props.title}</Card.Title>               
              </Card.Body>
              <ListGroup className="list-group-flush">
         <ListGroupItem>{props.disease.name}</ListGroupItem>
-            <ListGroupItem>{props.disease.description}</ListGroupItem>
             <ListGroupItem>{props.disease.symptoms}</ListGroupItem>               
              </ListGroup>
              <Card.Body>

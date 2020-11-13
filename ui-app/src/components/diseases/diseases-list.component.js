@@ -99,11 +99,11 @@ export default function DiseasesTable() {
         
         if(response.data.data.length !== 0){
           setDiseases({...diseases, data: response.data.data});
-          retrieveDrugs();
+          
         }else{
           setNoData("No data");
         }
-          
+          retrieveDrugs();
         
       })
       .catch(e => {

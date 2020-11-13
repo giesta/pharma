@@ -24,7 +24,7 @@ class UserFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'email' => 'a@a.com',
+            'email' => 'c@c.com',
             'email_verified_at' => now(),
             'password' => '$2y$10$no1oQTjlEGGl0syZga85CuDE/lvlJQ2Si3mftIAanl6BiZiWAm0r2', // password
             'role' => 'admin',

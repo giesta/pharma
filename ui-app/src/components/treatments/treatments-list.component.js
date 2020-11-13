@@ -98,10 +98,11 @@ export default function MaterialTableDemo() {
         //console.log(response.data.data)     
         if(response.data.data.length !== 0){
           setTreatments({...Treatments, data: response.data.data});
-          retrieveDiseases();
+          
         }else{
           setNoData("No data");
-        }       
+        }  
+        retrieveDiseases();     
       })
       .catch(e => {
         console.log(e);

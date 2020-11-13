@@ -20,7 +20,7 @@ class Treatment extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'algorithm' => url().Storage::url($this->algorithm),
+            'algorithm' => config('app.url').Storage::url($this->algorithm),
             'disease' => new DiseaseResource($this->disease),
         ];
     }

@@ -1,6 +1,10 @@
 import React, { useCallback, useEffect } from 'react';
 import UsersDataService from "../../services/users/users.service";
-import { Table, Spinner, Modal, Button, Form } from "react-bootstrap";
+import UserDelete from "../delete-modal.component";
+import UserInfo from "./info-modal.component";
+import UserUpdate from "./create-update-modal.component";
+import UsersTable from "./table.component";
+import Spinner from "../layout/spinner.component";
 import { BsPen, BsTrash, BsInfoCircle} from "react-icons/bs";
 
 export default function UsersTable() {
@@ -68,7 +72,7 @@ export default function UsersTable() {
   const GetActionFormat = useCallback((row) =>{
     
     return (
-      <td class="table-col">
+      <td className="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
               function(event){ setUser(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
@@ -150,111 +154,18 @@ const newUser = () => {
     <div>
       {users?(
       users.data.length===0?(        
-        <div className="text-center">
-          <Spinner animation="grow" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </div>
+        <Spinner></Spinner>
       ):(        
-      <div className="container">  
-      
+      <div className="container">        
       <>
- <Table striped bordered hover responsive="lg">
-  <thead>
-    <tr>
-      {columns.map((field)=>
-        <th>{field.text}</th>
-      )}
-    </tr>
-  </thead>
-  <tbody>
+      {UsersTable(columns, users, GetActionFormat)}
 
-  {users.data.map((field)=>
-        <tr>
-        <td>{field.id}</td>
-        <td>{field.name}</td>
-        <td>{field.email}</td>
-        {GetActionFormat(field)}
-      </tr>
-      )  
-  }
-  </tbody>
-</Table>
-<Modal show={show} onHide={handleClose}>
-  <Modal.Header closeButton>
-    <Modal.Title>Drug info {user.id}</Modal.Title>
-  </Modal.Header>
-  <Form noValidate validated={validated} onSubmit={handleSubmit}> 
-  <Modal.Body>  
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Name</Form.Label>
-    <Form.Control type="text" placeholder="" required value={user.name} onChange={handleInputChange} name="name"/>
-    <Form.Control.Feedback type="invalid">
-      Name is a required field.
-    </Form.Control.Feedback>
-    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-  </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Email</Form.Label>
-    <Form.Control type="email" placeholder="" required value={user.email} onChange={handleInputChange} name="email"/>
-    <Form.Control.Feedback type="invalid">
-      Email is a required field.
-    </Form.Control.Feedback>
-    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-  </Form.Group>
- 
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          {<Button  variant="primary" onClick={handleSubmit}>
-            Update User
-          </Button>}          
-        </Modal.Footer>
-        </Form>
-      </Modal>
+      { UsersUpdate(show, handleClose, user, validated, handleSubmit, handleInputChange) }
 
-  <Modal show={confirm} onHide={handleCloseConfirm} id = {id}>
-  <Modal.Header closeButton>
-    <Modal.Title>User Delete {id}</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-  Are you sure?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseConfirm}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={()=>deleteUser(id)}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      { UsersDelete(id, "User", deleteUser, handleCloseConfirm, confirm) }
 
-      <Modal show={info} onHide={handleCloseInfo}>
-  <Modal.Header closeButton>
-    <Modal.Title>User info {user.id}</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-  <Form>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Name</Form.Label>
-    <Form.Control type="text" placeholder="" required value={user.name} onChange={handleInputChange} disabled name="name"/>
-  </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Email</Form.Label>
-    <Form.Control type="text" placeholder="" required  value={user.email} onChange={handleInputChange} disabled name="substance"/>
-  </Form.Group>  
-  
-</Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseInfo}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      { UsersInfo(info, user, handleCloseInfo) }     
+      
       
 </>
   </div>  )

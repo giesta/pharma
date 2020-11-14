@@ -188,7 +188,7 @@ const updateDisease = () => {
     });
 };
 
-const deleteDisease = (id) => {
+const deleteItem = (id) => {
   diseasesDataService.remove(id)
     .then(() => {
       deleteItemFromState(id);
@@ -215,10 +215,10 @@ const newDisease = () => {
       ):(        
       <div className="container">        
       <> 
-      { DiseasesTable(columns, diseases, GetActionFormat) }
-      { DiseaseCreateUpdate(show, handleClose, disease, validated, handleSubmit, handleInputChange, drugs, AddSelectedDrugs) }
-      { DiseaseDelete(id, "Disease", deleteDisease, handleCloseConfirm, confirm) }
-      { DiseaseInfo(info, disease, handleCloseInfo) }      
+      <DiseasesTable columns ={columns} diseases={diseases} GetActionFormat={GetActionFormat}></DiseasesTable>
+      { show && <DiseaseCreateUpdate show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} drugs={drugs} AddSelectedDrugs={AddSelectedDrugs}></DiseaseCreateUpdate> }
+      { confirm && <DiseaseDelete id={id} name={"Drug"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiseaseDelete> }
+      { info && <DiseaseInfo info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }    
 </>
   </div>  )
     ):(<div>

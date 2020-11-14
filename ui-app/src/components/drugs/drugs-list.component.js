@@ -248,16 +248,13 @@ const newDrug = () => {
         <Spinner></Spinner>
       ):(        
       <div className="container">  
-      
-      <>
       <DrugsTable columns ={columns} drugs = {drugs} GetActionFormat={GetActionFormat}></DrugsTable>
 
       { show && <DrugCreateUpdate show ={show} handleClose={handleClose} drug={drug} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} diseases={diseases} AddSelectedDiseases={AddSelectedDiseases}></DrugCreateUpdate> }
 
       { confirm &&<DrugDelete id={id} name={"Drug"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DrugDelete> }
 
-      { info &&<DrugInfo info = {info} drug = {drug} handleCloseInfo={handleCloseInfo}></DrugInfo> }      
-</>
+      { info &&<DrugInfo info = {info} drug = {drug} handleCloseInfo={handleCloseInfo}></DrugInfo> }
   </div>  )
     ):(<div>
       <br />

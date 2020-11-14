@@ -2,12 +2,12 @@ import React, { useCallback, useEffect } from 'react';
 import UsersDataService from "../../services/users/users.service";
 import UserDelete from "../delete-modal.component";
 import UserInfo from "./info-modal.component";
-import UserUpdate from "./create-update-modal.component";
+import UserUpdate from "./update-modal.component";
 import UsersTable from "./table.component";
 import Spinner from "../layout/spinner.component";
 import { BsPen, BsTrash, BsInfoCircle} from "react-icons/bs";
 
-export default function UsersTable() {
+export default function UsersList() {
 
   const initialUserState = {  
     id: null,  
@@ -95,8 +95,8 @@ const deleteItemFromState = (id) => {
 }
 
 const columns = [{  
-    dataField: 'id',  
-    text: 'Id' },  
+    dataField: 'no',  
+    text: 'No' },  
   {  
     dataField: 'name',  
     text: 'Name',  
@@ -160,11 +160,11 @@ const newUser = () => {
       <>
       {UsersTable(columns, users, GetActionFormat)}
 
-      { UsersUpdate(show, handleClose, user, validated, handleSubmit, handleInputChange) }
+      { UserUpdate(show, handleClose, user, validated, handleSubmit, handleInputChange) }
 
-      { UsersDelete(id, "User", deleteUser, handleCloseConfirm, confirm) }
+      { UserDelete(id, "User", deleteUser, handleCloseConfirm, confirm) }
 
-      { UsersInfo(info, user, handleCloseInfo) }     
+      { UserInfo(info, user, handleCloseInfo) }     
       
       
 </>

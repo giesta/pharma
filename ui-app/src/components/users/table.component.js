@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Table } from "react-bootstrap";
 
-export default function TableOfItems(columns, drugs, GetActionFormat) {
+export default function TableOfItems(columns, users, GetActionFormat) {
 
     return (
         <Table striped bordered hover responsive="lg">

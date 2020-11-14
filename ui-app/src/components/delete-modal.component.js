@@ -16,7 +16,7 @@ export default function ModalDelete(props) {
           <Button variant="secondary" onClick={props.handleCloseConfirm}>
             Close
           </Button>
-          <Button variant="primary" onClick={()=>props.deleteTreatment(props.id)}>
+          <Button variant="primary" onClick={()=>props.deleteItem(props.id)}>
             Delete
           </Button>
         </Modal.Footer>

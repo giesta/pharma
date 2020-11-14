@@ -2,9 +2,9 @@ import React from 'react';
 
 import { Modal, Button, Form, Badge} from "react-bootstrap";
 
-export default function InfoModal(info, drug, handleCloseInfo) {
+export default function InfoModal(props) {
     return (
-        <Modal show={info} onHide={handleCloseInfo}>
+        <Modal show={props.info} onHide={props.handleCloseInfo}>
             <Modal.Header closeButton>
                 <Modal.Title>Drug info</Modal.Title>
             </Modal.Header>
@@ -12,31 +12,31 @@ export default function InfoModal(info, drug, handleCloseInfo) {
                 <Form>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={drug.name} disabled name="name"/>
+                        <Form.Control type="text" placeholder="" required value={props.drug.name} disabled name="name"/>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Substance</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={drug.substance} disabled name="substance"/>
+                        <Form.Control type="text" placeholder="" required value={props.drug.substance} disabled name="substance"/>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Indication</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={drug.indication} disabled name="indication"/>
+                        <Form.Control type="text" placeholder="" required value={props.drug.indication} disabled name="indication"/>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Contraindication</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={drug.contraindication} disabled name="contraindication"/>
+                        <Form.Control type="text" placeholder="" required value={props.drug.contraindication} disabled name="contraindication"/>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Adverse effect</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={drug.reaction} disabled name="reaction"/>
+                        <Form.Control type="text" placeholder="" required value={props.drug.reaction} disabled name="reaction"/>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Use</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={drug.use} disabled name="use"/>
+                        <Form.Control type="text" placeholder="" required value={props.drug.use} disabled name="use"/>
                     </Form.Group>
-                        {(drug.diseases!==null && drug.diseases!==undefined)&&(<Form.Group controlId="exampleForm.ControlInput1">
+                        {(props.drug.diseases!==null && props.drug.diseases!==undefined)&&(<Form.Group controlId="exampleForm.ControlInput1">
                             <Form.Label>Diseases</Form.Label>
-                            {drug.diseases.map((x)=>
+                            {props.drug.diseases.map((x)=>
                                 <Badge pill variant="dark">
                                     {x.name}
                                     </Badge>
@@ -47,7 +47,7 @@ export default function InfoModal(info, drug, handleCloseInfo) {
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleCloseInfo}>
+                <Button variant="secondary" onClick={props.handleCloseInfo}>
                     Close
                 </Button>
             </Modal.Footer>

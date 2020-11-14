@@ -204,7 +204,7 @@ const updateTreatment = () => {
     });
 };
 
-const deleteTreatment = (id) => {
+const deleteItem = (id) => {
   TreatmentsDataService.remove(id)
     .then(() => {
       deleteItemFromState(id);
@@ -235,7 +235,7 @@ const newTreatment = () => {
 
   { show&&<TreatmentCreateUpdate show ={show} handleClose={handleClose} treatment={treatment} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} Diseases={Diseases} url={url}></TreatmentCreateUpdate>}
       
-  {confirm&&< TreatmentDelete id={id} name={"Treatment"} deleteTreatment={deleteTreatment} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ TreatmentDelete>}
+  {confirm&&< TreatmentDelete id={id} name={"Treatment"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ TreatmentDelete>}
 
   {info&&<TreatmentInfo info = {info}  treatment={treatment} handleCloseInfo={handleCloseInfo} ></TreatmentInfo>}
       

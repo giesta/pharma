@@ -58,11 +58,9 @@ export default function ControlledTabs() {
           onSelect={(k) => setKey(k)}
         >
           <Tab eventKey="public" title="Public">
-              {console.log(getPublic())}
           <TreatmentCard Treatments = {getPublic().data} ></TreatmentCard>
           </Tab>
           <Tab eventKey="private" title="Private">
-          {console.log(getPrivate())}
           <TreatmentCard Treatments = {getPrivate().data} ></TreatmentCard>
           </Tab>
         </Tabs>

@@ -2,12 +2,11 @@ import React from 'react';
 
 import { Card, CardDeck, ListGroup, ListGroupItem } from "react-bootstrap";
 
-export default function TreatmentCard(Data) {
+export default function TreatmentCard(props) {
     return (
       
-      <CardDeck> 
-        {console.log(Data)}     
-          {Data.Treatments.map((field)=>
+      <CardDeck>     
+          {props.Treatments.map((field)=>
           <div className="col-xs-6 col-md-4" key={field.id}>
              <Card style={{ width: '18rem' },{flex:1}}>
               <Card.Img variant="top" src={field.algorithm} style={{height: '40vh'}} />

@@ -106,7 +106,7 @@ class Handler extends ExceptionHandler
         }      
 
         if (config('app.debug')) {
-            return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());           
+            return $this->errorResponse($exception->getMessage(), 500);           
         }
 
         return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());

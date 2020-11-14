@@ -67,7 +67,7 @@ class App extends Component {
             <ProtectedRoute exact path="/drugs" component={DrugsList} roles={["admin", "pharmacist"]}/> 
             <ProtectedRoute exact path="/diseases" component={DiseasesList} roles={["admin", "pharmacist"]}/> 
             <ProtectedRoute exact path="/treatments" component={TreatmentsList} roles={["admin", "pharmacist"]}/> 
-            <ProtectedRoute exact path="/treatments/:id" component={Treatment} roles={["admin", "pharmacist"]}/>            
+            <Route exact path="/treatments/:id" component={Treatment}/>            
             <ProtectedRoute path="/users" component={UsersList} roles={["admin"]}/>
           </Switch>
         </div>

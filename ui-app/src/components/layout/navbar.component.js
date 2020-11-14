@@ -12,9 +12,9 @@ export default function MainNavbar(showPharmacistBoard, showAdminBoard, currentU
 
     <Nav className="mr-auto">
     <Nav.Link href={"/"}>Home</Nav.Link>
-      {(showPharmacistBoard ||showAdminBoard) && (<Nav.Link href={"/drugs"}>Drugs</Nav.Link>)}
-      {(showPharmacistBoard ||showAdminBoard) && (<Nav.Link href={"/diseases"}>Diseases</Nav.Link>)}
-      {(showPharmacistBoard ||showAdminBoard) && (<Nav.Link href={"/treatments"}>Treatments</Nav.Link>)}
+      {(showPharmacistBoard || showAdminBoard) && (<Nav.Link href={"/drugs"}>Drugs</Nav.Link>)}
+      {(showPharmacistBoard || showAdminBoard) && (<Nav.Link href={"/diseases"}>Diseases</Nav.Link>)}
+      {(showPharmacistBoard || showAdminBoard) && (<Nav.Link href={"/treatments"}>Treatments</Nav.Link>)}
       {showAdminBoard && (<Nav.Link href={"/users"}>Users</Nav.Link>)}
     </Nav>
     

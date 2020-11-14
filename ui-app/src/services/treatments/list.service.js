@@ -14,6 +14,10 @@ const get = id => {
   return http.get(`/treatments/${id}`);
 };
 
+const getPublic = id => {
+  return httpPublic.get(`/treatments/${id}`);
+};
+
 const create = data => {
   return http.post("/treatments", data);
 };
@@ -36,6 +40,7 @@ const findByName = name => {
 
 export default {
   getAllPublic,
+  getPublic,
   getAll,
   get,
   create,

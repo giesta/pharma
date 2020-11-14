@@ -23,10 +23,12 @@ class DiseaseDrugController extends Controller
     public function index(Request $request, $id)
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
+        if($user !== null && $user->role ==="admin"){
             return new DiseaseDrugsResource(Disease::with('drugs')->findOrFail($id));
-        }else{
+        }else if($user !== null && $user->role ==="pharmacist"){
             return new DiseaseDrugsResource($user->diseases()->with('drugs')->findOrFail($id));
+        }else{
+            return new DiseaseDrugsResource(Disease::with('drugs')->findOrFail($id));
         }
     }
 
@@ -62,10 +64,12 @@ class DiseaseDrugController extends Controller
     public function show(Request $request, $disease_id, $drug_id)
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
+        if($user !== null && $user->role ==="admin"){
             $diseases = Disease::findOrFail($disease_id);
-        }else{
+        }else if($user !== null && $user->role ==="pharmacist"){
             $diseases = $user->diseases()->findOrFail($disease_id);
+        }else{
+            $diseases = Disease::findOrFail($disease_id);
         }
         return new DrugResource($diseases->drugs()->findOrFail($drug_id));
     }

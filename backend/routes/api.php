@@ -41,6 +41,9 @@ Route::group([
     Route::get('getMe', 'JwtAuthController@getMe');    
 });
 
+Route::get('treatments/{id}', 'App\Http\Controllers\Api\TreatmentController@show');
+Route::get('diseases/{id}/drugs', 'App\Http\Controllers\Api\DiseaseDrugController@index');
+
 
 Route::group(['middleware' => 'jwt.auth',
     'namespace' => 'App\Http\Controllers\Api',
@@ -56,10 +59,12 @@ Route::group(['middleware' => 'jwt.auth',
     Route::apiResource('treatments', TreatmentController::class);
 
 });
+Route::get('treatments', 'App\Http\Controllers\Api\TreatmentController@index');
 Route::group(['namespace' => 'App\Http\Controllers\Api',
 
 ], function () {
 
-    Route::get('treatments', 'TreatmentController@index');
+    
+    
 
 });

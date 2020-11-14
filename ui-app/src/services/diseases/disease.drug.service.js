@@ -1,11 +1,12 @@
 import http from "../../http-common";
+import httpPublic from "../../http-public";
 
 const getAll = () => {
   return http.get("/diseases");
 };
 
-const get = id => {
-  return http.get(`/diseases/${id}/drugs`);
+const getPublic = id => {
+  return httpPublic.get(`/diseases/${id}/drugs`);
 };
 
 const create = (id, data) => {
@@ -30,7 +31,7 @@ const findByName = name => {
 
 export default {
   getAll,
-  get,
+  getPublic,
   create,
   update,
   remove,

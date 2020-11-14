@@ -71,11 +71,13 @@ class TreatmentController extends Controller
     public function show(Request $request, $id):TreatmentResource
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
+        if($user !== null && $user->role ==="admin"){
             $treatment = Treatment::findOrFail($id);
             return new TreatmentResource($treatment);
-        }else{ 
+        }else if($user !== null && $user->role ==="pharmacist"){ 
             return new TreatmentResource($user->treatments()->findOrFail($id));
+        }else{
+            return new TreatmentResource(Treatment::findOrFail($id));
         }
     }
 

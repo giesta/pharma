@@ -41,7 +41,7 @@ export default function Treatment(props) {
         getTreatment(props.match.params.id);
   }, [props.match.params.id]);
   const getTreatment = useCallback((id)=> {
-    TreatmentsDataService.get(id)
+    TreatmentsDataService.getPublic(id)
       .then(response => {
         if (response.data.data.length !== 0) {
           setCurrentTreatment(response.data.data);
@@ -54,7 +54,7 @@ export default function Treatment(props) {
   });
   
   const getDrugs = (id) => {
-    DrugsDataService.get(id)
+    DrugsDataService.getPublic(id)
       .then(response => {    
         if(response.data.data.length !== 0){
           setCurrentDrugs(...currentDrugs, response.data.data);

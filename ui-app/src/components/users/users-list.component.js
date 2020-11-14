@@ -134,7 +134,7 @@ const updateUser = () => {
     });
 };
 
-const deleteUser = (id) => {
+const deleteItem = (id) => {
   UsersDataService.remove(id)
     .then(() => {
       deleteItemFromState(id);
@@ -156,22 +156,15 @@ const newUser = () => {
       users.data.length===0?(        
         <Spinner></Spinner>
       ):(        
-      <div className="container">        
-      <>
-      {UsersTable(columns, users, GetActionFormat)}
-
-      { UserUpdate(show, handleClose, user, validated, handleSubmit, handleInputChange) }
-
-      { UserDelete(id, "User", deleteUser, handleCloseConfirm, confirm) }
-
-      { UserInfo(info, user, handleCloseInfo) }     
-      
-      
-</>
+      <div className="container">
+      <UsersTable columns ={columns} users={users} GetActionFormat={GetActionFormat}></UsersTable>
+      { show &&<UserUpdate show ={show} handleClose={handleClose} user={user} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange}></UserUpdate> }
+      { confirm &&<UserDelete id={id} name={"User"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></UserDelete> }
+      { info && <UserInfo info = {info} user={user} handleCloseInfo={handleCloseInfo}></UserInfo> }
   </div>  )
     ):(<div>
       <br />
-      <p>Please click on a Tutorial...</p>
+      <p>No Data...</p>
     </div>)
       
     }</div>

@@ -213,13 +213,11 @@ const newDisease = () => {
       diseases.data.length===0 && noData===''?(        
         <Spinner></Spinner>
       ):(        
-      <div className="container">        
-      <> 
+      <div className="container"> 
       <DiseasesTable columns ={columns} diseases={diseases} GetActionFormat={GetActionFormat}></DiseasesTable>
       { show && <DiseaseCreateUpdate show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} drugs={drugs} AddSelectedDrugs={AddSelectedDrugs}></DiseaseCreateUpdate> }
       { confirm && <DiseaseDelete id={id} name={"Drug"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiseaseDelete> }
-      { info && <DiseaseInfo info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }    
-</>
+      { info && <DiseaseInfo info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }
   </div>  )
     ):(<div>
       <br />

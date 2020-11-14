@@ -89,7 +89,6 @@ export default function TreatmentList() {
         setUrl(URL.createObjectURL(event.target.files[0]));
     }    
     setTreatment({ ...treatment, [name]: value });
-    console.log(treatment);
   };
   useEffect(()=>{    
         retrieveTreatments();        
@@ -232,13 +231,13 @@ const newTreatment = () => {
       <div className="container">  
       
       <>
-  {TreatmentTable(columns, Treatments, GetActionFormat)}
+  <TreatmentTable columns ={columns} Treatments={Treatments} GetActionFormat={GetActionFormat}></TreatmentTable>
 
-  {TreatmentCreateUpdate(show, handleClose, treatment, validated, handleSubmit, handleInputChange, Diseases, url)}
+  { show&&<TreatmentCreateUpdate show ={show} handleClose={handleClose} treatment={treatment} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} Diseases={Diseases} url={url}></TreatmentCreateUpdate>}
       
-  {TreatmentDelete(id, "Treatment", deleteTreatment, handleCloseConfirm, confirm)}
+  {confirm&&< TreatmentDelete id={id} name={"Treatment"} deleteTreatment={deleteTreatment} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ TreatmentDelete>}
 
-  {TreatmentInfo(info, treatment, handleCloseInfo)}
+  {info&&<TreatmentInfo info = {info}  treatment={treatment} handleCloseInfo={handleCloseInfo} ></TreatmentInfo>}
       
 </>
   </div>  )

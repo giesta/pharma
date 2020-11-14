@@ -2,25 +2,25 @@ import React from 'react';
 
 import { Modal, Button, Form, Image } from "react-bootstrap";
 
-export default function CreateModal(show, handleClose, treatment, validated, handleSubmit, handleInputChange, diseases, url) {
+export default function CreateModal(props) {
     return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={props.show} onHide={props.handleClose}>
         <Modal.Header closeButton>
             <Modal.Title>Treatment info</Modal.Title>
         </Modal.Header>
-        <Form encType="multipart/form-data" noValidate validated={validated} onSubmit={handleSubmit}>
+        <Form encType="multipart/form-data" noValidate validated={props.validated} onSubmit={props.handleSubmit}>
         <Modal.Body>  
             <Form.Group >   
-                {treatment.id===null?(<Form.Control type = "file" id="exampleFormControlFile1"  label="Algorithm" required onChange={handleInputChange} name="algorithm"/> ):(<Form.Control type = "file" id="exampleFormControlFile1"  label="Algorithm" onChange={handleInputChange} name="algorithm"/> )}         
+                {props.treatment.id===null?(<Form.Control type = "file" id="exampleFormControlFile1"  label="Algorithm" required onChange={props.handleInputChange} name="algorithm"/> ):(<Form.Control type = "file" id="exampleFormControlFile1"  label="Algorithm" onChange={props.handleInputChange} name="algorithm"/> )}         
                 <Form.Control.Feedback type="invalid">
                     File is a required field.
                 </Form.Control.Feedback>
                 <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             </Form.Group>  
-    {url===null?(<Image src={treatment.algorithm} fluid/>):(<Image src={url} fluid/>)}
+    {props.url===null?(<Image src={props.treatment.algorithm} fluid/>):(<Image src={props.url} fluid/>)}
         <Form.Group controlId="exampleForm.ControlInput1">
             <Form.Label>Title</Form.Label>
-            <Form.Control required type="text" placeholder=""  value={treatment.title} onChange={handleInputChange} name="title"/>
+            <Form.Control required type="text" placeholder=""  value={props.treatment.title} onChange={props.handleInputChange} name="title"/>
             <Form.Control.Feedback type="invalid">
                 Title is a required field.
             </Form.Control.Feedback>
@@ -28,17 +28,17 @@ export default function CreateModal(show, handleClose, treatment, validated, han
         </Form.Group>
         <Form.Group controlId="exampleForm.ControlInput1">
             <Form.Label>Description</Form.Label>
-            <Form.Control type="text" as="textarea" placeholder="" required value={treatment.description} onChange={handleInputChange} name="description"/>
+            <Form.Control type="text" as="textarea" placeholder="" required value={props.treatment.description} onChange={props.handleInputChange} name="description"/>
             <Form.Control.Feedback type="invalid">
                 Description is a required field.
             </Form.Control.Feedback>
             <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-        </Form.Group>    
-    {treatment.disease!==null?(
+        </Form.Group>
+    {props.treatment.disease!==null?(
         <Form.Group controlId="exampleForm.ControlSelect1">
             <Form.Label>Disease</Form.Label>     
-            <Form.Control as="select" required defaultValue={treatment.disease.id} onChange={handleInputChange} name="disease_id"> 
-                {diseases.data.map((x)=>
+            <Form.Control as="select" required defaultValue={props.treatment.disease.id} onChange={props.handleInputChange} name="disease_id"> 
+                {props.Diseases.data.map((x)=>
                     <option value={x.id}>{x.name}</option>
                 )}
             </Form.Control>
@@ -49,9 +49,9 @@ export default function CreateModal(show, handleClose, treatment, validated, han
     ):(      
         <Form.Group controlId="exampleForm.ControlSelect1">
             <Form.Label>Disease</Form.Label>
-            <Form.Control as="select" required onChange={handleInputChange} name="disease_id" defaultValue={'DEFAULT'}> 
+            <Form.Control as="select" required onChange={props.handleInputChange} name="disease_id" defaultValue={'DEFAULT'}> 
                 <option value="DEFAULT" disabled>Select your option</option>
-                {diseases.data.map((x)=>
+                {props.Diseases.data.map((x)=>
                     <option key={x.id} value={x.id}>{x.name}</option>
                 )}
             </Form.Control>
@@ -62,12 +62,12 @@ export default function CreateModal(show, handleClose, treatment, validated, han
         </Form.Group>)}  
         </Modal.Body>
         <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button variant="secondary" onClick={props.handleClose}>
                 Close
             </Button>
-            {treatment.id===null?(<Button variant="primary" onClick={handleSubmit}>
+            {props.treatment.id===null?(<Button variant="primary" onClick={props.handleSubmit}>
                 Create Treatment
-            </Button>):(<Button variant="primary" onClick={handleSubmit}>
+            </Button>):(<Button variant="primary" onClick={props.handleSubmit}>
                 Update Treatment
             </Button>)}          
         </Modal.Footer>

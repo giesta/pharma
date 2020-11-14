@@ -2,9 +2,11 @@ import React from 'react';
 
 import { Modal, Button, Form, Image } from "react-bootstrap";
 
-export default function InfoModal(info, treatment, handleCloseInfo) {
+
+export default function InfoModal(props) {
     return (
-        <Modal show={info} onHide={handleCloseInfo}>
+        <div>{console.log(props.info)}
+            <Modal show={props.info} onHide={props.handleCloseInfo}>
             <Modal.Header closeButton>
                 <Modal.Title>Info</Modal.Title>
             </Modal.Header>
@@ -12,29 +14,29 @@ export default function InfoModal(info, treatment, handleCloseInfo) {
                 <Form>
                     <Form.Group controlId="treatment.algorithm">
                         <Form.Label>Algorithm</Form.Label>
-                        <Form.Control type="text" placeholder="" value={treatment.algorithm}  disabled name="algorithm"/>
+                        <Form.Control type="text" placeholder="" value={props.treatment.algorithm}  disabled name="algorithm"/>
                     </Form.Group>  
-                    <Image src={treatment.algorithm} fluid/>
+                    <Image src={props.treatment.algorithm} fluid/>
                     <Form.Group controlId="treatment.title">
                         <Form.Label>Title</Form.Label>
-                        <Form.Control type="text" placeholder="" value={treatment.title} disabled name="title"/>
+                        <Form.Control type="text" placeholder="" value={props.treatment.title} disabled name="title"/>
                     </Form.Group>
                     <Form.Group controlId="treatment.description">
                         <Form.Label>Description</Form.Label>
-                        <Form.Control type="text" as="textarea" placeholder="" value={treatment.description} disabled name="description"/>
+                        <Form.Control type="text" as="textarea" placeholder="" value={props.treatment.description} disabled name="description"/>
                     </Form.Group>
-                    {(treatment.disease!== null)&&(<Form.Group controlId="treatment.disease.name">
+                    {(props.treatment.disease!== null && props.treatment.disease!== undefined)&&(<Form.Group controlId="treatment.disease.name">
                         <Form.Label>Disease</Form.Label>
-                        <Form.Control type="text" placeholder="" value={treatment.disease.name} disabled name="algorithm"/>
+                        <Form.Control type="text" placeholder="" value={props.treatment.disease.name} disabled name="algorithm"/>
                     </Form.Group>)
                     } 
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="secondary" onClick={handleCloseInfo}>
+                <Button variant="secondary" onClick={props.handleCloseInfo}>
                     Close
                 </Button>
             </Modal.Footer>
-        </Modal>
+        </Modal></div>
     )
 }

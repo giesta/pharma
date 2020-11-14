@@ -1,10 +1,15 @@
 import React, { useCallback, useEffect } from 'react';
 import diseasesDataService from "../../services/diseases/list.service";
 import DrugsDataService from "../../services/drugs/list.service";
-import { Table, Spinner, Modal, Button, Badge, FormControl, Form } from "react-bootstrap";
+import DiseaseDelete from "../delete-modal.component";
+import DiseaseCreateUpdate from "./create-update-modal.component";
+import DiseaseInfo from "./info-modal.component";
+import DiseasesTable from "./table.component";
+import Spinner from "../layout/spinner.component";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
-export default function DiseasesTable() {
+
+export default function DiseasesList() {
 
   const initialDiseaseState = {  
     id: null,  
@@ -14,8 +19,26 @@ export default function DiseasesTable() {
     drugs: []
   };
 
+  const columns = [{  
+    dataField: 'no',  
+    text: 'No' },  
+  {  
+    dataField: 'name',  
+    text: 'Name',  
+    sort:true}, {  
+    dataField: 'description',  
+    text: 'Description',  
+    sort: true  },  
+  { dataField: 'symptoms',  
+    text: 'Symptoms',  
+    sort: true  },  
+  {
+    text: 'Actions',
+    dataField: 'Actions',
+    editable: false 
+  }];
+
   const [disease, setDisease] = React.useState(initialDiseaseState);
-  const [submitted, setSubmitted] = React.useState(false);
   const [noData, setNoData] = React.useState('');
   const [drugs, setDrugs] = React.useState({
     data: [],
@@ -57,7 +80,6 @@ export default function DiseasesTable() {
     setInfo(false);
     setValidated(false);
   };
-  const handleInfo = () => setInfo(true);
   const [diseases, setDiseases] = React.useState({
     data: [],
   });
@@ -76,16 +98,10 @@ export default function DiseasesTable() {
 
   const retrieveDrugs = () => {
     DrugsDataService.getAll()
-      .then(response => {
-        console.log(response.data.data);
-        
+      .then(response => {        
         if(response.data.data.length !== 0){
           setDrugs({...drugs, data: response.data.data});
-        }else{
-          setNoData("No data");
-        }
-          
-        
+        }        
       })
       .catch(e => {
         console.log(e);
@@ -94,27 +110,19 @@ export default function DiseasesTable() {
 
   const retrieveDiseases = () => {
     diseasesDataService.getAll()
-      .then(response => {
-        console.log(response.data.data);
-        
+      .then(response => {        
         if(response.data.data.length !== 0){
-          setDiseases({...diseases, data: response.data.data});
-          
-        }else{
-          setNoData("No data");
+          setDiseases({...diseases, data: response.data.data});          
         }
-          retrieveDrugs();
-        
+          retrieveDrugs();       
       })
       .catch(e => {
         console.log(e);
       });
   };
-
-  const GetActionFormat = useCallback((row) =>{
-    
+  const GetActionFormat = useCallback((row) =>{    
     return (
-      <td class="table-col">
+      <td className="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
               function(event){ setDisease(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
@@ -132,32 +140,9 @@ export default function DiseasesTable() {
 });
 
 const deleteItemFromState = (id) => {
-  console.log(id);
   const updatedItems = diseases.data.filter(x=>x.id!==id)
   setDiseases({ data: updatedItems })
 }
-
-const columns = [{  
-    dataField: 'id',  
-    text: 'Id' },  
-  {  
-    dataField: 'name',  
-    text: 'Name',  
-    sort:true}, {  
-    dataField: 'description',  
-    text: 'Description',  
-    sort: true  },  
-  { dataField: 'symptoms',  
-    text: 'Symptoms',  
-    sort: true  },  
-  {
-    text: 'Actions',
-    dataField: 'Actions',
-    editable: false 
-    }
-  
-];
-
 const saveDisease = () => {
   var data = {
     name: disease.name,
@@ -167,7 +152,6 @@ const saveDisease = () => {
   };
   diseasesDataService.create(data)
     .then(response => {
-      console.log(response.data.data.id);
       setDisease({
         id : response.data.data.id,
         name: response.data.data.name,
@@ -177,7 +161,6 @@ const saveDisease = () => {
       });
       diseases.data.push(response.data.data);
       setDiseases({...diseases, data: diseases.data});
-      setSubmitted(true);
       handleClose();            
     })
     .catch(e => {
@@ -197,8 +180,7 @@ const updateDisease = () => {
     .then((resp) => {  
       const updatedItems = diseases.data.filter(x=>x.id!==disease.id)
       updatedItems.push(resp.data.data);
-      setDiseases({...diseases, data: updatedItems});         
-      setSubmitted(true);
+      setDiseases({...diseases, data: updatedItems});
       handleClose();
     })
     .catch(e => {
@@ -219,10 +201,7 @@ const deleteDisease = (id) => {
 
 const newDisease = () => {
   setDisease(initialDiseaseState);
-  setSubmitted(false);
 };
-
-
   return (
     <div><div className="mb-3">
     <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
@@ -232,165 +211,20 @@ const newDisease = () => {
     </div>
       {diseases?(
       diseases.data.length===0 && noData===''?(        
-        <div className="text-center">
-          <Spinner animation="grow" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </div>
+        <Spinner></Spinner>
       ):(        
-      <div className="container">  
-      
-      <>
- <Table striped bordered hover responsive="lg">
-  <thead>
-    <tr>
-      {columns.map((field)=>
-        <th>{field.text}</th>
-      )}
-    </tr>
-  </thead>
-  <tbody>
-
-  {diseases.data.map((field)=>
-        <tr>
-        <td>{field.id}</td>
-        <td>{field.name}</td>
-        <td>{field.description}</td>
-        <td>{field.symptoms}</td>
-        {GetActionFormat(field)}
-      </tr>
-      )  
-  }
-  </tbody>
-</Table>
-<Modal show={show} onHide={handleClose}>
-  <Modal.Header closeButton>
-    <Modal.Title>Disease info {disease.id}</Modal.Title>
-  </Modal.Header>
-  <Form noValidate validated={validated} onSubmit={handleSubmit}>
-  <Modal.Body>
-  
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Name</Form.Label>
-    <Form.Control type="text" placeholder="" required value={disease.name} onChange={handleInputChange} name="name"/>
-    <Form.Control.Feedback type="invalid">
-      Name is a required field.
-    </Form.Control.Feedback>
-    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-  </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Description</Form.Label>
-    <Form.Control type="text"  as="textarea" placeholder="" required value={disease.description} onChange={handleInputChange} name="description"/>
-    <Form.Control.Feedback type="invalid">
-      Description is a required field.
-    </Form.Control.Feedback >
-    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-  </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Symptoms</Form.Label>
-    <Form.Control type="text" placeholder="" required value={disease.symptoms} onChange={handleInputChange} name="symptoms"/>
-    <Form.Control.Feedback type="invalid">
-      Symptoms is a required field.
-    </Form.Control.Feedback>
-    <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-  </Form.Group>
-  {(disease.drugs!==null&&disease.drugs!==undefined)?(
-      <Form.Group controlId="exampleForm.ControlSelect1">
-      <Form.Label>Drugs</Form.Label>     
-    <Form.Control as="select" multiple defaultValue={disease.drugs.map(item=>item.id)} onChange={AddSelectedDrugs} name="drugs_id"> 
-    {drugs.data.map((x)=>
-        <option value={x.id}>{x.name}</option>
-      )  
-  }
-  </Form.Control>
-  </Form.Group>
-    ):(
-      
-    <Form.Group controlId="exampleForm.ControlSelect1"> 
-    <Form.Label>Drugs</Form.Label>
-  <Form.Control as="select" multiple onChange={AddSelectedDrugs} name="drugs_id">   
-  {drugs.data.map((x)=>
-      <option value={x.id}>{x.name}</option>
-    )  
-}
-</Form.Control>
-<Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-</Form.Group>)} 
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          {disease.id===null?(<Button variant="primary" onClick={handleSubmit}>
-            Create Disease
-          </Button>):(<Button variant="primary" onClick={handleSubmit}>
-            Update Disease
-          </Button>)}          
-        </Modal.Footer>
-        </Form>
-      </Modal>
-
-  <Modal show={confirm} onHide={handleCloseConfirm} id = {id}>
-  <Modal.Header closeButton>
-    <Modal.Title>Disease Delete {id}</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-  Are you sure?
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseConfirm}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={()=>deleteDisease(id)}>
-            Delete
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={info} onHide={handleCloseInfo}>
-  <Modal.Header closeButton>
-    <Modal.Title>Disease info {disease.id}</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-  <Form>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Name</Form.Label>
-    <Form.Control type="text" placeholder="" required value={disease.name} onChange={handleInputChange} disabled name="name"/>
-  </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Description</Form.Label>
-    <Form.Control type="text" as="textarea" placeholder="" required value={disease.description} onChange={handleInputChange} disabled name="description"/>
-  </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Symptoms</Form.Label>
-    <Form.Control type="text" placeholder="" required value={disease.symptoms} onChange={handleInputChange} disabled name="symptoms"/>
-  </Form.Group> 
-  {disease.drugs!==null && disease.drugs!==undefined?(<Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Drugs</Form.Label>
-  {disease.drugs.map((x)=>
-      <Badge pill variant="dark">
-      {x.name}
-    </Badge>
-    )  
-} </Form.Group>):('')}
-</Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseInfo}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      
+      <div className="container">        
+      <> 
+      { DiseasesTable(columns, diseases, GetActionFormat) }
+      { DiseaseCreateUpdate(show, handleClose, disease, validated, handleSubmit, handleInputChange, drugs, AddSelectedDrugs) }
+      { DiseaseDelete(id, "Disease", deleteDisease, handleCloseConfirm, confirm) }
+      { DiseaseInfo(info, disease, handleCloseInfo) }      
 </>
   </div>  )
     ):(<div>
       <br />
-      <p>Please click on a Tutorial...</p>
-    </div>)
-      
-    }</div>
-    
-    
+      <p>Something Went Wrong...</p>
+    </div>)      
+    }</div>    
   );
 }

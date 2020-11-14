@@ -91,8 +91,7 @@ export default function TreatmentList() {
     setTreatment({ ...treatment, [name]: value });
     console.log(treatment);
   };
-  useEffect(()=>{
-    
+  useEffect(()=>{    
         retrieveTreatments();        
   }, []);
 
@@ -101,15 +100,13 @@ export default function TreatmentList() {
       .then(response => {    
         if(response.data.data.length !== 0){
           setTreatments({...Treatments, data: response.data.data});          
-        }else{
-          setNoData("No data");
         }  
         retrieveDiseases();     
       })
       .catch(e => {
         console.log(e);
       });
-  });
+  }, []);
   
   const retrieveDiseases = () => {
     DiseasesDataService.getAll()

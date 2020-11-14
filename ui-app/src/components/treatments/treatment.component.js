@@ -37,8 +37,7 @@ export default function Treatment(props) {
   const newDrug = () => {
     setDrug(initialDrugState);
   };
-  useEffect(()=>{
-    
+  useEffect(()=>{    
         getTreatment(props.match.params.id);
   }, [props.match.params.id]);
   const getTreatment = useCallback((id)=> {

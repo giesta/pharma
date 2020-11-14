@@ -6,7 +6,7 @@ export default function InfoModal(info, user, handleCloseInfo) {
     return (
         <Modal show={info} onHide={handleCloseInfo}>
             <Modal.Header closeButton>
-                <Modal.Title>User info {user.id}</Modal.Title>
+                <Modal.Title>User info</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>

@@ -86,8 +86,7 @@ class DiseaseController extends Controller
         catch (QueryException $ex) { // Anything that went wrong
             abort(500, "Could not update Disease");
         }
-
-        return new DiseaseResource($user->diseases()->with('drugs')->findOrFail($disease->id));
+        return new DiseaseResource($disease->with('drugs')->findOrFail($id));
     }
 
     /**

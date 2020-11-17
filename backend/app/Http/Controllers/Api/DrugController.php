@@ -92,10 +92,9 @@ class DrugController extends ApiController
             $drug->diseases()->sync(json_decode($request->diseases)); 
         }
         catch (QueryException $ex) { // Anything that went wrong
-            abort(500, "Could not update Drug");
-        }       
-
-        return new DrugResource($user->drugs()->with('diseases')->findOrFail($drug->id));
+            abort(500, $ex->message);
+        }
+        return new DrugResource($drug->with('diseases')->findOrFail($id));
     }
 
     /**

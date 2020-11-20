@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Table } from "react-bootstrap";
 
 export default function TableOfItems(props) {
-
+    const handleIncrement = (counter) => {
+        return (<div> { counter + props.rowNumber } </div>);
+      };
     return (
         <Table striped bordered hover responsive="lg">
             <thead>
@@ -14,11 +16,10 @@ export default function TableOfItems(props) {
                 </tr>
             </thead>
             <tbody>
-
-            {
-            props.drugs.data.map((field, count = 0)=>
+            {props.drugs.data.map((field, counter)=>
                 <tr key = {field.id}>
-                    <td>{++count}</td>
+                    
+                    <td>{handleIncrement(++counter)}</td>
                     <td>{field.name}</td>
                     <td>{field.substance}</td>
                     <td>{field.indication}</td>

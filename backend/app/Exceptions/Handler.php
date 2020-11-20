@@ -10,6 +10,7 @@ use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
@@ -86,6 +87,9 @@ class Handler extends ExceptionHandler
         if ($exception instanceof UnauthorizedHttpException) {
             return $this->errorResponse($exception->getMessage(), $exception->getStatusCode());
         }
+        if($exception instanceof HttpException && $exception->getStatusCode() == 403){
+            return $this->errorResponse($exception->getMessage(), 403);
+        } 
         if ($exception instanceof TokenBlacklistedException) {
             return $this->errorResponse($exception->getMessage(), 401);
         }

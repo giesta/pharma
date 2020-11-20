@@ -7,6 +7,7 @@ import DrugInfo from "./info-modal.component";
 import DrugCreateUpdate from "./create-update-modal.component";
 import DrugsTable from "./table.component";
 import Spinner from "../layout/spinner.component";
+import Pagination from "react-js-pagination";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
 export default function DrugsList() {
@@ -61,9 +62,43 @@ export default function DrugsList() {
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
-  const [selectedDiseases, setSelectedDiseases] = React.useState([]);
-  
+  const [selectedDiseases, setSelectedDiseases] = React.useState([]);  
   const [validated, setValidated] = React.useState(false);
+
+  //--------------------------------------
+  const [currentTutorial, setCurrentTutorial] = React.useState(null);
+  const [currentIndex, setCurrentIndex] = React.useState(-1);
+  const [searchTitle, setSearchTitle] = React.useState("");
+
+  const [page, setPage] = React.useState(1);
+  const [total, setTotal] = React.useState(0);
+  const [pageSize, setPageSize] = React.useState(3);
+
+  const pageSizes = [3, 6, 9];
+
+  const onChangeSearchTitle = (e) => {
+    const searchTitle = e.target.value;
+    setSearchTitle(searchTitle);
+  };
+
+  const getRequestParams = (searchTitle, page, pageSize) => {
+    let params = {};
+
+    if (searchTitle) {
+      params["title"] = searchTitle;
+    }
+
+    if (page) {
+      params["page"] = page - 1;
+    }
+
+    if (pageSize) {
+      params["size"] = pageSize;
+    }
+
+    return params;
+  };
+  //--------------------------------------
 
   const AddSelectedDiseases = event => {
     const selectedDiseases = [...event.target.selectedOptions].map(o => o.value)
@@ -108,11 +143,16 @@ export default function DrugsList() {
         retrieveDrugs();
         
   }, []);
-  const retrieveDrugs = () => {
-    DrugsDataService.getAll()
-      .then(response => {        
+  const retrieveDrugs = (pageNumber = 1) => {
+    console.log("page "+pageNumber);
+    DrugsDataService.getAll(pageNumber)
+      .then(response => {  
+        const { current_page, per_page, total } = response.data.meta;      
         if(response.data.data.length !== 0){
-          setDrugs({...drugs, data: response.data.data});          
+          setDrugs({...drugs, data: response.data.data});
+          setPageSize(per_page);
+          setPage(current_page);     
+          setTotal(total);     
         }  
         retrieveDiseases();     
       })
@@ -248,13 +288,28 @@ const newDrug = () => {
         <Spinner></Spinner>
       ):(        
       <div className="container">  
-      <DrugsTable columns ={columns} drugs = {drugs} GetActionFormat={GetActionFormat}></DrugsTable>
+      <DrugsTable columns ={columns} drugs = {drugs} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DrugsTable>
 
       { show && <DrugCreateUpdate show ={show} handleClose={handleClose} drug={drug} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} diseases={diseases} AddSelectedDiseases={AddSelectedDiseases}></DrugCreateUpdate> }
 
       { confirm &&<DrugDelete id={id} name={"Drug"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DrugDelete> }
 
-      { info &&<DrugInfo info = {info} drug = {drug} handleCloseInfo={handleCloseInfo}></DrugInfo> }
+      { info &&<DrugInfo info = {info} drug = {drug} handleCloseInfo={handleCloseInfo}></DrugInfo> }  
+      <div>
+        <Pagination 
+        className="my-3"
+        activePage={page} 
+        totalItemsCount={total}
+        itemsCountPerPage={pageSize}
+        onChange={(pageNumber)=>retrieveDrugs(pageNumber)}
+        itemClass="page-item"
+        linkClass="page-link"
+        activeLinkClass="bg-dark"
+        firstPageText="First"
+        lastPageText="Last"
+        ></Pagination> 
+      </div>
+         
   </div>  )
     ):(<div>
       <br />

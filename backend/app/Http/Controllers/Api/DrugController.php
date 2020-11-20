@@ -27,9 +27,9 @@ class DrugController extends ApiController
     {
         $user = auth()->user();
         if($user->role =="admin"){
-            return DrugResource::collection(Drug::with('diseases')->get());
+            return DrugResource::collection(Drug::with('diseases')->paginate(5));
         }else{
-            return DrugResource::collection($user->drugs()->with('diseases')->get());
+            return DrugResource::collection($user->drugs()->with('diseases')->paginate(5));
         }        
     }
 

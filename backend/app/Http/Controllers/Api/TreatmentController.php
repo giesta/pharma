@@ -48,7 +48,7 @@ class TreatmentController extends Controller
         $user = auth()->user();
         $disease = Disease::findOrFail($request->disease_id);
         if(!$request->hasFile('algorithm')) {
-            return response()->json(['upload_file_not_found'], 400);
+            return response()->json(['upload file not found'], 400);
         }
         $path = $request->file('algorithm')->store('public/algorithms');
         try{

@@ -5,6 +5,7 @@ import UserInfo from "./info-modal.component";
 import UserUpdate from "./update-modal.component";
 import UsersTable from "./table.component";
 import Spinner from "../layout/spinner.component";
+import Pagination from "react-js-pagination";
 import { BsPen, BsTrash, BsInfoCircle} from "react-icons/bs";
 
 export default function UsersList() {
@@ -24,6 +25,10 @@ export default function UsersList() {
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
+
+  const [page, setPage] = React.useState(1);
+  const [total, setTotal] = React.useState(0);
+  const [pageSize, setPageSize] = React.useState(3);
   
   const [validated, setValidated] = React.useState(false);
 
@@ -57,11 +62,15 @@ export default function UsersList() {
   useEffect(()=>{
         retrieveUsers();
   }, []);
-  const retrieveUsers = () => {
-    UsersDataService.getAll()
-      .then(response => {        
+  const retrieveUsers = (pageNumber) => {
+    UsersDataService.getAll(pageNumber)
+      .then(response => {  
+        const { current_page, per_page, total } = response.data.meta;        
         if(response.data.data.length !== 0){
           setUsers({...users, data: response.data.data});
+          setPageSize(per_page);
+          setPage(current_page);     
+          setTotal(total);
         }       
       })
       .catch(e => {
@@ -157,10 +166,24 @@ const newUser = () => {
         <Spinner></Spinner>
       ):(        
       <div className="container">
-      <UsersTable columns ={columns} users={users} GetActionFormat={GetActionFormat}></UsersTable>
+      <UsersTable columns ={columns} users={users} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></UsersTable>
       { show &&<UserUpdate show ={show} handleClose={handleClose} user={user} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange}></UserUpdate> }
       { confirm &&<UserDelete id={id} name={"User"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></UserDelete> }
       { info && <UserInfo info = {info} user={user} handleCloseInfo={handleCloseInfo}></UserInfo> }
+      <div>
+        <Pagination 
+        className="my-3"
+        activePage={page} 
+        totalItemsCount={total}
+        itemsCountPerPage={pageSize}
+        onChange={(pageNumber)=>retrieveUsers(pageNumber)}
+        itemClass="page-item"
+        linkClass="page-link"
+        activeLinkClass="bg-dark"
+        firstPageText="First"
+        lastPageText="Last"
+        ></Pagination> 
+      </div>
   </div>  )
     ):(<div>
       <br />

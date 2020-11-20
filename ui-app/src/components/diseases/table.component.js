@@ -3,7 +3,9 @@ import React from 'react';
 import { Table } from "react-bootstrap";
 
 export default function TableOfItems(props) {
-
+    const handleIncrement = (counter) => {
+        return (<div> { counter + props.rowNumber } </div>);
+      };
     return (
         <Table striped bordered hover responsive="lg">
             <thead>
@@ -14,9 +16,9 @@ export default function TableOfItems(props) {
                 </tr>
             </thead>
             <tbody>
-                {props.diseases.data.map((field, count = 0)=>
+                {props.diseases.data.map((field, count)=>
                     <tr key={++count}>
-                    <td>{count}</td>
+                    <td>{handleIncrement(count)}</td>
                     <td>{field.name}</td>
                     <td>{field.description}</td>
                     <td>{field.symptoms}</td>

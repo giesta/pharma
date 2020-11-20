@@ -6,6 +6,7 @@ import DiseaseCreateUpdate from "./create-update-modal.component";
 import DiseaseInfo from "./info-modal.component";
 import DiseasesTable from "./table.component";
 import Spinner from "../layout/spinner.component";
+import Pagination from "react-js-pagination";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
 
@@ -49,6 +50,10 @@ export default function DiseasesList() {
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
   const [selectedDrugs, setSelectedDrugs] = React.useState([]);
+
+  const [page, setPage] = React.useState(1);
+  const [total, setTotal] = React.useState(0);
+  const [pageSize, setPageSize] = React.useState(3);
   
   const [validated, setValidated] = React.useState(false);
 
@@ -108,11 +113,15 @@ export default function DiseasesList() {
       });
   };
 
-  const retrieveDiseases = () => {
-    diseasesDataService.getAll()
-      .then(response => {        
+  const retrieveDiseases = (pageNumber) => {
+    diseasesDataService.getAll(pageNumber)
+      .then(response => {
+        const { current_page, per_page, total } = response.data.meta;          
         if(response.data.data.length !== 0){
-          setDiseases({...diseases, data: response.data.data});          
+          setDiseases({...diseases, data: response.data.data}); 
+          setPageSize(per_page);
+          setPage(current_page);     
+          setTotal(total);          
         }
           retrieveDrugs();       
       })
@@ -214,10 +223,24 @@ const newDisease = () => {
         <Spinner></Spinner>
       ):(        
       <div className="container"> 
-      <DiseasesTable columns ={columns} diseases={diseases} GetActionFormat={GetActionFormat}></DiseasesTable>
+      <DiseasesTable columns ={columns} diseases={diseases} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiseasesTable>
       { show && <DiseaseCreateUpdate show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} drugs={drugs} AddSelectedDrugs={AddSelectedDrugs}></DiseaseCreateUpdate> }
       { confirm && <DiseaseDelete id={id} name={"Drug"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiseaseDelete> }
       { info && <DiseaseInfo info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }
+      <div>
+        <Pagination 
+        className="my-3"
+        activePage={page} 
+        totalItemsCount={total}
+        itemsCountPerPage={pageSize}
+        onChange={(pageNumber)=>retrieveDiseases(pageNumber)}
+        itemClass="page-item"
+        linkClass="page-link"
+        activeLinkClass="bg-dark"
+        firstPageText="First"
+        lastPageText="Last"
+        ></Pagination> 
+      </div>
   </div>  )
     ):(<div>
       <br />

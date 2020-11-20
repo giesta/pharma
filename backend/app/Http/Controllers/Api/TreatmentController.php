@@ -29,11 +29,11 @@ class TreatmentController extends Controller
     {
         $user = auth()->user();
         if($user !== null && $user->role ==="admin"){
-            return TreatmentResource::collection(Treatment::all());
+            return TreatmentResource::collection(Treatment::paginate(5));
         }else if($user !== null && $user->role ==="pharmacist"){
-            return TreatmentResource::collection($user->treatments);  
+            return TreatmentResource::collection($user->treatments->paginate(5));  
         }else{
-            return TreatmentResource::collection(Treatment::all());
+            return TreatmentResource::collection(Treatment::paginate(5));
         }      
     }
 

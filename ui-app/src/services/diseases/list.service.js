@@ -1,7 +1,7 @@
 import http from "../../http-common";
 
-const getAll = () => {
-  return http.get("/diseases");
+const getAll = (pageNumber) => {
+  return http.get(`/diseases?page=${pageNumber}`);
 };
 
 const get = id => {

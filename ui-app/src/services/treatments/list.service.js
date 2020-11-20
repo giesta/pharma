@@ -6,8 +6,8 @@ const getAllPublic = () => {
   return httpPublic.get("/treatments");
 };
 
-const getAll = () => {
-  return http.get("/treatments");
+const getAll = (pageNumber) => {
+  return http.get(`/treatments?page=${pageNumber}`);
 };
 
 const get = id => {

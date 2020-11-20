@@ -6,6 +6,7 @@ import TreatmentDelete from "../delete-modal.component";
 import TreatmentCreateUpdate from "./create-update-modal.component";
 import TreatmentInfo from "./info-modal.component";
 import Spinner from "../layout/spinner.component";
+import Pagination from "react-js-pagination";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
 
@@ -41,13 +42,16 @@ export default function TreatmentList() {
 
   const [treatment, setTreatment] = React.useState(initialTreatmentState);
   const [selectedFile, setSelectedFile] = React.useState(null);
-  const [noData, setNoData] = React.useState('');
   const [url, setUrl] = React.useState(null);
 
   const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
+  
+  const [page, setPage] = React.useState(1);
+  const [total, setTotal] = React.useState(0);
+  const [pageSize, setPageSize] = React.useState(3);
 
   const [validated, setValidated] = React.useState(false);
 
@@ -94,11 +98,15 @@ export default function TreatmentList() {
         retrieveTreatments();        
   }, []);
 
-  const retrieveTreatments = useCallback(() => {
-    TreatmentsDataService.getAll()
-      .then(response => {    
+  const retrieveTreatments = useCallback((pageNumber) => {
+    TreatmentsDataService.getAll(pageNumber=1)
+      .then(response => {  
+        const { current_page, per_page, total } = response.data.meta;   
         if(response.data.data.length !== 0){
-          setTreatments({...Treatments, data: response.data.data});          
+          setTreatments({...Treatments, data: response.data.data});
+          setPageSize(per_page);
+          setPage(current_page);     
+          setTotal(total);          
         }  
         retrieveDiseases();     
       })
@@ -112,8 +120,6 @@ export default function TreatmentList() {
       .then(response => {        
         if(response.data.data.length !== 0){
           setDiseases({...Diseases, data: response.data.data});
-        }else{
-          setNoData("No data");
         }        
       })
       .catch(e => {
@@ -225,19 +231,33 @@ const newTreatment = () => {
           </button>
     </div>
       {Treatments?(
-      Treatments.data.length===0 && noData===''?(        
+      Treatments.data.length===0?(        
         <Spinner></Spinner>
       ):(        
       <div className="container">  
       
       <>
-  <TreatmentTable columns ={columns} Treatments={Treatments} GetActionFormat={GetActionFormat}></TreatmentTable>
+  <TreatmentTable columns ={columns} Treatments={Treatments} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></TreatmentTable>
 
   { show&&<TreatmentCreateUpdate show ={show} handleClose={handleClose} treatment={treatment} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} Diseases={Diseases} url={url}></TreatmentCreateUpdate>}
       
   {confirm&&< TreatmentDelete id={id} name={"Treatment"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ TreatmentDelete>}
 
   {info&&<TreatmentInfo info = {info}  treatment={treatment} handleCloseInfo={handleCloseInfo} ></TreatmentInfo>}
+  <div>
+        <Pagination 
+        className="my-3"
+        activePage={page} 
+        totalItemsCount={total}
+        itemsCountPerPage={pageSize}
+        onChange={(pageNumber)=>retrieveTreatments(pageNumber)}
+        itemClass="page-item"
+        linkClass="page-link"
+        activeLinkClass="bg-dark"
+        firstPageText="First"
+        lastPageText="Last"
+        ></Pagination> 
+      </div>
       
 </>
   </div>  )

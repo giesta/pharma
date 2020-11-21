@@ -173,16 +173,8 @@ const saveDisease = () => {
     drugs: JSON.stringify(selectedDrugs)
   };
   diseasesDataService.create(data)
-    .then(response => {
-      setDisease({
-        id : response.data.data.id,
-        name: response.data.data.name,
-        description: response.data.data.description,
-        symptoms: response.data.data.symptoms,
-        drugs: response.data.data.drugs
-      });
-      diseases.data.push(response.data.data);
-      setDiseases({...diseases, data: diseases.data});
+    .then(() => {
+      refreshList();
       handleClose();            
     })
     .catch(e => {

@@ -40,10 +40,19 @@ class DrugController extends ApiController
     public function list(Request $request)
     {
         $user = auth()->user();
+        $name = $request->name;
         if($user->role =="admin"){
-            return DrugResource::collection(Drug::with('diseases')->paginate(5));
+            if($name){
+                return DrugResource::collection(Drug::with('diseases')->where('drugs.name', 'LIKE', "%$name%")->paginate(5));
+            }else{
+                return DrugResource::collection(Drug::with('diseases')->paginate(5));
+            }            
         }else{
-            return DrugResource::collection($user->drugs()->with('diseases')->paginate(5));
+            if($name){
+                return DrugResource::collection($user->drugs()->with('diseases')->where('drugs.name', 'LIKE', "%$name%")->paginate(5));
+            }else{
+                return DrugResource::collection($user->drugs()->with('diseases')->paginate(5));
+            }            
         }        
     }
 

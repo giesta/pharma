@@ -65,9 +65,6 @@ export default function DrugsList() {
   const [selectedDiseases, setSelectedDiseases] = React.useState([]);  
   const [validated, setValidated] = React.useState(false);
 
-  //--------------------------------------
-  const [currentTutorial, setCurrentTutorial] = React.useState(null);
-  const [currentIndex, setCurrentIndex] = React.useState(-1);
   const [searchTitle, setSearchTitle] = React.useState("");
 
   const [page, setPage] = React.useState(1);
@@ -76,29 +73,16 @@ export default function DrugsList() {
 
   const pageSizes = [3, 6, 9];
 
-  const onChangeSearchTitle = (e) => {
+  const onChangeSearchTitle = e => {
     const searchTitle = e.target.value;
     setSearchTitle(searchTitle);
   };
 
-  const getRequestParams = (searchTitle, page, pageSize) => {
-    let params = {};
-
-    if (searchTitle) {
-      params["title"] = searchTitle;
-    }
-
-    if (page) {
-      params["page"] = page - 1;
-    }
-
-    if (pageSize) {
-      params["size"] = pageSize;
-    }
-
-    return params;
+  const refreshList = () => {
+    retrieveDrugs();
+    setDrug(initialDrugState);
+    setPage(1);
   };
-  //--------------------------------------
 
   const AddSelectedDiseases = event => {
     const selectedDiseases = [...event.target.selectedOptions].map(o => o.value)
@@ -207,19 +191,9 @@ const saveDrug = () => {
     diseases: JSON.stringify(selectedDiseases)
   };
   DrugsDataService.create(data)
-    .then(response => {
-      setDrug({
-        name: response.data.name,
-        substance: response.data.substance,
-        indication: response.data.indication,
-        contraindication: response.data.contraindication,
-        reaction: response.data.reaction,
-        use: response.data.use,
-        diseases: response.data.diseases,
-      });
+    .then(() => {
+      refreshList();
       handleClose();
-      drugs.data.push(response.data.data);
-      setDrugs({...drugs, data: drugs.data});
     })
     .catch(e => {
       console.log(e);
@@ -274,18 +248,58 @@ const newDrug = () => {
   setDrug(initialDrugState);
 };
 
-
+const findByTitle = () => {
+  DrugsDataService.findByTitle(page, searchTitle)
+    .then(response => {
+      const { current_page, per_page, total } = response.data.meta;          
+        if(response.data.data.length !== 0){
+          setDrugs({...drugs, data: response.data.data}); 
+          setPageSize(per_page);
+          setPage(current_page);     
+          setTotal(total);          
+        }
+      console.log(response.data.data);
+    })
+    .catch(e => {
+      console.log(e);
+    });
+};
   return (
-    <div><div className="mb-3">
+    <div>
+      {drugs?(
+      drugs.data.length===0?(        
+        <Spinner></Spinner>
+      ):( 
+        <div>
+        <div className="d-flex justify-content-between">
+        <div className="mb-3">
     <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
             function(event){setShow(true)}}>
               <BsPlus></BsPlus>
           </button>
+          
     </div>
-      {drugs?(
-      drugs.data.length===0?(        
-        <Spinner></Spinner>
-      ):(        
+          <div className="col-md-6">
+        <div className="input-group mb-3">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by title"
+            value={searchTitle}
+            onChange={onChangeSearchTitle}
+          />
+          <div className="input-group-append">
+            <button
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={findByTitle}
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      </div> 
+    </div>       
       <div className="container">  
       <DrugsTable columns ={columns} drugs = {drugs} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DrugsTable>
 
@@ -309,7 +323,7 @@ const newDrug = () => {
         ></Pagination> 
       </div>
          
-  </div>  )
+  </div> </div>  )
     ):(<div>
       <br />
       <p>Some Went Wrong...</p>

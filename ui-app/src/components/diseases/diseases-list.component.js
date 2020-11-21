@@ -51,11 +51,24 @@ export default function DiseasesList() {
   const [info, setInfo] = React.useState(false);
   const [selectedDrugs, setSelectedDrugs] = React.useState([]);
 
+  const [searchTitle, setSearchTitle] = React.useState("");
+
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(3);
   
   const [validated, setValidated] = React.useState(false);
+
+  const onChangeSearchTitle = e => {
+    const searchTitle = e.target.value;
+    setSearchTitle(searchTitle);
+  };
+
+  const refreshList = () => {
+    retrieveDiseases();
+    setDisease(initialDiseaseState);
+    setPage(1);
+  };
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -211,18 +224,62 @@ const deleteItem = (id) => {
 const newDisease = () => {
   setDisease(initialDiseaseState);
 };
+
+const findByTitle = () => {
+  diseasesDataService.findByTitle(page, searchTitle)
+    .then(response => {
+      const { current_page, per_page, total } = response.data.meta;          
+        if(response.data.data.length !== 0){
+          setDiseases({...diseases, data: response.data.data}); 
+          setPageSize(per_page);
+          setPage(current_page);     
+          setTotal(total);          
+        }
+      console.log(response.data.data);
+    })
+    .catch(e => {
+      console.log(e);
+    });
+};
   return (
-    <div><div className="mb-3">
+    <div>
+      {diseases?(
+      diseases.data.length===0 && noData===''?(        
+        <Spinner></Spinner>
+      ):(  
+        <div>
+        <div className="d-flex justify-content-between">
+        <div className="mb-3">
     <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
             function(event){setShow(true)}}>
               <BsPlus></BsPlus>
           </button>
+          
     </div>
-      {diseases?(
-      diseases.data.length===0 && noData===''?(        
-        <Spinner></Spinner>
-      ):(        
+          <div className="col-md-6">
+        <div className="input-group mb-3">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by title"
+            value={searchTitle}
+            onChange={onChangeSearchTitle}
+          />
+          <div className="input-group-append">
+            <button
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={findByTitle}
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      </div> 
+    </div>
+             
       <div className="container"> 
+      
       <DiseasesTable columns ={columns} diseases={diseases} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiseasesTable>
       { show && <DiseaseCreateUpdate show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} drugs={drugs} AddSelectedDrugs={AddSelectedDrugs}></DiseaseCreateUpdate> }
       { confirm && <DiseaseDelete id={id} name={"Disease"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiseaseDelete> }
@@ -241,11 +298,13 @@ const newDisease = () => {
         lastPageText="Last"
         ></Pagination> 
       </div>
+  </div> 
   </div>  )
     ):(<div>
       <br />
       <p>Something Went Wrong...</p>
     </div>)      
-    }</div>    
+    }</div> 
+      
   );
 }

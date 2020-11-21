@@ -2,12 +2,15 @@ import http from "../../http-common";
 import httpPublic from "../../http-public";
 
 
-const getAllPublic = () => {
-  return httpPublic.get("/treatments");
+const getAllPublic = (pageNumber) => {
+  return httpPublic.get(`/treatments?page=${pageNumber}`);
 };
 
-const getAll = (pageNumber) => {
-  return http.get(`/treatments?page=${pageNumber}`);
+const getAllPaginate = (pageNumber) => {
+  return http.get(`/treatments/list?page=${pageNumber}`);
+};
+const getAll = () => {
+  return http.get(`/treatments`);
 };
 
 const get = id => {
@@ -40,6 +43,7 @@ const findByName = name => {
 
 export default {
   getAllPublic,
+  getAllPaginate,
   getPublic,
   getAll,
   get,

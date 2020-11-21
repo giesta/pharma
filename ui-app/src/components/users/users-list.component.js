@@ -62,8 +62,8 @@ export default function UsersList() {
   useEffect(()=>{
         retrieveUsers();
   }, []);
-  const retrieveUsers = (pageNumber) => {
-    UsersDataService.getAll(pageNumber)
+  const retrieveUsers = (pageNumber=1) => {
+    UsersDataService.getAllPaginate(pageNumber)
       .then(response => {  
         const { current_page, per_page, total } = response.data.meta;        
         if(response.data.data.length !== 0){

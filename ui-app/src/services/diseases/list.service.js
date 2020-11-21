@@ -1,7 +1,10 @@
 import http from "../../http-common";
 
-const getAll = (pageNumber) => {
-  return http.get(`/diseases?page=${pageNumber}`);
+const getAll = () => {
+  return http.get(`/diseases`);
+};
+const getAllPaginate = (pageNumber) => {
+  return http.get(`/diseases/list?page=${pageNumber}`);
 };
 
 const get = id => {
@@ -30,6 +33,7 @@ const findByName = name => {
 
 export default {
   getAll,
+  getAllPaginate,
   get,
   create,
   update,

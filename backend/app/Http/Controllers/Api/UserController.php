@@ -26,6 +26,20 @@ class UserController extends Controller
     {
         $user = auth()->user();
         if($user->role === "admin"){
+        return UserResource::collection(User::where('id', '!=', $user->id)->get());
+        }else{
+            abort(403, "Permission denied");
+        }
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list(Request $request)
+    {
+        $user = auth()->user();
+        if($user->role === "admin"){
         return UserResource::collection(User::where('id', '!=', $user->id)->paginate(5));
         }else{
             abort(403, "Permission denied");

@@ -41,6 +41,13 @@ Route::group([
     Route::get('getMe', 'JwtAuthController@getMe');    
 });
 
+Route::group(['middleware' => 'jwt.auth',
+    'namespace' => 'App\Http\Controllers\Api',
+
+], function () {
+    Route::get('treatments/list', 'TreatmentController@list'); 
+});
+
 Route::get('treatments/{id}', 'App\Http\Controllers\Api\TreatmentController@show');
 Route::get('diseases/{id}/drugs', 'App\Http\Controllers\Api\DiseaseDrugController@index');
 
@@ -49,14 +56,19 @@ Route::group(['middleware' => 'jwt.auth',
     'namespace' => 'App\Http\Controllers\Api',
 
 ], function () {
-
-    Route::apiResource('diseases', DiseaseController::class);    
+    
+    Route::get('diseases/list', 'DiseaseController@list'); 
+    Route::get('drugs/list', 'DrugController@list');
+     
+    Route::get('users/list', 'UserController@list'); 
+    Route::apiResource('diseases', DiseaseController::class);   
     Route::apiResource('drugs', DrugController::class);
     Route::resource('diseases.drugs', DiseaseDrugController::class);
     Route::delete('diseases/{id}/drugs', 'DiseaseDrugController@deleteMany');
     Route::apiResource('users', UserController::class);
 
     Route::apiResource('treatments', TreatmentController::class);
+    Route::get('treatments/list', 'TreatmentController@list'); 
 
 });
 Route::get('treatments', 'App\Http\Controllers\Api\TreatmentController@index');

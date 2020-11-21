@@ -98,8 +98,8 @@ export default function TreatmentList() {
         retrieveTreatments();        
   }, []);
 
-  const retrieveTreatments = useCallback((pageNumber) => {
-    TreatmentsDataService.getAll(pageNumber=1)
+  const retrieveTreatments = useCallback((pageNumber=1) => {
+    TreatmentsDataService.getAllPaginate(pageNumber)
       .then(response => {  
         const { current_page, per_page, total } = response.data.meta;   
         if(response.data.data.length !== 0){

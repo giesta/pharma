@@ -113,8 +113,8 @@ export default function DiseasesList() {
       });
   };
 
-  const retrieveDiseases = (pageNumber) => {
-    diseasesDataService.getAll(pageNumber)
+  const retrieveDiseases = (pageNumber  = 1) => {
+    diseasesDataService.getAllPaginate(pageNumber)
       .then(response => {
         const { current_page, per_page, total } = response.data.meta;          
         if(response.data.data.length !== 0){
@@ -225,7 +225,7 @@ const newDisease = () => {
       <div className="container"> 
       <DiseasesTable columns ={columns} diseases={diseases} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiseasesTable>
       { show && <DiseaseCreateUpdate show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} drugs={drugs} AddSelectedDrugs={AddSelectedDrugs}></DiseaseCreateUpdate> }
-      { confirm && <DiseaseDelete id={id} name={"Drug"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiseaseDelete> }
+      { confirm && <DiseaseDelete id={id} name={"Disease"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiseaseDelete> }
       { info && <DiseaseInfo info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }
       <div>
         <Pagination 

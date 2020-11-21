@@ -144,7 +144,7 @@ export default function DrugsList() {
         
   }, []);
   const retrieveDrugs = (pageNumber = 1) => {
-    DrugsDataService.getAll(pageNumber)
+    DrugsDataService.getAllPaginate(pageNumber)
       .then(response => {  
         const { current_page, per_page, total } = response.data.meta;      
         if(response.data.data.length !== 0){

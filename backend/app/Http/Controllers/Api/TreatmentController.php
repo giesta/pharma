@@ -31,6 +31,22 @@ class TreatmentController extends Controller
         if($user !== null && $user->role ==="admin"){
             return TreatmentResource::collection(Treatment::paginate(5));
         }else if($user !== null && $user->role ==="pharmacist"){
+            return TreatmentResource::collection($user->treatments);  
+        }else{
+            return TreatmentResource::collection(Treatment::paginate(5));
+        }      
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list(Request $request)
+    {
+        $user = auth()->user();
+        if($user !== null && $user->role ==="admin"){
+            return TreatmentResource::collection(Treatment::paginate(5));
+        }else if($user !== null && $user->role ==="pharmacist"){
             return TreatmentResource::collection($user->treatments->paginate(5));  
         }else{
             return TreatmentResource::collection(Treatment::paginate(5));

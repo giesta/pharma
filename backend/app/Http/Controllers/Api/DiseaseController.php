@@ -24,6 +24,20 @@ class DiseaseController extends Controller
     {
         $user = auth()->user();
         if($user->role ==="admin"){
+            return DiseaseResource::collection(Disease::with('drugs')->get());
+        }else{
+            return DiseaseResource::collection($user->diseases()->with('drugs')->get());
+        }
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list(Request $request)
+    {
+        $user = auth()->user();
+        if($user->role ==="admin"){
             return DiseaseResource::collection(Disease::with('drugs')->paginate(5));
         }else{
             return DiseaseResource::collection($user->diseases()->with('drugs')->paginate(5));

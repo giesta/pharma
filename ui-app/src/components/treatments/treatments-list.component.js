@@ -53,7 +53,21 @@ export default function TreatmentList() {
   const [total, setTotal] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(3);
 
+  const [searchTitle, setSearchTitle] = React.useState("");
+
   const [validated, setValidated] = React.useState(false);
+
+  const onChangeSearchTitle = e => {
+    const searchTitle = e.target.value;
+    setSearchTitle(searchTitle);
+  };
+
+  const refreshList = () => {
+    retrieveTreatments();
+    setTreatment(initialTreatmentState);
+    setPage(1);
+  };
+
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -161,17 +175,10 @@ const saveTreatment = () => {
     data.append("description", treatment.description);
     data.append("disease_id", treatment.disease_id);
 TreatmentsDataService.create(data)
-    .then(response => {
-      setTreatment({
-        title: response.data.data.title,
-        description: response.data.data.description,
-        algorithm: response.data.data.algorithm,
-        disease: response.data.data.disease
-      });
+    .then(() => {
+      refreshList();
       setUrl(null);
       handleClose();
-      Treatments.data.push(response.data.data);
-      setTreatments({...Treatments, data: Treatments.data});
     })
     .catch(e => {
       console.log(e);
@@ -223,17 +230,58 @@ const deleteItem = (id) => {
 const newTreatment = () => {
   setTreatment(initialTreatmentState);
 };
+const findByTitle = () => {
+  TreatmentsDataService.findByTitle(page, searchTitle)
+    .then(response => {
+      const { current_page, per_page, total } = response.data.meta;          
+        if(response.data.data.length !== 0){
+          setTreatments({...Treatments, data: response.data.data}); 
+          setPageSize(per_page);
+          setPage(current_page);     
+          setTotal(total);          
+        }
+      console.log(response.data.data);
+    })
+    .catch(e => {
+      console.log(e);
+    });
+};
   return (
-    <div><div className="mb-3">
+    <div>
+      {Treatments?(
+      Treatments.data.length===0?(        
+        <Spinner></Spinner>
+      ):(   
+        <div>
+        <div className="d-flex justify-content-between">
+        <div className="mb-3">
     <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
             function(event){setShow(true)}}>
               <BsPlus></BsPlus>
           </button>
+          
     </div>
-      {Treatments?(
-      Treatments.data.length===0?(        
-        <Spinner></Spinner>
-      ):(        
+          <div className="col-md-6">
+        <div className="input-group mb-3">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by title"
+            value={searchTitle}
+            onChange={onChangeSearchTitle}
+          />
+          <div className="input-group-append">
+            <button
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={findByTitle}
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      </div> 
+    </div>          
       <div className="container">  
       
       <>
@@ -260,7 +308,7 @@ const newTreatment = () => {
       </div>
       
 </>
-  </div>  )
+  </div> </div> )
     ):(<div>
       <br />
       <p>Some Went Wrong...</p>

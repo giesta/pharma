@@ -28,12 +28,25 @@ class TreatmentController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
+        $name = $request->name;
         if($user !== null && $user->role ==="admin"){
-            return TreatmentResource::collection(Treatment::paginate(5));
+            if($name){
+                return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->paginate(5));
+            }else{
+                return TreatmentResource::collection(Treatment::paginate(5));
+            }            
         }else if($user !== null && $user->role ==="pharmacist"){
-            return TreatmentResource::collection($user->treatments);  
+            if($name){
+                return TreatmentResource::collection($user->treatments()->where('treatments.title', 'LIKE', "%$name%")->paginate(5)); 
+            }else{
+                return TreatmentResource::collection($user->treatments()->paginate(5)); 
+            }             
         }else{
-            return TreatmentResource::collection(Treatment::paginate(5));
+            if($name){
+                return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->paginate(5));
+            }else{
+                return TreatmentResource::collection(Treatment::paginate(5));
+            }            
         }      
     }
     /**
@@ -44,12 +57,25 @@ class TreatmentController extends Controller
     public function list(Request $request)
     {
         $user = auth()->user();
+        $name = $request->name;
         if($user !== null && $user->role ==="admin"){
-            return TreatmentResource::collection(Treatment::paginate(5));
+            if($name){
+                return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->paginate(5));
+            }else{
+                return TreatmentResource::collection(Treatment::paginate(5));
+            }            
         }else if($user !== null && $user->role ==="pharmacist"){
-            return TreatmentResource::collection($user->treatments()->paginate(5));  
+            if($name){
+                return TreatmentResource::collection($user->treatments()->where('treatments.title', 'LIKE', "%$name%")->paginate(5));
+            }else{
+                return TreatmentResource::collection($user->treatments()->paginate(5));
+            }              
         }else{
-            return TreatmentResource::collection(Treatment::paginate(5));
+            if($name){
+                return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->paginate(5));
+            }else{
+                return TreatmentResource::collection(Treatment::paginate(5));
+            }            
         }      
     }
 

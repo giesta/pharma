@@ -37,8 +37,8 @@ const removeAll = () => {
   return http.delete(`/treatments`);
 };
 
-const findByName = name => {
-  return http.get(`/treatments?name=${name}`);
+const findByTitle = (pageNumber, name) => {
+  return http.get(`/treatments/list?pageNumber=${pageNumber}&&name=${name}`);
 };
 
 export default {
@@ -51,5 +51,5 @@ export default {
   update,
   remove,
   removeAll,
-  findByName
+  findByTitle
 };

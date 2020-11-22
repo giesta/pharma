@@ -29,8 +29,15 @@ export default function UsersList() {
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(3);
+
+  const [searchTitle, setSearchTitle] = React.useState("");
   
   const [validated, setValidated] = React.useState(false);
+
+  const onChangeSearchTitle = e => {
+    const searchTitle = e.target.value;
+    setSearchTitle(searchTitle);
+  };
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -62,8 +69,8 @@ export default function UsersList() {
   useEffect(()=>{
         retrieveUsers();
   }, []);
-  const retrieveUsers = (pageNumber=1) => {
-    UsersDataService.getAllPaginate(pageNumber)
+  const retrieveUsers = (pageNumber = 1) => {
+    UsersDataService.findByTitle(pageNumber, searchTitle)
       .then(response => {  
         const { current_page, per_page, total } = response.data.meta;        
         if(response.data.data.length !== 0){
@@ -72,6 +79,22 @@ export default function UsersList() {
           setPage(current_page);     
           setTotal(total);
         }       
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+  const findByTitle = () => {
+    UsersDataService.findByTitle(1, searchTitle)
+      .then(response => {
+        const { current_page, per_page, total } = response.data.meta;          
+          if(response.data.data.length !== 0){
+            setUsers({...users, data: response.data.data});
+          setPageSize(per_page);
+          setPage(current_page);     
+          setTotal(total);          
+          }
+        console.log(response.data.data);
       })
       .catch(e => {
         console.log(e);
@@ -164,7 +187,28 @@ const newUser = () => {
       {users?(
       users.data.length===0?(        
         <Spinner></Spinner>
-      ):(        
+      ):(  
+        <div>
+        <div className="col-md-6 float-right">
+        <div className="input-group mb-3">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search by title"
+            value={searchTitle}
+            onChange={onChangeSearchTitle}
+          />
+          <div className="input-group-append">
+            <button
+              className="btn btn-outline-secondary"
+              type="button"
+              onClick={findByTitle}
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      </div>       
       <div className="container">
       <UsersTable columns ={columns} users={users} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></UsersTable>
       { show &&<UserUpdate show ={show} handleClose={handleClose} user={user} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange}></UserUpdate> }
@@ -184,6 +228,7 @@ const newUser = () => {
         lastPageText="Last"
         ></Pagination> 
       </div>
+  </div>
   </div>  )
     ):(<div>
       <br />

@@ -39,8 +39,14 @@ class UserController extends Controller
     public function list(Request $request)
     {
         $user = auth()->user();
+        $name = $request->name;
         if($user->role === "admin"){
-        return UserResource::collection(User::where('id', '!=', $user->id)->paginate(5));
+            if($name){
+                return UserResource::collection(User::where('users.name', 'LIKE', "%$name%")->paginate(5));
+            }else{
+                return UserResource::collection(User::paginate(5));
+            }
+        
         }else{
             abort(403, "Permission denied");
         }

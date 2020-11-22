@@ -127,7 +127,7 @@ export default function DiseasesList() {
   };
 
   const retrieveDiseases = (pageNumber  = 1) => {
-    diseasesDataService.getAllPaginate(pageNumber)
+    diseasesDataService.findByTitle(pageNumber, searchTitle)
       .then(response => {
         const { current_page, per_page, total } = response.data.meta;          
         if(response.data.data.length !== 0){
@@ -218,7 +218,7 @@ const newDisease = () => {
 };
 
 const findByTitle = () => {
-  diseasesDataService.findByTitle(page, searchTitle)
+  diseasesDataService.findByTitle(1, searchTitle)
     .then(response => {
       const { current_page, per_page, total } = response.data.meta;          
         if(response.data.data.length !== 0){

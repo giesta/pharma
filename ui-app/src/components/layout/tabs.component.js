@@ -21,6 +21,8 @@ export default function ControlledTabs() {
       const [total, setTotal] = React.useState(0);
       const [pageSize, setPageSize] = React.useState(3);
 
+      const [pageNumber, setPageNumber] = React.useState(1);
+
       const [searchTitle, setSearchTitle] = React.useState("");
 
       const [pagePrivate, setPagePrivate] = React.useState(1);
@@ -37,7 +39,7 @@ export default function ControlledTabs() {
       setSearchTitle(searchTitle);
     };    
     const retrieveTreatments = (pageNumber = 1) => {
-      TreatmentsDataService.getAllPublic(pageNumber)
+      TreatmentsDataService.findByTitle(pageNumber, searchTitle)
         .then(response => {   
           const { current_page, per_page, total } = response.data.meta;  
           console.log("masyvas" + response.data.meta)
@@ -53,7 +55,7 @@ export default function ControlledTabs() {
         });
     };
     const retrieveTreatmentsPrivate = (pageNumber = 1) => {
-        TreatmentsDataService.getAllPaginate(pageNumber)
+        TreatmentsDataService.findByTitle(pageNumber, searchTitle)
           .then(response => {  
             const { current_page, per_page, total } = response.data.meta;   
             if(response.data.data.length !== 0){               
@@ -74,8 +76,28 @@ export default function ControlledTabs() {
         return Treatments;
     }
     const findByTitle = () => {
-      console.log("vyskta");
-      TreatmentsDataService.findByTitle(page, searchTitle)
+      console.log("pageNumber ");
+      TreatmentsDataService.findByTitle(1, searchTitle)
+        .then(response => {
+          const { current_page, per_page, total } = response.data.meta;   
+            if(response.data.data.length !== 0){               
+              setTreatments({...PrivateTreatments, data: response.data.data});
+              setPageSize(per_page);
+              setPage(current_page);     
+              setTotal(total);
+            }
+            console.log(response.data.data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    };
+    const changePageNumber = ()=>{
+      setPageNumber(pageNumber+1);
+    }
+    const findByTitle2 = () => {
+      console.log("pageNumber ");
+      TreatmentsDataService.findByTitle(1, searchTitle)
         .then(response => {
           const { current_page, per_page, total } = response.data.meta;   
             if(response.data.data.length !== 0){               
@@ -123,6 +145,7 @@ export default function ControlledTabs() {
           </div>
         </div>
       </div>    
+      {console.log("kinta"+page)}
           <TreatmentCard key={Treatments.id} Treatments = {Treatments.data} ></TreatmentCard>
           <div class="d-flex justify-content-center mt-2">
         <Pagination 
@@ -154,13 +177,14 @@ export default function ControlledTabs() {
             <button
               className="btn btn-outline-secondary"
               type="button"
-              onClick={findByTitle}
+              onClick={findByTitle2}
             >
               Search
             </button>
           </div>
         </div>
-      </div>   
+      </div> 
+      {console.log("kinta"+page)}  
           <TreatmentCard Treatments = {PrivateTreatments.data} ></TreatmentCard>
           <div class="d-flex justify-content-center mt-2">
         <Pagination 

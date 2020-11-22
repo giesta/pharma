@@ -113,7 +113,7 @@ export default function TreatmentList() {
   }, []);
 
   const retrieveTreatments = useCallback((pageNumber=1) => {
-    TreatmentsDataService.getAllPaginate(pageNumber)
+    TreatmentsDataService.findByTitle(pageNumber, searchTitle)
       .then(response => {  
         const { current_page, per_page, total } = response.data.meta;   
         if(response.data.data.length !== 0){
@@ -231,7 +231,7 @@ const newTreatment = () => {
   setTreatment(initialTreatmentState);
 };
 const findByTitle = () => {
-  TreatmentsDataService.findByTitle(page, searchTitle)
+  TreatmentsDataService.findByTitle(1, searchTitle)
     .then(response => {
       const { current_page, per_page, total } = response.data.meta;          
         if(response.data.data.length !== 0){

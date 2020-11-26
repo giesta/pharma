@@ -10,7 +10,7 @@ export default function CreateModal(props) {
             </Modal.Header>
             <Form noValidate validated={props.validated} onSubmit={props.handleSubmit}> 
                 <Modal.Body>  
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="name">
                         <Form.Label>Name</Form.Label>
                         <Form.Control type="text" placeholder="" required value={props.drug.name} onChange={props.handleInputChange} name="name"/>
                         <Form.Control.Feedback type="invalid">
@@ -18,7 +18,7 @@ export default function CreateModal(props) {
                         </Form.Control.Feedback>
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="substance">
                         <Form.Label>Substance</Form.Label>
                         <Form.Control type="text" placeholder="" required value={props.drug.substance} onChange={props.handleInputChange} name="substance"/>
                         <Form.Control.Feedback type="invalid">
@@ -26,7 +26,7 @@ export default function CreateModal(props) {
                         </Form.Control.Feedback>
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="indication">
                         <Form.Label>Indication</Form.Label>
                         <Form.Control type="text" placeholder="" required value={props.drug.indication} onChange={props.handleInputChange} name="indication"/>
                         <Form.Control.Feedback type="invalid">
@@ -34,7 +34,7 @@ export default function CreateModal(props) {
                         </Form.Control.Feedback>
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="contraindication">
                         <Form.Label>Contraindication</Form.Label>
                         <Form.Control type="text" placeholder="" required value={props.drug.contraindication} onChange={props.handleInputChange} name="contraindication"/>
                         <Form.Control.Feedback type="invalid">
@@ -42,7 +42,7 @@ export default function CreateModal(props) {
                         </Form.Control.Feedback>
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="reaction">
                         <Form.Label>Adverse effect</Form.Label>
                         <Form.Control type="text" placeholder="" required value={props.drug.reaction} onChange={props.handleInputChange} name="reaction"/>
                         <Form.Control.Feedback type="invalid">
@@ -50,7 +50,7 @@ export default function CreateModal(props) {
                         </Form.Control.Feedback>
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="use">
                         <Form.Label>Use</Form.Label>
                         <Form.Control type="text" placeholder="" required value={props.drug.use} onChange={props.handleInputChange} name="use"/>
                         <Form.Control.Feedback type="invalid">
@@ -59,21 +59,21 @@ export default function CreateModal(props) {
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 {(props.drug.diseases!==null && props.drug.diseases!==undefined)?(
-                    <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Form.Group controlId="diseases">
                         <Form.Label>Diseases</Form.Label>     
                         <Form.Control as="select" multiple defaultValue={props.drug.diseases.map(item=>item.id)} onChange={props.AddSelectedDiseases} name="diseases_id"> 
                         {props.diseases.data.map((x)=>
-                            <option value={x.id}>{x.name}</option>
+                            <option key={x.id} value={x.id}>{x.name}</option>
                             )  
                         }
                         </Form.Control>  
                     </Form.Group>
                 ):(            
-                    <Form.Group controlId="exampleForm.ControlSelect1"> 
+                    <Form.Group controlId="diseases_id"> 
                         <Form.Label>Diseases</Form.Label>
                         <Form.Control as="select" multiple onChange={props.AddSelectedDiseases} name="diseases_id">   
                         {props.diseases.data.map((x)=>
-                            <option value={x.id}>{x.name}</option>
+                            <option key={x.id} value={x.id}>{x.name}</option>
                             )  
                         }
                         </Form.Control>

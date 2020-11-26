@@ -20,8 +20,7 @@ export default function ControlledTabs() {
       const [page, setPage] = React.useState(1);
       const [total, setTotal] = React.useState(0);
       const [pageSize, setPageSize] = React.useState(3);
-
-      const [pageNumber, setPageNumber] = React.useState(1);
+      const [noData, setNoData] = React.useState('');
 
       const [searchTitle, setSearchTitle] = React.useState("");
 
@@ -48,7 +47,9 @@ export default function ControlledTabs() {
             setPageSize(per_page);
             setPage(current_page);     
             setTotal(total);
-          }      
+          }else{
+            setNoData('No');
+          }  
         })
         .catch(e => {
           console.log(e);
@@ -63,18 +64,14 @@ export default function ControlledTabs() {
               setPageSizePrivate(per_page);
               setPagePrivate(current_page);     
               setTotalPrivate(total);
-            }      
+            }else{
+              setNoData('No');
+            }     
           })
           .catch(e => {
             console.log(e);
           });
       };
-      const getPrivate = () =>{
-          return PrivateTreatments;
-      }
-      const getPublic = () =>{
-        return Treatments;
-    }
     const findByTitle = () => {
       console.log("pageNumber ");
       TreatmentsDataService.findByTitle(1, searchTitle)
@@ -92,9 +89,6 @@ export default function ControlledTabs() {
           console.log(e);
         });
     };
-    const changePageNumber = ()=>{
-      setPageNumber(pageNumber+1);
-    }
     const findByTitle2 = () => {
       console.log("pageNumber ");
       TreatmentsDataService.findByTitle(1, searchTitle)
@@ -115,7 +109,7 @@ export default function ControlledTabs() {
     return (
         <div>
           {console.log(Treatments)}
-        {Treatments.data.length===0?(        
+        {Treatments.data.length === 0 && noData === ''?(        
               <Spinner></Spinner>
             ):(
         <Tabs

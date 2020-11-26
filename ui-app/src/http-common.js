@@ -15,7 +15,6 @@ instance.interceptors.request.use (
   function (config) {
     const token = JSON.parse(localStorage.getItem('user')).access_token;
     if (token) config.headers.Authorization = `Bearer ${token}`;
-    console.log(token);
     return config;
   },
   function (error) {
@@ -23,7 +22,6 @@ instance.interceptors.request.use (
   }
 );
 instance.interceptors.response.use(response => {
-  console.log(response);
   return response;
 }, err => {
   return new Promise((resolve, reject) => {
@@ -49,7 +47,6 @@ instance.interceptors.response.use(response => {
               localStorage.removeItem("user");
               return window.location.href = '/login';
             }else{
-              console.log(res)
               var user = JSON.parse(localStorage.getItem('user'));
               user.access_token = res.access_token;
               localStorage.setItem("user", JSON.stringify(user));

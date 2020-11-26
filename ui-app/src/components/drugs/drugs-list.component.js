@@ -7,6 +7,7 @@ import DrugInfo from "./info-modal.component";
 import DrugCreateUpdate from "./create-update-modal.component";
 import DrugsTable from "./table.component";
 import Spinner from "../layout/spinner.component";
+import ErrorBoundary from "../layout/error.component";
 import Pagination from "react-js-pagination";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 
@@ -54,6 +55,8 @@ export default function DrugsList() {
  }];
 
   const [drug, setDrug] = React.useState(initialDrugState);
+  const [noData, setNoData] = React.useState('');
+  const [error, setError] = React.useState(false);
   const [diseases, setDiseases] = React.useState({
     data: [],
   });
@@ -136,10 +139,13 @@ export default function DrugsList() {
           setPageSize(per_page);
           setPage(current_page);     
           setTotal(total);     
+        }else{
+          setNoData("No");
         }  
         retrieveDiseases();     
       })
       .catch(e => {
+        setError(true);
         console.log(e);
       });
   };
@@ -151,6 +157,7 @@ export default function DrugsList() {
         }       
       })
       .catch(e => {
+        setError(true);
         console.log(e);
       });
   };
@@ -196,6 +203,7 @@ const saveDrug = () => {
       handleClose();
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
@@ -229,6 +237,7 @@ const updateDrug = () => {
       setDrugs({...drugs, data: updatedItems});
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
@@ -240,6 +249,7 @@ const deleteItem = (id) => {
       handleCloseConfirm();
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
@@ -261,19 +271,23 @@ const findByTitle = () => {
       console.log(response.data.data);
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
   return (
     <div>
+      {error?<ErrorBoundary/>:''}
       {drugs?(
-      drugs.data.length===0?(        
+      drugs.data.length === 0 && noData === ''?(        
         <Spinner></Spinner>
       ):( 
         <div>
+          
+          
         <div className="d-flex justify-content-between">
         <div className="mb-3">
-    <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
+          <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
             function(event){setShow(true)}}>
               <BsPlus></BsPlus>
           </button>

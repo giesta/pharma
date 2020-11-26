@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { BsPhone, BsGeoAlt, BsFillEnvelopeFill, BsPlus } from "react-icons/bs";
+import { BsPhone, BsGeoAlt, BsFillEnvelopeFill} from "react-icons/bs";
 export default function Footer() {
 
     return (

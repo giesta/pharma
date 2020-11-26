@@ -8,7 +8,7 @@ import TreatmentInfo from "./info-modal.component";
 import Spinner from "../layout/spinner.component";
 import Pagination from "react-js-pagination";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
-
+import ErrorBoundary from "../layout/error.component";
 
 export default function TreatmentList() {
 
@@ -43,7 +43,8 @@ export default function TreatmentList() {
   const [treatment, setTreatment] = React.useState(initialTreatmentState);
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [url, setUrl] = React.useState(null);
-
+  const [noData, setNoData] = React.useState('');
+  const [error, setError] = React.useState(false);
   const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
@@ -121,10 +122,13 @@ export default function TreatmentList() {
           setPageSize(per_page);
           setPage(current_page);     
           setTotal(total);          
-        }  
+        }else{
+          setNoData("No");
+        }
         retrieveDiseases();     
       })
       .catch(e => {
+        setError(true);
         console.log(e);
       });
   }, []);
@@ -137,6 +141,7 @@ export default function TreatmentList() {
         }        
       })
       .catch(e => {
+        setError(true);
         console.log(e);
       });
   };
@@ -181,6 +186,7 @@ TreatmentsDataService.create(data)
       handleClose();
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
@@ -213,6 +219,7 @@ const updateTreatment = () => {
       setTreatments({...Treatments, data: updatedItems});
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
@@ -224,6 +231,7 @@ const deleteItem = (id) => {
       handleCloseConfirm();
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
@@ -243,16 +251,18 @@ const findByTitle = () => {
       console.log(response.data.data);
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
   return (
     <div>
       {Treatments?(
-      Treatments.data.length===0?(        
+      Treatments.data.length === 0 && noData === ''?(        
         <Spinner></Spinner>
       ):(   
         <div>
+          {error?<ErrorBoundary/>:''}
         <div className="d-flex justify-content-between">
         <div className="mb-3">
     <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={

@@ -29,6 +29,7 @@ export default function Treatment(props) {
   const [currentDrugs, setCurrentDrugs] = React.useState([]);
   const [drug, setDrug] = React.useState(initialDrugState);
   const [show, setShow] = React.useState(false);
+  const [noData, setNoData] = React.useState('');
  
   const handleClose = () =>{
     newDrug();
@@ -46,6 +47,8 @@ export default function Treatment(props) {
         if (response.data.data.length !== 0) {
           setCurrentTreatment(response.data.data);
           getDrugs(response.data.data.disease.id);
+        }else{
+          setNoData('No');
         }
       })
       .catch(e => {
@@ -67,7 +70,7 @@ export default function Treatment(props) {
   return (
     <div>
       {currentTreatment?(
-      currentTreatment.disease===null?(        
+      currentTreatment.disease === null && noData === ''?(        
         <Spinner></Spinner>
       ):(        
       <div className="container">     

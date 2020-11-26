@@ -93,7 +93,7 @@ setRedirect= ()=>{
 }
 renderRedirect = () => {
   if (this.state.redirect) {
-    return <Redirect to='/login' />
+    return <Redirect to='/profile' />
   }
 }
 
@@ -139,7 +139,7 @@ renderRedirect = () => {
       ).then(
         response => {
           this.setState({
-            message: response.data.message,
+            message: response.data.user.name,
             successful: true
           });
           this.setRedirect();

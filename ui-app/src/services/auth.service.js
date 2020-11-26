@@ -27,6 +27,11 @@ class AuthService {
       email,
       password,
       c_password,
+    }).then(response => {
+      if (response.data.access_token) {            
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
+      return response;
     });
   }
 

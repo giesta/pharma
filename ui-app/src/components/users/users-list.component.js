@@ -7,6 +7,7 @@ import UsersTable from "./table.component";
 import Spinner from "../layout/spinner.component";
 import Pagination from "react-js-pagination";
 import { BsPen, BsTrash, BsInfoCircle} from "react-icons/bs";
+import ErrorBoundary from "../layout/error.component";
 
 export default function UsersList() {
 
@@ -25,7 +26,7 @@ export default function UsersList() {
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
-
+  const [error, setError] = React.useState(false);
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(3);
@@ -82,6 +83,7 @@ export default function UsersList() {
       })
       .catch(e => {
         console.log(e);
+        setError(true);
       });
   };
   const findByTitle = () => {
@@ -98,6 +100,7 @@ export default function UsersList() {
       })
       .catch(e => {
         console.log(e);
+        setError(true);
       });
   };
   
@@ -162,6 +165,7 @@ const updateUser = () => {
       setUsers({...users, data: updatedItems});
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
@@ -173,6 +177,7 @@ const deleteItem = (id) => {
       handleCloseConfirm();
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
@@ -183,12 +188,13 @@ const newUser = () => {
 
 
   return (
-    <div>
+    <div>{error?<ErrorBoundary/>:''}
       {users?(
       users.data.length===0?(        
         <Spinner></Spinner>
       ):(  
         <div>
+          
         <div className="col-md-6 float-right">
         <div className="input-group mb-3">
           <input

@@ -8,7 +8,7 @@ import DiseasesTable from "./table.component";
 import Spinner from "../layout/spinner.component";
 import Pagination from "react-js-pagination";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
-
+import ErrorBoundary from "../layout/error.component";
 
 export default function DiseasesList() {
 
@@ -50,7 +50,7 @@ export default function DiseasesList() {
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
   const [selectedDrugs, setSelectedDrugs] = React.useState([]);
-
+  const [error, setError] = React.useState(false);
   const [searchTitle, setSearchTitle] = React.useState("");
 
   const [page, setPage] = React.useState(1);
@@ -135,10 +135,14 @@ export default function DiseasesList() {
           setPageSize(per_page);
           setPage(current_page);     
           setTotal(total);          
+        }else{
+          setNoData("No");
         }
           retrieveDrugs();       
       })
       .catch(e => {
+        setError(true);
+        console.log("some");
         console.log(e);
       });
   };
@@ -178,6 +182,7 @@ const saveDisease = () => {
       handleClose();            
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
@@ -198,6 +203,7 @@ const updateDisease = () => {
       handleClose();
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
@@ -209,6 +215,7 @@ const deleteItem = (id) => {
       handleCloseConfirm();
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
@@ -230,16 +237,19 @@ const findByTitle = () => {
       console.log(response.data.data);
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
 };
   return (
     <div>
+      {error?<ErrorBoundary/>:''}
       {diseases?(
-      diseases.data.length===0 && noData===''?(        
-        <Spinner></Spinner>
+      diseases.data.length===0 && noData===''?( 
+        <div> <Spinner></Spinner> </div>         
       ):(  
         <div>
+          
         <div className="d-flex justify-content-between">
         <div className="mb-3">
     <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={

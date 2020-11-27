@@ -24,11 +24,10 @@ class UserFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'email' => 'c@c.com',
+            'email' => 'a@a.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$no1oQTjlEGGl0syZga85CuDE/lvlJQ2Si3mftIAanl6BiZiWAm0r2', // password
-            'role' => 'admin',
-            'remember_token' => Str::random(10),
+            'password' => bcrypt('123456'), // password
+            'remember_token' => Str::random(10),            
         ];
     }
 }

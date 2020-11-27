@@ -29,13 +29,14 @@ class TreatmentController extends Controller
     {
         $user = auth()->user();
         $name = $request->name;
-        if($user !== null && $user->role ==="admin"){
+        $role = $user->roles()->first()->name;
+        if($user !== null && $role ==="admin"){
             if($name){
                 return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->paginate(5));
             }else{
                 return TreatmentResource::collection(Treatment::paginate(5));
             }            
-        }else if($user !== null && $user->role ==="pharmacist"){
+        }else if($user !== null && $role ==="pharmacist"){
             if($name){
                 return TreatmentResource::collection($user->treatments()->where('treatments.title', 'LIKE', "%$name%")->paginate(5)); 
             }else{
@@ -58,25 +59,31 @@ class TreatmentController extends Controller
     {
         $user = auth()->user();
         $name = $request->name;
-        if($user !== null && $user->role ==="admin"){
+        if($user !== null){
+            $role = $user->roles()->first()->name;
+              
+            if($role ==="admin"){
+                if($name){
+                    return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->paginate(5));
+                }else{
+                    return TreatmentResource::collection(Treatment::paginate(5));
+                }            
+            }else if($role ==="pharmacist"){
+                if($name){
+                    return TreatmentResource::collection($user->treatments()->where('treatments.title', 'LIKE', "%$name%")->paginate(5));
+                }else{
+                    return TreatmentResource::collection($user->treatments()->paginate(5));
+                }              
+            }
+        }
+        else{
             if($name){
                 return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->paginate(5));
             }else{
                 return TreatmentResource::collection(Treatment::paginate(5));
             }            
-        }else if($user !== null && $user->role ==="pharmacist"){
-            if($name){
-                return TreatmentResource::collection($user->treatments()->where('treatments.title', 'LIKE', "%$name%")->paginate(5));
-            }else{
-                return TreatmentResource::collection($user->treatments()->paginate(5));
-            }              
-        }else{
-            if($name){
-                return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->paginate(5));
-            }else{
-                return TreatmentResource::collection(Treatment::paginate(5));
-            }            
-        }      
+        }   
+           
     }
 
     /**
@@ -96,7 +103,7 @@ class TreatmentController extends Controller
         try{
             $treatment = Treatment::create(array_merge($request->all(), ['user_id' => $user->id, 'algorithm'=>$path]));
         }catch (QueryException $ex) { // Anything that went wrong
-            abort(500, "Could not create Treatment");
+            abort(500, $ex->message);
         }
         
         return new TreatmentResource(
@@ -113,12 +120,16 @@ class TreatmentController extends Controller
     public function show(Request $request, $id):TreatmentResource
     {
         $user = auth()->user();
-        if($user !== null && $user->role ==="admin"){
-            $treatment = Treatment::findOrFail($id);
-            return new TreatmentResource($treatment);
-        }else if($user !== null && $user->role ==="pharmacist"){ 
-            return new TreatmentResource($user->treatments()->findOrFail($id));
-        }else{
+        if($user !== null){
+            $role = $user->roles()->first()->name;
+            if($role ==="admin"){
+                $treatment = Treatment::findOrFail($id);
+                return new TreatmentResource($treatment);
+            }else if($role ==="pharmacist"){ 
+                return new TreatmentResource($user->treatments()->findOrFail($id));
+            }
+        }
+        else{
             return new TreatmentResource(Treatment::findOrFail($id));
         }
     }
@@ -133,7 +144,8 @@ class TreatmentController extends Controller
     public function update(StoreTreatmentRequest $request, $id)
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
             $treatment = Treatment::findOrFail($id);
         }else{
             $treatment = $user->treatments()->findOrFail($id);
@@ -167,7 +179,8 @@ class TreatmentController extends Controller
     public function destroy(Request $request, $id)
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
             $treatment = Treatment::findOrFail($id);
         }else{
             $treatment = $user->treatments()->findOrFail($id);

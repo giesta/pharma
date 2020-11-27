@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use JWTAuth;
 use Validator;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Requests\Register\AuthRequest;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -35,9 +36,9 @@ class JwtAuthController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
-        $user->role = "pharmacist";
         $user->save();
-  
+        $role = Role::find(2);
+        $user->roles()->attach($role);
         if ($this->token) {
             return $this->login($request);
         }

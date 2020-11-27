@@ -17,6 +17,7 @@ trait ResponseApiToken
             'token_type' => 'bearer',
             'expires_in' => auth()->factory()->getTTL() * 60,
             'user'=>auth()->user(),
+            'role'=>auth()->user()->roles()->first()->name,
         ]);
     }
 }

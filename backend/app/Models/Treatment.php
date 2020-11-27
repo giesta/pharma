@@ -9,7 +9,7 @@ class Treatment extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'title', 'description', 'algorithm', 'user_id', 'disease_id'
+        'title', 'description', 'algorithm', 'likes', 'dislikes', 'public', 'user_id', 'disease_id'
     ];
     public function disease(){
         return $this->belongsTo(Disease::class,'disease_id', 'id');

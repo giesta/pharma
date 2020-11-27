@@ -25,7 +25,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        if($user->role === "admin"){
+        if($user->roles()->first()->name === "admin"){
         return UserResource::collection(User::where('id', '!=', $user->id)->get());
         }else{
             abort(403, "Permission denied");
@@ -40,7 +40,7 @@ class UserController extends Controller
     {
         $user = auth()->user();
         $name = $request->name;
-        if($user->role === "admin"){
+        if($user->roles()->first()->name === "admin"){
             if($name){
                 return UserResource::collection(User::where('users.name', 'LIKE', "%$name%")->paginate(5));
             }else{
@@ -72,7 +72,7 @@ class UserController extends Controller
     public function show(int $id)
     {
         $userCurrent = auth()->user();
-        if($userCurrent->id === $id || $userCurrent->role === "admin"){
+        if($userCurrent->id === $id || $userCurrent->roles()->first()->name === "admin"){
             $user = User::findOrFail($id);
             return new UserResource($user);
         }else{
@@ -102,7 +102,7 @@ class UserController extends Controller
         } else {
             try {
                 $userCurrent = auth()->user();
-                if($userCurrent->id === $id || $userCurrent->role === "admin"){
+                if($userCurrent->id === $id || $userCurrent->roles()->first()->name === "admin"){
                     $user = User::findOrFail($id);
                     $user->update($request->only(['name', 'email']));
                     return new UserResource($user);
@@ -125,7 +125,7 @@ class UserController extends Controller
     {
         try {
             $userCurrent = auth()->user();
-            if($userCurrent->id != $id && $userCurrent->role === "admin"){
+            if($userCurrent->id != $id && $userCurrent->roles()->first()->name === "admin"){
                 $user = User::findOrFail($id);
                 $user->delete();
                 return response()->noContent();

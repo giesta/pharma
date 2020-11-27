@@ -37,8 +37,8 @@ class App extends Component {
     if(user){
       this.setState({        
         currentUser: user,
-        showAdminBoard: user.user.role==="admin",
-        showPharmacistBoard: user.user.role==="pharmacist",
+        showAdminBoard: user.role==="admin",
+        showPharmacistBoard: user.role==="pharmacist",
       });
     }
       

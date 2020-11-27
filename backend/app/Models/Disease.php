@@ -19,4 +19,8 @@ class Disease extends Model
     {
         return $this->belongsToMany(Drug::class);
     }
+    public function symptoms()
+    {
+        return $this->belongsToMany(Role::class);
+    }
 }

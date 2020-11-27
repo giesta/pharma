@@ -26,7 +26,8 @@ class DrugController extends ApiController
     public function index(Request $request)
     {
         $user = auth()->user();
-        if($user->role =="admin"){
+        $role = $user->roles()->first()->name;
+        if($role =="admin"){
             return DrugResource::collection(Drug::with('diseases')->get());
         }else{
             return DrugResource::collection($user->drugs()->with('diseases')->get());
@@ -41,19 +42,23 @@ class DrugController extends ApiController
     {
         $user = auth()->user();
         $name = $request->name;
-        if($user->role =="admin"){
-            if($name){
-                return DrugResource::collection(Drug::with('diseases')->where('drugs.name', 'LIKE', "%$name%")->paginate(5));
+        if($user!==null){
+            $role = $user->roles()->first()->name;
+            if($role =="admin"){
+                if($name){
+                    return DrugResource::collection(Drug::with('diseases')->where('drugs.name', 'LIKE', "%$name%")->paginate(5));
+                }else{
+                    return DrugResource::collection(Drug::with('diseases')->paginate(5));
+                }            
             }else{
-                return DrugResource::collection(Drug::with('diseases')->paginate(5));
-            }            
-        }else{
-            if($name){
-                return DrugResource::collection($user->drugs()->with('diseases')->where('drugs.name', 'LIKE', "%$name%")->paginate(5));
-            }else{
-                return DrugResource::collection($user->drugs()->with('diseases')->paginate(5));
-            }            
-        }        
+                if($name){
+                    return DrugResource::collection($user->drugs()->with('diseases')->where('drugs.name', 'LIKE', "%$name%")->paginate(5));
+                }else{
+                    return DrugResource::collection($user->drugs()->with('diseases')->paginate(5));
+                }            
+            } 
+        }
+               
     }
 
     /**
@@ -85,7 +90,8 @@ class DrugController extends ApiController
     public function show(Request $request, $id)
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
             $drugs = Drug::with('diseases')->findOrFail($id);
             return new DrugResource($drugs);
         }else{      
@@ -105,7 +111,8 @@ class DrugController extends ApiController
     public function update(Request $request, $id)
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
             $drug = Drug::findOrFail($id);
         }else{
             $drug = $user->drugs()->findOrFail($id);
@@ -129,7 +136,8 @@ class DrugController extends ApiController
     public function destroy(Request $request, $id)
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
             $drug = Drug::findOrFail($id);
         }else{
             $drug = $user->drugs()->findOrFail($id);

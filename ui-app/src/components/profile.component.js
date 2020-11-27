@@ -35,7 +35,7 @@ export default class Profile extends Component {
                     </p>
                     <strong>Authorities:</strong>
                     <ul>
-                    {currentUser.user.role}
+                    {currentUser.role}
                     </ul>
             </div>
         </div>

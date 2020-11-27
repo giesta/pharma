@@ -23,11 +23,15 @@ class DiseaseDrugController extends Controller
     public function index(Request $request, $id)
     {
         $user = auth()->user();
-        if($user !== null && $user->role ==="admin"){
-            return new DiseaseDrugsResource(Disease::with('drugs')->findOrFail($id));
-        }else if($user !== null && $user->role ==="pharmacist"){
-            return new DiseaseDrugsResource($user->diseases()->with('drugs')->findOrFail($id));
-        }else{
+        if($user !== null){
+            $role = $user->roles()->first()->name;
+            if($role ==="admin"){
+                return new DiseaseDrugsResource(Disease::with('drugs')->findOrFail($id));
+            }else if($user !== null && $role ==="pharmacist"){
+                return new DiseaseDrugsResource($user->diseases()->with('drugs')->findOrFail($id));
+            }
+        }        
+        else{
             return new DiseaseDrugsResource(Disease::with('drugs')->findOrFail($id));
         }
     }
@@ -41,7 +45,8 @@ class DiseaseDrugController extends Controller
     public function store(Request $request, $disease_id)
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
             $disease = Disease::findOrFail($disease_id);
             $drug = Drug::findOrFail($request->drug_id);
         }else{
@@ -64,9 +69,10 @@ class DiseaseDrugController extends Controller
     public function show(Request $request, $disease_id, $drug_id)
     {
         $user = auth()->user();
-        if($user !== null && $user->role ==="admin"){
+        $role = $user->roles()->first()->name;
+        if($user !== null && $role ==="admin"){
             $diseases = Disease::findOrFail($disease_id);
-        }else if($user !== null && $user->role ==="pharmacist"){
+        }else if($user !== null && $role ==="pharmacist"){
             $diseases = $user->diseases()->findOrFail($disease_id);
         }else{
             $diseases = Disease::findOrFail($disease_id);
@@ -84,7 +90,8 @@ class DiseaseDrugController extends Controller
     public function update(Request $request, $disease_id, $drug_id)
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
             $disease = Disease::findOrFail($disease_id);
             $drug = Drug::findOrFail($request->drug_id); 
         }else{
@@ -118,7 +125,8 @@ class DiseaseDrugController extends Controller
     public function destroy(Request $request, $disease_id, $drug_id)
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
             $disease = Disease::findOrFail($disease_id);
         }else{
             $disease = $user->diseases()->findOrFail($disease_id);
@@ -137,7 +145,8 @@ class DiseaseDrugController extends Controller
     public function deleteMany(Request $request, $id)
     {
         $user = auth()->user();
-        if($user->role ==="admin"){
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
             $disease = Disease::findOrFail($id);
         }else{
             $disease = $user->diseases()->findOrFail($id);

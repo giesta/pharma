@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import TreatmentCard from "../treatments/treatment-card.component";
 import TreatmentsDataService from "../../services/treatments/list.service";
 import Spinner from "../layout/spinner.component";
+import AuthService from "../../services/auth.service";
 import Pagination from "react-js-pagination";
 import { Tabs, Tab } from "react-bootstrap";
 
@@ -21,6 +22,7 @@ export default function ControlledTabs() {
       const [total, setTotal] = React.useState(0);
       const [pageSize, setPageSize] = React.useState(3);
       const [noData, setNoData] = React.useState('');
+      const [user, setUser] = React.useState(AuthService.getCurrentUser());
 
       const [searchTitle, setSearchTitle] = React.useState("");
 
@@ -30,9 +32,16 @@ export default function ControlledTabs() {
 
       useEffect(()=>{
         retrieveTreatments();
-        retrieveTreatmentsPrivate();
+        if(user !== null){
+          retrieveTreatmentsPrivate();
+        }        
     }, []);
 
+    const getUser = () => {
+      const u = AuthService.getCurrentUser();
+        console.log("naudotojas "+u);
+        setUser(u);
+    }; 
     const onChangeSearchTitle = e => {
       const searchTitle = e.target.value;
       setSearchTitle(searchTitle);
@@ -108,7 +117,6 @@ export default function ControlledTabs() {
     };
     return (
         <div>
-          {console.log(Treatments)}
         {Treatments.data.length === 0 && noData === ''?(        
               <Spinner></Spinner>
             ):(
@@ -138,10 +146,9 @@ export default function ControlledTabs() {
             </button>
           </div>
         </div>
-      </div>    
-      {console.log("kinta"+page)}
+      </div>
           <TreatmentCard key={Treatments.id} Treatments = {Treatments.data} ></TreatmentCard>
-          <div class="d-flex justify-content-center mt-2">
+          <div className="d-flex justify-content-center mt-2">
         <Pagination 
         className="my-3"
         activePage={page} 
@@ -155,9 +162,8 @@ export default function ControlledTabs() {
         lastPageText="Last"
         ></Pagination> 
       </div>
-      
-          </Tab>
-          <Tab eventKey="private" title="Private">
+      </Tab>
+      {(user !== null)?(<Tab eventKey="private" title="Private">
           <div className="col-md-6">
         <div className="input-group mt-2">
           <input
@@ -178,9 +184,8 @@ export default function ControlledTabs() {
           </div>
         </div>
       </div> 
-      {console.log("kinta"+page)}  
           <TreatmentCard Treatments = {PrivateTreatments.data} ></TreatmentCard>
-          <div class="d-flex justify-content-center mt-2">
+          <div className="d-flex justify-content-center mt-2">
         <Pagination 
         className="my-3"
         activePage={pagePrivate} 
@@ -194,7 +199,9 @@ export default function ControlledTabs() {
         lastPageText="Last"
         ></Pagination> 
       </div>
-          </Tab>
+          </Tab>):('')
+          }
+          
           
         </Tabs>
             )}

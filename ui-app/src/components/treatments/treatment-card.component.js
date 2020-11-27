@@ -14,8 +14,8 @@ export default function TreatmentCard(props) {
                 <Card.Title>{field.title}</Card.Title>               
               </Card.Body>
               <ListGroup className="list-group-flush">
-                <ListGroupItem>{field.disease.name}</ListGroupItem>
-                <ListGroupItem>{field.disease.symptoms}</ListGroupItem>               
+                <ListGroupItem>Created: {field.created}</ListGroupItem>
+                <ListGroupItem>Updated: {field.updated}</ListGroupItem>               
               </ListGroup>
               <Card.Body>
                 <Card.Link href={"/treatments/" + field.id}>Read More</Card.Link>

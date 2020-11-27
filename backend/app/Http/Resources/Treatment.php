@@ -22,6 +22,8 @@ class Treatment extends JsonResource
             'title' => $this->title,
             'description' => $this->description,
             'algorithm' => Config::get('app.url').Storage::url($this->algorithm),
+            'created' => date_format($this->created_at, 'Y-m-d'),
+            'updated' => date_format($this->updated_at, 'Y-m-d'),
             'disease' => new DiseaseResource($this->disease),
         ];
     }

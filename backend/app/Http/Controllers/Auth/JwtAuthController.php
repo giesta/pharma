@@ -19,8 +19,7 @@ class JwtAuthController extends Controller
     use ResponseApiToken;
   
     public function register(Request $request)
-    {
- 
+    { 
          $validator = Validator::make($request->all(), 
                       [ 
                       'name' => 'required',
@@ -29,13 +28,9 @@ class JwtAuthController extends Controller
                       'c_password' => 'required|same:password', 
                      ]);  
  
-         if ($validator->fails()) {  
- 
-               return response()->json(['error'=>$validator->errors()], 401); 
- 
-            }   
- 
- 
+         if ($validator->fails()) { 
+               return response()->json(['error'=>$validator->errors()], 401);  
+            }    
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;

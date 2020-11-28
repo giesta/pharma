@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Table } from "react-bootstrap";
+import { BsEyeSlash, BsEye } from "react-icons/bs";
 
 export default function TableOfItems(props) {
   const handleIncrement = (counter) => {
@@ -23,6 +24,7 @@ export default function TableOfItems(props) {
               <td >{field.title}</td>
               <td >{field.description}</td>
               <td >{field.disease.name}</td>
+              <td >{field.public ? (<BsEye color="#ACD1B6"></BsEye>):(<BsEyeSlash color="#E96166"></BsEyeSlash>)}</td>
               {props.GetActionFormat(field)}
             </tr>
             )  

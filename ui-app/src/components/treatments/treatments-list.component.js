@@ -18,6 +18,7 @@ export default function TreatmentList() {
     description: "",
     algorithm: "",
     disease_id: "",
+    public: 0,
     disease: null
   };
   const columns = [{  
@@ -32,7 +33,10 @@ export default function TreatmentList() {
       sort: true  }, {  
       dataField: 'disease',  
       text: 'Disease',  
-      sort: true  },   
+      sort: true  }, {  
+      dataField: 'public',  
+      text: 'Public',  
+      sort: false  },   
       {
       text: 'Actions',
       dataField: 'Actions',
@@ -43,6 +47,7 @@ export default function TreatmentList() {
   const [treatment, setTreatment] = React.useState(initialTreatmentState);
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [url, setUrl] = React.useState(null);
+  const [checked, setChecked] = React.useState(0);
   const [noData, setNoData] = React.useState('');
   const [error, setError] = React.useState(false);
   const [show, setShow] = React.useState(false);
@@ -106,7 +111,8 @@ export default function TreatmentList() {
     if(event.target.files!==undefined && event.target.files!==null ){
         setSelectedFile(event.target.files[0]);
         setUrl(URL.createObjectURL(event.target.files[0]));
-    }    
+    } 
+    setTreatment({ ...treatment, public: event.target.checked });  
     setTreatment({ ...treatment, [name]: value });
   };
   useEffect(()=>{    
@@ -179,6 +185,7 @@ const saveTreatment = () => {
     data.append("title", treatment.title);
     data.append("description", treatment.description);
     data.append("disease_id", treatment.disease_id);
+    data.append("public", treatment.public==='on'? 1:0);
 TreatmentsDataService.create(data)
     .then(() => {
       refreshList();
@@ -200,6 +207,7 @@ const updateTreatment = () => {
   } 
   data.set("title", treatment.title);
   data.set("description", treatment.description);
+  data.set("public", treatment.public==='on'? 1:0);
   if(treatment.disease_id!=null){
     data.set("disease_id", treatment.disease_id);
   }
@@ -210,6 +218,7 @@ const updateTreatment = () => {
         title: response.data.data.title,
         description: response.data.data.description,
         algorithm: response.data.data.algorithm,
+        public: response.data.data.public,
         disease: response.data.data.disease
       });
       setUrl(null);

@@ -57,6 +57,12 @@ class DrugController extends ApiController
                     return DrugResource::collection($user->drugs()->with('diseases')->paginate(5));
                 }            
             } 
+        }else{
+            if($name){
+                return DrugResource::collection(Drug::with('diseases')->where('drugs.name', 'LIKE', "%$name%")->paginate(5));
+            }else{
+                return DrugResource::collection(Drug::with('diseases')->paginate(5));
+            }            
         }
                
     }

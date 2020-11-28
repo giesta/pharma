@@ -25,6 +25,10 @@ export default function InfoModal(props) {
                         <Form.Label>Description</Form.Label>
                         <Form.Control type="text" as="textarea" placeholder="" value={props.treatment.description} disabled name="description"/>
                     </Form.Group>
+                    <Form.Group controlId="public">
+                        <Form.Check  label={"Public"} checked={props.treatment.public?(true):(false)} name="public" disabled/>
+                        
+                    </Form.Group>
                     {(props.treatment.disease!== null && props.treatment.disease!== undefined)&&(<Form.Group controlId="treatment.disease.name">
                         <Form.Label>Disease</Form.Label>
                         <Form.Control type="text" placeholder="" value={props.treatment.disease.name} disabled name="algorithm"/>

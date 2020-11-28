@@ -47,7 +47,7 @@ export default function ControlledTabs() {
       setSearchTitle(searchTitle);
     };    
     const retrieveTreatments = (pageNumber = 1) => {
-      TreatmentsDataService.findByTitle(pageNumber, searchTitle)
+      TreatmentsDataService.findByTitlePublic(pageNumber, searchTitle)
         .then(response => {   
           const { current_page, per_page, total } = response.data.meta;  
           console.log("masyvas" + response.data.meta)
@@ -65,7 +65,7 @@ export default function ControlledTabs() {
         });
     };
     const retrieveTreatmentsPrivate = (pageNumber = 1) => {
-        TreatmentsDataService.findByTitle(pageNumber, searchTitle)
+        TreatmentsDataService.findByTitlePrivate(pageNumber, searchTitle)
           .then(response => {  
             const { current_page, per_page, total } = response.data.meta;   
             if(response.data.data.length !== 0){               
@@ -100,7 +100,7 @@ export default function ControlledTabs() {
     };
     const findByTitle2 = () => {
       console.log("pageNumber ");
-      TreatmentsDataService.findByTitle(1, searchTitle)
+      TreatmentsDataService.findByTitlePrivate(1, searchTitle)
         .then(response => {
           const { current_page, per_page, total } = response.data.meta;   
             if(response.data.data.length !== 0){               

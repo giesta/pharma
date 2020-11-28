@@ -38,10 +38,13 @@ const removeAll = () => {
 };
 
 const findByTitle = (pageNumber, name) => {
-  return httpPublic.get(`/treatments/list?pageNumber=${pageNumber}&&name=${name}`);
+  return http.get(`/treatments/list?pageNumber=${pageNumber}&&name=${name}`);
 };
 const findByTitlePublic = (pageNumber, name) => {
   return httpPublic.get(`/treatments/list?pageNumber=${pageNumber}&&name=${name}`);
+};
+const findByTitlePrivate = (pageNumber, name) => {
+  return http.get(`/treatments/private?pageNumber=${pageNumber}&&name=${name}`);
 };
 
 export default {
@@ -54,5 +57,7 @@ export default {
   update,
   remove,
   removeAll,
-  findByTitle
+  findByTitle,
+  findByTitlePublic,
+  findByTitlePrivate
 };

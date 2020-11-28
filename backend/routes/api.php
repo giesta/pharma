@@ -46,6 +46,7 @@ Route::group(['middleware' => 'jwt.auth',
 
 ], function () {
     Route::get('treatments/list', 'TreatmentController@list'); 
+    Route::get('treatments/private', 'TreatmentController@privateList');
 });
 
 Route::get('treatments/{id}', 'App\Http\Controllers\Api\TreatmentController@show');
@@ -66,8 +67,9 @@ Route::group(['middleware' => 'jwt.auth',
     Route::resource('diseases.drugs', DiseaseDrugController::class);
     Route::delete('diseases/{id}/drugs', 'DiseaseDrugController@deleteMany');
     Route::apiResource('users', UserController::class);
-
+    
     Route::apiResource('treatments', TreatmentController::class);
+    
     
 
 });

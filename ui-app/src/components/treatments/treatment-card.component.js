@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Card, CardDeck, ListGroup, ListGroupItem } from "react-bootstrap";
+import { BsEyeSlash, BsEye } from "react-icons/bs";
 
 export default function TreatmentCard(props) {
     return (
@@ -11,7 +12,7 @@ export default function TreatmentCard(props) {
              <Card style={{ width: '18rem' },{flex:1}}>
               <Card.Img variant="top" src={field.algorithm} style={{height: '40vh'}} />
               <Card.Body>
-                <Card.Title>{field.title}</Card.Title>               
+          <Card.Title>{field.title} {field.public?(<BsEye color="#ACD1B6"></BsEye>):(<BsEyeSlash color="#E96166"></BsEyeSlash>)}</Card.Title>               
               </Card.Body>
               <ListGroup className="list-group-flush">
                 <ListGroupItem>Created: {field.created}</ListGroupItem>

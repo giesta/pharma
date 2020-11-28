@@ -59,9 +59,8 @@ class TreatmentController extends Controller
     {
         $user = auth()->user();
         $name = $request->name;
-        if($user !== null){
-            $role = $user->roles()->first()->name;
-              
+        if($user != null){
+            $role = $user->roles()->first()->name;              
             if($role ==="admin"){
                 if($name){
                     return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->paginate(5));
@@ -78,12 +77,38 @@ class TreatmentController extends Controller
         }
         else{
             if($name){
-                return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->paginate(5));
+                return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->where('treatments.public', '=', 1)->paginate(5));
             }else{
-                return TreatmentResource::collection(Treatment::paginate(5));
+                return TreatmentResource::collection(Treatment::where('treatments.public', '=', 1)->paginate(5));
             }            
         }   
            
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function privateList(Request $request)
+    {
+        $user = auth()->user();
+        $name = $request->name;
+        if($user != null){
+            $role = $user->roles()->first()->name;              
+            if($role ==="admin"){
+                if($name){
+                    return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->where('treatments.public', '=', 0)->paginate(5));
+                }else{
+                    return TreatmentResource::collection(Treatment::where('treatments.public', '=', 0)->paginate(5));
+                }            
+            }else if($role ==="pharmacist"){
+                if($name){
+                    return TreatmentResource::collection($user->treatments()->where('treatments.title', 'LIKE', "%$name%")->where('treatments.public', '=', 0)->paginate(5));
+                }else{
+                    return TreatmentResource::collection($user->treatments()->where('treatments.public', '=', 0)->paginate(5));
+                }              
+            }
+        }           
     }
 
     /**
@@ -161,7 +186,7 @@ class TreatmentController extends Controller
             } 
         }else{
             try{
-                $treatment->update($request->only(['title', 'description', 'disease_id']));
+                $treatment->update($request->only(['title', 'description', 'disease_id', 'public', 'dislikes', 'likes']));
             }
             catch (QueryException $ex) { // Anything that went wrong
                 abort(500, "Could not update Treatment");

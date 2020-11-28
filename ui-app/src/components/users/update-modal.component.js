@@ -31,7 +31,7 @@ export default function CreateModal(props) {
                 <Button variant="secondary" onClick={props.handleClose}>
                     Close
                 </Button>
-                {<Button  variant="primary" onClick={props.handleSubmit}>
+                {<Button type="submit" variant="primary">
                     Update User
                 </Button>}          
             </Modal.Footer>

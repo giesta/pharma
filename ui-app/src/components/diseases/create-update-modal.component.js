@@ -10,7 +10,7 @@ export default function CreateModal(props) {
             </Modal.Header>
             <Form noValidate validated={props.validated} onSubmit={props.handleSubmit}>
                 <Modal.Body>  
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="name">
                         <Form.Label>Name</Form.Label>
                         <Form.Control type="text" placeholder="" required value={props.disease.name} onChange={props.handleInputChange} name="name"/>
                         <Form.Control.Feedback type="invalid">
@@ -18,7 +18,7 @@ export default function CreateModal(props) {
                         </Form.Control.Feedback>
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="description">
                         <Form.Label>Description</Form.Label>
                         <Form.Control type="text"  as="textarea" placeholder="" required value={props.disease.description} onChange={props.handleInputChange} name="description"/>
                         <Form.Control.Feedback type="invalid">
@@ -26,7 +26,7 @@ export default function CreateModal(props) {
                         </Form.Control.Feedback >
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="symptoms">
                         <Form.Label>Symptoms</Form.Label>
                         <Form.Control type="text" placeholder="" required value={props.disease.symptoms} onChange={props.handleInputChange} name="symptoms"/>
                         <Form.Control.Feedback type="invalid">
@@ -35,21 +35,21 @@ export default function CreateModal(props) {
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 {(props.disease.drugs!==null && props.disease.drugs!==undefined)?(
-                    <Form.Group controlId="exampleForm.ControlSelect1">
+                    <Form.Group controlId="drugs">
                         <Form.Label>Drugs</Form.Label>     
                         <Form.Control as="select" multiple defaultValue={props.disease.drugs.map(item=>item.id)} onChange={props.AddSelectedDrugs} name="drugs_id"> 
                             {props.drugs.data.map((x)=>
-                                <option value={x.id}>{x.name}</option>
+                                <option key={x.id} value={x.id}>{x.name}</option>
                                 )  
                             }
                         </Form.Control>
                     </Form.Group>
                 ):(      
-                    <Form.Group controlId="exampleForm.ControlSelect1"> 
+                    <Form.Group controlId="drugs"> 
                         <Form.Label>Drugs</Form.Label>
                         <Form.Control as="select" multiple onChange={props.AddSelectedDrugs} name="drugs_id">   
                             {props.drugs.data.map((x)=>
-                                <option value={x.id}>{x.name}</option>
+                                <option key={x.id} value={x.id}>{x.name}</option>
                                 )  
                             }
                         </Form.Control>
@@ -60,9 +60,9 @@ export default function CreateModal(props) {
                     <Button variant="secondary" onClick={props.handleClose}>
                         Close
                     </Button>
-                        {props.disease.id===null?(<Button variant="primary" onClick={props.handleSubmit}>
+                        {props.disease.id===null?(<Button type="submit" variant="primary">
                             Create Disease
-                    </Button>):(<Button variant="primary" onClick={props.handleSubmit}>
+                    </Button>):(<Button type="submit" variant="primary">
                         Update Disease
                     </Button>)}          
                 </Modal.Footer>

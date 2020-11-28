@@ -50,7 +50,7 @@ export default function ControlledTabs() {
       TreatmentsDataService.findByTitlePublic(pageNumber, searchTitle)
         .then(response => {   
           const { current_page, per_page, total } = response.data.meta;  
-          console.log("masyvas" + response.data.meta)
+          console.log(response.data.data)
           if(response.data.data.length !== 0){             
             setTreatments({...Treatments, data: response.data.data, id:response.data.data.length});
             setPageSize(per_page);
@@ -82,34 +82,34 @@ export default function ControlledTabs() {
           });
       };
     const findByTitle = () => {
-      console.log("pageNumber ");
-      TreatmentsDataService.findByTitle(1, searchTitle)
+      TreatmentsDataService.findByTitlePublic(1, searchTitle)
         .then(response => {
-          const { current_page, per_page, total } = response.data.meta;   
-            if(response.data.data.length !== 0){               
-              setTreatments({...PrivateTreatments, data: response.data.data});
-              setPageSize(per_page);
-              setPage(current_page);     
-              setTotal(total);
-            }
-            console.log(response.data.data);
+          const { current_page, per_page, total } = response.data.meta;              
+          setTreatments({...Treatments, data: response.data.data});
+          setPageSize(per_page);
+          setPage(current_page);     
+          setTotal(total);
+          if(response.data.data.length === 0){               
+            setNoData('No');
+          }
+          console.log(response.data.data);
         })
         .catch(e => {
           console.log(e);
         });
     };
     const findByTitle2 = () => {
-      console.log("pageNumber ");
       TreatmentsDataService.findByTitlePrivate(1, searchTitle)
         .then(response => {
-          const { current_page, per_page, total } = response.data.meta;   
-            if(response.data.data.length !== 0){               
-              setPrivateTreatments({...PrivateTreatments, data: response.data.data});
-              setPageSizePrivate(per_page);
-              setPagePrivate(current_page);     
-              setTotalPrivate(total);
-            }
-            console.log(response.data.data);
+          const { current_page, per_page, total } = response.data.meta;
+          setPrivateTreatments({...PrivateTreatments, data: response.data.data});
+          setPageSizePrivate(per_page);
+          setPagePrivate(current_page);     
+          setTotalPrivate(total);   
+          if(response.data.data.length === 0){               
+            setNoData('No');
+          }
+          console.log(response.data.data);
         })
         .catch(e => {
           console.log(e);

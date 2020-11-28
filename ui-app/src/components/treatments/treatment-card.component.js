@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Card, CardDeck, ListGroup, ListGroupItem } from "react-bootstrap";
-import { BsEyeSlash, BsEye } from "react-icons/bs";
+import { Button, Badge, Card, CardDeck, ListGroup, ListGroupItem } from "react-bootstrap";
+import { BsEyeSlash, BsEye, BsStar } from "react-icons/bs";
 
 export default function TreatmentCard(props) {
     return (
@@ -19,7 +19,8 @@ export default function TreatmentCard(props) {
                 <ListGroupItem>Updated: {field.updated}</ListGroupItem>               
               </ListGroup>
               <Card.Body>
-                <Card.Link href={"/treatments/" + field.id}>Read More</Card.Link>
+                <Card.Link href={"/treatments/" + field.id}>Read More </Card.Link>{ }
+                <Button variant="outline-primary" disabled size={"sm"}><BsStar color="#AA5725"></BsStar> <Badge color="DED18D">{field.stars}</Badge></Button>{' '}
               </Card.Body>
             </Card>
           </div>

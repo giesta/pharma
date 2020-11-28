@@ -25,6 +25,8 @@ class Treatment extends JsonResource
             'created' => date_format($this->created_at, 'Y-m-d'),
             'updated' => date_format($this->updated_at, 'Y-m-d'),
             'public' => $this->public,
+            'stars' => $this->starsCount(),
+            'isStar' => $this->isStarBy(auth()->user()),
             'disease' => new DiseaseResource($this->disease),
         ];
     }

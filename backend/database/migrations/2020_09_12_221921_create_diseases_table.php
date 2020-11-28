@@ -24,7 +24,7 @@ class CreateDiseasesTable extends Migration
             $table->index('user_id');
             $table->foreign('user_id')
                 ->references('id')->on('users')
-                ->onDelete('no action')
+                ->onDelete('cascade')
                 ->onUpdate('no action');
         });
     }

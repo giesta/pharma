@@ -79,4 +79,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Comment::class);
     }
+    public function stars(){
+        return $this->hasMany(Star::class);
+    }
 }

@@ -64,7 +64,7 @@ class JwtAuthController extends Controller
         return $this->respondWithToken($jwt_token);
     }
   
-    public function logout(TokenRequest $request)
+    public function logout(Request $request)
     {
         try {
             JWTAuth::invalidate($request->token);

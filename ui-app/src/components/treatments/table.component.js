@@ -24,7 +24,7 @@ export default function TableOfItems(props) {
               <td >{field.title}</td>
               <td >{field.description}</td>
               <td >{field.disease.name}</td>
-              <td >{field.public ? (<BsEye color="#ACD1B6"></BsEye>):(<BsEyeSlash color="#E96166"></BsEyeSlash>)}</td>
+              <td >{parseInt(field.public) ? (<BsEye color="#ACD1B6"></BsEye>):(<BsEyeSlash color="#E96166"></BsEyeSlash>)}</td>
               {props.GetActionFormat(field)}
             </tr>
             )  

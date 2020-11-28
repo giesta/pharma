@@ -151,6 +151,10 @@ class TreatmentController extends Controller
                 $treatment = Treatment::findOrFail($id);
                 return new TreatmentResource($treatment);
             }else if($role ==="pharmacist"){ 
+                $treatment = Treatment::where('treatments.public', '=', 1)->find($id);
+                if($treatment !== null){
+                    return new TreatmentResource($treatment);
+                }
                 return new TreatmentResource($user->treatments()->findOrFail($id));
             }
         }

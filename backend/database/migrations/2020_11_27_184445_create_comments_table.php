@@ -24,12 +24,12 @@ class CreateCommentsTable extends Migration
             $table->index('user_id');
             $table->foreign('user_id')
                 ->references('id')->on('users')
-                ->onDelete('no action')
+                ->onDelete('cascade')
                 ->onUpdate('no action');
 
             $table->index('treatment_id');
             $table->foreign('treatment_id')->references('id')->on('treatments')
-            ->onDelete('no action')
+            ->onDelete('cascade')
             ->onUpdate('no action');
         });
     }

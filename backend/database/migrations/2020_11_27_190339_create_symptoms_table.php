@@ -21,7 +21,7 @@ class CreateSymptomsTable extends Migration
 
             $table->index('disease_id');
             $table->foreign('disease_id')->references('id')->on('diseases')
-            ->onDelete('no action')
+            ->onDelete('cascade')
             ->onUpdate('no action');
         });
     }

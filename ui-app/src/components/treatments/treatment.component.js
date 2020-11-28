@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
+import StarService from "../../services/treatments/stars.service";
 import DrugsDataService from "../../services/diseases/disease.drug.service";
+import AuthService from "../../services/auth.service";
 import Spinner from "../layout/spinner.component";
 import { Col, Row, Modal, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form } from "react-bootstrap";
+import { BsStar } from "react-icons/bs";
 
 export default function Treatment(props) {
 
@@ -11,6 +14,7 @@ export default function Treatment(props) {
     title: "",
     description: "",
     algorithm: "",
+    isStar:true,
     disease_id: "",
     disease: null
   };
@@ -42,7 +46,13 @@ export default function Treatment(props) {
         getTreatment(props.match.params.id);
   }, [props.match.params.id]);
   const getTreatment = useCallback((id)=> {
-    TreatmentsDataService.getPublic(id)
+    let get;
+    if(AuthService.getCurrentUser()===null){
+      get = TreatmentsDataService.getPublic(id);
+    }else{
+      get = TreatmentsDataService.get(id);
+    }
+    get
       .then(response => {
         if (response.data.data.length !== 0) {
           setCurrentTreatment(response.data.data);
@@ -67,6 +77,20 @@ export default function Treatment(props) {
         console.log(e);
       });
   };
+  const star = () => {
+    var data = {
+      id: AuthService.getCurrentUser().id
+    };
+    StarService.update(currentTreatment.id, data)
+      .then(response => {    
+        if(response.data.data.length !== 0){
+          setCurrentTreatment(response.data.data);
+        }      
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
   return (
     <div>
       {currentTreatment?(
@@ -75,6 +99,10 @@ export default function Treatment(props) {
       ):(        
       <div className="container">     
       <>
+      {console.log(currentTreatment)}
+      <Row><Button variant="secondary" size="sm" disabled={currentTreatment.isStar} onClick={star}>
+      <BsStar></BsStar>{' '}<Badge variant="light">{currentTreatment.stars}</Badge>
+    </Button></Row>
       <Row>
         <Col md={{ span: 6, offset: 3 }}><Image src={currentTreatment.algorithm} fluid/></Col>        
       </Row>
@@ -122,7 +150,7 @@ export default function Treatment(props) {
       
   <Modal show={show} onHide={handleClose}>
   <Modal.Header closeButton>
-    <Modal.Title>Drug info {drug.id}</Modal.Title>
+    <Modal.Title>Drug info</Modal.Title>
   </Modal.Header>
   <Modal.Body>
   <Form>

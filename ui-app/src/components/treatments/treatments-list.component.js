@@ -47,7 +47,6 @@ export default function TreatmentList() {
   const [treatment, setTreatment] = React.useState(initialTreatmentState);
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [url, setUrl] = React.useState(null);
-  const [checked, setChecked] = React.useState(0);
   const [noData, setNoData] = React.useState('');
   const [error, setError] = React.useState(false);
   const [show, setShow] = React.useState(false);
@@ -76,9 +75,9 @@ export default function TreatmentList() {
 
 
   const handleSubmit = (event) => {
+    event.preventDefault();
     const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
+    if (form.checkValidity() === false) {      
       event.stopPropagation();
     }else{
       if(treatment.id===null){
@@ -111,17 +110,19 @@ export default function TreatmentList() {
     if(event.target.files!==undefined && event.target.files!==null ){
         setSelectedFile(event.target.files[0]);
         setUrl(URL.createObjectURL(event.target.files[0]));
-    } 
-    setTreatment({ ...treatment, public: event.target.checked });  
+    }  
     setTreatment({ ...treatment, [name]: value });
   };
+  const handleChecked = event =>{
+    setTreatment({ ...treatment, public: event.target.checked ? 1 : 0 });
+  }
   useEffect(()=>{    
         retrieveTreatments();        
   }, []);
 
   const retrieveTreatments = useCallback((pageNumber=1) => {
     TreatmentsDataService.findByTitle(pageNumber, searchTitle)
-      .then(response => {  
+      .then(response => { 
         const { current_page, per_page, total } = response.data.meta;   
         if(response.data.data.length !== 0){
           setTreatments({...Treatments, data: response.data.data});
@@ -185,7 +186,7 @@ const saveTreatment = () => {
     data.append("title", treatment.title);
     data.append("description", treatment.description);
     data.append("disease_id", treatment.disease_id);
-    data.append("public", treatment.public==='on'? 1:0);
+    data.append("public", treatment.public);
 TreatmentsDataService.create(data)
     .then(() => {
       refreshList();
@@ -207,7 +208,7 @@ const updateTreatment = () => {
   } 
   data.set("title", treatment.title);
   data.set("description", treatment.description);
-  data.set("public", treatment.public==='on'? 1:0);
+  data.set("public", treatment.public);
   if(treatment.disease_id!=null){
     data.set("disease_id", treatment.disease_id);
   }
@@ -306,7 +307,7 @@ const findByTitle = () => {
       <>
   <TreatmentTable columns ={columns} Treatments={Treatments} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></TreatmentTable>
 
-  { show&&<TreatmentCreateUpdate show ={show} handleClose={handleClose} treatment={treatment} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} Diseases={Diseases} url={url}></TreatmentCreateUpdate>}
+  { show&&<TreatmentCreateUpdate show ={show} handleClose={handleClose} treatment={treatment} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} handleChecked={handleChecked} Diseases={Diseases} url={url}></TreatmentCreateUpdate>}
       
   {confirm&&< TreatmentDelete id={id} name={"Treatment"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ TreatmentDelete>}
 

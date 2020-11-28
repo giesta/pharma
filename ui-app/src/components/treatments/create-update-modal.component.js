@@ -35,7 +35,7 @@ export default function CreateModal(props) {
             <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
         </Form.Group>
         <Form.Group controlId="public">
-            <Form.Check  label={"Public"} checked={props.treatment.public?(true):(false)} onChange={props.handleInputChange} name="public"/>
+            <Form.Check  label={"Public"} checked={parseInt(props.treatment.public)} onChange={props.handleChecked} name="public"/>
             
         </Form.Group>
     {props.treatment.disease!==null?(
@@ -69,9 +69,9 @@ export default function CreateModal(props) {
             <Button variant="secondary" onClick={props.handleClose}>
                 Close
             </Button>
-            {props.treatment.id===null?(<Button variant="primary" onClick={props.handleSubmit}>
+            {props.treatment.id===null?(<Button type="submit" variant="primary">
                 Create Treatment
-            </Button>):(<Button variant="primary" onClick={props.handleSubmit}>
+            </Button>):(<Button type="submit" variant="primary">
                 Update Treatment
             </Button>)}          
         </Modal.Footer>

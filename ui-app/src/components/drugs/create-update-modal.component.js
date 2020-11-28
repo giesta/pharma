@@ -83,9 +83,9 @@ export default function CreateModal(props) {
                     <Button variant="secondary" onClick={props.handleClose}>
                         Close
                     </Button>
-                    {props.drug.id===null?(<Button  variant="primary" onClick={props.handleSubmit}>
+                    {props.drug.id===null?(<Button type="submit" variant="primary">
                         Create Drug
-                    </Button>):(<Button  variant="primary" onClick={props.handleSubmit}>
+                    </Button>):(<Button type="submit" variant="primary">
                         Update Drug
                     </Button>)}          
                 </Modal.Footer>

@@ -71,9 +71,9 @@ export default function DiseasesList() {
   };
 
   const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
+    event.preventDefault();
+    const form = event.target;
+    if (form.checkValidity() === false) {      
       event.stopPropagation();
     }else{
       if(disease.id===null){

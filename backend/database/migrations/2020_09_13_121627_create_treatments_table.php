@@ -17,9 +17,7 @@ class CreateTreatmentsTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('description');
-            $table->string('algorithm'); 
-            $table->integer('likes')->default(0);
-            $table->integer('dislikes')->default(0);
+            $table->string('algorithm');
             $table->integer('public')->default(0);
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('disease_id');           
@@ -28,12 +26,12 @@ class CreateTreatmentsTable extends Migration
             $table->index('user_id');
             $table->foreign('user_id')
                 ->references('id')->on('users')
-                ->onDelete('no action')
+                ->onDelete('cascade')
                 ->onUpdate('no action');
 
             $table->index('disease_id');
             $table->foreign('disease_id')->references('id')->on('diseases')
-            ->onDelete('no action')
+            ->onDelete('cascade')
             ->onUpdate('no action');
                 
         });

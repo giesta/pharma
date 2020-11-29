@@ -4,8 +4,8 @@ import StarService from "../../services/treatments/stars.service";
 import DrugsDataService from "../../services/diseases/disease.drug.service";
 import AuthService from "../../services/auth.service";
 import Spinner from "../layout/spinner.component";
-import { Col, Row, Modal, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form } from "react-bootstrap";
-import { BsStar } from "react-icons/bs";
+import { Col, Row, Modal, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form} from "react-bootstrap";
+import { BsStar, BsPeopleCircle } from "react-icons/bs";
 
 export default function Treatment(props) {
 
@@ -147,6 +147,77 @@ export default function Treatment(props) {
         </Card>)}
         </Col>
       </Row>
+      <div className="container">
+      <Row>
+        <Col></Col>
+        <Col className="col-6">
+        <Form>
+          <Form.Group controlId="Comment">
+            <Form.Label>Comments</Form.Label>
+            <Form.Control className="border border-secondary rounded" as="textarea" rows={3} placeholder="Leave a comment" />
+          </Form.Group>
+        </Form>
+        <Button variant="secondary" className="mb-2" onClick={handleClose}>
+            Comment
+          </Button>
+        </Col>
+        <Col></Col>
+        </Row>
+        <Row>
+        <Col></Col>
+        <Col className="col-6 border rounded">
+            <ListGroup variant="flush">
+            <ListGroup.Item>
+              <Row>
+                <div className="mr-4">
+                  <BsPeopleCircle></BsPeopleCircle>
+                </div>
+                <div>
+                  <h5>Jonas</h5>
+                  <p>Cras justo odio</p>
+                </div>
+              </Row>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Row>
+                <div className="mr-4">
+                  <BsPeopleCircle></BsPeopleCircle>
+                </div>
+                <div>
+                  <h5>Jonas</h5>
+                  <p>Dapibus ac facilisis in</p>
+                </div>
+              </Row>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Row>
+                <div className="mr-4">
+                  <BsPeopleCircle></BsPeopleCircle>
+                </div>
+                <div>
+                  <h5>Jonas</h5>
+                  <p>Morbi leo risus</p>
+                </div>
+              </Row>
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <Row>
+                <div className="mr-4">
+                  <BsPeopleCircle></BsPeopleCircle>
+                </div>
+                <div>
+                  <h5>Jonas</h5>
+                  <p>Porta ac consectetur ac</p>
+                </div>
+              </Row>
+            </ListGroup.Item>
+          </ListGroup> 
+        </Col>
+        <Col></Col>
+        </Row>
+
+      </div>
+      
       
   <Modal show={show} onHide={handleClose}>
   <Modal.Header closeButton>

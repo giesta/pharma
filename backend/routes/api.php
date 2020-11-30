@@ -69,7 +69,8 @@ Route::group(['middleware' => 'jwt.auth',
     Route::apiResource('users', UserController::class);
     
     Route::apiResource('treatments', TreatmentController::class);
-    Route::post('stars/{id}', 'TreatmentStarsController@update'); 
+    Route::post('stars/{id}', 'TreatmentStarsController@update');
+    Route::post('comments', 'CommentController@store'); 
     
 
 });

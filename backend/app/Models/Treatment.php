@@ -32,10 +32,12 @@ class Treatment extends Model
         }
         else{
             return true;
-        }
-        
+        }        
     }
     public function stars(){
         return $this->hasMany(Star::class);
+    }
+    public function comments(){
+        return $this->hasMany(Comment::class);
     }
 }

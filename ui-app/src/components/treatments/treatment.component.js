@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
 import StarService from "../../services/treatments/stars.service";
+import CommentService from "../../services/treatments/comments.service";
 import DrugsDataService from "../../services/diseases/disease.drug.service";
 import AuthService from "../../services/auth.service";
 import Spinner from "../layout/spinner.component";
@@ -34,6 +35,15 @@ export default function Treatment(props) {
   const [drug, setDrug] = React.useState(initialDrugState);
   const [show, setShow] = React.useState(false);
   const [noData, setNoData] = React.useState('');
+  const [comment, setComment] = React.useState('');
+  const [comments, setComments] = React.useState([]);
+  const [validated, setValidated] = React.useState(false);
+  const [userData] = React.useState(AuthService.getCurrentUser());
+
+  const onChangeComment = e => {
+    const comment = e.target.value;
+    setComment(comment);
+  };
  
   const handleClose = () =>{
     newDrug();
@@ -45,6 +55,19 @@ export default function Treatment(props) {
   useEffect(()=>{    
         getTreatment(props.match.params.id);
   }, [props.match.params.id]);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {      
+      event.stopPropagation();
+      setValidated(true);
+    }else{
+      console.log(event.currentTarget);
+      tweet();
+      setValidated(false);
+    }
+           
+  };
   const getTreatment = useCallback((id)=> {
     let get;
     if(AuthService.getCurrentUser()===null){
@@ -91,6 +114,41 @@ export default function Treatment(props) {
         console.log(e);
       });
   };
+  const tweet=()=>{
+    var data = {
+      name: userData.user.name,
+      content: comment,
+      user_id: userData.user.id,      
+      treatment_id: currentTreatment.id,
+    };
+    console.log(data);
+    CommentService.create(data).then(response=>{
+      setCurrentTreatment(response.data.data);
+      setComment("");
+      console.log(response.data.data);
+    }).catch(e => {
+      console.log(e);
+    });
+  }
+  const getParsedDate = (strDate)=>{
+    var strSplitDate = String(strDate).split(' ');
+    var date = new Date(strSplitDate[0]);
+    // alert(date);
+    var dd = date.getDate();
+    var mm = date.getMonth() + 1; //January is 0!
+    var hh = date.getHours();
+    var min = date.getMinutes();
+
+    var yyyy = date.getFullYear();
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+    date =  yyyy + "-" + mm + "-" + dd + " " + hh + ":" + min;
+    return date.toString();
+}
   return (
     <div>
       {currentTreatment?(
@@ -148,75 +206,50 @@ export default function Treatment(props) {
         </Col>
       </Row>
       <div className="container">
+      {userData!==null?(
       <Row>
         <Col></Col>
         <Col className="col-6">
-        <Form>
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
           <Form.Group controlId="Comment">
             <Form.Label>Comments</Form.Label>
-            <Form.Control className="border border-secondary rounded" as="textarea" rows={3} placeholder="Leave a comment" />
+            <Form.Control className="border border-secondary rounded" as="textarea" required rows={3} placeholder="Leave a comment" value = {comment} onChange={onChangeComment}/>
           </Form.Group>
-        </Form>
-        <Button variant="secondary" className="mb-2" onClick={handleClose}>
+          <Button type="submit" variant="secondary" className="mb-2">
             Comment
           </Button>
+        </Form>
+        
         </Col>
         <Col></Col>
-        </Row>
+        </Row>):('')}
         <Row>
         <Col></Col>
-        <Col className="col-6 border rounded">
+        <Col className="col-6">
             <ListGroup variant="flush">
-            <ListGroup.Item>
-              <Row>
-                <div className="mr-4">
-                  <BsPeopleCircle></BsPeopleCircle>
-                </div>
-                <div>
-                  <h5>Jonas</h5>
-                  <p>Cras justo odio</p>
-                </div>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <div className="mr-4">
-                  <BsPeopleCircle></BsPeopleCircle>
-                </div>
-                <div>
-                  <h5>Jonas</h5>
-                  <p>Dapibus ac facilisis in</p>
-                </div>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <div className="mr-4">
-                  <BsPeopleCircle></BsPeopleCircle>
-                </div>
-                <div>
-                  <h5>Jonas</h5>
-                  <p>Morbi leo risus</p>
-                </div>
-              </Row>
-            </ListGroup.Item>
-            <ListGroup.Item>
-              <Row>
-                <div className="mr-4">
-                  <BsPeopleCircle></BsPeopleCircle>
-                </div>
-                <div>
-                  <h5>Jonas</h5>
-                  <p>Porta ac consectetur ac</p>
-                </div>
-              </Row>
-            </ListGroup.Item>
+              {currentTreatment.comments.map((field)=>
+                <ListGroup.Item key={field.id}>
+                <Row>
+                  <div className="mr-4">
+                    <BsPeopleCircle></BsPeopleCircle>
+                  </div>
+                  <div className="w-75">
+                    <Row>
+                      <Col className="col-md-auto"><h5>{field.name+" "}</h5></Col>
+                      <Col><h6>{ getParsedDate(field.created_at)}</h6></Col>
+                    </Row>                    
+                    <p>{field.content}</p>
+                  </div>
+                </Row>
+              </ListGroup.Item>
+              )}            
           </ListGroup> 
         </Col>
         <Col></Col>
         </Row>
 
       </div>
+      
       
       
   <Modal show={show} onHide={handleClose}>

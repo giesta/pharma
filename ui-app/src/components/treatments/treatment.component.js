@@ -146,6 +146,12 @@ export default function Treatment(props) {
     if (mm < 10) {
         mm = '0' + mm;
     }
+    if (hh < 10) {
+      hh = '0' + hh;
+    }
+    if (min < 10) {
+      min = '0' + min;
+    }
     date =  yyyy + "-" + mm + "-" + dd + " " + hh + ":" + min;
     return date.toString();
 }

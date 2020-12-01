@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 .App {
   text-align: center;
 }
@@ -30,7 +30,7 @@
 }
 
 body {
-  font-family: 'Lato', cursive;
+  font-family: 'Roboto', sans-serif;
 }
 
 @keyframes App-logo-spin {

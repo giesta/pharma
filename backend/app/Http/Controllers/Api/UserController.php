@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\ErrorException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
 use \Illuminate\Database\QueryException;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -92,7 +93,10 @@ class UserController extends Controller
         //$userCurrent = JWTAuth::authenticate($request->token);
         $validator = Validator::make($request->all(), [
             'name' => 'string|max:255',
-            'email' => 'email|unique:users'
+            'email' => [
+                'required',
+                Rule::unique('users')->ignore($id),
+            ],
         ]);
 
         if ($validator->fails()) {

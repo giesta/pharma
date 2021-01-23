@@ -264,7 +264,6 @@ const findByTitle = () => {
           setPage(current_page);     
           setTotal(total);          
         }
-      console.log(response.data.data);
     })
     .catch(e => {
       setError(true);

@@ -28,7 +28,7 @@ class Treatment extends JsonResource
             'stars' => $this->starsCount(),
             'isStar' => $this->isStarBy(auth()->user()),
             'disease' => new DiseaseResource($this->disease),
-            'comments' => $this->comments
+            'comments' => $this->comments()->orderBy("id", "desc")->get()
         ];
     }
 }

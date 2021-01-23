@@ -17,7 +17,6 @@ export default class Profile extends Component {
       <div className="container">
         <header className="jumbotron">
           <h3>
-              {console.log(currentUser)}
             <strong>{currentUser.user.name}</strong> Profile
           </h3>
         </header>

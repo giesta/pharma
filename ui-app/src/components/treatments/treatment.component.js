@@ -60,7 +60,6 @@ export default function Treatment(props) {
       event.stopPropagation();
       setValidated(true);
     }else{
-      console.log(event.currentTarget);
       tweet();
       setValidated(false);
     }

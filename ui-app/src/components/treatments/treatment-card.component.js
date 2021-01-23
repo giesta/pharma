@@ -9,7 +9,7 @@ export default function TreatmentCard(props) {
       <CardDeck>     
           {props.Treatments.map((field)=>
           <div className="col-xs-6 col-md-4" key={field.id}>
-             <Card style={{ width: '18rem' },{flex:1}}>
+             <Card style={{ width: '18rem', flex:1}}>
               <Card.Img variant="top" src={field.algorithm} style={{height: '40vh'}} />
               <Card.Body>
           <Card.Title>{field.title} {field.public?(<BsEye color="#ACD1B6"></BsEye>):(<BsEyeSlash color="#E96166"></BsEyeSlash>)}</Card.Title>               

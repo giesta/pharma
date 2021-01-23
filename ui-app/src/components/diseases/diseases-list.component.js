@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import diseasesDataService from "../../services/diseases/list.service";
 import DrugsDataService from "../../services/drugs/list.service";
 import DiseaseDelete from "../delete-modal.component";
@@ -110,9 +110,7 @@ export default function DiseasesList() {
     const { name, value } = event.target;
     setDisease({ ...disease,  [name]: value});   
   };
-  useEffect(()=>{
-        retrieveDiseases();        
-  }, []);
+  
 
   const retrieveDrugs = () => {
     DrugsDataService.getAll()
@@ -146,7 +144,8 @@ export default function DiseasesList() {
         console.log(e);
       });
   };
-  const GetActionFormat = useCallback((row) =>{    
+  useEffect(retrieveDiseases, []);
+  const GetActionFormat = (row) =>{    
     return (
       <td className="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
@@ -163,7 +162,7 @@ export default function DiseasesList() {
             </button>
         </td>
     );
-});
+};
 
 const deleteItemFromState = (id) => {
   const updatedItems = diseases.data.filter(x=>x.id!==id)

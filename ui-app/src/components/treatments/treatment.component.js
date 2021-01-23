@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
 import StarService from "../../services/treatments/stars.service";
 import CommentService from "../../services/treatments/comments.service";
 import DrugsDataService from "../../services/diseases/disease.drug.service";
 import AuthService from "../../services/auth.service";
 import Spinner from "../layout/spinner.component";
-import { Col, Row, Modal, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form} from "react-bootstrap";
+import DrugInfo from "../drugs/info-modal.component";
+import { Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form} from "react-bootstrap";
 import { BsStar, BsPeopleCircle } from "react-icons/bs";
 
 export default function Treatment(props) {
@@ -36,7 +37,6 @@ export default function Treatment(props) {
   const [show, setShow] = React.useState(false);
   const [noData, setNoData] = React.useState('');
   const [comment, setComment] = React.useState('');
-  const [comments, setComments] = React.useState([]);
   const [validated, setValidated] = React.useState(false);
   const [userData] = React.useState(AuthService.getCurrentUser());
 
@@ -52,9 +52,7 @@ export default function Treatment(props) {
   const newDrug = () => {
     setDrug(initialDrugState);
   };
-  useEffect(()=>{    
-        getTreatment(props.match.params.id);
-  }, [props.match.params.id]);
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -68,38 +66,46 @@ export default function Treatment(props) {
     }
            
   };
-  const getTreatment = useCallback((id)=> {
-    let get;
-    if(AuthService.getCurrentUser()===null){
-      get = TreatmentsDataService.getPublic(id);
-    }else{
-      get = TreatmentsDataService.get(id);
-    }
-    get
-      .then(response => {
-        if (response.data.data.length !== 0) {
-          setCurrentTreatment(response.data.data);
-          getDrugs(response.data.data.disease.id);
-        }else{
-          setNoData('No');
-        }
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  });
   
-  const getDrugs = (id) => {
-    DrugsDataService.getPublic(id)
-      .then(response => {    
-        if(response.data.data.length !== 0){
-          setCurrentDrugs(...currentDrugs, response.data.data);
-        }      
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
+  useEffect(()=>{ 
+
+    const getDrugs = (id) => {
+      DrugsDataService.getPublic(id)
+        .then(response => {    
+          if(response.data.data.length !== 0){
+            setCurrentDrugs(response.data.data);
+          }      
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    };
+
+    const getTreatment = (id)=> {
+      var get;
+      if(AuthService.getCurrentUser()===null){
+        get = TreatmentsDataService.getPublic(id);
+      }else{
+        get = TreatmentsDataService.get(id);
+      }
+      get
+        .then(response => {
+          if (response.data.data.length !== 0) {
+            setCurrentTreatment(response.data.data);
+            getDrugs(response.data.data.disease.id);
+          }else{
+            setNoData('No');
+          }
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    };
+    getTreatment(props.match.params.id);
+
+  }, [props.match.params.id]);
+
+  
   const star = () => {
     var data = {
       id: AuthService.getCurrentUser().id
@@ -121,11 +127,9 @@ export default function Treatment(props) {
       user_id: userData.user.id,      
       treatment_id: currentTreatment.id,
     };
-    console.log(data);
     CommentService.create(data).then(response=>{
       setCurrentTreatment(response.data.data);
       setComment("");
-      console.log(response.data.data);
     }).catch(e => {
       console.log(e);
     });
@@ -133,7 +137,7 @@ export default function Treatment(props) {
   const getParsedDate = (strDate)=>{
     var strSplitDate = String(strDate).split(' ');
     var date = new Date(strSplitDate[0]);
-    // alert(date);
+    
     var dd = date.getDate();
     var mm = date.getMonth() + 1; //January is 0!
     var hh = date.getHours();
@@ -161,9 +165,7 @@ export default function Treatment(props) {
       currentTreatment.disease === null && noData === ''?(        
         <Spinner></Spinner>
       ):(        
-      <div className="container">     
-      <>
-      {console.log(currentTreatment)}
+      <div className="container">
       <Row><Button variant="secondary" size="sm" disabled={currentTreatment.isStar} onClick={star}>
       <BsStar></BsStar>{' '}<Badge variant="light">{currentTreatment.stars}</Badge>
     </Button></Row>
@@ -255,67 +257,12 @@ export default function Treatment(props) {
         </Row>
 
       </div>
-      
-      
-      
-  <Modal show={show} onHide={handleClose}>
-  <Modal.Header closeButton>
-    <Modal.Title>Drug info</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-  <Form>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Name</Form.Label>
-    <Form.Control type="text"  value={drug.name} disabled name="name"/>
-  </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Substance</Form.Label>
-    <Form.Control type="text" value={drug.substance} disabled name="substance"/>
-  </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Indication</Form.Label>
-    <Form.Control type="text" value={drug.indication} disabled name="indication"/>
-  </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Contraindication</Form.Label>
-    <Form.Control type="text" value={drug.contraindication} disabled name="contraindication"/>
-  </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Adverse effect</Form.Label>
-    <Form.Control type="text" value={drug.reaction} disabled name="reaction"/>
-  </Form.Group>
-  <Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Use</Form.Label>
-    <Form.Control type="text" value={drug.use} disabled name="use"/>
-  </Form.Group>
-  {drug.diseases!==null && drug.diseases!==undefined?(<Form.Group controlId="exampleForm.ControlInput1">
-    <Form.Label>Diseases</Form.Label>
-  {drug.diseases.map((x)=>
-      <Badge pill variant="dark">
-      {x.name}
-    </Badge>
-    )  
-} </Form.Group>):('')}
-  
-</Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-  
-</>
+{ show &&<DrugInfo info = {show} drug = {drug} handleCloseInfo={handleClose}></DrugInfo> } 
   </div>  )
     ):(<div>
       <br />
       <p>Some Went Wrong...</p>
-    </div>)
-      
-    }</div>
-    
-    
+    </div>)      
+    }</div>    
   );
 }

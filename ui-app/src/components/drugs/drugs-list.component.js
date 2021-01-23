@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import AuthService from "../../services/auth.service"; 
 import DrugsDataService from "../../services/drugs/list.service";
 import DiseasesDataService from "../../services/diseases/list.service";
@@ -74,8 +74,6 @@ export default function DrugsList() {
   const [total, setTotal] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(3);
 
-  const pageSizes = [3, 6, 9];
-
   const onChangeSearchTitle = e => {
     const searchTitle = e.target.value;
     setSearchTitle(searchTitle);
@@ -126,10 +124,7 @@ export default function DrugsList() {
     const { name, value } = event.target;
     setDrug({ ...drug, [name]: value });
   };
-  useEffect(()=>{
-        retrieveDrugs();
-        
-  }, []);
+  
   const retrieveDrugs = (pageNumber = 1) => {
     DrugsDataService.findByTitle(pageNumber, searchTitle)
       .then(response => {  
@@ -149,6 +144,7 @@ export default function DrugsList() {
         console.log(e);
       });
   };
+  useEffect(retrieveDrugs, []);
   const retrieveDiseases = () => {
     DiseasesDataService.getAll()
       .then(response => {
@@ -162,7 +158,7 @@ export default function DrugsList() {
       });
   };
 
-  const GetActionFormat = useCallback((row) =>{
+  const GetActionFormat = (row) =>{
     
     return (
       <td className="table-col">
@@ -180,7 +176,7 @@ export default function DrugsList() {
             </button>
         </td>
     );
-});
+};
 
 const deleteItemFromState = (id) => {
   const updatedItems = drugs.data.filter(x=>x.id!==id)
@@ -315,7 +311,7 @@ const findByTitle = () => {
       </div> 
     </div>       
       <div className="container">  
-      <DrugsTable columns ={columns} drugs = {drugs} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DrugsTable>
+      <DrugsTable key={"drugs"} columns ={columns} drugs = {drugs} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DrugsTable>
 
       { show && <DrugCreateUpdate show ={show} handleClose={handleClose} drug={drug} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} diseases={diseases} AddSelectedDiseases={AddSelectedDiseases}></DrugCreateUpdate> }
 

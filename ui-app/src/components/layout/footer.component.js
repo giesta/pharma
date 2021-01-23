@@ -49,13 +49,13 @@ export default function Footer() {
 <div className="container">
 <ul className="foote_bottom_ul_amrc">
 <li><a href="/">Home</a></li>
-<li><a href="#">About</a></li>
-<li><a href="#">Services</a></li>
-<li><a href="#">Pricing</a></li>
-<li><a href="#">Blog</a></li>
-<li><a href="#">Contact</a></li>
+<li><a href="http://www.who.int/en/">About</a></li>
+<li><a href="http://www.who.int/en/">Services</a></li>
+<li><a href="http://www.who.int/en/">Pricing</a></li>
+<li><a href="http://www.who.int/en/">Blog</a></li>
+<li><a href="http://www.who.int/en/">Contact</a></li>
 </ul>
-<p className="text-center">Copyright @2020 | Designed With by <a href="#">CodeOfUniverse</a></p>
+<p className="text-center">Copyright @2020 | Designed With by <a href="http://www.who.int/en/">CodeOfUniverse</a></p>
 
 
 </div>

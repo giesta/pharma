@@ -22,26 +22,15 @@ export default function ControlledTabs() {
       const [total, setTotal] = React.useState(0);
       const [pageSize, setPageSize] = React.useState(3);
       const [noData, setNoData] = React.useState('');
-      const [user, setUser] = React.useState(AuthService.getCurrentUser());
+      const user = AuthService.getCurrentUser();
 
       const [searchTitle, setSearchTitle] = React.useState("");
 
       const [pagePrivate, setPagePrivate] = React.useState(1);
       const [totalPrivate, setTotalPrivate] = React.useState(0);
       const [pageSizePrivate, setPageSizePrivate] = React.useState(3);
-
-      useEffect(()=>{
-        retrieveTreatments();
-        if(user !== null){
-          retrieveTreatmentsPrivate();
-        }        
-    }, []);
-
-    const getUser = () => {
-      const u = AuthService.getCurrentUser();
-        console.log("naudotojas "+u);
-        setUser(u);
-    }; 
+      
+      
     const onChangeSearchTitle = e => {
       const searchTitle = e.target.value;
       setSearchTitle(searchTitle);
@@ -49,8 +38,7 @@ export default function ControlledTabs() {
     const retrieveTreatments = (pageNumber = 1) => {
       TreatmentsDataService.findByTitlePublic(pageNumber, searchTitle)
         .then(response => {   
-          const { current_page, per_page, total } = response.data.meta;  
-          console.log(response.data.data)
+          const { current_page, per_page, total } = response.data.meta
           if(response.data.data.length !== 0){             
             setTreatments({...Treatments, data: response.data.data, id:response.data.data.length});
             setPageSize(per_page);
@@ -64,6 +52,7 @@ export default function ControlledTabs() {
           console.log(e);
         });
     };
+    useEffect(retrieveTreatments, []);
     const retrieveTreatmentsPrivate = (pageNumber = 1) => {
         TreatmentsDataService.findByTitlePrivate(pageNumber, searchTitle)
           .then(response => {  
@@ -92,7 +81,6 @@ export default function ControlledTabs() {
           if(response.data.data.length === 0){               
             setNoData('No');
           }
-          console.log(response.data.data);
         })
         .catch(e => {
           console.log(e);
@@ -109,12 +97,12 @@ export default function ControlledTabs() {
           if(response.data.data.length === 0){               
             setNoData('No');
           }
-          console.log(response.data.data);
         })
         .catch(e => {
           console.log(e);
         });
     };
+    useEffect(retrieveTreatmentsPrivate, []);
     return (
         <div>
         {Treatments.data.length === 0 && noData === ''?(        

@@ -13,7 +13,8 @@ const instance = axios.create({
 });
 instance.interceptors.request.use (
   function (config) {
-    const token = JSON.parse(localStorage.getItem('user')).access_token;
+    if(JSON.parse(localStorage.getItem('user')) !== null)
+      token = JSON.parse(localStorage.getItem('user')).access_token;
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
@@ -27,7 +28,7 @@ instance.interceptors.response.use(response => {
   return new Promise((resolve, reject) => {
       const originalReq = err.config;    
       
-      if ( err.response.status === 401 && err.config && !err.config.__isRetryRequest )
+      if (err.response !== undefined && err.response.status === 401 && err.config && !err.config.__isRetryRequest )
       {
           originalReq._retry = true;
 
@@ -43,7 +44,7 @@ instance.interceptors.response.use(response => {
               redirect: 'follow',
               referrer: 'no-referrer',
           }).then(res => res.json()).then(res => {
-            if(err.response.status === 401 && res.message==="The token has been blacklisted"){
+            if(err.response !== undefined && err.response.status === 401 && res.message==="The token has been blacklisted"){
               localStorage.removeItem("user");
               return window.location.href = '/login';
             }else{

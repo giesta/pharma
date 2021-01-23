@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
 import DiseasesDataService from "../../services/diseases/list.service";
 import TreatmentTable from "./table.component";
@@ -115,12 +115,10 @@ export default function TreatmentList() {
   };
   const handleChecked = event =>{
     setTreatment({ ...treatment, public: event.target.checked ? 1 : 0 });
-  }
-  useEffect(()=>{    
-        retrieveTreatments();        
-  }, []);
+  };
+  
 
-  const retrieveTreatments = useCallback((pageNumber=1) => {
+  const retrieveTreatments = (pageNumber=1) => {
     TreatmentsDataService.findByTitle(pageNumber, searchTitle)
       .then(response => { 
         const { current_page, per_page, total } = response.data.meta;   
@@ -138,7 +136,7 @@ export default function TreatmentList() {
         setError(true);
         console.log(e);
       });
-  }, []);
+  };
   
   const retrieveDiseases = () => {
     DiseasesDataService.getAll()
@@ -152,7 +150,8 @@ export default function TreatmentList() {
         console.log(e);
       });
   };
-  const GetActionFormat = useCallback((row) =>{
+  useEffect(retrieveTreatments, []);
+  const GetActionFormat = (row) =>{
     
     return (
         <td className="table-col">
@@ -171,7 +170,7 @@ export default function TreatmentList() {
             </button>
         </td>
     );
-});
+};
 
 const deleteItemFromState = (id) => {
   const updatedItems = Treatments.data.filter(x=>x.id!==id)

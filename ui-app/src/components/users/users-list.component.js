@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import UsersDataService from "../../services/users/users.service";
 import UserDelete from "../delete-modal.component";
 import UserInfo from "./info-modal.component";
@@ -67,9 +67,7 @@ export default function UsersList() {
     const { name, value } = event.target;
     setUser({ ...user, [name]: value });
   };
-  useEffect(()=>{
-        retrieveUsers();
-  }, []);
+  
   const retrieveUsers = (pageNumber = 1) => {
     UsersDataService.findByTitle(pageNumber, searchTitle)
       .then(response => {  
@@ -86,6 +84,7 @@ export default function UsersList() {
         setError(true);
       });
   };
+  useEffect(retrieveUsers, []);
   const findByTitle = () => {
     UsersDataService.findByTitle(1, searchTitle)
       .then(response => {
@@ -104,7 +103,7 @@ export default function UsersList() {
       });
   };
   
-  const GetActionFormat = useCallback((row) =>{
+  const GetActionFormat = (row) =>{
     
     return (
       <td className="table-col">
@@ -122,7 +121,7 @@ export default function UsersList() {
             </button>
         </td>
     );
-});
+};
 
 const deleteItemFromState = (id) => {
   const updatedItems = users.data.filter(x=>x.id!==id)

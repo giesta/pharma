@@ -4,7 +4,8 @@ const update = (id) => {
   return http.post(`/stars/${id}`);
 };
 
-
-export default {
+const services = {
   update
-};
+}
+
+export default services;

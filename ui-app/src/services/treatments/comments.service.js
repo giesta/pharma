@@ -4,7 +4,7 @@ const create = (data) => {
   return http.post(`/comments`, data);
 };
 
-
-export default {
+const services = {
   create
 };
+export default services;

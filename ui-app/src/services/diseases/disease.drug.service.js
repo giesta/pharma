@@ -28,8 +28,7 @@ const removeAll = () => {
 const findByName = name => {
   return http.get(`/diseases?name=${name}`);
 };
-
-export default {
+const  services = {
   getAll,
   getPublic,
   create,
@@ -38,3 +37,4 @@ export default {
   removeAll,
   findByName
 };
+export default services;

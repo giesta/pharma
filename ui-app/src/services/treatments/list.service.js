@@ -47,7 +47,7 @@ const findByTitlePrivate = (pageNumber, name) => {
   return http.get(`/treatments/private?page=${pageNumber}&&name=${name}`);
 };
 
-export default {
+const services = {
   getAllPublic,
   getAllPaginate,
   getPublic,
@@ -61,3 +61,6 @@ export default {
   findByTitlePublic,
   findByTitlePrivate
 };
+
+export default services;
+  

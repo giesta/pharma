@@ -136,11 +136,13 @@ export default function DiseasesList() {
         }else{
           setNoData("No");
         }
-          retrieveDrugs();       
+        console.log("some");
+        retrieveDrugs(); 
+                
       })
       .catch(e => {
         setError(true);
-        console.log("some");
+        
         console.log(e);
       });
   };

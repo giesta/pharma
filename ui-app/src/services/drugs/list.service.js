@@ -31,7 +31,7 @@ const findByTitle = (pageNumber, name) => {
   return http.get(`/drugs/list?page=${pageNumber}&&name=${name}`);
 };
 
-export default {
+const services = {
   getAll,
   getAllPaginate,
   get,
@@ -41,3 +41,5 @@ export default {
   removeAll,
   findByTitle
 };
+
+export default services;

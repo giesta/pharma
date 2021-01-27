@@ -145,12 +145,19 @@ renderRedirect = () => {
           this.setRedirect();
         },
         error => {
+          console.log(error);
           const resMessage =
             (error.response &&
               error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
+              error.response.data.message.email)||
+              (error.response &&
+                error.response.data &&
+                error.response.data.message.name) ||
+                (error.response &&
+                  error.response.data &&
+                  error.response.data.message.password) ||
+                  error.message ||
+                  error.toString();
 
           this.setState({
             successful: false,
@@ -243,7 +250,7 @@ renderRedirect = () => {
                   }
                   role="alert"
                 >
-                  {this.state.message}
+                  {this.state.message.map(item=>item)}
                 </div>
               </div>
             )}

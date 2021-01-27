@@ -7,7 +7,9 @@ import UsersTable from "./table.component";
 import Spinner from "../layout/spinner.component";
 import Pagination from "react-js-pagination";
 import { BsPen, BsTrash, BsInfoCircle} from "react-icons/bs";
-import ErrorBoundary from "../layout/error.component";
+import { removeError } from "../../js/actions/index";
+import store from "../../js/store/index";
+
 
 export default function UsersList() {
 
@@ -35,6 +37,8 @@ export default function UsersList() {
   
   const [validated, setValidated] = React.useState(false);
 
+  const {dispatch} = store;
+
   const onChangeSearchTitle = e => {
     const searchTitle = e.target.value;
     setSearchTitle(searchTitle);
@@ -55,7 +59,9 @@ export default function UsersList() {
   const handleClose = () =>{
     newUser();
     setShow(false);
-    setValidated(false);
+    setValidated(false);    
+    setError(false);
+    dispatch(removeError());
   };
   const handleCloseConfirm = () => setConfirm(false);
   const handleCloseInfo = () => {
@@ -91,11 +97,10 @@ export default function UsersList() {
         const { current_page, per_page, total } = response.data.meta;          
           if(response.data.data.length !== 0){
             setUsers({...users, data: response.data.data});
-          setPageSize(per_page);
-          setPage(current_page);     
-          setTotal(total);          
+            setPageSize(per_page);
+            setPage(current_page);     
+            setTotal(total);          
           }
-        console.log(response.data.data);
       })
       .catch(e => {
         console.log(e);
@@ -153,6 +158,7 @@ const updateUser = () => {
   };
   UsersDataService.update(data.id, data)
     .then(response => {
+      console.log(response.data);
       setUser({
         id: response.data.data.id,
         name: response.data.data.name,
@@ -187,7 +193,7 @@ const newUser = () => {
 
 
   return (
-    <div>{error?<ErrorBoundary/>:''}
+    <div>
       {users?(
       users.data.length===0?(        
         <Spinner></Spinner>
@@ -216,7 +222,7 @@ const newUser = () => {
       </div>       
       <div className="container">
       <UsersTable columns ={columns} users={users} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></UsersTable>
-      { show &&<UserUpdate show ={show} handleClose={handleClose} user={user} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange}></UserUpdate> }
+      { show &&<UserUpdate error={error} show ={show} handleClose={handleClose} user={user} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange}></UserUpdate> }
       { confirm &&<UserDelete id={id} name={"User"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></UserDelete> }
       { info && <UserInfo info = {info} user={user} handleCloseInfo={handleCloseInfo}></UserInfo> }
       <div>

@@ -18,8 +18,8 @@ export default function TableOfItems(props) {
         <tbody>
       
         {props.users.data.map((field, count = 0)=>
-              <tr key={++count}>
-              <td >{handleIncrement(count)}</td>
+              <tr key={count}>
+              <td >{handleIncrement(++count)}</td>
               <td>{field.name}</td>
               <td>{field.email}</td>
               {props.GetActionFormat(field)}

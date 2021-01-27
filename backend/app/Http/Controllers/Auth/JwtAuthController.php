@@ -24,13 +24,13 @@ class JwtAuthController extends Controller
          $validator = Validator::make($request->all(), 
                       [ 
                       'name' => 'required',
-                      'email' => 'required|email',
+                      'email' => 'required|email|unique:users',
                       'password' => 'required',  
                       'c_password' => 'required|same:password', 
                      ]);  
  
          if ($validator->fails()) { 
-               return response()->json(['error'=>$validator->errors()], 401);  
+               return response()->json(['message'=>$validator->errors()], 401);  
             }    
         $user = new User();
         $user->name = $request->name;

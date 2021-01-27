@@ -1,4 +1,4 @@
-import { ADD_ERROR } from "../constants/action-types";
+import { ADD_ERROR, REMOVE_ERROR } from "../constants/action-types";
 
 
 const initialState = {
@@ -10,6 +10,9 @@ const initialState = {
         return Object.assign({}, state, {
             errors: state.errors.concat(action.payload)
         });
+    }
+    else if (action.type === REMOVE_ERROR) {
+      return initialState;
     }
     return state;
   };

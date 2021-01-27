@@ -100,9 +100,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'message' => $validator->errors()
-            ]);
+                return response()->json(['message'=>$validator->errors()], 422);
         } else {
             try {
                 $userCurrent = auth()->user();

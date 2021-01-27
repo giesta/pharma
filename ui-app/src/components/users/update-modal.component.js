@@ -1,16 +1,23 @@
 import React from 'react';
 
 import { Modal, Button, Form } from "react-bootstrap";
+import ErrorBoundary from "../layout/error.component";
+import { connect } from "react-redux";
 
-export default function CreateModal(props) {
-    return (
+const mapStateToProps = state => {
+        return { errors: state.errors };
+      };
+      
+const CreateModal=(props)=> (
+        
         <Modal show={props.show} onHide={props.handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>User info</Modal.Title>
             </Modal.Header>
             <Form noValidate validated={props.validated} onSubmit={props.handleSubmit}> 
-            <Modal.Body>  
-                <Form.Group controlId="exampleForm.ControlInput1">
+            <Modal.Body>
+            {props.errors.length > 0 ?<ErrorBoundary text={props.errors.map(item=>item)}/>:''}
+                <Form.Group controlId="name">
                     <Form.Label>Name</Form.Label>
                     <Form.Control type="text" placeholder="" required value={props.user.name} onChange={props.handleInputChange} name="name"/>
                     <Form.Control.Feedback type="invalid">
@@ -18,11 +25,11 @@ export default function CreateModal(props) {
                     </Form.Control.Feedback>
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group controlId="exampleForm.ControlInput1">
+                <Form.Group controlId="email">
                     <Form.Label>Email</Form.Label>
                     <Form.Control type="email" placeholder="" required value={props.user.email} onChange={props.handleInputChange} name="email"/>
                     <Form.Control.Feedback type="invalid">
-                        Email is a required field.
+                    Email is a required field.
                     </Form.Control.Feedback>
                     <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                 </Form.Group> 
@@ -37,5 +44,7 @@ export default function CreateModal(props) {
             </Modal.Footer>
             </Form>
         </Modal>
-    );
-}
+   
+);
+const Creation = connect(mapStateToProps)(CreateModal);
+export default Creation;

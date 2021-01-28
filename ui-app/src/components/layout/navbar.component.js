@@ -2,7 +2,7 @@ import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 
 
-export default function MainNavbar(showPharmacistBoard, showAdminBoard, currentUser, logOut) {
+export default function MainNavbar(props) {
 
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
@@ -12,16 +12,16 @@ export default function MainNavbar(showPharmacistBoard, showAdminBoard, currentU
 
     <Nav className="mr-auto">
     <Nav.Link href={"/"}>Home</Nav.Link>
-      {(showPharmacistBoard || showAdminBoard) && (<Nav.Link href={"/drugs"}>Drugs</Nav.Link>)}
-      {(showPharmacistBoard || showAdminBoard) && (<Nav.Link href={"/diseases"}>Diseases</Nav.Link>)}
-      {(showPharmacistBoard || showAdminBoard) && (<Nav.Link href={"/treatments"}>Treatments</Nav.Link>)}
-      {showAdminBoard && (<Nav.Link href={"/users"}>Users</Nav.Link>)}
+      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/drugs"}>Drugs</Nav.Link>)}
+      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/diseases"}>Diseases</Nav.Link>)}
+      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/treatments"}>Treatments</Nav.Link>)}
+      {props.showAdminBoard && (<Nav.Link href={"/users"}>Users</Nav.Link>)}
     </Nav>
     
-    {currentUser ? (
+    {props.currentUser ? (
       <Nav>
-              <Nav.Link href={"/profile"}>{currentUser.user.name}</Nav.Link>
-              <Nav.Link eventKey={2} href="/login" onClick={logOut}>
+              <Nav.Link href={"/profile"}>{props.currentUser.user.name}</Nav.Link>
+              <Nav.Link eventKey={2} href="/login" onClick={props.logOut}>
               LogOut
       </Nav.Link>
       </Nav>

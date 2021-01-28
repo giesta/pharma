@@ -55,7 +55,7 @@ class App extends Component {
       
       <div>
 
-   {MainNavbar(showPharmacistBoard, showAdminBoard, currentUser, this.logOut)} 
+   <MainNavbar showPharmacistBoard = {showPharmacistBoard} showAdminBoard = {showAdminBoard} currentUser = {currentUser} logOut = {this.logOut} />
 
         <div className="container main-container mt-3">
           <Switch>

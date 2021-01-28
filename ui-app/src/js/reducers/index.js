@@ -6,15 +6,16 @@ const initialState = {
   };
   
   function rootReducer(state = initialState, action) {
-    if (action.type === ADD_ERROR) {
+    switch (action.type) {
+      case ADD_ERROR:
         return Object.assign({}, state, {
-            errors: state.errors.concat(action.payload)
+          errors: state.errors.concat(action.payload)
         });
+      case REMOVE_ERROR:
+        return initialState;     
+      default:
+        return state;
     }
-    else if (action.type === REMOVE_ERROR) {
-      return initialState;
-    }
-    return state;
   };
   
   export default rootReducer;

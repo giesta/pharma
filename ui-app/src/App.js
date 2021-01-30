@@ -20,6 +20,16 @@ import UsersList from "./components/users/users-list.component";
 import Footer from "./components/layout/footer.component";
 import MainNavbar from "./components/layout/navbar.component";
 
+import Loadable from "react-loadable";
+
+import Logo from "./components/admin/Logo/Logo.jsx";
+import Header from "./components/admin/Header/Header.jsx";
+import Basic from "./components/admin/Routes/Basic/Basic.jsx";
+import Manage from "./components/admin/Routes/Manage/Manage.jsx";
+import Reports from "./components/admin/Routes/Reports/Reports.jsx";
+import Schedule from "./components/admin/Routes/Schedule/Schedule.jsx";
+import Settings from "./components/admin/Routes/Settings/Settings.jsx";
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -52,10 +62,28 @@ class App extends Component {
     const { currentUser, showPharmacistBoard, showAdminBoard } = this.state;
 
     return (
+
+      
       
       <div>
-
-   <MainNavbar showPharmacistBoard = {showPharmacistBoard} showAdminBoard = {showAdminBoard} currentUser = {currentUser} logOut = {this.logOut} />
+        {
+        showAdminBoard?(
+        <div className="kanban-wrapper">
+        <div className="kanban">
+          <Logo />
+          <Header />
+          <Sidebar />
+          <Switch>
+            <Route exact path="/" component={Basic} />
+            <Route path="/manage" component={Manage} />
+            <Route path="/schedule" component={Schedule} />
+            <Route path="/reports" component={Reports} />
+            <Route path="/settings" component={Settings} />
+          </Switch>
+        </div>
+      </div>
+      ):(<>
+      <MainNavbar showPharmacistBoard = {showPharmacistBoard} showAdminBoard = {showAdminBoard} currentUser = {currentUser} logOut = {this.logOut} />
 
         <div className="container main-container mt-3">
           <Switch>
@@ -72,9 +100,20 @@ class App extends Component {
           </Switch>
         </div>
         <Footer></Footer>
-      </div>
+        </>
+      )
+      }
+</div>
+   
     );
   }
 }
+
+const Loading = () => <div className="loading">Loading...</div>;
+
+const Sidebar = Loadable({
+  loader: () => import("./components/admin/Sidebar/Sidebar.jsx"),
+  loading: Loading
+});
 
 export default App;

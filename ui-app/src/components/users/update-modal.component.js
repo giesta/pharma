@@ -5,7 +5,7 @@ import ErrorBoundary from "../layout/error.component";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => {
-        return { errors: state.errors };
+        return { errors: state.rootReducer.errors };
       };
       
 const CreateModal=(props)=> (
@@ -16,6 +16,7 @@ const CreateModal=(props)=> (
             </Modal.Header>
             <Form noValidate validated={props.validated} onSubmit={props.handleSubmit}> 
             <Modal.Body>
+                {console.log(props.errors)}
             {props.errors.length > 0 ?<ErrorBoundary text={props.errors.map(item=>item)}/>:''}
                 <Form.Group controlId="name">
                     <Form.Label>Name</Form.Label>

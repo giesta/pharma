@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { selected } from "../../../js/actions/";
+import { selected } from "../../../js/actions";
 
 class Button extends React.Component {
   render() {

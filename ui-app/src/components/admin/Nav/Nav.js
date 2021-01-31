@@ -1,6 +1,6 @@
 import React from "react";
-import Team from "./Team.jsx";
-import Title from "./Title.jsx";
+import Team from "./Team.js";
+import Title from "./Title.js";
 
 class Nav extends React.Component {
   render() {

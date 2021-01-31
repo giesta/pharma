@@ -2,7 +2,7 @@ import React from "react";
 import ClassNames from "classnames";
 import { connect } from "react-redux";
 import dragging from "../../../hoc/dragging";
-import { deleteTask } from "../../../js/actions/";
+import { deleteTask } from "../../../js/actions";
 
 class Card extends React.PureComponent {
   render() {

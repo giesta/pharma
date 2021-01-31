@@ -1,5 +1,5 @@
 import React from "react";
-import Invite from "./Invite.jsx";
+import Invite from "./Invite.js";
 
 class Team extends React.Component {
   render() {

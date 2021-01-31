@@ -1,9 +1,9 @@
 import React from "react";
-import Manage from "./Manage.jsx";
-import Boards from "./Boards.jsx";
-import Reports from "./Reports.jsx";
-import Schedule from "./Schedule.jsx";
-import Settings from "./Settings.jsx";
+import Manage from "./Manage.js";
+import Boards from "./Boards.js";
+import Reports from "./Reports.js";
+import Schedule from "./Schedule.js";
+import Settings from "./Settings.js";
 
 class Sidebar extends React.Component {
   render() {
@@ -14,8 +14,9 @@ class Sidebar extends React.Component {
           <Boards />
           <Schedule />
           <Reports />
+          <Settings />
         </div>
-        <Settings />
+        
       </section>
     );
   }

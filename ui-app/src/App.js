@@ -22,13 +22,13 @@ import MainNavbar from "./components/layout/navbar.component";
 
 import Loadable from "react-loadable";
 
-import Logo from "./components/admin/Logo/Logo.jsx";
-import Header from "./components/admin/Header/Header.jsx";
-import Basic from "./components/admin/Routes/Basic/Basic.jsx";
-import Manage from "./components/admin/Routes/Manage/Manage.jsx";
-import Reports from "./components/admin/Routes/Reports/Reports.jsx";
-import Schedule from "./components/admin/Routes/Schedule/Schedule.jsx";
-import Settings from "./components/admin/Routes/Settings/Settings.jsx";
+import Logo from "./components/admin/Logo/Logo.js";
+import Header from "./components/admin/Header/Header.js";
+import Basic from "./components/admin/Routes/Basic/Basic.js";
+import Manage from "./components/admin/Routes/Manage/Manage.js";
+import Reports from "./components/admin/Routes/Reports/Reports.js";
+import Schedule from "./components/admin/Routes/Schedule/Schedule.js";
+import Settings from "./components/admin/Routes/Settings/Settings.js";
 
 class App extends Component {
   constructor(props) {
@@ -74,11 +74,13 @@ class App extends Component {
           <Header />
           <Sidebar />
           <Switch>
-            <Route exact path="/" component={Basic} />
-            <Route path="/manage" component={Manage} />
-            <Route path="/schedule" component={Schedule} />
-            <Route path="/reports" component={Reports} />
-            <Route path="/settings" component={Settings} />
+            <Route exact path="/boards" component={Basic} />
+            <Route exact path="/manage" component={Manage} />
+            <Route exact path="/schedule" component={Schedule} />
+            <Route exact path="/reports" component={Reports} />
+            <Route exact path="/settings" component={Settings} />
+            <Route exact path="/profile" component={Settings} />
+            <Route exact path="/login" component={Login} />
           </Switch>
         </div>
       </div>
@@ -91,12 +93,12 @@ class App extends Component {
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
             <ProtectedRoute exact path="/profile" component={Profile} roles={["admin", "pharmacist"]}/> 
-            <ProtectedRoute path="/user" component={BoardUser} roles={["admin", "pharmacist"]}/> 
+            <ProtectedRoute exact path="/user" component={BoardUser} roles={["admin", "pharmacist"]}/> 
             <ProtectedRoute exact path="/drugs" component={DrugsList} roles={["admin", "pharmacist"]}/> 
             <ProtectedRoute exact path="/diseases" component={DiseasesList} roles={["admin", "pharmacist"]}/> 
             <ProtectedRoute exact path="/treatments" component={TreatmentsList} roles={["admin", "pharmacist"]}/> 
             <Route exact path="/treatments/:id" component={Treatment}/>            
-            <ProtectedRoute path="/users" component={UsersList} roles={["admin"]}/>
+            <ProtectedRoute exact path="/users" component={UsersList} roles={["admin"]}/>
           </Switch>
         </div>
         <Footer></Footer>
@@ -112,7 +114,7 @@ class App extends Component {
 const Loading = () => <div className="loading">Loading...</div>;
 
 const Sidebar = Loadable({
-  loader: () => import("./components/admin/Sidebar/Sidebar.jsx"),
+  loader: () => import("./components/admin/Sidebar/Sidebar.js"),
   loading: Loading
 });
 

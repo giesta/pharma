@@ -15,12 +15,12 @@ class Basic extends React.Component {
 const Loading = () => <div className="loading">Loading...</div>;
 
 const Main = Loadable({
-  loader: () => import("../../Main/Main.jsx"),
+  loader: () => import("../../Main/Main.js"),
   loading: Loading
 });
 
 const Nav = Loadable({
-  loader: () => import("../../Nav/Nav.jsx"),
+  loader: () => import("../../Nav/Nav.js"),
   loading: Loading
 });
 

@@ -1,16 +1,15 @@
 import React from "react";
-import Cards from "./Cards.jsx";
-import Select from "./Select.jsx";
-import Button from "./Button.jsx";
+import Cards from "./Cards.js";
+import Select from "./Select.js";
+import Button from "./Button.js";
 import { connect } from "react-redux";
 import {
   filtratedTasksBacklog,
   filtratedTasksProgress,
   filtratedTasksReview,
   filtratedTasksComplete
-} from "../../selectors/";
+} from "../../selectors";
 import { CSSTransition } from 'react-transition-group';
-import Child from "../Routes/Reports/Child.jsx";
 
 class Main extends React.Component {
   render() {

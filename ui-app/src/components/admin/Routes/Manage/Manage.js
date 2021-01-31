@@ -1,5 +1,5 @@
 import React from "react";
-import Child from "./Child.jsx";
+import Child from "./Child.js";
 
 class Manage extends React.Component {
   render() {

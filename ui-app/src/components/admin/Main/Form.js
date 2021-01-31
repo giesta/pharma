@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { addTask } from "../../../js/actions/";
+import { addTask } from "../../../js/actions";
 import setNewTask from "../../../hoc/setNewTask";
 
 class Form extends React.Component {

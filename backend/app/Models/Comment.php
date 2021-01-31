@@ -18,11 +18,11 @@ class Comment extends Model
     /**
      * App\User relationship
      *
-     * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function users()
+    public function user()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
     public function treatment(){
         return $this->belongsTo(Treatment::class, 'treatment_id', 'id');

@@ -205,7 +205,7 @@ const newUser = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search by title"
+            placeholder="Search by name"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />

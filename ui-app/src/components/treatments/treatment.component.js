@@ -121,7 +121,6 @@ export default function Treatment(props) {
   };
   const tweet=()=>{
     var data = {
-      name: userData.user.name,
       content: comment,
       user_id: userData.user.id,      
       treatment_id: currentTreatment.id,

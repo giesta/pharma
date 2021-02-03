@@ -13,7 +13,7 @@ class Comment extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'content', 'user_id', 'treatment_id'];
+    protected $fillable = ['content', 'user_id', 'treatment_id'];
 
     /**
      * App\User relationship

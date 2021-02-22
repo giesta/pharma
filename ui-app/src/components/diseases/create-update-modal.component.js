@@ -37,9 +37,9 @@ export default function CreateModal(props) {
                 {(props.disease.drugs!==null && props.disease.drugs!==undefined)?(
                     <Form.Group controlId="drugs">
                         <Form.Label>Drugs</Form.Label>     
-                        <Form.Control as="select" multiple defaultValue={props.disease.drugs.map(item=>item.id)} onChange={props.AddSelectedDrugs} name="drugs_id"> 
-                            {props.drugs.data.map((x)=>
-                                <option key={x.id} value={x.id}>{x.name}</option>
+                        <Form.Control as="select" multiple defaultValue={props.disease.drugs.map(item=>item.id)} onChange={props.AddSelectedLeaflets} name="drugs_id"> 
+                            {props.leaflets.data.map((x)=>
+                                <option key={x.id} value={x.id}>{x.drug.substance}</option>
                                 )  
                             }
                         </Form.Control>
@@ -47,9 +47,10 @@ export default function CreateModal(props) {
                 ):(      
                     <Form.Group controlId="drugs"> 
                         <Form.Label>Drugs</Form.Label>
-                        <Form.Control as="select" multiple onChange={props.AddSelectedDrugs} name="drugs_id">   
-                            {props.drugs.data.map((x)=>
-                                <option key={x.id} value={x.id}>{x.name}</option>
+                        <Form.Control as="select" multiple onChange={props.AddSelectedLeaflets} name="drugs_id">   
+                            {props.leaflets.data.map((x)=>
+                            
+                                <option key={x.id} value={x.id}>{x.drug.substance}</option>
                                 )  
                             }
                         </Form.Control>

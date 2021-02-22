@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Table } from "react-bootstrap";
+import { Table, Badge } from "react-bootstrap";
 import { BsEyeSlash, BsEye } from "react-icons/bs";
 
 export default function TableOfItems(props) {

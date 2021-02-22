@@ -25,9 +25,9 @@ class DiseaseController extends Controller
         $user = auth()->user();
         $role = $user->roles()->first()->name;
         if($role ==="admin"){
-            return DiseaseResource::collection(Disease::with('drugs')->get());
+            return DiseaseResource::collection(Disease::with('leaflets')->get());
         }else{
-            return DiseaseResource::collection($user->diseases()->with('drugs')->get());
+            return DiseaseResource::collection($user->diseases()->with('leaflets')->get());
         }
     }
     /**
@@ -42,16 +42,16 @@ class DiseaseController extends Controller
         $role = $user->roles()->first()->name;
         if($role ==="admin"){
             if($name){
-                return DiseaseResource::collection(Disease::with('drugs')->where('diseases.name', 'LIKE', "%$name%")->paginate(5));
+                return DiseaseResource::collection(Disease::with('leaflets')->where('diseases.name', 'LIKE', "%$name%")->paginate(5));
             }else{
-                return DiseaseResource::collection(Disease::with('drugs')->paginate(5));
+                return DiseaseResource::collection(Disease::with('leaflets')->paginate(5));
             }
             
         }else{
             if($name){                
-                return DiseaseResource::collection($user->diseases()->with('drugs')->where('diseases.name', 'LIKE', "%$name%")->paginate(5));
+                return DiseaseResource::collection($user->diseases()->with('leaflets')->where('diseases.name', 'LIKE', "%$name%")->paginate(5));
             }else{
-                return DiseaseResource::collection($user->diseases()->with('drugs')->paginate(5));
+                return DiseaseResource::collection($user->diseases()->with('leaflets')->paginate(5));
             }            
         }
     }
@@ -67,12 +67,12 @@ class DiseaseController extends Controller
         $user = auth()->user();
         try{
             $disease = Disease::create(array_merge($request->all(), ['user_id' => $user->id]));
-            $disease->drugs()->attach(json_decode($request->drugs));
+            $disease->leaflets()->attach(json_decode($request->drugs));
         }catch (QueryException $ex) { // Anything that went wrong
             abort(500, $ex->getMessage());
         }
         return new DiseaseResource(
-            $user->diseases()->with('drugs')->findOrFail($disease->id)
+            $user->diseases()->with('leaflets')->findOrFail($disease->id)
         );
     }
 
@@ -84,10 +84,10 @@ class DiseaseController extends Controller
         $user = auth()->user();
         $role = $user->roles()->first()->name;
         if($role ==="admin"){
-            $disease = Disease::with('drugs')->findOrFail($id);
+            $disease = Disease::with('leaflets')->findOrFail($id);
             return new DiseaseResource($disease);
         }else{ 
-            return new DiseaseResource($user->diseases()->with('drugs')->findOrFail($id));
+            return new DiseaseResource($user->diseases()->with('leaflets')->findOrFail($id));
         }
     }
 
@@ -109,12 +109,12 @@ class DiseaseController extends Controller
         }
         try{         
             $disease->update($request->only(['name', 'description', 'symptoms']));
-            $disease->drugs()->sync(json_decode($request->drugs));
+            $disease->leaflets()->sync(json_decode($request->drugs));
         }
         catch (QueryException $ex) { // Anything that went wrong
             abort(500, "Could not update Disease");
         }
-        return new DiseaseResource($disease->with('drugs')->findOrFail($id));
+        return new DiseaseResource($disease->with('leaflets')->findOrFail($id));
     }
 
     /**
@@ -126,12 +126,13 @@ class DiseaseController extends Controller
     public function destroy(Request $request, $id)
     {
         $user = auth()->user();
+        $role = $user->roles()->first()->name;
         if($role ==="admin"){
             $disease = Disease::findOrFail($id);
         }else{
             $disease = $user->diseases()->findOrFail($id);
         }
-        $disease->drugs()->detach();
+        $disease->leaflets()->detach();
         $disease->delete();
 
         return response()->noContent();

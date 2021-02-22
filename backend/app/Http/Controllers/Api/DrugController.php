@@ -27,13 +27,9 @@ class DrugController extends ApiController
      */
     public function index(Request $request)
     {
-        $user = auth()->user();
-        $role = $user->roles()->first()->name;
-        if($role =="admin"){
-            return DrugResource::collection(Drug::with('diseases')->get());
-        }else{
-            return DrugResource::collection($user->drugs()->with('diseases')->get());
-        }        
+        $user = auth()->user();      
+        return DrugResource::collection(Drug::with('diseases')->get());
+               
     }
      /**
      * Display a listing of the resource.

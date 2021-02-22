@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Disease as DiseaseResource;
 
-class Drug extends JsonResource
+class Leaflet extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,20 +17,12 @@ class Drug extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'substance' => $this->substance,
-            'substance_en' => $this->substance_en,
             'indication' => $this->indication,
             'contraindication' => $this->contraindication,
             'reaction' => $this->reaction,
             'use' => $this->use,
-            'atc' => $this->ATC,
-            'package' => $this->package,
-            'strength' => $this->strength,
-            'form' => $this->form,
-            'package_description' => $this->package_description,
-            'updated_at' => $this->updated_at,
             'diseases' => DiseaseResource::collection($this->whenLoaded('diseases')),
+            'drug'=>$this->drug
         ];
     }
 }

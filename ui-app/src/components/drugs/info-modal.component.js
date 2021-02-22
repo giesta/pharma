@@ -10,33 +10,42 @@ export default function InfoModal(props) {
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="name">
                         <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.drug.name} disabled name="name"/>
+                        
+                        {props.leaflet.drug.name.split(';').map(item=>
+                        item.toUpperCase().includes("IŠREGISTRUOTAS")?
+                        <Badge pill variant="warning">{item.split('(')[0]}</Badge>
+                            :<Badge pill variant="success">{item.split('(')[0]}</Badge>
+                            )}
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Substance</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.drug.substance} disabled name="substance"/>
+                        {props.leaflet.drug.substance.split(/\/|\(|\)/).map(item=>
+                        
+                        <Badge pill variant="primary">{item}</Badge>
+                            
+                            )}
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Indication</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.drug.indication} disabled name="indication"/>
+                        <Form.Control type="text" placeholder="" required value={props.leaflet.indication} disabled name="indication"/>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Contraindication</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.drug.contraindication} disabled name="contraindication"/>
+                        <Form.Control type="text" placeholder="" required value={props.leaflet.contraindication} disabled name="contraindication"/>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Adverse effect</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.drug.reaction} disabled name="reaction"/>
+                        <Form.Control type="text" placeholder="" required value={props.leaflet.reaction} disabled name="reaction"/>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Use</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.drug.use} disabled name="use"/>
+                        <Form.Control type="text" placeholder="" required value={props.leaflet.use} disabled name="use"/>
                     </Form.Group>
-                        {(props.drug.diseases!==null && props.drug.diseases!==undefined)&&(<Form.Group controlId="exampleForm.ControlInput1">
+                        {(props.leaflet.diseases!==null && props.leaflet.diseases!==undefined)&&(<Form.Group controlId="exampleForm.ControlInput1">
                             <Form.Label>Diseases</Form.Label>
-                            {props.drug.diseases.map((x)=>
+                            {props.leaflet.diseases.map((x)=>
                                 <Badge pill variant="dark">
                                     {x.name}
                                     </Badge>

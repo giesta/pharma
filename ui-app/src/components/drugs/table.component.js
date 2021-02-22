@@ -16,12 +16,12 @@ export default function TableOfItems(props) {
                 </tr>
             </thead>
             <tbody>
-            {props.drugs.data.map((field, counter)=>
+            {props.leaflets.map((field, counter)=>
                 <tr key = {field.id}>
                     
                     <td>{handleIncrement(++counter)}</td>
-                    <td>{field.name}</td>
-                    <td>{field.substance}</td>
+                    <td>{field.drug.name}</td>
+                    <td>{field.drug.substance}</td>
                     <td>{field.indication}</td>
                     <td>{field.contraindication}</td>
                     <td>{field.reaction}</td>

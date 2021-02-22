@@ -11,10 +11,12 @@ use App\Models\Drug;
 use App\Http\Resources\Drug as DrugResource;
 use App\Http\Requests\TokenRequest;
 use App\Http\Requests\StoreDrugRequest;
+use App\Http\Requests\JsonImportRequest;
 use Illuminate\Database\Eloquent\ErrorException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
 use \Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class DrugController extends ApiController
 {
@@ -73,9 +75,20 @@ class DrugController extends ApiController
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreDrugRequest $request)
+    public function store(JsonImportRequest  $request)
     {
         $user = auth()->user();
+
+        //$drug = Drug::create(array_merge($request->all(), ['user_id' => $user->id]));
+        //ini_set('memory_limit','1024M');
+        $drugsArr = json_decode($request->drugs);
+        $count = $this->makeDrugsArray($drugsArr, $user);
+        return response()->json([
+            'success' => true,
+            'data' => $count,
+        ], Response::HTTP_OK);
+        
+        /*
         try{
             $drug = Drug::create(array_merge($request->all(), ['user_id' => $user->id]));  
             $drug->diseases()->attach(json_decode($request->diseases));      
@@ -84,7 +97,7 @@ class DrugController extends ApiController
         }
         return new DrugResource(
             $user->drugs()->with('diseases')->findOrFail($drug->id)
-        );
+        );*/
     }
 
     /**
@@ -152,5 +165,35 @@ class DrugController extends ApiController
         $drug->delete();
         return response()->noContent();        
     }
+    private function makeDrugsArray($drugsArr, $user){
 
+        $data = [];
+        for ($i = 0; $i < count($drugsArr)-1; $i++)
+        {
+            if(isset($data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}])){
+                $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['name'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['name']),strtolower($drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'})) === false) ? $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['name'].";".$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}."(".$drugsArr[$i]->data->{'Stadija'}.")" : $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['name'];
+                $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['strength'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['strength']),strtolower($drugsArr[$i]->data->{'Stiprumas'})) === false) ? $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['strength'].";".$drugsArr[$i]->data->{'Stiprumas'} : $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['strength'];
+                $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['form'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['form']),strtolower($drugsArr[$i]->data->{'Farmacinė forma'})) === false) ? $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['form'].";".$drugsArr[$i]->data->{'Farmacinė forma'} : $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['form'];
+                $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package']),strtolower($drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'})) === false) ? $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package'].";".$drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'} : $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package'];
+                $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package_description'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package_description']),strtolower($drugsArr[$i]->data->{'(pakuotės) Aprašymas'})) === false) ? $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package_description'].";".$drugsArr[$i]->data->{'(pakuotės) Aprašymas'} : $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package_description'];
+            }else{
+                $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}] = [
+                'substance' => $drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'},
+                'substance_en' => $drugsArr[$i]->data->{'Pavadinimas anglų kalba'},
+                'name' => $drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}."(".$drugsArr[$i]->data->{'Stadija'}.")",
+                'ATC' => $drugsArr[$i]->data->{'ATC kodas'},
+                'strength' => $drugsArr[$i]->data->{'Stiprumas'},
+                'form' => $drugsArr[$i]->data->{'Farmacinė forma'},
+                'package' => $drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'},
+                'package_description' => $drugsArr[$i]->data->{'(pakuotės) Aprašymas'},
+                'user_id' => $user->id
+                ];
+            }            
+        }
+        $values = array_values( $data );
+        //$newArray = array_combine( $newKeys, $values );
+        DB::table('drugs')->insert($values);
+        
+        return array_splice($values,-100);
+    }
 }

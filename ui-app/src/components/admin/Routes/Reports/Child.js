@@ -1,4 +1,5 @@
 import React from "react";
+import DrugsList from "../../../drugs/drugs-list.component";
 
 class Child extends React.Component {
   render() {
@@ -8,11 +9,14 @@ class Child extends React.Component {
           <div className="kanban__nav-wrapper">
             <div className="kanban__nav-name">
               <div className="kanban-name">Studio Reports</div>
+
             </div>
           </div>
         </section>
         <section className="kanban__main">
-          <div className="kanban__main-wrapper" />
+          <div>
+          <DrugsList/>
+          </div>
         </section>
       </React.Fragment>
     );

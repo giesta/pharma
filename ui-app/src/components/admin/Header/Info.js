@@ -15,6 +15,7 @@ function  Info() {
           <Navbar brand='React-Bootstrap'>
           <Nav>
             <DropdownButton
+              menuAlign={{ lg: 'left' }}
               title={
                 <span><img src={require("../../../assets/img/thompson.jpg").default} /></span>
               }

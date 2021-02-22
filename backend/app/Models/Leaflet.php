@@ -5,14 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Drug extends Model
+class Leaflet extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 'substance', 'substance_en', 'ATC', 'strength', 'form', 'package', 'package_description', 'indication', 'contraindication', 'reaction', 'use','user_id',
+        'indication', 'contraindication', 'reaction', 'use','user_id', 'drug_id', 'link',
     ];
     public function diseases()
     {
         return $this->belongsToMany(Disease::class);
+    }
+    public function drug()
+    {
+        return $this->belongsTo(Drug::class);
     }
 }

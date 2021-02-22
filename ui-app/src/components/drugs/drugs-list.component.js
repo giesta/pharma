@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import AuthService from "../../services/auth.service"; 
 import DrugsDataService from "../../services/drugs/list.service";
+import DrugsLeafletsDataService from "../../services/drugs/leaflets.serevice";
 import DiseasesDataService from "../../services/diseases/list.service";
 import DrugDelete from "../delete-modal.component";
 import DrugInfo from "./info-modal.component";
@@ -15,13 +16,23 @@ export default function DrugsList() {
 
   const initialDrugState = {  
     id: null,  
-    name: "",
-    substance: "",
+    name: [],
+    substance: [],
+    substance_en: "",
+    ATC:"",
+    form:"",
+    package:"",
+    package_description:"",
+  };
+
+  const initialLeafletState = {  
+    id: null,
     indication: "",
     contraindication: "",
     reaction: "",
     use: "",
-    diseases: []
+    diseases: [],
+    drug:initialDrugState
   };
 
   const columns = [{  
@@ -55,6 +66,8 @@ export default function DrugsList() {
  }];
 
   const [drug, setDrug] = React.useState(initialDrugState);
+  const [leaflet, setLeaflet] = React.useState(initialLeafletState);
+
   const [noData, setNoData] = React.useState('');
   const [error, setError] = React.useState(false);
   const [diseases, setDiseases] = React.useState({
@@ -80,8 +93,8 @@ export default function DrugsList() {
   };
 
   const refreshList = () => {
-    retrieveDrugs();
-    setDrug(initialDrugState);
+    //retrieveDrugsLeaflets();
+    setLeaflet(initialLeafletState);
     setPage(1);
   };
 
@@ -96,55 +109,100 @@ export default function DrugsList() {
     if (form.checkValidity() === false) {      
       event.stopPropagation();
     }else{
-      if(drug.id===null){
-        saveDrug();
+      if(leaflet.id===null||leaflet.id===undefined){
+        saveLeaflet();        
       }else{
         handleInputChange(event); 
-        updateDrug();
+        updateLeaflet();
       } 
     }
     setValidated(true);       
   };
 
   const handleClose = () =>{
-    newDrug();
+    newLeaflet();
     setShow(false);
     setValidated(false);
   };
   const handleCloseConfirm = () => setConfirm(false);
   const handleCloseInfo = () => {
-    newDrug();
+    newLeaflet();
     setInfo(false);
   };
   const [drugs, setDrugs] = React.useState({
     data: [],
   });
+  const [leaflets, setLeaflets] = React.useState([]);
 
   const handleInputChange = event => {
     const { name, value } = event.target;
-    setDrug({ ...drug, [name]: value });
+    setLeaflet({ ...leaflet, [name]: value });
+  };
+
+  const handleSelectChange = event => {
+    if(event===null){
+      setLeaflet({
+        drug:initialDrugState,
+        id:leaflet.id
+      });
+    }else{
+      var selectedDrug = event.value;
+      console.log(selectedDrug);
+      setDrug({
+        id: selectedDrug.id,
+        name: selectedDrug.name,
+        substance: selectedDrug.substance,
+        indication: selectedDrug.indication,
+        contraindication: selectedDrug.contraindication,
+        reaction: selectedDrug.reaction,
+        use: selectedDrug.use,
+        diseases: selectedDrug.diseases,
+      });
+      setLeaflet({
+        drug:selectedDrug,
+        id:leaflet.id
+      });
+    }
+    
   };
   
-  const retrieveDrugs = (pageNumber = 1) => {
-    DrugsDataService.findByTitle(pageNumber, searchTitle)
+  const retrieveDrugsLeaflets = (pageNumber = 1) => {
+    DrugsLeafletsDataService.findByTitle(pageNumber, searchTitle)
       .then(response => {  
+        console.log(response.data.data);
         const { current_page, per_page, total } = response.data.meta;      
         if(response.data.data.length !== 0){
-          setDrugs({...drugs, data: response.data.data});
+          setLeaflets(response.data.data);
           setPageSize(per_page);
           setPage(current_page);     
           setTotal(total);     
         }else{
           setNoData("No");
         }  
-        retrieveDiseases();     
+        retrieveDiseases();
+        retrieveDrugs();     
       })
       .catch(e => {
         setError(true);
         console.log(e);
       });
   };
-  useEffect(retrieveDrugs, []);
+  const retrieveDrugs = () => {
+    DrugsDataService.getAll()
+      .then(response => {  
+        console.log(response.data.data);    
+        if(response.data.data.length !== 0){
+          setDrugs({...drugs, data: response.data.data});    
+        }else{
+          setNoData("No");
+        }    
+      })
+      .catch(e => {
+        setError(true);
+        console.log(e);
+      });
+  };
+  useEffect(retrieveDrugsLeaflets, []);
   const retrieveDiseases = () => {
     DiseasesDataService.getAll()
       .then(response => {
@@ -163,11 +221,14 @@ export default function DrugsList() {
     return (
       <td className="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
-              function(event){ setDrug(row); setInfo(true)}}>
+              function(event){ setLeaflet(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
-              function(event){ setDrug(row); setShow(true)}}>
+              function(event){ 
+                console.log(row);
+                setLeaflet(row); 
+                setShow(true)}}>
                 <BsPen></BsPen>
             </button>
             <button type="button" className="btn btn-outline-danger btn-sm ml-2 ts-buttom" size="sm"onClick={
@@ -179,22 +240,28 @@ export default function DrugsList() {
 };
 
 const deleteItemFromState = (id) => {
-  const updatedItems = drugs.data.filter(x=>x.id!==id)
-  setDrugs({ data: updatedItems })
+  const updatedItems = leaflets.filter(x=>x.id!==id)
+  setLeaflets(updatedItems)
 }
-const saveDrug = () => {
+const saveLeaflet = () => {
+  
   var data = {
     token: AuthService.getCurrentUser().access_token,
-    name: drug.name,
-    substance: drug.substance,
-    indication: drug.indication,
-    contraindication: drug.contraindication,
-    reaction: drug.reaction,
-    use: drug.use,
-    diseases: JSON.stringify(selectedDiseases)
+    indication: leaflet.indication,
+    contraindication: leaflet.contraindication,
+    reaction: leaflet.reaction,
+    use: leaflet.use,
+    diseases: JSON.stringify(selectedDiseases),
+    drug_id: leaflet.drug.id
   };
-  DrugsDataService.create(data)
-    .then(() => {
+  DrugsLeafletsDataService.create(data)
+    .then((response) => {
+      const { current_page, per_page, total } = response.data.meta;
+      if(response.data.data.length !== 0){
+        setLeaflets(response.data.data);
+        setPageSize(per_page);     
+        setTotal(total); 
+      }
       refreshList();
       handleClose();
     })
@@ -202,44 +269,48 @@ const saveDrug = () => {
       setError(true);
       console.log(e);
     });
+    console.log("-----Veikia saugojimas-----");
+    console.log(leaflet);
 };
 
-const updateDrug = () => {
+const updateLeaflet = () => {
+  
   var data = {
-    id: drug.id,
-    name: drug.name,
-    substance: drug.substance,
-    indication: drug.indication,
-    contraindication: drug.contraindication,
-    reaction: drug.reaction,
-    use: drug.use,
-    diseases: JSON.stringify(selectedDiseases)
+    id: leaflet.id,
+    indication: leaflet.indication,
+    contraindication: leaflet.contraindication,
+    reaction: leaflet.reaction,
+    use: leaflet.use,
+    diseases: JSON.stringify(selectedDiseases),
+    drug_id: leaflet.drug.id
   };
-  DrugsDataService.update(data.id, data)
+  DrugsLeafletsDataService.update(data.id, data)
     .then(response => {
-      setDrug({
+      setLeaflet({
         id: response.data.data.id,
-        name: response.data.data.name,
-        substance: response.data.data.substance,
         indication: response.data.data.indication,
         contraindication: response.data.data.contraindication,
         reaction: response.data.data.reaction,
         use: response.data.data.use,
         diseases: response.data.data.diseases,
+        drug:response.data.data.drug
       });
       handleClose();
-      const updatedItems = drugs.data.filter(x=>x.id!==drug.id)
+      console.log(leaflet);
+      const updatedItems = leaflets.filter(x=>x.id!==leaflet.id)
       updatedItems.push(response.data.data);
-      setDrugs({...drugs, data: updatedItems});
+      setLeaflets(updatedItems);
     })
     .catch(e => {
       setError(true);
       console.log(e);
     });
+    console.log("-----Veikia atnaujinimas-----");
+  console.log(leaflet);
 };
 
 const deleteItem = (id) => {
-  DrugsDataService.remove(id)
+  DrugsLeafletsDataService.remove(id)
     .then(() => {
       deleteItemFromState(id);
       handleCloseConfirm();
@@ -250,8 +321,8 @@ const deleteItem = (id) => {
     });
 };
 
-const newDrug = () => {
-  setDrug(initialDrugState);
+const newLeaflet = () => {
+  setLeaflet(initialLeafletState);
 };
 
 const findByTitle = () => {
@@ -310,20 +381,20 @@ const findByTitle = () => {
       </div> 
     </div>       
       <div className="container">  
-      <DrugsTable key={"drugs"} columns ={columns} drugs = {drugs} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DrugsTable>
+      <DrugsTable key={"drugs"} columns ={columns} leaflets = {leaflets} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DrugsTable>
 
-      { show && <DrugCreateUpdate show ={show} handleClose={handleClose} drug={drug} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} diseases={diseases} AddSelectedDiseases={AddSelectedDiseases}></DrugCreateUpdate> }
+      { show && <DrugCreateUpdate show ={show} handleClose={handleClose} leaflet={leaflet} drug={drug} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} diseases={diseases} AddSelectedDiseases={AddSelectedDiseases} drugsList = {drugs} handleSelectChange={handleSelectChange}></DrugCreateUpdate> }
 
       { confirm &&<DrugDelete id={id} name={"Drug"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DrugDelete> }
 
-      { info &&<DrugInfo info = {info} drug = {drug} handleCloseInfo={handleCloseInfo}></DrugInfo> }  
+      { info &&<DrugInfo info = {info} leaflet = {leaflet} handleCloseInfo={handleCloseInfo}></DrugInfo> }  
       <div>
         <Pagination 
         className="my-3"
         activePage={page} 
         totalItemsCount={total}
         itemsCountPerPage={pageSize}
-        onChange={(pageNumber)=>retrieveDrugs(pageNumber)}
+        onChange={(pageNumber)=>retrieveDrugsLeaflets(pageNumber)}
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"

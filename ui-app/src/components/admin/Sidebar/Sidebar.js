@@ -4,6 +4,7 @@ import Boards from "./Boards.js";
 import Reports from "./Reports.js";
 import Schedule from "./Schedule.js";
 import Settings from "./Settings.js";
+import Medication from "./Scraping.js";
 
 class Sidebar extends React.Component {
   render() {
@@ -15,6 +16,7 @@ class Sidebar extends React.Component {
           <Schedule />
           <Reports />
           <Settings />
+          <Medication />
         </div>
         
       </section>

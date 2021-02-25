@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import diseasesDataService from "../../services/diseases/list.service";
-import DrugsDataService from "../../services/drugs/list.service";
+import SymptomsDataService from "../../services/diseases/symptoms.service";
 import DrugsLeafletsDataService from "../../services/drugs/leaflets.serevice";
 import DiseaseDelete from "../delete-modal.component";
 import DiseaseCreateUpdate from "./create-update-modal.component";
@@ -45,6 +45,7 @@ export default function DiseasesList() {
   const [leaflets, setLeaflets] = React.useState({
     data: [],
   });
+  const [symptoms, setSymptoms] = React.useState([]);
 
   const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
@@ -113,6 +114,18 @@ export default function DiseasesList() {
     setDisease({ ...disease,  [name]: value});   
   };
   
+  const retrieveSymptoms = () => {
+    SymptomsDataService.getAll()
+      .then(response => {        
+        if(response.data.data.length !== 0){
+          setSymptoms(response.data.data);
+          console.log(symptoms);
+        }        
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
 
   const retrieveDrugsLeaflets = () => {
     DrugsLeafletsDataService.getAll()
@@ -140,7 +153,7 @@ export default function DiseasesList() {
         }
         console.log("some");
         retrieveDrugsLeaflets(); 
-                
+        retrieveSymptoms();        
       })
       .catch(e => {
         setError(true);
@@ -287,7 +300,7 @@ const findByTitle = () => {
       <div className="container"> 
       {console.log(leaflets)}
       <DiseasesTable columns ={columns} diseases={diseases} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiseasesTable>
-      { show && <DiseaseCreateUpdate show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} leaflets={leaflets} AddSelectedLeaflets={AddSelectedLeaflets}></DiseaseCreateUpdate> }
+      { show && <DiseaseCreateUpdate symptoms={symptoms} show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} leaflets={leaflets} AddSelectedLeaflets={AddSelectedLeaflets}></DiseaseCreateUpdate> }
       { confirm && <DiseaseDelete id={id} name={"Disease"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiseaseDelete> }
       { info && <DiseaseInfo info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }
       <div>

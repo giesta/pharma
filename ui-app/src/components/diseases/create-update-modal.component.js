@@ -1,8 +1,13 @@
 import React from 'react';
 
 import { Modal, Button, Form } from "react-bootstrap";
+import Select from 'react-select';
 
 export default function CreateModal(props) {
+    const options = props.symptoms.map(x=>makeOptions(x));
+      function makeOptions(field){
+        return { value: field, label: field.name };
+      } 
     return (
         <Modal show={props.show} onHide={props.handleClose}>
             <Modal.Header closeButton>
@@ -55,7 +60,15 @@ export default function CreateModal(props) {
                             }
                         </Form.Control>
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>)} 
+                    </Form.Group>)}
+                    <Select
+                    name="symptoms"
+                    options={options}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    isClearable="true"
+                    isMulti
+                     /> 
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={props.handleClose}>

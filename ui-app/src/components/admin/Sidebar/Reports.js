@@ -7,7 +7,7 @@ class Reports extends React.Component {
       <NavLink to="/reports" activeClassName="active-area">
         <div className="reports-area">
           <i className="material-icons">assessment</i>
-          <span>Reports</span>
+          <span>Drugs</span>
         </div>
       </NavLink>
     );

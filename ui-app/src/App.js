@@ -29,6 +29,7 @@ import Manage from "./components/admin/Routes/Manage/Manage.js";
 import Reports from "./components/admin/Routes/Reports/Reports.js";
 import Schedule from "./components/admin/Routes/Schedule/Schedule.js";
 import Settings from "./components/admin/Routes/Settings/Settings.js";
+import Scraping from "./components/admin/Routes/Scraping/Scraping.js";
 
 class App extends Component {
   constructor(props) {
@@ -79,6 +80,7 @@ class App extends Component {
             <Route exact path="/schedule" component={Schedule} />
             <Route exact path="/reports" component={Reports} />
             <Route exact path="/settings" component={Settings} />
+            <Route exact path="/scraping" component={Scraping} />
             <Route exact path="/profile" component={Settings} />
             <Route exact path="/login" component={Login} />
           </Switch>

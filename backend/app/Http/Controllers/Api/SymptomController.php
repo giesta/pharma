@@ -14,12 +14,14 @@ class SymptomController extends Controller
     /**
      * Get all the symptoms
      */
-    public function index()
+    public function index(Request $request)
     {
-        
+        $user = auth()->user();
+        $name = $request->name;
+        $symptoms = Symptom::where('symptoms.name', 'LIKE', "%$name%")->limit(100)->get();
         return response()->json([
             'success' => true,
-            'data' => Symptom::all(),
+            'data' => $symptoms,
         ], Response::HTTP_OK);
     }
 

@@ -30,14 +30,15 @@ const removeAll = () => {
   return http.delete(`/symptoms`);
 };
 
-const findByTitle = (pageNumber, name) => {
-  return http.get(`/symptoms/list?page=${pageNumber}&&name=${name}`);
+const findByTitle = (name) => {
+  return http.get(`/symptoms/?name=${name}`);
 };
 
 const services = {
   getAll,
   create,
-  scrap
+  scrap,
+  findByTitle
 };
 
 export default services;

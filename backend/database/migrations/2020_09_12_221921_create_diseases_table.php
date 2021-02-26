@@ -17,7 +17,6 @@ class CreateDiseasesTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->string('symptoms');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
 

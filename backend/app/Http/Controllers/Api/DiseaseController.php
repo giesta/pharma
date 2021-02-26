@@ -68,6 +68,7 @@ class DiseaseController extends Controller
         try{
             $disease = Disease::create(array_merge($request->all(), ['user_id' => $user->id]));
             $disease->leaflets()->attach(json_decode($request->drugs));
+            $disease->symptoms()->attach(json_decode($request->symptoms));
         }catch (QueryException $ex) { // Anything that went wrong
             abort(500, $ex->getMessage());
         }

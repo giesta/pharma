@@ -1,13 +1,10 @@
 import React from 'react';
 
 import { Modal, Button, Form } from "react-bootstrap";
-import Select from 'react-select';
+import AsyncSelect from 'react-select/async';
 
 export default function CreateModal(props) {
-    const options = props.symptoms.map(x=>makeOptions(x));
-      function makeOptions(field){
-        return { value: field, label: field.name };
-      } 
+    
     return (
         <Modal show={props.show} onHide={props.handleClose}>
             <Modal.Header closeButton>
@@ -30,15 +27,7 @@ export default function CreateModal(props) {
                             Description is a required field.
                         </Form.Control.Feedback >
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>
-                    <Form.Group controlId="symptoms">
-                        <Form.Label>Symptoms</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.disease.symptoms} onChange={props.handleInputChange} name="symptoms"/>
-                        <Form.Control.Feedback type="invalid">
-                            Symptoms is a required field.
-                        </Form.Control.Feedback>
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>
+                    </Form.Group>                    
                 {(props.disease.drugs!==null && props.disease.drugs!==undefined)?(
                     <Form.Group controlId="drugs">
                         <Form.Label>Drugs</Form.Label>     
@@ -61,14 +50,21 @@ export default function CreateModal(props) {
                         </Form.Control>
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>)}
-                    <Select
+                    <Form.Group controlId="drugs"> 
+                    <Form.Label>Symptoms</Form.Label>
+                    <AsyncSelect
                     name="symptoms"
-                    options={options}
+                    //options={options}
                     className="basic-multi-select"
                     classNamePrefix="select"
                     isClearable="true"
                     isMulti
+                    cacheOptions
+                    defaultOptions
+                    loadOptions={props.loadOptions}
+                    onChange={props.handleSymptomsInputChange}
                      /> 
+                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={props.handleClose}>

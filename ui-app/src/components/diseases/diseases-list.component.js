@@ -17,7 +17,7 @@ export default function DiseasesList() {
     id: null,  
     name: "",
     description: "",
-    symptoms: "",
+    symptoms: [],
     drugs: []
   };
 
@@ -40,12 +40,14 @@ export default function DiseasesList() {
     editable: false 
   }];
 
+  const [options, setOptions] = React.useState([]);
   const [disease, setDisease] = React.useState(initialDiseaseState);
   const [noData, setNoData] = React.useState('');
   const [leaflets, setLeaflets] = React.useState({
     data: [],
   });
   const [symptoms, setSymptoms] = React.useState([]);
+  const [selectedSymptoms, setSelectedSymptoms] = React.useState([]);
 
   const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
@@ -113,6 +115,32 @@ export default function DiseasesList() {
     const { name, value } = event.target;
     setDisease({ ...disease,  [name]: value});   
   };
+
+  const loadOptions = (inputValue, callback) => {
+    SymptomsDataService.findByTitle(inputValue)
+      .then(response => {
+        if (response.data.data.length !== 0) {
+          console.log(response.data.data);
+          const result = response.data.data.map(x => makeOptions(x));          
+          callback(result);
+        }
+
+      })
+      .catch(e => {
+        setError(true);
+        console.log(e);
+      });
+  };
+function makeOptions(field){
+            return { value: field.id, label: field.name };
+          } 
+  
+  
+  const handleSymptomsInputChange = event =>
+    {
+      console.log(event);
+      setSelectedSymptoms(event.map(item=>item.value));
+    };
   
   const retrieveSymptoms = () => {
     SymptomsDataService.getAll()
@@ -144,6 +172,7 @@ export default function DiseasesList() {
       .then(response => {
         const { current_page, per_page, total } = response.data.meta;          
         if(response.data.data.length !== 0){
+          console.log(response.data.data);
           setDiseases({...diseases, data: response.data.data}); 
           setPageSize(per_page);
           setPage(current_page);     
@@ -151,7 +180,6 @@ export default function DiseasesList() {
         }else{
           setNoData("No");
         }
-        console.log("some");
         retrieveDrugsLeaflets(); 
         retrieveSymptoms();        
       })
@@ -189,9 +217,10 @@ const saveDisease = () => {
   var data = {
     name: disease.name,
     description: disease.description,
-    symptoms: disease.symptoms,
-    drugs: JSON.stringify(selectedLeaflets)
+    drugs: JSON.stringify(selectedLeaflets),
+    symptoms: JSON.stringify(selectedSymptoms),
   };
+  console.log(data);
   diseasesDataService.create(data)
     .then(() => {
       refreshList();
@@ -297,10 +326,9 @@ const findByTitle = () => {
       </div> 
     </div>
              
-      <div className="container"> 
-      {console.log(leaflets)}
+      <div className="container">
       <DiseasesTable columns ={columns} diseases={diseases} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiseasesTable>
-      { show && <DiseaseCreateUpdate symptoms={symptoms} show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} leaflets={leaflets} AddSelectedLeaflets={AddSelectedLeaflets}></DiseaseCreateUpdate> }
+      { show && <DiseaseCreateUpdate loadOptions={loadOptions} symptoms={symptoms} show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} leaflets={leaflets} AddSelectedLeaflets={AddSelectedLeaflets} handleSymptomsInputChange={handleSymptomsInputChange}></DiseaseCreateUpdate> }
       { confirm && <DiseaseDelete id={id} name={"Disease"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiseaseDelete> }
       { info && <DiseaseInfo info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }
       <div>

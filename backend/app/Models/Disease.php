@@ -9,7 +9,7 @@ class Disease extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 'description', 'symptoms', 'treatment_id', 'user_id',
+        'name', 'description', 'treatment_id', 'user_id',
     ];
 
     public function treatments(){
@@ -25,6 +25,6 @@ class Disease extends Model
     }
     public function symptoms()
     {
-        return $this->belongsToMany(Role::class);
+        return $this->belongsToMany(Symptom::class);
     }
 }

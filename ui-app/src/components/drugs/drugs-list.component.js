@@ -326,11 +326,12 @@ const newLeaflet = () => {
 };
 
 const findByTitle = () => {
-  DrugsDataService.findByTitle(1, searchTitle)
+  DrugsLeafletsDataService.findByTitle(1, searchTitle)
     .then(response => {
       const { current_page, per_page, total } = response.data.meta;          
         if(response.data.data.length !== 0){
-          setDrugs({...drugs, data: response.data.data}); 
+          console.log(response.data.data);
+          setLeaflets(response.data.data);
           setPageSize(per_page);
           setPage(current_page);     
           setTotal(total);          

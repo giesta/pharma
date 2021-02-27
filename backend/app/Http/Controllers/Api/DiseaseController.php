@@ -109,11 +109,12 @@ class DiseaseController extends Controller
             $disease = $user->diseases()->findOrFail($id);
         }
         try{         
-            $disease->update($request->only(['name', 'description', 'symptoms']));
+            $disease->update($request->only(['name', 'description']));
             $disease->leaflets()->sync(json_decode($request->drugs));
+            $disease->symptoms()->sync(json_decode($request->symptoms));
         }
         catch (QueryException $ex) { // Anything that went wrong
-            abort(500, "Could not update Disease");
+            abort(500, $ex->getMessage());
         }
         return new DiseaseResource($disease->with('leaflets')->findOrFail($id));
     }
@@ -134,6 +135,7 @@ class DiseaseController extends Controller
             $disease = $user->diseases()->findOrFail($id);
         }
         $disease->leaflets()->detach();
+        $disease->symptoms()->detach();
         $disease->delete();
 
         return response()->noContent();

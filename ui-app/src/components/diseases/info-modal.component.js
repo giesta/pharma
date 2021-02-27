@@ -20,13 +20,15 @@ export default function InfoModal(props) {
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Symptoms</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.disease.symptoms} disabled name="symptoms"/>
+                        {props.disease.symptoms.map(item=>
+                           <Badge pill variant="dark"> {item.name}</Badge>
+                            )}
                     </Form.Group> 
                     {(props.disease.drugs!==null && props.disease.drugs!==undefined)&&(<Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Drugs</Form.Label>
                             {props.disease.drugs.map((x)=>
                                 <Badge pill variant="dark">
-                                    {x.name}
+                                    {x.drug.substance}
                                 </Badge>
                                 )  
                             } 

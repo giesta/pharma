@@ -106,14 +106,29 @@ export default function DiseasesList() {
     data: [],
   });
 
-  const AddSelectedLeaflets = event => {
+  /*const AddSelectedLeaflets = event => {
     
     const selectedLeaflets = [...event.target.selectedOptions].map(o => o.value)
     setSelectedLeaflets(selectedLeaflets);console.log(selectedLeaflets);
-  };
+  };*/
   const handleInputChange = event => {
     const { name, value } = event.target;
     setDisease({ ...disease,  [name]: value});   
+  };
+
+  const loadDrugsOptions = (inputValue, callback) => {    
+      DrugsLeafletsDataService.findBySubstance(inputValue)
+        .then(response => {        
+          if(response.data.data.length !== 0){
+            setLeaflets(response.data.data);
+            console.log(response.data.data);
+            const result = response.data.data.map(x => makeOptions(x));          
+           callback(result);
+          }        
+        })
+        .catch(e => {
+          console.log(e);
+        });
   };
 
   const loadOptions = (inputValue, callback) => {
@@ -132,14 +147,25 @@ export default function DiseasesList() {
       });
   };
 function makeOptions(field){
-            return { value: field.id, label: field.name };
-          } 
+  if(field.drug === undefined){
+    return { value: field.id, label: field.name };
+  }else{
+    return { value: field.id, label: field.drug.substance };
+  }
+  
+} 
   
   
   const handleSymptomsInputChange = event =>
     {
-      console.log(event);
-      setSelectedSymptoms(event.map(item=>item.value));
+      const arr = event.map(item=>item.value);
+      setSelectedSymptoms(arr);
+    };
+
+    const AddSelectedLeaflets = event =>
+    {
+      const arr = event.map(item=>item.value);
+      setSelectedLeaflets(arr);
     };
   
   const retrieveSymptoms = () => {
@@ -198,7 +224,7 @@ function makeOptions(field){
                 <BsInfoCircle></BsInfoCircle>
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
-              function(event){ setDisease(row); setShow(true)}}>
+              function(event){ setDisease(row); setShow(true);setSelectedSymptoms(row.symptoms.map(item=>item.id))}}>
                 <BsPen></BsPen>
             </button>
             <button type="button" className="btn btn-outline-danger btn-sm ml-2 ts-buttom" size="sm"onClick={
@@ -233,11 +259,12 @@ const saveDisease = () => {
 };
 
 const updateDisease = () => {
+  console.log(selectedSymptoms);
   var data = {
     id: disease.id,
     name: disease.name,
     description: disease.description,
-    symptoms: disease.symptoms,
+    symptoms: JSON.stringify(selectedSymptoms),
     drugs: JSON.stringify(selectedLeaflets)
   };
   diseasesDataService.update(data.id, data)
@@ -328,7 +355,7 @@ const findByTitle = () => {
              
       <div className="container">
       <DiseasesTable columns ={columns} diseases={diseases} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiseasesTable>
-      { show && <DiseaseCreateUpdate loadOptions={loadOptions} symptoms={symptoms} show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} leaflets={leaflets} AddSelectedLeaflets={AddSelectedLeaflets} handleSymptomsInputChange={handleSymptomsInputChange}></DiseaseCreateUpdate> }
+      { show && <DiseaseCreateUpdate loadDrugsOptions={loadDrugsOptions} loadOptions={loadOptions} show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} AddSelectedLeaflets={AddSelectedLeaflets} handleSymptomsInputChange={handleSymptomsInputChange}></DiseaseCreateUpdate> }
       { confirm && <DiseaseDelete id={id} name={"Disease"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiseaseDelete> }
       { info && <DiseaseInfo info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }
       <div>

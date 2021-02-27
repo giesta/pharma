@@ -28,29 +28,28 @@ export default function CreateModal(props) {
                         </Form.Control.Feedback >
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>                    
-                {(props.disease.drugs!==null && props.disease.drugs!==undefined)?(
+                {
                     <Form.Group controlId="drugs">
                         <Form.Label>Drugs</Form.Label>     
-                        <Form.Control as="select" multiple defaultValue={props.disease.drugs.map(item=>item.id)} onChange={props.AddSelectedLeaflets} name="drugs_id"> 
-                            {props.leaflets.data.map((x)=>
-                                <option key={x.id} value={x.id}>{x.drug.substance}</option>
-                                )  
-                            }
-                        </Form.Control>
+                        <AsyncSelect
+                    name="drugs"
+                    //options={options}
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    isClearable="true"
+                    isMulti
+                    cacheOptions
+                    defaultOptions
+                    loadOptions={props.loadDrugsOptions}
+                    onChange={props.AddSelectedLeaflets}
+                    defaultValue={props.disease.drugs!==null?(props.disease.drugs.map(item=>
+                        ({value: item.id, label: item.drug.substance})
+                    
+                        )):('')}
+                     />
                     </Form.Group>
-                ):(      
-                    <Form.Group controlId="drugs"> 
-                        <Form.Label>Drugs</Form.Label>
-                        <Form.Control as="select" multiple onChange={props.AddSelectedLeaflets} name="drugs_id">   
-                            {props.leaflets.data.map((x)=>
-                            
-                                <option key={x.id} value={x.id}>{x.drug.substance}</option>
-                                )  
-                            }
-                        </Form.Control>
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>)}
-                    <Form.Group controlId="drugs"> 
+                }
+                    <Form.Group controlId="symptoms"> 
                     <Form.Label>Symptoms</Form.Label>
                     <AsyncSelect
                     name="symptoms"
@@ -63,6 +62,10 @@ export default function CreateModal(props) {
                     defaultOptions
                     loadOptions={props.loadOptions}
                     onChange={props.handleSymptomsInputChange}
+                    defaultValue={props.disease.symptoms!==null?(props.disease.symptoms.map(item=>
+                        ({value: item.id, label: item.name})
+                    
+                        )):('')}
                      /> 
                      </Form.Group>
                 </Modal.Body>

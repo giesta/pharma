@@ -6,6 +6,7 @@ use App\Models\Leaflet;
 use Illuminate\Http\Request;
 use App\Http\Resources\Leaflet as LeafletResource;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Builder;
 
 class LeafletController extends Controller
 {
@@ -14,14 +15,15 @@ class LeafletController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
+        $name = $request->name;
         $role = $user->roles()->first()->name;
         if($role =="admin"){
-            return LeafletResource::collection(Leaflet::with('diseases')->get());
+            return LeafletResource::collection(Leaflet::with(['diseases', 'drug'])->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->select('leaflets.*', 'drugs.substance')->where('drugs.substance', 'LIKE', "%$name%")->limit(900)->get());
         }else{
-            return LeafletResource::collection($user->leaflets()->with('diseases')->get());
+            return LeafletResource::collection($user->leaflets()->with(['diseases', 'drug'])->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->select('leaflets.*', 'drugs.substance')->where('drugs.substance', 'LIKE', "%$name%")->limit(900)->get());
         } 
     }
 
@@ -38,22 +40,22 @@ class LeafletController extends Controller
             $role = $user->roles()->first()->name;
             if($role =="admin"){
                 if($name){
-                    return LeafletResource::collection(Leaflet::with('diseases')->paginate(5));
+                    return LeafletResource::collection(Leaflet::with(['diseases', 'drug'])->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->where('drugs.substance', 'LIKE', "%$name%")->paginate(5));
                 }else{
-                    return LeafletResource::collection(Leaflet::with('diseases')->paginate(5));
+                    return LeafletResource::collection(Leaflet::with(['diseases', 'drug'])->paginate(5));
                 }            
             }else{
                 if($name){
-                    return LeafletResource::collection($user->leaflets()->with('diseases')->paginate(5));
+                    return LeafletResource::collection($user->leaflets()->with(['diseases', 'drug'])->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->where('drugs.substance', 'LIKE', "%$name%")->paginate(5));
                 }else{
-                    return LeafletResource::collection($user->leaflets()->with('diseases')->paginate(5));
+                    return LeafletResource::collection($user->leaflets()->with(['diseases', 'drug'])->paginate(5));
                 }            
             } 
         }else{
             if($name){
-                return LeafletResource::collection(Leaflet::with('diseases')->paginate(5));
+                return LeafletResource::collection(Leaflet::with('diseases')->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->where('drugs.substance', 'LIKE', "%$name%")->paginate(5));
             }else{
-                return LeafletResource::collection(Leaflet::with('diseases')->paginate(5));
+                return LeafletResource::collection(Leaflet::with(['diseases', 'drug'])->paginate(5));
             }            
         }
                

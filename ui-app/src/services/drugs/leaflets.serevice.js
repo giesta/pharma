@@ -30,6 +30,9 @@ const removeAll = () => {
 const findByTitle = (pageNumber, name) => {
   return http.get(`/leaflets/list?page=${pageNumber}&&name=${name}`);
 };
+const findBySubstance = (name) => {
+  return http.get(`/leaflets?name=${name}`);
+};
 
 const services = {
   getAll,
@@ -39,7 +42,8 @@ const services = {
   update,
   remove,
   removeAll,
-  findByTitle
+  findByTitle,
+  findBySubstance
 };
 
 export default services;

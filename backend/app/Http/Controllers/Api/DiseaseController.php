@@ -12,6 +12,7 @@ use App\Http\Resources\Disease as DiseaseResource;
 use App\Http\Requests\StoreDiseaseRequest;
 use App\Http\Requests\TokenRequest;
 use \Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class DiseaseController extends Controller
 {
@@ -62,10 +63,17 @@ class DiseaseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreDiseaseRequest $request): DiseaseResource
+    public function store(StoreDiseaseRequest $request)
     {
         $user = auth()->user();
-        try{
+
+        $diseasesArr = json_decode($request->diseases);
+        $count = $this->makeDiseasesArray($diseasesArr);
+        return response()->json([
+            'success' => true,
+            'data' => $count,
+        ], Response::HTTP_OK);
+        /*try{
             $disease = Disease::create(array_merge($request->all(), ['user_id' => $user->id]));
             $disease->leaflets()->attach(json_decode($request->drugs));
             $disease->symptoms()->attach(json_decode($request->symptoms));
@@ -74,7 +82,8 @@ class DiseaseController extends Controller
         }
         return new DiseaseResource(
             $user->diseases()->with('leaflets')->findOrFail($disease->id)
-        );
+        );*/
+
     }
 
     /**
@@ -139,5 +148,20 @@ class DiseaseController extends Controller
         $disease->delete();
 
         return response()->noContent();
+    }
+    private function makeDiseasesArray($diseasesArr){
+
+        $data = [];
+        for ($i = 0; $i < count($diseasesArr)-1; $i++)
+        {
+            $data[] = [
+            'name' => $diseasesArr[$i]->data->{'Pavadinimas'},
+            ];          
+        }
+        //$values = array_values( $data );
+        //$newArray = array_combine( $newKeys, $values );
+        DB::table('diseases')->insert($data);
+        
+        return $data;
     }
 }

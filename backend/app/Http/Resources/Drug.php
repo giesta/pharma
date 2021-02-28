@@ -20,17 +20,12 @@ class Drug extends JsonResource
             'name' => $this->name,
             'substance' => $this->substance,
             'substance_en' => $this->substance_en,
-            'indication' => $this->indication,
-            'contraindication' => $this->contraindication,
-            'reaction' => $this->reaction,
-            'use' => $this->use,
             'atc' => $this->ATC,
             'package' => $this->package,
             'strength' => $this->strength,
             'form' => $this->form,
             'package_description' => $this->package_description,
             'updated_at' => $this->updated_at,
-            'diseases' => DiseaseResource::collection($this->whenLoaded('diseases')),
         ];
     }
 }

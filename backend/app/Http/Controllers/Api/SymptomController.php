@@ -18,7 +18,7 @@ class SymptomController extends Controller
     {
         $user = auth()->user();
         $name = $request->name;
-        $symptoms = Symptom::where('symptoms.name', 'LIKE', "%$name%")->limit(100)->get();
+        $symptoms = Symptom::where('symptoms.name', 'LIKE', "%$name%")->limit(900)->get();
         return response()->json([
             'success' => true,
             'data' => $symptoms,

@@ -2,6 +2,7 @@ import React from "react";
 import UploadCSV from "../../../drugs/uploadCSV.component";
 import DrugsDataService from "../../../../services/drugs/list.service";
 import SymptomsDataService from "../../../../services/diseases/symptoms.service";
+import DiseasesDataService from "../../../../services/diseases/list.service";
 
 function Child()  {
   const [drugs, setDrugs] = React.useState([]);
@@ -33,6 +34,22 @@ function Child()  {
       SymptomsDataService.create(data)
       .then(response => {
         console.log("--------------Veikia simptomai----------");
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+    }    
+  };
+  const saveDiseases = () => {
+    console.log(symptoms)
+    const data = new FormData();
+    data.append('diseases', JSON.stringify(symptoms));
+    if(symptoms.length > 0){ 
+      console.log(data);     
+      DiseasesDataService.create(data)
+      .then(response => {
+        console.log("--------------Veikia ligos----------");
         console.log(response.data);
       })
       .catch(e => {
@@ -76,6 +93,8 @@ function Child()  {
           <div className="ml-1 kanban__main-wrapper"><UploadCSV buttonTitle="Import Drugs" title="Upload Drugs" save={saveDrugs} handleOnDrop={handleOnDropDrugs} handleOnError={handleOnError} handleOnRemoveFile={handleOnRemoveFile}/></div>
         
           <div className="ml-1 mt-4 kanban__main-wrapper"><UploadCSV buttonTitle="Import Symptoms" title="Upload Symptoms" save={saveSymptoms} handleOnDrop={handleOnDropSymptoms} handleOnError={handleOnError} handleOnRemoveFile={handleOnRemoveFile}/></div>
+        
+          <div className="ml-1 mt-4 kanban__main-wrapper"><UploadCSV buttonTitle="Import Diseases" title="Upload Diseases" save={saveDiseases} handleOnDrop={handleOnDropSymptoms} handleOnError={handleOnError} handleOnRemoveFile={handleOnRemoveFile}/></div>
         </section>
       </React.Fragment>
     );

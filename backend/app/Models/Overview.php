@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Disease extends Model
+class Overview extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 'description', 'treatment_id', 'user_id',
+        'name', 'description', 'diagnosis', 'prevention', 'user_id',
     ];
 
     public function treatments(){
@@ -22,5 +22,9 @@ class Disease extends Model
     public function symptoms()
     {
         return $this->belongsToMany(Symptom::class);
+    }
+    public function disease()
+    {
+        return $this->belongsTo(Disease::class);
     }
 }

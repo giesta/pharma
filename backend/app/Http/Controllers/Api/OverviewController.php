@@ -1,9 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Models\Overviews;
+use App\Models\Overview;
 use Illuminate\Http\Request;
+
+use JWTAuth;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Response;
+use App\Models\Disease;
+use App\Http\Resources\Overview as OverviewResource;
+use App\Http\Requests\StoreDiseaseRequest;
+use App\Http\Requests\TokenRequest;
+use \Illuminate\Database\QueryException;
 
 class OverviewController extends Controller
 {
@@ -14,17 +24,13 @@ class OverviewController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $user = auth()->user();
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
+            return OverviewResource::collection(Overview::with('leaflets')->get());
+        }else{
+            return OverviewResource::collection($user->overviews()->with('leaflets')->get());
+        }
     }
 
     /**
@@ -33,9 +39,20 @@ class OverviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreDiseaseRequest $request)
     {
-        //
+        $user = auth()->user();
+        try{
+            $overview = Overview::create(array_merge($request->all(), ['user_id' => $user->id]));
+            $overview->leaflets()->attach(json_decode($request->drugs));
+            $overview->symptoms()->attach(json_decode($request->symptoms));
+        }catch (QueryException $ex) { // Anything that went wrong
+            abort(500, $ex->getMessage());
+        }
+        return new OverviewResource(
+            $user->overviews()->with('leaflets')->findOrFail($overview->id)
+        );
+
     }
 
     /**

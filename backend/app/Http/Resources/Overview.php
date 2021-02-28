@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Leaflet as LeafletResource;
 
-class Disease extends JsonResource
+class Overview extends JsonResource
 {
     /**
      * Transform the resource into an array.

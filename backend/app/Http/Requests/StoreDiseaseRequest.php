@@ -24,7 +24,7 @@ class StoreDiseaseRequest extends FormRequest
     public function rules()
     {
         return [
-            
+            'disease_id' => 'required',
         ];
     }
 }

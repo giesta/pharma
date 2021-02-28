@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import diseasesDataService from "../../services/diseases/list.service";
 import SymptomsDataService from "../../services/diseases/symptoms.service";
 import DrugsLeafletsDataService from "../../services/drugs/leaflets.serevice";
+import DiseaseOverviewsDataService from "../../services/diseases/overviews.service";
 import DiseaseDelete from "../delete-modal.component";
 import DiseaseCreateUpdate from "./create-update-modal.component";
 import DiseaseInfo from "./info-modal.component";
@@ -14,9 +15,10 @@ import ErrorBoundary from "../layout/error.component";
 export default function DiseasesList() {
 
   const initialDiseaseState = {  
-    id: null,  
-    name: "",
+    id: null,
     description: "",
+    diagnosis: "",
+    prevention: "",
     symptoms: [],
     drugs: []
   };
@@ -42,6 +44,7 @@ export default function DiseasesList() {
 
   const [options, setOptions] = React.useState([]);
   const [disease, setDisease] = React.useState(initialDiseaseState);
+  const [selectedDisease, setSelectedDisease] = React.useState("");
   const [noData, setNoData] = React.useState('');
   const [leaflets, setLeaflets] = React.useState({
     data: [],
@@ -105,6 +108,7 @@ export default function DiseasesList() {
   const [diseases, setDiseases] = React.useState({
     data: [],
   });
+  const [overviews, setOverviews] = React.useState([]);
 
   /*const AddSelectedLeaflets = event => {
     
@@ -167,6 +171,10 @@ function makeOptions(field){
       const arr = event.map(item=>item.value);
       setSelectedLeaflets(arr);
     };
+    const handleDiseaseInputChange = event =>
+    {
+      setSelectedDisease(event.value);
+    };
   
   const retrieveSymptoms = () => {
     SymptomsDataService.getAll()
@@ -215,7 +223,23 @@ function makeOptions(field){
         console.log(e);
       });
   };
+  const retrieveDiseaseOptions = () => {
+    diseasesDataService.getAll()
+      .then(response => {        
+        if(response.data.data.length !== 0){
+          console.log(response.data.data);
+          setOptions(response.data.data);          
+        }else{
+          setNoData("No");
+        }      
+      })
+      .catch(e => {
+        setError(true);        
+        console.log(e);
+      });
+  };
   useEffect(retrieveDiseases, []);
+  useEffect(retrieveDiseaseOptions, []);
   const GetActionFormat = (row) =>{    
     return (
       <td className="table-col">
@@ -241,13 +265,15 @@ const deleteItemFromState = (id) => {
 }
 const saveDisease = () => {
   var data = {
-    name: disease.name,
+    disease_id: selectedDisease,
     description: disease.description,
+    diagnosis: disease.diagnosis,
+    prevention: disease.prevention,
     drugs: JSON.stringify(selectedLeaflets),
     symptoms: JSON.stringify(selectedSymptoms),
   };
   console.log(data);
-  diseasesDataService.create(data)
+  DiseaseOverviewsDataService.create(data)
     .then(() => {
       refreshList();
       handleClose();            
@@ -355,7 +381,7 @@ const findByTitle = () => {
              
       <div className="container">
       <DiseasesTable columns ={columns} diseases={diseases} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiseasesTable>
-      { show && <DiseaseCreateUpdate loadDrugsOptions={loadDrugsOptions} loadOptions={loadOptions} show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} AddSelectedLeaflets={AddSelectedLeaflets} handleSymptomsInputChange={handleSymptomsInputChange}></DiseaseCreateUpdate> }
+      { show && <DiseaseCreateUpdate options={options} loadDrugsOptions={loadDrugsOptions} loadOptions={loadOptions} show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} AddSelectedLeaflets={AddSelectedLeaflets} handleSymptomsInputChange={handleSymptomsInputChange} handleDiseaseInputChange={handleDiseaseInputChange} ></DiseaseCreateUpdate> }
       { confirm && <DiseaseDelete id={id} name={"Disease"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiseaseDelete> }
       { info && <DiseaseInfo info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }
       <div>

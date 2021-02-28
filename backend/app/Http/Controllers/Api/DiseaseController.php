@@ -24,12 +24,7 @@ class DiseaseController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $role = $user->roles()->first()->name;
-        if($role ==="admin"){
-            return DiseaseResource::collection(Disease::with('leaflets')->get());
-        }else{
-            return DiseaseResource::collection($user->diseases()->with('leaflets')->get());
-        }
+        return DiseaseResource::collection(Disease::all());        
     }
     /**
      * Display a listing of the resource.

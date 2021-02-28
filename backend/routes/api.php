@@ -61,9 +61,11 @@ Route::group(['middleware' => 'jwt.auth',
     Route::get('diseases/list', 'DiseaseController@list'); 
     Route::get('drugs/list', 'DrugController@list');
     Route::get('leaflets/list', 'LeafletController@list');
+    Route::get('overviews/list', 'LeafletController@list');
      
     Route::get('users/list', 'UserController@list'); 
-    Route::apiResource('diseases', DiseaseController::class);   
+    Route::apiResource('diseases', DiseaseController::class); 
+    Route::apiResource('overviews', OverviewController::class);   
     Route::apiResource('drugs', DrugController::class);
     Route::apiResource('leaflets', LeafletController::class);
     Route::resource('diseases.drugs', DiseaseDrugController::class);

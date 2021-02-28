@@ -13,7 +13,7 @@ class Leaflet extends Model
     ];
     public function diseases()
     {
-        return $this->belongsToMany(Overview::class);
+        return $this->belongsToMany(Overview::class,'overview_leaflet','leaflet_id','overview_id');
     }
     public function drug()
     {

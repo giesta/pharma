@@ -9,7 +9,7 @@ class Overview extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 'description', 'diagnosis', 'prevention', 'user_id',
+        'name', 'description', 'diagnosis', 'prevention', 'user_id', 'disease_id',
     ];
 
     public function treatments(){
@@ -17,7 +17,7 @@ class Overview extends Model
     }
     public function leaflets()
     {
-        return $this->belongsToMany(Leaflet::class);
+        return $this->belongsToMany(Leaflet::class, 'overview_leaflet', 'overview_id', 'leaflet_id');
     }
     public function symptoms()
     {

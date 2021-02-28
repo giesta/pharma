@@ -15,11 +15,11 @@ class CreateOverviewSymptomTable extends Migration
     {
         Schema::create('overview_symptom', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('disease_id');
+            $table->unsignedBigInteger('overview_id');
 
-            $table->foreign('disease_id')
+            $table->foreign('overview_id')
               ->references('id')
-              ->on('diseases')->onDelete('no action')->onUpdate('no action');
+              ->on('overviews')->onDelete('no action')->onUpdate('no action');
 
             $table->unsignedBigInteger('symptom_id');
             

@@ -18,8 +18,15 @@ class CreateOverviewTable extends Migration
             $table->text('description');
             $table->text('diagnosis');
             $table->text('prevention');
+            $table->unsignedBigInteger('disease_id');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();
+
+            $table->index('disease_id');
+            $table->foreign('disease_id')
+                ->references('id')->on('diseases')
+                ->onDelete('no action')
+                ->onUpdate('no action');
 
             $table->index('user_id');
             $table->foreign('user_id')

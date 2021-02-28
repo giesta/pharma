@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Modal, Button, Form } from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
+import Select from 'react-select';
 
 export default function CreateModal(props) {
     
@@ -14,11 +15,16 @@ export default function CreateModal(props) {
                 <Modal.Body>  
                     <Form.Group controlId="name">
                         <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.disease.name} onChange={props.handleInputChange} name="name"/>
-                        <Form.Control.Feedback type="invalid">
-                            Name is a required field.
-                        </Form.Control.Feedback>
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+                        <Select
+                            name="disease"
+                            options={props.options.map(item=>{
+                                return { value: item.id, label: item.name };
+                            })}
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                            isClearable="true"
+                            onChange={props.handleDiseaseInputChange}
+                        />
                     </Form.Group>
                     <Form.Group controlId="description">
                         <Form.Label>Description</Form.Label>
@@ -27,13 +33,34 @@ export default function CreateModal(props) {
                             Description is a required field.
                         </Form.Control.Feedback >
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>                    
+                    </Form.Group>  
+                    <Form.Group controlId="diagnosis">
+                        <Form.Label>Diagnosis</Form.Label>
+                        <Form.Control type="text"  as="textarea" placeholder=""  onChange={props.handleInputChange} name="diagnosis"/>
+                    </Form.Group> 
+                    <Form.Group controlId="symptoms"> 
+                    <Form.Label>Symptoms</Form.Label>
+                    <AsyncSelect
+                    name="symptoms"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    isClearable="true"
+                    isMulti
+                    cacheOptions
+                    defaultOptions
+                    loadOptions={props.loadOptions}
+                    onChange={props.handleSymptomsInputChange}
+                    defaultValue={props.disease.symptoms!==null?(props.disease.symptoms.map(item=>
+                        ({value: item.id, label: item.name})
+                    
+                        )):('')}
+                     /> 
+                     </Form.Group>                                       
                 {
                     <Form.Group controlId="drugs">
                         <Form.Label>Drugs</Form.Label>     
                         <AsyncSelect
                     name="drugs"
-                    //options={options}
                     className="basic-multi-select"
                     classNamePrefix="select"
                     isClearable="true"
@@ -48,26 +75,11 @@ export default function CreateModal(props) {
                         )):('')}
                      />
                     </Form.Group>
-                }
-                    <Form.Group controlId="symptoms"> 
-                    <Form.Label>Symptoms</Form.Label>
-                    <AsyncSelect
-                    name="symptoms"
-                    //options={options}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    isClearable="true"
-                    isMulti
-                    cacheOptions
-                    defaultOptions
-                    loadOptions={props.loadOptions}
-                    onChange={props.handleSymptomsInputChange}
-                    defaultValue={props.disease.symptoms!==null?(props.disease.symptoms.map(item=>
-                        ({value: item.id, label: item.name})
-                    
-                        )):('')}
-                     /> 
-                     </Form.Group>
+                }                    
+                     <Form.Group controlId="prevention">
+                        <Form.Label>Prevention</Form.Label>
+                        <Form.Control type="text"  as="textarea" placeholder="" value={props.disease.description} onChange={props.handleInputChange} name="prevention"/>
+                    </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={props.handleClose}>

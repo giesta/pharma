@@ -328,13 +328,12 @@ const findByTitle = () => {
   DrugsLeafletsDataService.findByTitle(1, searchTitle)
     .then(response => {
       const { current_page, per_page, total } = response.data.meta;          
-        if(response.data.data.length !== 0){
+        
           console.log(response.data.data);
           setLeaflets(response.data.data);
           setPageSize(per_page);
           setPage(current_page);     
-          setTotal(total);          
-        }
+          setTotal(total);
     })
     .catch(e => {
       setError(true);

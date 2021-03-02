@@ -11,11 +11,12 @@ export default function CreateModal(props) {
             <Modal.Header closeButton>
                 <Modal.Title>Disease info {props.disease.id}</Modal.Title>
             </Modal.Header>
-            <Form noValidate validated={props.validated} onSubmit={props.handleSubmit}>
+            <Form validated={props.validated} onSubmit={props.handleSubmit}>
                 <Modal.Body>  
                     <Form.Group controlId="name">
                         <Form.Label>Name</Form.Label>
                         <Select
+                            ref={props.setSelectRef}
                             name="disease"
                             options={props.options.map(item=>{
                                 return { value: item.id, label: item.name };
@@ -26,6 +27,25 @@ export default function CreateModal(props) {
                             onChange={props.handleDiseaseInputChange}
                             defaultValue={props.disease.disease_id!==null?({value: props.disease.disease_id, label: props.disease.name}):('')}
                         />
+                        <Form.Control
+                            type="text"
+                            tabIndex={-1}
+                            autoComplete="off"
+                            style={{
+                            opacity: 0,
+                            width: "100%",
+                            height: 0,
+                            position: "absolute"
+                            }}
+                            required
+                            onFocus={() => props.selectRef.focus()}
+                            value = {props.disease.disease_id || ""}
+                            onChange={props.handleDiseaseInputChange}
+                        />
+                        {console.log(props.disease.disease_id)}
+                        <Form.Control.Feedback type="invalid">
+                            Name is a required field.
+                        </Form.Control.Feedback >
                     </Form.Group>
                     <Form.Group controlId="description">
                         <Form.Label>Description</Form.Label>

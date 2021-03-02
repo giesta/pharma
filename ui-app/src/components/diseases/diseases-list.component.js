@@ -14,15 +14,7 @@ import ErrorBoundary from "../layout/error.component";
 
 export default function DiseasesList() {
 
-  const initialDiseaseState = {  
-    id: null,
-    description: "",
-    diagnosis: "",
-    prevention: "",
-    disease_id:null,
-    symptoms: [],
-    drugs: []
-  };
+  
 
   const columns = [{  
     dataField: 'no',  
@@ -44,8 +36,9 @@ export default function DiseasesList() {
   }];
 
   const [options, setOptions] = React.useState([]);
-  const [disease, setDisease] = React.useState(initialDiseaseState);
-  const [selectedDisease, setSelectedDisease] = React.useState("");
+  const [selectRef, setSelectRef] = React.useState(null);
+  
+  const [selectedDisease, setSelectedDisease] = React.useState(null);
   const [noData, setNoData] = React.useState('');
   const [leaflets, setLeaflets] = React.useState({
     data: [],
@@ -66,6 +59,31 @@ export default function DiseasesList() {
   const [pageSize, setPageSize] = React.useState(3);
   
   const [validated, setValidated] = React.useState(false);
+  const [isWriting, setIsWriting] = React.useState(false);
+
+  const initialDiseaseState = {  
+    id: null,
+    description: "",
+    diagnosis: "",
+    prevention: "",
+    disease_id:selectedDisease,
+    symptoms: [],
+    drugs: []
+  };
+  const [disease, setDisease] = React.useState(initialDiseaseState);
+
+  useEffect(() => {
+    if (isWriting) {
+      setIsWriting(false);
+      setDisease({
+        id:disease.id,
+        disease_id: selectedDisease,
+        symptoms: disease.symptoms,
+        drugs: disease.drugs
+      }
+      );
+    }
+  }, [isWriting,selectedDisease]);
 
   const onChangeSearchTitle = e => {
     const searchTitle = e.target.value;
@@ -98,7 +116,10 @@ export default function DiseasesList() {
   const handleClose = () =>{
     newDisease();
     setShow(false);
-    setValidated(false);
+    setValidated(false); 
+    setSelectedDisease(null); 
+    setIsWriting(true);     
+    
   };
   const handleCloseConfirm = () => setConfirm(false);
   const handleCloseInfo = () => {
@@ -174,10 +195,11 @@ function makeOptions(field){
     };
     const handleDiseaseInputChange = event =>
     {
-      if(event === null){
-        console.log("veikia");
+      setIsWriting(true);
+      if(event === null){                
+        setSelectedDisease(null);
       }else{
-        setSelectedDisease(event.value);
+        setSelectedDisease(event.value);        
       }
       
     };
@@ -359,13 +381,12 @@ const findByTitle = () => {
   DiseaseOverviewsDataService.findByTitle(1, searchTitle)
     .then(response => {
       const { current_page, per_page, total } = response.data.meta;          
-        if(response.data.data.length !== 0){
-          setDiseases(response.data.data); 
+        
+          setOverviews(response.data.data); 
           setPageSize(per_page);
           setPage(current_page);     
           setTotal(total);          
-        }
-      console.log(response.data.data);
+        
     })
     .catch(e => {
       setError(true);
@@ -413,7 +434,7 @@ const findByTitle = () => {
              
       <div className="container">
       <DiseasesTable columns ={columns} diseases={overviews} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiseasesTable>
-      { show && <DiseaseCreateUpdate options={options} loadDrugsOptions={loadDrugsOptions} loadOptions={loadOptions} show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} AddSelectedLeaflets={AddSelectedLeaflets} handleSymptomsInputChange={handleSymptomsInputChange} handleDiseaseInputChange={handleDiseaseInputChange} ></DiseaseCreateUpdate> }
+      { show && <DiseaseCreateUpdate selectRef = {selectRef} setSelectRef = {setSelectRef} options={options} loadDrugsOptions={loadDrugsOptions} loadOptions={loadOptions} show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} AddSelectedLeaflets={AddSelectedLeaflets} handleSymptomsInputChange={handleSymptomsInputChange} handleDiseaseInputChange={handleDiseaseInputChange} ></DiseaseCreateUpdate> }
       { confirm && <DiseaseDelete id={id} name={"Disease"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiseaseDelete> }
       { info && <DiseaseInfo info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }
       <div>

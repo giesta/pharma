@@ -11,7 +11,7 @@ class Leaflet extends Model
     protected $fillable = [
         'indication', 'contraindication', 'reaction', 'use','user_id', 'drug_id', 'link',
     ];
-    public function diseases()
+    public function overviews()
     {
         return $this->belongsToMany(Overview::class,'overview_leaflet','leaflet_id','overview_id');
     }

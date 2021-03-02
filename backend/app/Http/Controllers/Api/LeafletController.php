@@ -21,9 +21,9 @@ class LeafletController extends Controller
         $name = $request->name;
         $role = $user->roles()->first()->name;
         if($role =="admin"){
-            return LeafletResource::collection(Leaflet::with(['diseases', 'drug'])->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->select('leaflets.*', 'drugs.substance')->where('drugs.substance', 'LIKE', "%$name%")->limit(900)->get());
+            return LeafletResource::collection(Leaflet::with(['overviews', 'drug'])->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->select('leaflets.*', 'drugs.substance')->where('drugs.substance', 'LIKE', "%$name%")->limit(900)->get());
         }else{
-            return LeafletResource::collection($user->leaflets()->with(['diseases', 'drug'])->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->select('leaflets.*', 'drugs.substance')->where('drugs.substance', 'LIKE', "%$name%")->limit(900)->get());
+            return LeafletResource::collection($user->leaflets()->with(['overviews', 'drug'])->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->select('leaflets.*', 'drugs.substance')->where('drugs.substance', 'LIKE', "%$name%")->limit(900)->get());
         } 
     }
 
@@ -40,22 +40,22 @@ class LeafletController extends Controller
             $role = $user->roles()->first()->name;
             if($role =="admin"){
                 if($name){
-                    return LeafletResource::collection(Leaflet::with(['diseases', 'drug'])->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->where('drugs.substance', 'LIKE', "%$name%")->paginate(5));
+                    return LeafletResource::collection(Leaflet::with(['overviews', 'drug'])->select('leaflets.*', 'drugs.id as did','drugs.name')->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->where('drugs.substance', 'LIKE', "%$name%")->paginate(5));
                 }else{
-                    return LeafletResource::collection(Leaflet::with(['diseases', 'drug'])->paginate(5));
+                    return LeafletResource::collection(Leaflet::with(['overviews', 'drug'])->paginate(5));
                 }            
             }else{
                 if($name){
-                    return LeafletResource::collection($user->leaflets()->with(['diseases', 'drug'])->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->where('drugs.substance', 'LIKE', "%$name%")->paginate(5));
+                    return LeafletResource::collection($user->leaflets()->select('leaflets.*', 'drugs.id as did','drugs.name')->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->where('drugs.substance', 'LIKE', "%$name%")->paginate(5));
                 }else{
-                    return LeafletResource::collection($user->leaflets()->with(['diseases', 'drug'])->paginate(5));
+                    return LeafletResource::collection($user->leaflets()->with(['overviews', 'drug'])->paginate(5));
                 }            
             } 
         }else{
             if($name){
-                return LeafletResource::collection(Leaflet::with('diseases')->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->where('drugs.substance', 'LIKE', "%$name%")->paginate(5));
+                return LeafletResource::collection(Leaflet::with('overviews')->select('leaflets.*', 'drugs.id as did','drugs.name')->join('drugs', 'drugs.id', '=', 'leaflets.drug_id')->where('drugs.substance', 'LIKE', "%$name%")->paginate(5));
             }else{
-                return LeafletResource::collection(Leaflet::with(['diseases', 'drug'])->paginate(5));
+                return LeafletResource::collection(Leaflet::with(['overviews', 'drug'])->paginate(5));
             }            
         }
                

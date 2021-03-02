@@ -45,14 +45,14 @@ class OverviewController extends Controller
         $role = $user->roles()->first()->name;
         if($role ==="admin"){
             if($name){
-                return OverviewResource::collection(Overview::with('leaflets')->join('diseases', 'diseases.id', '=', 'overviews.disease_id')->where('diseases.name', 'LIKE', "%$name%")->paginate(5));
+                return OverviewResource::collection(Overview::with('leaflets')->select('overviews.*', 'diseases.id as did','diseases.name')->join('diseases', 'diseases.id', '=', 'overviews.disease_id')->where('diseases.name', 'LIKE', "%$name%")->paginate(5));
             }else{
                 return OverviewResource::collection(Overview::with('leaflets')->paginate(5));
             }
             
         }else{
             if($name){                
-                return OverviewResource::collection($user->overviews()->with('leaflets')->join('diseases', 'diseases.id', '=', 'overviews.disease_id')->where('diseases.name', 'LIKE', "%$name%")->paginate(5));
+                return OverviewResource::collection($user->overviews()->with('leaflets')->select('overviews.*', 'diseases.id as did','diseases.name')->join('diseases', 'diseases.id', '=', 'overviews.disease_id')->where('diseases.name', 'LIKE', "%$name%")->paginate(5));
             }else{
                 return OverviewResource::collection($user->overviews()->with('leaflets')->paginate(5));
             }            

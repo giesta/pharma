@@ -18,7 +18,10 @@ class Overview extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->disease->name,
+            'disease_id' => $this->disease->id,
             'description' => $this->description,
+            'diagnosis' => $this->diagnosis,
+            'prevention' => $this->prevention,
             'symptoms' => $this->symptoms,
             'drugs' => LeafletResource::collection($this->whenLoaded('leaflets')),
         ];

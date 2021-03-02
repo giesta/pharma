@@ -19,6 +19,7 @@ export default function DiseasesList() {
     description: "",
     diagnosis: "",
     prevention: "",
+    disease_id:null,
     symptoms: [],
     drugs: []
   };
@@ -72,7 +73,7 @@ export default function DiseasesList() {
   };
 
   const refreshList = () => {
-    retrieveDiseases();
+    retrieveDiseasesOverviews();
     setDisease(initialDiseaseState);
     setPage(1);
   };
@@ -173,7 +174,12 @@ function makeOptions(field){
     };
     const handleDiseaseInputChange = event =>
     {
-      setSelectedDisease(event.value);
+      if(event === null){
+        console.log("veikia");
+      }else{
+        setSelectedDisease(event.value);
+      }
+      
     };
   
   const retrieveSymptoms = () => {
@@ -223,6 +229,29 @@ function makeOptions(field){
         console.log(e);
       });
   };
+
+  const retrieveDiseasesOverviews = (pageNumber  = 1) => {
+    DiseaseOverviewsDataService.findByTitle(pageNumber, searchTitle)
+      .then(response => {
+        const { current_page, per_page, total } = response.data.meta;          
+        if(response.data.data.length !== 0){
+          console.log(response.data.data);
+          setOverviews(response.data.data); 
+          setPageSize(per_page);
+          setPage(current_page);     
+          setTotal(total);          
+        }else{
+          setNoData("No");
+        }
+        retrieveDrugsLeaflets(); 
+        retrieveSymptoms();        
+      })
+      .catch(e => {
+        setError(true);
+        
+        console.log(e);
+      });
+  };
   const retrieveDiseaseOptions = () => {
     diseasesDataService.getAll()
       .then(response => {        
@@ -238,7 +267,7 @@ function makeOptions(field){
         console.log(e);
       });
   };
-  useEffect(retrieveDiseases, []);
+  useEffect(retrieveDiseasesOverviews, []);
   useEffect(retrieveDiseaseOptions, []);
   const GetActionFormat = (row) =>{    
     return (
@@ -248,7 +277,7 @@ function makeOptions(field){
                 <BsInfoCircle></BsInfoCircle>
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
-              function(event){ setDisease(row); setShow(true);setSelectedSymptoms(row.symptoms.map(item=>item.id))}}>
+              function(event){setSelectedDisease(row.disease_id); setDisease(row); setShow(true);setSelectedSymptoms(row.symptoms.map(item=>item.id)); setSelectedLeaflets(row.drugs.map(item=>item.id))}}>
                 <BsPen></BsPen>
             </button>
             <button type="button" className="btn btn-outline-danger btn-sm ml-2 ts-buttom" size="sm"onClick={
@@ -260,8 +289,8 @@ function makeOptions(field){
 };
 
 const deleteItemFromState = (id) => {
-  const updatedItems = diseases.data.filter(x=>x.id!==id)
-  setDiseases({ data: updatedItems })
+  const updatedItems = overviews.filter(x=>x.id!==id);
+  setOverviews(updatedItems);
 }
 const saveDisease = () => {
   var data = {
@@ -286,19 +315,22 @@ const saveDisease = () => {
 
 const updateDisease = () => {
   console.log(selectedSymptoms);
+  console.log(selectedDisease);
   var data = {
     id: disease.id,
-    name: disease.name,
     description: disease.description,
+    diagnosis: disease.diagnosis,
+    prevention: disease.prevention,
+    disease_id: selectedDisease,
     symptoms: JSON.stringify(selectedSymptoms),
     drugs: JSON.stringify(selectedLeaflets)
   };
-  diseasesDataService.update(data.id, data)
+  DiseaseOverviewsDataService.update(data.id, data)
     .then((resp) => {  
       console.log(resp);
-      const updatedItems = diseases.data.filter(x=>x.id!==disease.id)
+      const updatedItems = overviews.filter(x=>x.id!==disease.id)
       updatedItems.push(resp.data.data);
-      setDiseases({...diseases, data: updatedItems});
+      setOverviews(updatedItems);
       handleClose();
     })
     .catch(e => {
@@ -308,7 +340,7 @@ const updateDisease = () => {
 };
 
 const deleteItem = (id) => {
-  diseasesDataService.remove(id)
+  DiseaseOverviewsDataService.remove(id)
     .then(() => {
       deleteItemFromState(id);
       handleCloseConfirm();
@@ -324,11 +356,11 @@ const newDisease = () => {
 };
 
 const findByTitle = () => {
-  diseasesDataService.findByTitle(1, searchTitle)
+  DiseaseOverviewsDataService.findByTitle(1, searchTitle)
     .then(response => {
       const { current_page, per_page, total } = response.data.meta;          
         if(response.data.data.length !== 0){
-          setDiseases({...diseases, data: response.data.data}); 
+          setDiseases(response.data.data); 
           setPageSize(per_page);
           setPage(current_page);     
           setTotal(total);          
@@ -343,8 +375,8 @@ const findByTitle = () => {
   return (
     <div>
       {error?<ErrorBoundary/>:''}
-      {diseases?(
-      diseases.data.length===0 && noData===''?( 
+      {overviews?(
+      overviews.length===0 && noData===''?( 
         <div> <Spinner></Spinner> </div>         
       ):(  
         <div>
@@ -380,7 +412,7 @@ const findByTitle = () => {
     </div>
              
       <div className="container">
-      <DiseasesTable columns ={columns} diseases={diseases} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiseasesTable>
+      <DiseasesTable columns ={columns} diseases={overviews} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiseasesTable>
       { show && <DiseaseCreateUpdate options={options} loadDrugsOptions={loadDrugsOptions} loadOptions={loadOptions} show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} AddSelectedLeaflets={AddSelectedLeaflets} handleSymptomsInputChange={handleSymptomsInputChange} handleDiseaseInputChange={handleDiseaseInputChange} ></DiseaseCreateUpdate> }
       { confirm && <DiseaseDelete id={id} name={"Disease"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiseaseDelete> }
       { info && <DiseaseInfo info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }

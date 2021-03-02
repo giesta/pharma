@@ -24,6 +24,7 @@ export default function CreateModal(props) {
                             classNamePrefix="select"
                             isClearable="true"
                             onChange={props.handleDiseaseInputChange}
+                            defaultValue={props.disease.disease_id!==null?({value: props.disease.disease_id, label: props.disease.name}):('')}
                         />
                     </Form.Group>
                     <Form.Group controlId="description">
@@ -36,7 +37,7 @@ export default function CreateModal(props) {
                     </Form.Group>  
                     <Form.Group controlId="diagnosis">
                         <Form.Label>Diagnosis</Form.Label>
-                        <Form.Control type="text"  as="textarea" placeholder=""  onChange={props.handleInputChange} name="diagnosis"/>
+                        <Form.Control type="text"  as="textarea" placeholder="" value={props.disease.diagnosis} onChange={props.handleInputChange} name="diagnosis"/>
                     </Form.Group> 
                     <Form.Group controlId="symptoms"> 
                     <Form.Label>Symptoms</Form.Label>
@@ -78,7 +79,7 @@ export default function CreateModal(props) {
                 }                    
                      <Form.Group controlId="prevention">
                         <Form.Label>Prevention</Form.Label>
-                        <Form.Control type="text"  as="textarea" placeholder="" value={props.disease.description} onChange={props.handleInputChange} name="prevention"/>
+                        <Form.Control type="text"  as="textarea" placeholder="" value={props.disease.prevention} onChange={props.handleInputChange} name="prevention"/>
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>

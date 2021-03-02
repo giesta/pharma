@@ -226,7 +226,6 @@ export default function DrugsList() {
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
               function(event){ 
-                console.log(row);
                 setLeaflet(row); 
                 setShow(true)}}>
                 <BsPen></BsPen>

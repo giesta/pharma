@@ -16,7 +16,7 @@ export default function TableOfItems(props) {
                 </tr>
             </thead>
             <tbody>
-                {props.diseases.data.map((field, count)=>
+                {props.diseases.map((field, count)=>
                     <tr key={++count}>
                     <td>{handleIncrement(++count)}</td>
                     <td>{field.name}</td>

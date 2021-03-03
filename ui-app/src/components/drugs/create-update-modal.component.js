@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Modal, Button, Form, Badge} from "react-bootstrap";
 import {Select} from 'react-select-virtualized';
+import AsyncSelect from 'react-select/async';
 
 export default function CreateModal(props) {
     const options = props.drugsList.data.map(x=>makeOptions(x));
@@ -78,33 +79,31 @@ export default function CreateModal(props) {
                              Use is a required field.
                         </Form.Control.Feedback>
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-                    </Form.Group>
-                {(props.leaflet.diseases!==null && props.leaflet.diseases!==undefined)?(
-                    <Form.Group controlId="diseases">
-                        <Form.Label>Diseases</Form.Label>     
-                        <Form.Control as="select" multiple defaultValue={props.leaflet.diseases.map(item=>item.id)} onChange={props.AddSelectedDiseases} name="diseases_id"> 
-                        {props.diseases.data.map((x)=>
-                            <option key={x.id} value={x.id}>{x.name}</option>
-                            )  
-                        }
-                        </Form.Control>  
-                    </Form.Group>
-                ):(            
-                    <Form.Group controlId="diseases_id"> 
-                        <Form.Label>Diseases</Form.Label>
-                        <Form.Control as="select" multiple onChange={props.AddSelectedDiseases} name="diseases_id">   
-                        {props.diseases.data.map((x)=>
-                            <option key={x.id} value={x.id}>{x.name}</option>
-                            )  
-                        }
-                        </Form.Control>
-                    </Form.Group>)} 
+                    </Form.Group>                    
+                    <Form.Group controlId="symptoms"> 
+                    <Form.Label>Diseases</Form.Label>
+                    <AsyncSelect
+                        name="symptoms"
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        isClearable="true"
+                        isMulti
+                        cacheOptions
+                        defaultOptions
+                        loadOptions={props.loadOptions}
+                        onChange={props.handleOverviewsInputChange}
+                        defaultValue={props.leaflet.diseases!==null?(props.leaflet.diseases.map(item=>
+                            ({value: item.id, label: item.name})
+                        
+                            )):('')}
+                     /> 
+                     </Form.Group> 
+
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={props.handleClose}>
                         Close
                     </Button>
-                    {console.log(props.leaflet.id)}
                     {props.leaflet.id===undefined||props.leaflet.id===null?(<Button type="submit" variant="primary">
                         Create Drug
                     </Button>):(<Button type="submit" variant="primary">

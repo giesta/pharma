@@ -22,14 +22,15 @@ class OverviewController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = auth()->user();
         $role = $user->roles()->first()->name;
+        $name = $request->name;
         if($role ==="admin"){
-            return OverviewResource::collection(Overview::with('leaflets')->get());
+            return OverviewResource::collection(Overview::with('leaflets')->select('overviews.*', 'diseases.id as did','diseases.name')->join('diseases', 'diseases.id', '=', 'overviews.disease_id')->where('diseases.name', 'LIKE', "%$name%")->limit(900)->get());           
         }else{
-            return OverviewResource::collection($user->overviews()->with('leaflets')->get());
+            return OverviewResource::collection($user->overviews()->with('leaflets')->select('overviews.*', 'diseases.id as did','diseases.name')->join('diseases', 'diseases.id', '=', 'overviews.disease_id')->where('diseases.name', 'LIKE', "%$name%")->limit(900)->get());  
         }
     }
 

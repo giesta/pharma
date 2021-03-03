@@ -3,6 +3,7 @@ import AuthService from "../../services/auth.service";
 import DrugsDataService from "../../services/drugs/list.service";
 import DrugsLeafletsDataService from "../../services/drugs/leaflets.serevice";
 import DiseasesDataService from "../../services/diseases/list.service";
+import DiseaseOverviewsDataService from "../../services/diseases/overviews.service";
 import DrugDelete from "../delete-modal.component";
 import DrugInfo from "./info-modal.component";
 import DrugCreateUpdate from "./create-update-modal.component";
@@ -70,15 +71,15 @@ export default function DrugsList() {
 
   const [noData, setNoData] = React.useState('');
   const [error, setError] = React.useState(false);
-  const [diseases, setDiseases] = React.useState({
-    data: [],
-  });
+
+  const [overviews, setOverviews] = React.useState([]);
+  const [selectedOverviews, setSelectedOverviews] = React.useState([]); 
 
   const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
-  const [selectedDiseases, setSelectedDiseases] = React.useState([]);  
+   
   const [validated, setValidated] = React.useState(false);
 
   const [searchTitle, setSearchTitle] = React.useState("");
@@ -96,11 +97,6 @@ export default function DrugsList() {
     //retrieveDrugsLeaflets();
     setLeaflet(initialLeafletState);
     setPage(1);
-  };
-
-  const AddSelectedDiseases = event => {
-    const selectedDiseases = [...event.target.selectedOptions].map(o => o.value)
-    setSelectedDiseases(selectedDiseases);
   };
 
   const handleSubmit = (event) => {
@@ -143,6 +139,7 @@ export default function DrugsList() {
     if(event===null){
       setLeaflet({
         drug:initialDrugState,
+        diseases:leaflet.diseases,
         id:leaflet.id
       });
     }else{
@@ -160,11 +157,42 @@ export default function DrugsList() {
       });
       setLeaflet({
         drug:selectedDrug,
+        diseases:[],
         id:leaflet.id
       });
-    }
-    
+    }    
   };
+
+  const loadOptions = (inputValue, callback) => {
+    DiseaseOverviewsDataService.findByName(inputValue)
+      .then(response => {
+        if (response.data.data.length !== 0) {
+          console.log(response.data.data);
+          const result = response.data.data.map(x => makeOptions(x));          
+          callback(result);
+        }
+
+      })
+      .catch(e => {
+        setError(true);
+        console.log(e);
+      });
+  };
+function makeOptions(field){
+  if(field.drug === undefined){
+    return { value: field.id, label: field.name };
+  }else{
+    return { value: field.id, label: field.drug.substance };
+  }
+  
+} 
+  
+  
+  const handleOverviewsInputChange = event =>
+    {
+      const arr = event.map(item=>item.value);
+      setSelectedOverviews(arr);
+    };
   
   const retrieveDrugsLeaflets = (pageNumber = 1) => {
     DrugsLeafletsDataService.findByTitle(pageNumber, searchTitle)
@@ -178,8 +206,7 @@ export default function DrugsList() {
           setTotal(total);     
         }else{
           setNoData("No");
-        }  
-        retrieveDiseases();
+        }
         retrieveDrugs();     
       })
       .catch(e => {
@@ -203,18 +230,7 @@ export default function DrugsList() {
       });
   };
   useEffect(retrieveDrugsLeaflets, []);
-  const retrieveDiseases = () => {
-    DiseasesDataService.getAll()
-      .then(response => {
-        if(response.data.data.length !== 0){
-          setDiseases({...diseases, data: response.data.data});
-        }       
-      })
-      .catch(e => {
-        setError(true);
-        console.log(e);
-      });
-  };
+
 
   const GetActionFormat = (row) =>{
     
@@ -250,7 +266,7 @@ const saveLeaflet = () => {
     contraindication: leaflet.contraindication,
     reaction: leaflet.reaction,
     use: leaflet.use,
-    diseases: JSON.stringify(selectedDiseases),
+    diseases: JSON.stringify(selectedOverviews),
     drug_id: leaflet.drug.id
   };
   DrugsLeafletsDataService.create(data)
@@ -280,7 +296,7 @@ const updateLeaflet = () => {
     contraindication: leaflet.contraindication,
     reaction: leaflet.reaction,
     use: leaflet.use,
-    diseases: JSON.stringify(selectedDiseases),
+    diseases: JSON.stringify(selectedOverviews),
     drug_id: leaflet.drug.id
   };
   DrugsLeafletsDataService.update(data.id, data)
@@ -382,7 +398,7 @@ const findByTitle = () => {
       <div className="container">  
       <DrugsTable key={"drugs"} columns ={columns} leaflets = {leaflets} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DrugsTable>
 
-      { show && <DrugCreateUpdate show ={show} handleClose={handleClose} leaflet={leaflet} drug={drug} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} diseases={diseases} AddSelectedDiseases={AddSelectedDiseases} drugsList = {drugs} handleSelectChange={handleSelectChange}></DrugCreateUpdate> }
+      { show && <DrugCreateUpdate loadOptions={loadOptions} show ={show} handleClose={handleClose} leaflet={leaflet} drug={drug} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} diseases={overviews} handleOverviewsInputChange={handleOverviewsInputChange} drugsList = {drugs} handleSelectChange={handleSelectChange}></DrugCreateUpdate> }
 
       { confirm &&<DrugDelete id={id} name={"Drug"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DrugDelete> }
 

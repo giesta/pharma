@@ -30,6 +30,9 @@ const removeAll = () => {
 const findByTitle = (pageNumber, name) => {
   return http.get(`/overviews/list?page=${pageNumber}&&name=${name}`);
 };
+const findByName = (name) => {
+    return http.get(`/overviews/?name=${name}`);
+  };
 
 const services = {
   getAll,
@@ -39,7 +42,8 @@ const services = {
   update,
   remove,
   removeAll,
-  findByTitle
+  findByTitle,
+  findByName
 };
 
 export default services;

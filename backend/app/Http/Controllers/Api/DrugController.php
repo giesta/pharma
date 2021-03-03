@@ -27,8 +27,9 @@ class DrugController extends ApiController
      */
     public function index(Request $request)
     {
-        $user = auth()->user();      
-        return DrugResource::collection(Drug::with('diseases')->get());
+        $user = auth()->user();
+        $name = $request->name;      
+        return DrugResource::collection(Drug::where('drugs.substance', 'LIKE', "%$name%")->limit(900)->get());
                
     }
      /**

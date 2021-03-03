@@ -87,7 +87,7 @@ export default function DrugsList() {
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(3);
-
+  const [selectRef, setSelectRef] = React.useState(null);
   const onChangeSearchTitle = e => {
     const searchTitle = e.target.value;
     setSearchTitle(searchTitle);
@@ -157,7 +157,7 @@ export default function DrugsList() {
       });
       setLeaflet({
         drug:selectedDrug,
-        diseases:[],
+        diseases:leaflet.diseases,
         id:leaflet.id
       });
     }    
@@ -169,6 +169,24 @@ export default function DrugsList() {
         if (response.data.data.length !== 0) {
           console.log(response.data.data);
           const result = response.data.data.map(x => makeOptions(x));          
+          callback(result);
+        }
+
+      })
+      .catch(e => {
+        setError(true);
+        console.log(e);
+      });
+  };
+  const loadDrugsOptions = (inputValue, callback) => {
+    DrugsDataService.findBySubstance(inputValue)
+      .then(response => {
+        if (response.data.data.length !== 0) {
+          console.log(response.data.data);
+          const result = response.data.data.map(x => {
+            return { value: x, label: x.substance }
+          }
+            );          
           callback(result);
         }
 
@@ -379,7 +397,7 @@ const findByTitle = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search by title"
+            placeholder="Search by Substance"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
@@ -398,7 +416,7 @@ const findByTitle = () => {
       <div className="container">  
       <DrugsTable key={"drugs"} columns ={columns} leaflets = {leaflets} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DrugsTable>
 
-      { show && <DrugCreateUpdate loadOptions={loadOptions} show ={show} handleClose={handleClose} leaflet={leaflet} drug={drug} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} diseases={overviews} handleOverviewsInputChange={handleOverviewsInputChange} drugsList = {drugs} handleSelectChange={handleSelectChange}></DrugCreateUpdate> }
+      { show && <DrugCreateUpdate selectRef = {selectRef} setSelectRef = {setSelectRef} loadDrugsOptions={loadDrugsOptions} loadOptions={loadOptions} show ={show} handleClose={handleClose} leaflet={leaflet} drug={drug} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} diseases={overviews} handleOverviewsInputChange={handleOverviewsInputChange} drugsList = {drugs} handleSelectChange={handleSelectChange}></DrugCreateUpdate> }
 
       { confirm &&<DrugDelete id={id} name={"Drug"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DrugDelete> }
 

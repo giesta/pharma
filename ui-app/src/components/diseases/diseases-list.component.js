@@ -158,7 +158,7 @@ export default function DiseasesList() {
   };
 
   const loadOptions = (inputValue, callback) => {
-    SymptomsDataService.findByTitle(inputValue)
+    DiseaseOverviewsDataService.findByTitle(inputValue)
       .then(response => {
         if (response.data.data.length !== 0) {
           console.log(response.data.data);

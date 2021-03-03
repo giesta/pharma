@@ -42,7 +42,6 @@ export default function CreateModal(props) {
                             value = {props.disease.disease_id || ""}
                             onChange={props.handleDiseaseInputChange}
                         />
-                        {console.log(props.disease.disease_id)}
                         <Form.Control.Feedback type="invalid">
                             Name is a required field.
                         </Form.Control.Feedback >
@@ -62,16 +61,16 @@ export default function CreateModal(props) {
                     <Form.Group controlId="symptoms"> 
                     <Form.Label>Symptoms</Form.Label>
                     <AsyncSelect
-                    name="symptoms"
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    isClearable="true"
-                    isMulti
-                    cacheOptions
-                    defaultOptions
-                    loadOptions={props.loadOptions}
-                    onChange={props.handleSymptomsInputChange}
-                    defaultValue={props.disease.symptoms!==null?(props.disease.symptoms.map(item=>
+                        name="symptoms"
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        isClearable="true"
+                        isMulti
+                        cacheOptions
+                        defaultOptions
+                        loadOptions={props.loadOptions}
+                        onChange={props.handleSymptomsInputChange}
+                        defaultValue={props.disease.symptoms!==null?(props.disease.symptoms.map(item=>
                         ({value: item.id, label: item.name})
                     
                         )):('')}
@@ -81,16 +80,16 @@ export default function CreateModal(props) {
                     <Form.Group controlId="drugs">
                         <Form.Label>Drugs</Form.Label>     
                         <AsyncSelect
-                    name="drugs"
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    isClearable="true"
-                    isMulti
-                    cacheOptions
-                    defaultOptions
-                    loadOptions={props.loadDrugsOptions}
-                    onChange={props.AddSelectedLeaflets}
-                    defaultValue={props.disease.drugs!==null?(props.disease.drugs.map(item=>
+                            name="drugs"
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                            isClearable="true"
+                            isMulti
+                            cacheOptions
+                            defaultOptions
+                            loadOptions={props.loadDrugsOptions}
+                            onChange={props.AddSelectedLeaflets}
+                            defaultValue={props.disease.drugs!==null?(props.disease.drugs.map(item=>
                         ({value: item.id, label: item.drug.substance})
                     
                         )):('')}

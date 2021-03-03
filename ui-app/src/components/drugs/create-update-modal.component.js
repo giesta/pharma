@@ -5,28 +5,44 @@ import {Select} from 'react-select-virtualized';
 import AsyncSelect from 'react-select/async';
 
 export default function CreateModal(props) {
-    const options = props.drugsList.data.map(x=>makeOptions(x));
-      function makeOptions(field){
-        return { value: field, label: field.substance.substring(0, 58) };
-      } 
+    
     return (
         <Modal show={props.show} onHide={props.handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>Drug</Modal.Title>
             </Modal.Header>
-            <Form noValidate validated={props.validated} onSubmit={props.handleSubmit}> 
+            <Form validated={props.validated} onSubmit={props.handleSubmit}> 
                 <Modal.Body> 
-                <Form.Group controlId="name">                  
-                <Select
-                    name="drugs"
-                    options={options}
-                    className="basic-multi-select"
-                    classNamePrefix="select"
-                    onChange={props.handleSelectChange}
-                    isClearable="true"
-                    defaultValue={props.leaflet.drug.id!==null?({value: props.leaflet.drug.id, label: props.leaflet.drug.substance.substring(0, 58)}):('')}
-                />                
-                </Form.Group> 
+                <Form.Group controlId="name">                
+                    <Form.Label>Name</Form.Label>     
+                    <AsyncSelect
+                        name="name"
+                        ref={props.setSelectRef}
+                        className="basic-multi-select"
+                        classNamePrefix="select"
+                        isClearable="true"
+                        cacheOptions
+                        defaultOptions
+                        loadOptions={props.loadDrugsOptions}
+                        onChange={props.handleSelectChange}
+                        defaultValue={props.leaflet.drug.id!==null?({value: props.leaflet.drug.id, label: props.leaflet.drug.substance}):('')}                   
+                    />
+                    <Form.Control
+                        type="text"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        style={{
+                        opacity: 0,
+                        width: "100%",
+                        height: 0,
+                        position: "absolute"
+                        }}
+                        required
+                        onFocus={() => props.selectRef.focus()}
+                        value = {props.leaflet.drug.id || ""}
+                        onChange={props.handleSelectChange}
+                        />
+                </Form.Group>
                 {(props.leaflet.drug.id!==null)?( 
                 <Form.Group controlId="name">
                         <Form.Label>Names</Form.Label>
@@ -43,7 +59,7 @@ export default function CreateModal(props) {
                         
                         {props.leaflet.drug.substance.split(/\/|\(|\)/).map(item=>
                         
-                        <Badge pill variant="primary">{item}</Badge>
+                        <Badge variant="primary">{item}</Badge>
                             
                             )}
                         

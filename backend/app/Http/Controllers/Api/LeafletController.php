@@ -73,11 +73,11 @@ class LeafletController extends Controller
 
         try{
             $leaflet = Leaflet::create(array_merge($request->all(), ['user_id' => $user->id]));  
-            $leaflet->diseases()->attach(json_decode($request->diseases));      
+            $leaflet->overviews()->attach(json_decode($request->diseases));      
         }catch (QueryException $ex) { // Anything that went wrong
             abort(500, "Could not create Drugs Leaflet");
         }
-        return LeafletResource::collection($user->leaflets()->with('diseases')->paginate(5));
+        return LeafletResource::collection($user->leaflets()->with('overviews')->paginate(5));
     }
 
     /**
@@ -109,12 +109,12 @@ class LeafletController extends Controller
         }        
         try{
             $leaflet->update($request->only(['indication', 'contraindication', 'reaction', 'use', 'drug_id']));
-            $leaflet->diseases()->sync(json_decode($request->diseases));
+            $leaflet->overviews()->sync(json_decode($request->diseases));
         }
         catch (QueryException $ex) { // Anything that went wrong
             abort(500, $ex->message);
         }
-        return new LeafletResource($leaflet->with('diseases')->findOrFail($id));
+        return new LeafletResource($leaflet->with('overviews')->findOrFail($id));
     }
 
     /**
@@ -132,7 +132,7 @@ class LeafletController extends Controller
         }else{
             $leaflet = $user->leaflets()->findOrFail($id);
         } 
-        $leaflet->diseases()->detach();
+        $leaflet->overviews()->detach();
         $leaflet->delete();
         return response()->noContent();
     }

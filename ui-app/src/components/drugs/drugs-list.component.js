@@ -249,7 +249,6 @@ function makeOptions(field){
   };
   useEffect(retrieveDrugsLeaflets, []);
 
-
   const GetActionFormat = (row) =>{
     
     return (

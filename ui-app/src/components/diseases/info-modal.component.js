@@ -10,21 +10,21 @@ export default function InfoModal(props) {
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="name">
                         <Form.Label>Name</Form.Label>
                         <Form.Control type="text" placeholder="" required value={props.disease.name} disabled name="name"/>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="description">
                         <Form.Label>Description</Form.Label>
                         <Form.Control type="text" as="textarea" placeholder="" required value={props.disease.description} disabled name="description"/>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="symptoms">
                         <Form.Label>Symptoms</Form.Label>
                         {props.disease.symptoms.map(item=>
                            <Badge pill variant="dark"> {item.name}</Badge>
                             )}
                     </Form.Group> 
-                    {(props.disease.drugs!==null && props.disease.drugs!==undefined)&&(<Form.Group controlId="exampleForm.ControlInput1">
+                    {(props.disease.drugs!==null && props.disease.drugs!==undefined)&&(<Form.Group controlId="drugs">
                         <Form.Label>Drugs</Form.Label>
                             {props.disease.drugs.map((x)=>
                                 <Badge pill variant="dark">

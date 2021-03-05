@@ -76,6 +76,7 @@ export default function DiseasesList() {
     if (isWriting) {
       setIsWriting(false);
       setDisease({
+        ...disease,
         id:disease.id,
         disease_id: selectedDisease,
         symptoms: disease.symptoms,
@@ -172,6 +173,22 @@ export default function DiseasesList() {
         console.log(e);
       });
   };
+
+  const loadDiseasesOptions = (inputValue, callback) => {
+    diseasesDataService.findByTitle(inputValue)
+      .then(response => {
+        if (response.data.data.length !== 0) {
+          console.log(response.data.data);
+          const result = response.data.data.map(x => makeOptions(x));          
+          callback(result);
+        }
+
+      })
+      .catch(e => {
+        setError(true);
+        console.log(e);
+      });
+  };
 function makeOptions(field){
   if(field.drug === undefined){
     return { value: field.id, label: field.name };
@@ -228,30 +245,6 @@ function makeOptions(field){
         console.log(e);
       });
   };
-
-  const retrieveDiseases = (pageNumber  = 1) => {
-    diseasesDataService.findByTitle(pageNumber, searchTitle)
-      .then(response => {
-        const { current_page, per_page, total } = response.data.meta;          
-        if(response.data.data.length !== 0){
-          console.log(response.data.data);
-          setDiseases({...diseases, data: response.data.data}); 
-          setPageSize(per_page);
-          setPage(current_page);     
-          setTotal(total);          
-        }else{
-          setNoData("No");
-        }
-        retrieveDrugsLeaflets(); 
-        retrieveSymptoms();        
-      })
-      .catch(e => {
-        setError(true);
-        
-        console.log(e);
-      });
-  };
-
   const retrieveDiseasesOverviews = (pageNumber  = 1) => {
     DiseaseOverviewsDataService.findByTitle(pageNumber, searchTitle)
       .then(response => {
@@ -265,32 +258,15 @@ function makeOptions(field){
         }else{
           setNoData("No");
         }
-        retrieveDrugsLeaflets(); 
-        retrieveSymptoms();        
-      })
-      .catch(e => {
-        setError(true);
-        
-        console.log(e);
-      });
-  };
-  const retrieveDiseaseOptions = () => {
-    diseasesDataService.getAll()
-      .then(response => {        
-        if(response.data.data.length !== 0){
-          console.log(response.data.data);
-          setOptions(response.data.data);          
-        }else{
-          setNoData("No");
-        }      
+        retrieveDrugsLeaflets();     
       })
       .catch(e => {
         setError(true);        
         console.log(e);
       });
   };
+  
   useEffect(retrieveDiseasesOverviews, []);
-  useEffect(retrieveDiseaseOptions, []);
   const GetActionFormat = (row) =>{    
     return (
       <td className="table-col">
@@ -433,9 +409,35 @@ const findByTitle = () => {
     </div>
              
       <div className="container">
-      <DiseasesTable columns ={columns} diseases={overviews} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiseasesTable>
-      { show && <DiseaseCreateUpdate selectRef = {selectRef} setSelectRef = {setSelectRef} options={options} loadDrugsOptions={loadDrugsOptions} loadOptions={loadOptions} show ={show} handleClose={handleClose} disease={disease} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} AddSelectedLeaflets={AddSelectedLeaflets} handleSymptomsInputChange={handleSymptomsInputChange} handleDiseaseInputChange={handleDiseaseInputChange} ></DiseaseCreateUpdate> }
-      { confirm && <DiseaseDelete id={id} name={"Disease"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiseaseDelete> }
+      <DiseasesTable 
+        columns ={columns} 
+        diseases={overviews} 
+        GetActionFormat={GetActionFormat} 
+        rowNumber={(page*5-5)}
+      ></DiseasesTable>
+      { show && <DiseaseCreateUpdate 
+        selectRef = {selectRef} 
+        setSelectRef = {setSelectRef} 
+        loadDiseasesOptions={loadDiseasesOptions} 
+        loadDrugsOptions={loadDrugsOptions} 
+        loadOptions={loadOptions} 
+        show ={show} 
+        handleClose={handleClose} 
+        disease={disease} 
+        validated={validated} 
+        handleSubmit={handleSubmit} 
+        handleInputChange={handleInputChange} 
+        AddSelectedLeaflets={AddSelectedLeaflets} 
+        handleSymptomsInputChange={handleSymptomsInputChange} 
+        handleDiseaseInputChange={handleDiseaseInputChange} 
+      ></DiseaseCreateUpdate> }
+      { confirm && <DiseaseDelete 
+        id={id} 
+        name={"Disease"} 
+        deleteItem={deleteItem} 
+        handleCloseConfirm={handleCloseConfirm} 
+        confirm={confirm}
+      ></DiseaseDelete> }
       { info && <DiseaseInfo info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }
       <div>
         <Pagination 
@@ -443,7 +445,7 @@ const findByTitle = () => {
         activePage={page} 
         totalItemsCount={total}
         itemsCountPerPage={pageSize}
-        onChange={(pageNumber)=>retrieveDiseases(pageNumber)}
+        onChange={(pageNumber)=>retrieveDiseasesOverviews(pageNumber)}
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"

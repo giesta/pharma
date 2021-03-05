@@ -35,21 +35,7 @@ class DiseaseController extends Controller
     {
         $user = auth()->user();
         $name = $request->name;
-        $role = $user->roles()->first()->name;
-        if($role ==="admin"){
-            if($name){
-                return DiseaseResource::collection(Disease::with('leaflets')->where('diseases.name', 'LIKE', "%$name%")->paginate(5));
-            }else{
-                return DiseaseResource::collection(Disease::with('leaflets')->paginate(5));
-            }
-            
-        }else{
-            if($name){                
-                return DiseaseResource::collection($user->diseases()->with('leaflets')->where('diseases.name', 'LIKE', "%$name%")->paginate(5));
-            }else{
-                return DiseaseResource::collection($user->diseases()->with('leaflets')->paginate(5));
-            }            
-        }
+        return DiseaseResource::collection(Disease::where('diseases.name', 'LIKE', "%$name%")->limit(900)->get());         
     }
 
     /**

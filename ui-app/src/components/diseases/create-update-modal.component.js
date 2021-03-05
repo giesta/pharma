@@ -15,15 +15,18 @@ export default function CreateModal(props) {
                 <Modal.Body>  
                     <Form.Group controlId="name">
                         <Form.Label>Name</Form.Label>
-                        <Select
+                        <AsyncSelect
                             ref={props.setSelectRef}
                             name="disease"
-                            options={props.options.map(item=>{
+                            /*options={props.options.map(item=>{
                                 return { value: item.id, label: item.name };
-                            })}
+                            })}*/
                             className="basic-multi-select"
                             classNamePrefix="select"
                             isClearable="true"
+                            cacheOptions
+                            defaultOptions
+                            loadOptions={props.loadDiseasesOptions}
                             onChange={props.handleDiseaseInputChange}
                             defaultValue={props.disease.disease_id!==null?({value: props.disease.disease_id, label: props.disease.name}):('')}
                         />

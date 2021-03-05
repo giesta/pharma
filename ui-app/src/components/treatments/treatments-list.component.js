@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
 import DiseasesDataService from "../../services/diseases/list.service";
+import DiseaseOverviewsDataService from "../../services/diseases/overviews.service";
 import TreatmentTable from "./table.component";
 import TreatmentDelete from "../delete-modal.component";
 import TreatmentCreateUpdate from "./create-update-modal.component";
@@ -17,7 +18,6 @@ export default function TreatmentList() {
     title: "",
     description: "",
     algorithm: "",
-    disease_id: "",
     public: 0,
     disease: null
   };
@@ -53,6 +53,9 @@ export default function TreatmentList() {
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
+
+  const [overviews, setOverviews] = React.useState([]);
+  const [selectedOverview, setSelectedOverview] = React.useState([]); 
   
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
@@ -61,6 +64,8 @@ export default function TreatmentList() {
   const [searchTitle, setSearchTitle] = React.useState("");
 
   const [validated, setValidated] = React.useState(false);
+
+  const [selectRef, setSelectRef] = React.useState(null);
 
   const onChangeSearchTitle = e => {
     const searchTitle = e.target.value;
@@ -93,6 +98,7 @@ export default function TreatmentList() {
     newTreatment();
     setShow(false);
     setValidated(false);
+    setUrl(null);
   };
   const handleCloseConfirm = () => setConfirm(false);
   const handleCloseInfo = () => {
@@ -172,19 +178,61 @@ export default function TreatmentList() {
     );
 };
 
+const loadOptions = (inputValue, callback) => {
+  DiseaseOverviewsDataService.findByName(inputValue)
+    .then(response => {
+      if (response.data.data.length !== 0) {
+        console.log(response.data.data);
+        const result = response.data.data.map(x => 
+          {
+            return { value: x, label: x.name }
+          }
+        );          
+        callback(result);
+      }
+
+    })
+    .catch(e => {
+      setError(true);
+      console.log(e);
+    });
+};
+
+const handleOverviewsInputChange = event =>
+{
+  if(event===null){
+    setTreatment({
+      ...treatment,
+      disease: null
+    });
+  }else{
+    var selected = event.value;
+    console.log(selected);
+    setTreatment({
+      ...treatment,
+      id: treatment.id,
+      public: treatment.public,
+      disease: selected
+    });
+  }
+  //const val = event.value;
+  //setSelectedOverviews(val);
+};
+
 const deleteItemFromState = (id) => {
   const updatedItems = Treatments.data.filter(x=>x.id!==id)
   setTreatments({ data: updatedItems })
 }
 const saveTreatment = () => {
     const data = new FormData();
+    console.log(treatment.disease);
     data.append('Content-Type','multipart/formdata');
     if(selectedFile!==null){
         data.append("algorithm", selectedFile);        
     } 
     data.append("title", treatment.title);
     data.append("description", treatment.description);
-    data.append("disease_id", treatment.disease_id);
+    data.append("overview_id", treatment.disease.id);
     data.append("public", treatment.public);
 TreatmentsDataService.create(data)
     .then(() => {
@@ -208,9 +256,7 @@ const updateTreatment = () => {
   data.set("title", treatment.title);
   data.set("description", treatment.description);
   data.set("public", treatment.public);
-  if(treatment.disease_id!=null){
-    data.set("disease_id", treatment.disease_id);
-  }
+  data.set("overview_id", treatment.disease.id);
   
   TreatmentsDataService.update(treatment.id, data)
     .then(response => {
@@ -306,7 +352,7 @@ const findByTitle = () => {
       <>
   <TreatmentTable columns ={columns} Treatments={Treatments} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></TreatmentTable>
 
-  { show&&<TreatmentCreateUpdate show ={show} handleClose={handleClose} treatment={treatment} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} handleChecked={handleChecked} Diseases={Diseases} url={url}></TreatmentCreateUpdate>}
+  { show&&<TreatmentCreateUpdate selectRef = {selectRef} setSelectRef = {setSelectRef} loadOptions={loadOptions} show ={show} handleClose={handleClose} treatment={treatment} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} handleChecked={handleChecked} diseases={overviews} url={url} handleOverviewsInputChange={handleOverviewsInputChange}></TreatmentCreateUpdate>}
       
   {confirm&&< TreatmentDelete id={id} name={"Treatment"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ TreatmentDelete>}
 

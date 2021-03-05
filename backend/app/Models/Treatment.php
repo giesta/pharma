@@ -10,10 +10,10 @@ class Treatment extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'title', 'description', 'algorithm', 'public', 'user_id', 'disease_id'
+        'title', 'description', 'algorithm', 'public', 'user_id', 'overview_id'
     ];
-    public function disease(){
-        return $this->belongsTo(Disease::class,'disease_id', 'id');
+    public function overview(){
+        return $this->belongsTo(Overview::class,'overview_id', 'id');
     }
     public function user(){
         return $this->belongsTo(User::class, 'user_id', 'id');

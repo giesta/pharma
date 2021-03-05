@@ -3,6 +3,7 @@ import TreatmentsDataService from "../../services/treatments/list.service";
 import StarService from "../../services/treatments/stars.service";
 import CommentService from "../../services/treatments/comments.service";
 import DrugsDataService from "../../services/diseases/disease.drug.service";
+import DrugsLeafletsDataService from "../../services/drugs/leaflets.serevice";
 import AuthService from "../../services/auth.service";
 import Spinner from "../layout/spinner.component";
 import DrugInfo from "../drugs/info-modal.component";
@@ -72,6 +73,7 @@ export default function Treatment(props) {
       DrugsDataService.getPublic(id)
         .then(response => {    
           if(response.data.data.length !== 0){
+            console.log(response.data.data);
             setCurrentDrugs(response.data.data);
           }      
         })
@@ -89,7 +91,9 @@ export default function Treatment(props) {
       }
       get
         .then(response => {
+          
           if (response.data.data.length !== 0) {
+            console.log(response.data.data);
             setCurrentTreatment(response.data.data);
             getDrugs(response.data.data.disease.id);
           }else{
@@ -159,6 +163,7 @@ export default function Treatment(props) {
 }
   return (
     <div>
+      {console.log(currentTreatment)}
       {currentTreatment?(
       currentTreatment.disease === null && noData === ''?(        
         <Spinner></Spinner>
@@ -187,7 +192,7 @@ export default function Treatment(props) {
          <ListGroup className="mt-1">
          <ListGroup.Item variant="light">Drugs</ListGroup.Item>
           {currentDrugs.drugs!==undefined&&currentDrugs.drugs.map((field)=>
-         <ListGroup.Item key={field.id} action onClick={function(event){ setDrug(field); setShow(true)}}>{field.name}</ListGroup.Item>
+         <ListGroup.Item key={field.id} action onClick={function(event){ setDrug(field); setShow(true)}}>{field.drug.substance}</ListGroup.Item>
           )}
           </ListGroup>
         </Col>   
@@ -204,8 +209,10 @@ export default function Treatment(props) {
                 {currentTreatment.disease.description}
               <label>
                 <strong>Symptoms:</strong>
-              </label>{" "}
-              <Badge variant="secondary">{currentTreatment.disease.symptoms}</Badge>
+              </label>{" "}{console.log(currentTreatment.disease.symptoms)}
+              
+              
+              {currentTreatment.disease.symptoms.map(item=><Badge variant="secondary">{item.name}</Badge>)}
           </Card.Text>
           </Card.Body>
         </Card>)}
@@ -255,7 +262,7 @@ export default function Treatment(props) {
         </Row>
 
       </div>
-{ show &&<DrugInfo info = {show} drug = {drug} handleCloseInfo={handleClose}></DrugInfo> } 
+{ show &&<DrugInfo info = {show} leaflet = {drug} handleCloseInfo={handleClose}></DrugInfo> } 
   </div>  )
     ):(<div>
       <br />

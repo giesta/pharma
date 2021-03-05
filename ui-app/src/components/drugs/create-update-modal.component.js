@@ -96,10 +96,10 @@ export default function CreateModal(props) {
                         </Form.Control.Feedback>
                         <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>                    
-                    <Form.Group controlId="symptoms"> 
+                    <Form.Group controlId="diseases"> 
                     <Form.Label>Diseases</Form.Label>
                     <AsyncSelect
-                        name="symptoms"
+                        name="diseases"
                         className="basic-multi-select"
                         classNamePrefix="select"
                         isClearable="true"

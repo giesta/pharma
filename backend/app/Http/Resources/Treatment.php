@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\Disease as DiseaseResource;
+use App\Http\Resources\Overview as OverviewResource;
 use App\Http\Resources\Comment as CommentResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Config;
@@ -28,7 +28,7 @@ class Treatment extends JsonResource
             'public' => $this->public,
             'stars' => $this->starsCount(),
             'isStar' => $this->isStarBy(auth()->user()),
-            'disease' => new DiseaseResource($this->disease),
+            'disease' => new OverviewResource($this->overview),
             'comments' => CommentResource::collection($this->comments()->orderBy("id", "desc")->get())
         ];
     }

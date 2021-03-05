@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use App\Models\Treatment;
 use App\Models\User;
-use App\Models\Disease;
+use App\Models\Overview;
 use App\Http\Resources\Treatment as TreatmentResource;
 use App\Http\Requests\TokenRequest;
 use App\Http\Requests\StoreTreatmentRequest;
@@ -120,7 +120,7 @@ class TreatmentController extends Controller
     public function store(StoreTreatmentRequest $request)
     {
         $user = auth()->user();
-        $disease = Disease::findOrFail($request->disease_id);
+        $diseaseOverview = Overview::findOrFail($request->overview_id);
         if(!$request->hasFile('algorithm')) {
             return response()->json(['upload file not found'], 400);
         }
@@ -190,7 +190,7 @@ class TreatmentController extends Controller
             } 
         }else{
             try{
-                $treatment->update($request->only(['title', 'description', 'disease_id', 'public', 'dislikes', 'likes']));
+                $treatment->update($request->only(['title', 'description', 'overview_id', 'public', 'dislikes', 'likes']));
             }
             catch (QueryException $ex) { // Anything that went wrong
                 abort(500, "Could not update Treatment");

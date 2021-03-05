@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use JWTAuth;
 use App\Models\Disease;
+use App\Models\Overview;
 use App\Models\Drug;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -26,13 +27,13 @@ class DiseaseDrugController extends Controller
         if($user !== null){
             $role = $user->roles()->first()->name;
             if($role ==="admin"){
-                return new DiseaseDrugsResource(Disease::with('drugs')->findOrFail($id));
+                return new DiseaseDrugsResource(Overview::with('leaflets')->findOrFail($id));
             }else if($user !== null && $role ==="pharmacist"){
-                return new DiseaseDrugsResource($user->diseases()->with('drugs')->findOrFail($id));
+                return new DiseaseDrugsResource($user->overviews()->with('leaflets')->findOrFail($id));
             }
         }        
         else{
-            return new DiseaseDrugsResource(Disease::with('drugs')->findOrFail($id));
+            return new DiseaseDrugsResource(Overview::with('leaflets')->findOrFail($id));
         }
     }
 

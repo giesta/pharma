@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Modal, Button, Form, Image } from "react-bootstrap";
+import AsyncSelect from 'react-select/async';
 
 export default function CreateModal(props) {
     return (
@@ -8,7 +9,7 @@ export default function CreateModal(props) {
         <Modal.Header closeButton>
             <Modal.Title>Treatment info</Modal.Title>
         </Modal.Header>
-        <Form encType="multipart/form-data" noValidate validated={props.validated} onSubmit={props.handleSubmit}>
+        <Form encType="multipart/form-data" validated={props.validated} onSubmit={props.handleSubmit}>
         <Modal.Body>  
             <Form.Group >   
                 {props.treatment.id===null?(<Form.Control type = "file" id="algorithm"  label="Algorithm" required onChange={props.handleInputChange} name="algorithm"/> ):(<Form.Control type = "file" id="algorithm"  label="Algorithm" onChange={props.handleInputChange} name="algorithm"/> )}         
@@ -38,32 +39,38 @@ export default function CreateModal(props) {
             <Form.Check  label={"Public"} checked={parseInt(props.treatment.public)} onChange={props.handleChecked} name="public"/>
             
         </Form.Group>
-    {props.treatment.disease!==null?(
-        <Form.Group controlId="disease">
-            <Form.Label>Disease</Form.Label>     
-            <Form.Control as="select" required defaultValue={props.treatment.disease.id} onChange={props.handleInputChange} name="disease_id"> 
-                {props.Diseases.data.map((x)=>
-                    <option key={x.id} value={x.id}>{x.name}</option>
-                )}
-            </Form.Control>
-            <Form.Control.Feedback type="invalid">
-                Description is a required field.
-            </Form.Control.Feedback>
-        </Form.Group>
-    ):(      
-        <Form.Group controlId="disease">
-            <Form.Label>Disease</Form.Label>
-            <Form.Control as="select" required onChange={props.handleInputChange} name="disease_id" defaultValue={'DEFAULT'}> 
-                <option value="DEFAULT" disabled>Select your option</option>
-                {props.Diseases.data.map((x)=>
-                    <option key={x.id} value={x.id}>{x.name}</option>
-                )}
-            </Form.Control>
-            <Form.Control.Feedback type="invalid">
-                Disease is a required field.
-            </Form.Control.Feedback>
-            <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-        </Form.Group>)}  
+    
+        <Form.Group controlId="diseases"> 
+            <Form.Label>Diseases</Form.Label>
+            <AsyncSelect
+                name="diseases"
+                ref={props.setSelectRef}
+                className="basic-multi-select"
+                classNamePrefix="select"
+                isClearable="true"
+                cacheOptions
+                defaultOptions
+                loadOptions={props.loadOptions}
+                onChange={props.handleOverviewsInputChange}
+                defaultValue={props.treatment.disease!==null?({value: props.treatment.disease, label: props.treatment.disease.name}):('')}
+            /> 
+            <Form.Control
+                type="text"
+                tabIndex={-1}
+                autoComplete="off"
+                style={{
+                opacity: 0,
+                width: "100%",
+                height: 0,
+                position: "absolute"
+                }}
+                required
+                onFocus={() => props.selectRef.focus()}
+                value = {props.treatment.disease || ""}
+                onChange={props.handleOverviewsInputChange}
+            />
+        </Form.Group> 
+     
         </Modal.Body>
         <Modal.Footer>
             <Button variant="secondary" onClick={props.handleClose}>

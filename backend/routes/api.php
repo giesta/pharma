@@ -60,6 +60,7 @@ Route::group(['middleware' => 'jwt.auth',
     
     Route::get('diseases/list', 'DiseaseController@list'); 
     Route::get('drugs/list', 'DrugController@list');
+    Route::get('drugs/imports', 'DrugController@imports');
     Route::get('leaflets/list', 'LeafletController@list');
     Route::get('overviews/list', 'OverviewController@list');
      

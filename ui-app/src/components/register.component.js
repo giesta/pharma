@@ -139,7 +139,7 @@ renderRedirect = () => {
       ).then(
         response => {
           this.setState({
-            message: response.data.user.name,
+            message: [response.data.user.name],
             successful: true
           });
           this.setRedirect();
@@ -250,6 +250,7 @@ renderRedirect = () => {
                   }
                   role="alert"
                 >
+                  {console.log("n: " + this.state.message)}
                   {this.state.message.map(item=>item)}
                 </div>
               </div>

@@ -33,6 +33,9 @@ const findByTitle = (pageNumber, name) => {
 const findBySubstance = (name) => {
   return http.get(`/drugs/?name=${name}`);
 };
+const imports = () => {
+  return http.get(`/drugs/imports`);
+};
 
 const services = {
   getAll,
@@ -43,7 +46,8 @@ const services = {
   remove,
   removeAll,
   findByTitle,
-  findBySubstance
+  findBySubstance,
+  imports
 };
 
 export default services;

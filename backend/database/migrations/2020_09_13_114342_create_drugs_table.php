@@ -15,22 +15,15 @@ class CreateDrugsTable extends Migration
     {
         Schema::create('drugs', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('substance');
-            $table->string('substance_en');
-            $table->string('ATC');
-            $table->string('strength');
-            $table->string('form');
-            $table->string('package');
-            $table->string('package_description');
-            $table->unsignedBigInteger('user_id');
+            $table->text('name');
+            $table->text('substance');
+            $table->text('substance_en')->nullable();
+            $table->string('ATC')->nullable();
+            $table->text('strength')->nullable();
+            $table->text('form')->nullable();
+            $table->text('package')->nullable();
+            $table->text('package_description')->nullable();
             $table->timestamps();
-
-            $table->index('user_id');
-            $table->foreign('user_id')
-                ->references('id')->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('no action');
         });
     }
 

@@ -44,26 +44,16 @@ class DiseaseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreDiseaseRequest $request)
+    public function store(Request $request)
     {
         $user = auth()->user();
-
         $diseasesArr = json_decode($request->diseases);
-        $count = $this->makeDiseasesArray($diseasesArr);
+        $data = $this->makeDiseasesArray($diseasesArr);
+        DB::table('diseases')->insert($data);
         return response()->json([
             'success' => true,
-            'data' => $count,
+            'data' => count($data),
         ], Response::HTTP_OK);
-        /*try{
-            $disease = Disease::create(array_merge($request->all(), ['user_id' => $user->id]));
-            $disease->leaflets()->attach(json_decode($request->drugs));
-            $disease->symptoms()->attach(json_decode($request->symptoms));
-        }catch (QueryException $ex) { // Anything that went wrong
-            abort(500, $ex->getMessage());
-        }
-        return new DiseaseResource(
-            $user->diseases()->with('leaflets')->findOrFail($disease->id)
-        );*/
 
     }
 
@@ -137,12 +127,9 @@ class DiseaseController extends Controller
         {
             $data[] = [
             'name' => $diseasesArr[$i]->data->{'Pavadinimas'},
+            'created_at' => date("Y-m-d H:i:s"),
             ];          
-        }
-        //$values = array_values( $data );
-        //$newArray = array_combine( $newKeys, $values );
-        DB::table('diseases')->insert($data);
-        
+        }        
         return $data;
     }
 }

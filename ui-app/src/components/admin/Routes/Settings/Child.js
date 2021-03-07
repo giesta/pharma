@@ -3,10 +3,12 @@ import UploadCSV from "../../../drugs/uploadCSV.component";
 import DrugsDataService from "../../../../services/drugs/list.service";
 import SymptomsDataService from "../../../../services/diseases/symptoms.service";
 import DiseasesDataService from "../../../../services/diseases/list.service";
+import { Alert } from "react-bootstrap";
 
 function Child()  {
   const [drugs, setDrugs] = React.useState([]);
   const [symptoms, setSymptoms] = React.useState([]);
+  const [text, setText] = React.useState("");
 
   const saveDrugs = () => {
     console.log(drugs)
@@ -18,6 +20,7 @@ function Child()  {
       .then(response => {
         console.log("--------------Veikia----------");
         console.log(response.data);
+        setText("Added " + response.data.data + " new items ");
       })
       .catch(e => {
         console.log(e);
@@ -35,6 +38,7 @@ function Child()  {
       .then(response => {
         console.log("--------------Veikia simptomai----------");
         console.log(response.data);
+        setText("Added " + response.data.data + " new items ");
       })
       .catch(e => {
         console.log(e);
@@ -51,6 +55,7 @@ function Child()  {
       .then(response => {
         console.log("--------------Veikia ligos----------");
         console.log(response.data);
+        setText("Added " + response.data.data + " new items ");
       })
       .catch(e => {
         console.log(e);
@@ -82,7 +87,8 @@ function Child()  {
     return (
       <React.Fragment>
         <section className="kanban__nav">
-          <div className="kanban__nav-wrapper">
+          <div>{text!==""?(<Alert variant={'success'}>{text}</Alert>):('')}</div>
+          <div className="kanban__nav-wrapper">          
             <div className="kanban__nav-name">
               <div className="kanban-name">Studio Settings</div>                
             </div>

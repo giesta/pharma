@@ -35,10 +35,11 @@ class SymptomController extends Controller
     {
         $user = auth()->user();
         $symptomsArr = json_decode($request->symptoms);
-        $count = $this->makeSymptomsArray($symptomsArr);
+        $data = $this->makeSymptomsArray($symptomsArr);
+        DB::table('symptoms')->insert($data);
         return response()->json([
             'success' => true,
-            'data' => $count,
+            'data' => count($data),
         ], Response::HTTP_OK);
     }
     private function makeSymptomsArray($symptomsArr){
@@ -48,12 +49,9 @@ class SymptomController extends Controller
         {
             $data[] = [
             'name' => $symptomsArr[$i]->data->{'Pavadinimas'},
+            'created_at' => date("Y-m-d H:i:s"),
             ];          
-        }
-        //$values = array_values( $data );
-        //$newArray = array_combine( $newKeys, $values );
-        DB::table('symptoms')->insert($data);
-        
+        }        
         return $data;
     }
 }

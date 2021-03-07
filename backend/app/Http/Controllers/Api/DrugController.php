@@ -75,26 +75,13 @@ class DrugController extends ApiController
     public function store(JsonImportRequest  $request)
     {
         $user = auth()->user();
-
-        //$drug = Drug::create(array_merge($request->all(), ['user_id' => $user->id]));
-        //ini_set('memory_limit','1024M');
         $drugsArr = json_decode($request->drugs);
-        $count = $this->makeDrugsArray($drugsArr, $user);
+        $values = $this->makeDrugsArray($drugsArr, $user);
+        DB::table('drugs')->insert($values);
         return response()->json([
             'success' => true,
-            'data' => $count,
+            'data' => count($values),
         ], Response::HTTP_OK);
-        
-        /*
-        try{
-            $drug = Drug::create(array_merge($request->all(), ['user_id' => $user->id]));  
-            $drug->diseases()->attach(json_decode($request->diseases));      
-        }catch (QueryException $ex) { // Anything that went wrong
-            abort(500, "Could not create Drug");
-        }
-        return new DrugResource(
-            $user->drugs()->with('diseases')->findOrFail($drug->id)
-        );*/
     }
 
     /**
@@ -183,14 +170,11 @@ class DrugController extends ApiController
                 'form' => $drugsArr[$i]->data->{'Farmacinė forma'},
                 'package' => $drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'},
                 'package_description' => $drugsArr[$i]->data->{'(pakuotės) Aprašymas'},
-                'user_id' => $user->id
+                'created_at' => date("Y-m-d H:i:s"),
                 ];
             }            
         }
-        $values = array_values( $data );
-        //$newArray = array_combine( $newKeys, $values );
-        DB::table('drugs')->insert($values);
-        
-        return array_splice($values,-100);
+        $values = array_values( $data );       
+        return $values;
     }
 }

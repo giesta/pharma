@@ -16,7 +16,7 @@ class CreateTreatmentsTable extends Migration
         Schema::create('treatments', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('description');
+            $table->text('description');
             $table->string('algorithm');
             $table->integer('public')->default(0);
             $table->unsignedBigInteger('user_id');

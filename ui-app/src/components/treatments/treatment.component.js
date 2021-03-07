@@ -3,7 +3,7 @@ import TreatmentsDataService from "../../services/treatments/list.service";
 import StarService from "../../services/treatments/stars.service";
 import CommentService from "../../services/treatments/comments.service";
 import DrugsDataService from "../../services/diseases/disease.drug.service";
-import DrugsLeafletsDataService from "../../services/drugs/leaflets.serevice";
+import DateParser from "../../services/parseDate.service";
 import AuthService from "../../services/auth.service";
 import Spinner from "../layout/spinner.component";
 import DrugInfo from "../drugs/info-modal.component";
@@ -136,31 +136,7 @@ export default function Treatment(props) {
       console.log(e);
     });
   }
-  const getParsedDate = (strDate)=>{
-    var strSplitDate = String(strDate).split(' ');
-    var date = new Date(strSplitDate[0]);
-    
-    var dd = date.getDate();
-    var mm = date.getMonth() + 1; //January is 0!
-    var hh = date.getHours();
-    var min = date.getMinutes();
-
-    var yyyy = date.getFullYear();
-    if (dd < 10) {
-        dd = '0' + dd;
-    }
-    if (mm < 10) {
-        mm = '0' + mm;
-    }
-    if (hh < 10) {
-      hh = '0' + hh;
-    }
-    if (min < 10) {
-      min = '0' + min;
-    }
-    date =  yyyy + "-" + mm + "-" + dd + " " + hh + ":" + min;
-    return date.toString();
-}
+  
   return (
     <div>
       {console.log(currentTreatment)}
@@ -249,7 +225,7 @@ export default function Treatment(props) {
                   <div className="w-75">
                     <Row>
                       <Col className="col-md-auto"><h5>{field.name+" "}</h5></Col>
-                      <Col><h6>{ getParsedDate(field.created_at)}</h6></Col>
+                      <Col><h6>{ DateParser.getParsedDate(field.created_at)}</h6></Col>
                     </Row>                    
                     <p>{field.content}</p>
                   </div>

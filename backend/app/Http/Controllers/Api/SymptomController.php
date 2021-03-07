@@ -42,6 +42,12 @@ class SymptomController extends Controller
             'data' => count($data),
         ], Response::HTTP_OK);
     }
+    /**
+     * Make the specified array
+     * 
+     * @param array $symptomsArr
+     * @return array
+     */
     private function makeSymptomsArray($symptomsArr){
 
         $data = [];
@@ -53,5 +59,39 @@ class SymptomController extends Controller
             ];          
         }        
         return $data;
+    }
+    /**
+     * Returns when it was created and updated.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function report()
+    {
+        $user = auth()->user();
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
+
+            $symptom = Symptom::orderBy('updated_at', 'desc')->first();
+            if($symptom !== null){
+                return response()->json([
+                'success' => true,
+                'data' => [
+                    'created_at' => $symptom->created_at,
+                    'updated_at' => $symptom->updated_at,
+                    ],
+                ], Response::HTTP_OK);
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'data' => 'Not Found',
+                ], Response::HTTP_OK);
+            }
+            
+        }
+        return response()->json([
+            'success' => false,
+            'data' => 'Restricted permission',
+        ], Response::HTTP_OK);       
     }
 }

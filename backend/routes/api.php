@@ -59,10 +59,12 @@ Route::group(['middleware' => 'jwt.auth',
 ], function () {
     
     Route::get('diseases/list', 'DiseaseController@list'); 
+    Route::get('diseases/reports', 'DiseaseController@report'); 
     Route::get('drugs/list', 'DrugController@list');
-    Route::get('drugs/imports', 'DrugController@imports');
+    Route::get('drugs/reports', 'DrugController@report');
     Route::get('leaflets/list', 'LeafletController@list');
     Route::get('overviews/list', 'OverviewController@list');
+    Route::get('symptoms/reports', 'DiseaseController@report'); 
      
     Route::get('users/list', 'UserController@list'); 
     Route::apiResource('diseases', DiseaseController::class); 

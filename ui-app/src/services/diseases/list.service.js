@@ -31,6 +31,10 @@ const findByTitle = (name) => {
   return http.get(`/diseases/list?name=${name}`);
 };
 
+const reports = () => {
+  return http.get(`/diseases/reports`);
+};
+
 const services = {
   getAll,
   getAllPaginate,
@@ -39,7 +43,8 @@ const services = {
   update,
   remove,
   removeAll,
-  findByTitle
+  findByTitle,
+  reports
 };
 
 export default services;

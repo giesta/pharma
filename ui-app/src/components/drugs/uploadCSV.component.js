@@ -17,6 +17,7 @@ export default function CSVReader2(props) {
     </div>
           <div class="col-6 col-sm-3">
             <h5>{props.title} </h5>
+            <h6>{props.updated} </h6>
           </div>
           <div class="col-6 col-sm-3">
             <CSVReader

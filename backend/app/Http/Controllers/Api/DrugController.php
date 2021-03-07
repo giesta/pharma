@@ -76,7 +76,7 @@ class DrugController extends ApiController
     {
         $user = auth()->user();
         $drugsArr = json_decode($request->drugs);
-        $values = $this->makeDrugsArray($drugsArr, $user);
+        $values = $this->makeDrugsArray($drugsArr);
         DB::table('drugs')->insert($values);
         return response()->json([
             'success' => true,
@@ -149,7 +149,13 @@ class DrugController extends ApiController
         $drug->delete();
         return response()->noContent();        
     }
-    private function makeDrugsArray($drugsArr, $user){
+    /**
+     * Make the specified array
+     * 
+     * @param array $drugsArr
+     * @return array
+     */
+    private function makeDrugsArray($drugsArr){
 
         $data = [];
         for ($i = 0; $i < count($drugsArr)-1; $i++)
@@ -176,5 +182,39 @@ class DrugController extends ApiController
         }
         $values = array_values( $data );       
         return $values;
+    }
+    /**
+     * Return when it was created and updated.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function report()
+    {
+        $user = auth()->user();
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
+
+            $drug = Drug::orderBy('updated_at', 'desc')->first();
+            if($drug !== null){
+                return response()->json([
+                'success' => true,
+                'data' => [
+                    'created_at' => $drug->created_at,
+                    'updated_at' => $drug->updated_at,
+                    ],
+                ], Response::HTTP_OK);
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'data' => 'Not Found',
+                ], Response::HTTP_OK);
+            }
+            
+        }
+        return response()->json([
+            'success' => false,
+            'data' => 'Restricted permission',
+        ], Response::HTTP_OK);       
     }
 }

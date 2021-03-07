@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import UploadCSV from "../../../drugs/uploadCSV.component";
+import DateParser from "../../../../services/parseDate.service";
 import DrugsDataService from "../../../../services/drugs/list.service";
 import SymptomsDataService from "../../../../services/diseases/symptoms.service";
 import DiseasesDataService from "../../../../services/diseases/list.service";
@@ -9,6 +10,58 @@ function Child()  {
   const [drugs, setDrugs] = React.useState([]);
   const [symptoms, setSymptoms] = React.useState([]);
   const [text, setText] = React.useState("");
+  const [drugsUpdated, setDrugsUpdated] = React.useState("");
+  const [symptomsUpdated, setSymptomsUpdated] = React.useState("");
+  const [diseasesUpdated, setDiseasesUpdated] = React.useState("");
+
+  const drugsReports = () => {        
+      DrugsDataService.reports()
+      .then(response => {
+        if(response.data.success){
+          if(response.data.data.updated_at !== null){
+            setDrugsUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
+          }else{
+            setDrugsUpdated("Last update " + DateParser.getParsedDate(response.data.data.created_at));
+          }           
+        } 
+        symptomsReports(); 
+        diseasesReports();      
+      })
+      .catch(e => {
+        console.log(e);
+      });   
+  };
+  const symptomsReports = () => {        
+    SymptomsDataService.reports()
+    .then(response => {
+      if(response.data.success){
+        if(response.data.data.updated_at !== null){
+          setSymptomsUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
+        }else{
+          setSymptomsUpdated("Last update " + DateParser.getParsedDate(response.data.data.created_at));
+        }           
+      }        
+    })
+    .catch(e => {
+      console.log(e);
+    });   
+};
+const diseasesReports = () => {        
+  DiseasesDataService.reports()
+  .then(response => {
+    if(response.data.success){
+      if(response.data.data.updated_at !== null){
+        setDiseasesUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
+      }else{
+        setDiseasesUpdated("Last update " + DateParser.getParsedDate(response.data.data.created_at));
+      }           
+    }        
+  })
+  .catch(e => {
+    console.log(e);
+  });   
+};
+  useEffect(drugsReports,[]);
 
   const saveDrugs = () => {
     console.log(drugs)
@@ -96,11 +149,41 @@ function Child()  {
           </div>
         </section>
         <section className="kanban__main">          
-          <div className="ml-1 kanban__main-wrapper"><UploadCSV buttonTitle="Import Drugs" title="Upload Drugs" save={saveDrugs} handleOnDrop={handleOnDropDrugs} handleOnError={handleOnError} handleOnRemoveFile={handleOnRemoveFile}/></div>
+          <div className="ml-1 kanban__main-wrapper">
+            <UploadCSV 
+              buttonTitle={drugsUpdated===""?("Import Diseases"):("Update Diseases") } 
+              updated ={drugsUpdated}
+              title="Upload Drugs" 
+              save={saveDrugs} 
+              handleOnDrop={handleOnDropDrugs} 
+              handleOnError={handleOnError} 
+              handleOnRemoveFile={handleOnRemoveFile}
+            />
+          </div>
         
-          <div className="ml-1 mt-4 kanban__main-wrapper"><UploadCSV buttonTitle="Import Symptoms" title="Upload Symptoms" save={saveSymptoms} handleOnDrop={handleOnDropSymptoms} handleOnError={handleOnError} handleOnRemoveFile={handleOnRemoveFile}/></div>
+          <div className="ml-1 mt-4 kanban__main-wrapper">
+            <UploadCSV 
+              buttonTitle={symptomsUpdated===""?("Import Symptoms"):("Update Symptoms") } 
+              updated={symptomsUpdated}
+              title="Upload Symptoms" 
+              save={saveSymptoms} 
+              handleOnDrop={handleOnDropSymptoms} 
+              handleOnError={handleOnError} 
+              handleOnRemoveFile={handleOnRemoveFile}
+            />
+          </div>
         
-          <div className="ml-1 mt-4 kanban__main-wrapper"><UploadCSV buttonTitle="Import Diseases" title="Upload Diseases" save={saveDiseases} handleOnDrop={handleOnDropSymptoms} handleOnError={handleOnError} handleOnRemoveFile={handleOnRemoveFile}/></div>
+          <div className="ml-1 mt-4 kanban__main-wrapper">
+            <UploadCSV 
+              buttonTitle={diseasesUpdated===""?("Import Diseases"):("Update Diseases") }
+              updated={diseasesUpdated}
+              title="Upload Diseases" 
+              save={saveDiseases} 
+              handleOnDrop={handleOnDropSymptoms} 
+              handleOnError={handleOnError} 
+              handleOnRemoveFile={handleOnRemoveFile}
+            />
+          </div>
         </section>
       </React.Fragment>
     );

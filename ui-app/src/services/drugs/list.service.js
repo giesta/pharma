@@ -33,8 +33,8 @@ const findByTitle = (pageNumber, name) => {
 const findBySubstance = (name) => {
   return http.get(`/drugs/?name=${name}`);
 };
-const imports = () => {
-  return http.get(`/drugs/imports`);
+const reports = () => {
+  return http.get(`/drugs/reports`);
 };
 
 const services = {
@@ -47,7 +47,7 @@ const services = {
   removeAll,
   findByTitle,
   findBySubstance,
-  imports
+  reports
 };
 
 export default services;

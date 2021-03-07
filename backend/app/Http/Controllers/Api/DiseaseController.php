@@ -120,6 +120,12 @@ class DiseaseController extends Controller
 
         return response()->noContent();
     }
+    /**
+     * Make the specified array
+     * 
+     * @param array $diseasesArr
+     * @return array
+     */
     private function makeDiseasesArray($diseasesArr){
 
         $data = [];
@@ -131,5 +137,38 @@ class DiseaseController extends Controller
             ];          
         }        
         return $data;
+    }
+    /**
+     * Returns when it was created and updated.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function report()
+    {
+        $user = auth()->user();
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
+
+            $disease = Disease::orderBy('updated_at', 'desc')->first();
+            if($disease !== null){
+                return response()->json([
+                'success' => true,
+                'data' => [
+                    'created_at' => $disease->created_at,
+                    'updated_at' => $disease->updated_at,
+                    ],
+                ], Response::HTTP_OK);
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'data' => 'Not Found',
+                ], Response::HTTP_OK);
+            }            
+        }
+        return response()->json([
+            'success' => false,
+            'data' => 'Restricted permission',
+        ], Response::HTTP_OK);       
     }
 }

@@ -60,11 +60,17 @@ Route::group(['middleware' => 'jwt.auth',
     
     Route::get('diseases/list', 'DiseaseController@list'); 
     Route::get('diseases/reports', 'DiseaseController@report'); 
+    Route::put('diseases', 'DiseaseController@updateList');
+
     Route::get('drugs/list', 'DrugController@list');
     Route::get('drugs/reports', 'DrugController@report');
+    Route::put('drugs', 'DrugController@updateList');
+
     Route::get('leaflets/list', 'LeafletController@list');
     Route::get('overviews/list', 'OverviewController@list');
-    Route::get('symptoms/reports', 'DiseaseController@report'); 
+
+    Route::get('symptoms/reports', 'SymptomController@report'); 
+    Route::put('symptoms', 'SymptomController@updateList');
      
     Route::get('users/list', 'UserController@list'); 
     Route::apiResource('diseases', DiseaseController::class); 

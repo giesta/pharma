@@ -166,12 +166,9 @@ export default function DrugsList() {
   const loadOptions = (inputValue, callback) => {
     DiseaseOverviewsDataService.findByName(inputValue)
       .then(response => {
-        if (response.data.data.length !== 0) {
           console.log(response.data.data);
           const result = response.data.data.map(x => makeOptions(x));          
           callback(result);
-        }
-
       })
       .catch(e => {
         setError(true);
@@ -180,16 +177,13 @@ export default function DrugsList() {
   };
   const loadDrugsOptions = (inputValue, callback) => {
     DrugsDataService.findBySubstance(inputValue)
-      .then(response => {
-        if (response.data.data.length !== 0) {
-          console.log(response.data.data);
-          const result = response.data.data.map(x => {
-            return { value: x, label: x.substance }
-          }
-            );          
-          callback(result);
+      .then(response => {        
+        console.log(response.data.data);
+        const result = response.data.data.map(x => {
+          return { value: x, label: x.substance }
         }
-
+          );          
+        callback(result);
       })
       .catch(e => {
         setError(true);
@@ -203,8 +197,7 @@ function makeOptions(field){
     return { value: field.id, label: field.drug.substance };
   }
   
-} 
-  
+}   
   
   const handleOverviewsInputChange = event =>
     {

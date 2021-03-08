@@ -132,12 +132,7 @@ export default function DiseasesList() {
     data: [],
   });
   const [overviews, setOverviews] = React.useState([]);
-
-  /*const AddSelectedLeaflets = event => {
-    
-    const selectedLeaflets = [...event.target.selectedOptions].map(o => o.value)
-    setSelectedLeaflets(selectedLeaflets);console.log(selectedLeaflets);
-  };*/
+  
   const handleInputChange = event => {
     const { name, value } = event.target;
     setDisease({ ...disease,  [name]: value});   
@@ -145,13 +140,11 @@ export default function DiseasesList() {
 
   const loadDrugsOptions = (inputValue, callback) => {    
       DrugsLeafletsDataService.findBySubstance(inputValue)
-        .then(response => {        
-          if(response.data.data.length !== 0){
+        .then(response => {
             setLeaflets(response.data.data);
             console.log(response.data.data);
             const result = response.data.data.map(x => makeOptions(x));          
-           callback(result);
-          }        
+           callback(result);      
         })
         .catch(e => {
           console.log(e);
@@ -161,12 +154,9 @@ export default function DiseasesList() {
   const loadOptions = (inputValue, callback) => {
     SymptomsDataService.findByTitle(inputValue)
       .then(response => {
-        if (response.data.data.length !== 0) {
           console.log(response.data.data);
           const result = response.data.data.map(x => makeOptions(x));          
           callback(result);
-        }
-
       })
       .catch(e => {
         setError(true);
@@ -177,12 +167,9 @@ export default function DiseasesList() {
   const loadDiseasesOptions = (inputValue, callback) => {
     diseasesDataService.findByTitle(inputValue)
       .then(response => {
-        if (response.data.data.length !== 0) {
           console.log(response.data.data);
           const result = response.data.data.map(x => makeOptions(x));          
           callback(result);
-        }
-
       })
       .catch(e => {
         setError(true);

@@ -9,9 +9,11 @@ export default function CSVReader2(props) {
       <div className="container">
         <div className="row">
         <div className="col-6 col-sm-3">
-          <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
+          <button type="button" disabled={props.loading} className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
             function(event){props.save()}}>
-              {props.buttonTitle}
+              {props.loading && (
+                  <span className="spinner-border spinner-border-sm"></span>
+                )} {props.buttonTitle}
           </button>
           
     </div>

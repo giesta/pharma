@@ -9,15 +9,20 @@ import { Alert } from "react-bootstrap";
 function Child()  {
   const [drugs, setDrugs] = React.useState([]);
   const [symptoms, setSymptoms] = React.useState([]);
+  const [diseases, setDiseases] = React.useState([]);
   const [text, setText] = React.useState("");
   const [drugsUpdated, setDrugsUpdated] = React.useState("");
   const [symptomsUpdated, setSymptomsUpdated] = React.useState("");
   const [diseasesUpdated, setDiseasesUpdated] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [loadingSymptoms, setLoadingSymptoms] = React.useState(false);
+  const [loadingDiseases, setLoadingDiseases] = React.useState(false);
 
   const drugsReports = () => {        
       DrugsDataService.reports()
       .then(response => {
         if(response.data.success){
+          console.log(response.data.data.created_at);
           if(response.data.data.updated_at !== null){
             setDrugsUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
           }else{
@@ -25,7 +30,9 @@ function Child()  {
           }           
         } 
         symptomsReports(); 
-        diseasesReports();      
+        diseasesReports();  
+         
+          
       })
       .catch(e => {
         console.log(e);
@@ -35,12 +42,11 @@ function Child()  {
     SymptomsDataService.reports()
     .then(response => {
       if(response.data.success){
-        if(response.data.data.updated_at !== null){
-          setSymptomsUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
-        }else{
+        console.log(response.data.data.created_at);
+        if(response.data.data.created_at !== null){         
           setSymptomsUpdated("Last update " + DateParser.getParsedDate(response.data.data.created_at));
         }           
-      }        
+      }      
     })
     .catch(e => {
       console.log(e);
@@ -50,12 +56,12 @@ const diseasesReports = () => {
   DiseasesDataService.reports()
   .then(response => {
     if(response.data.success){
-      if(response.data.data.updated_at !== null){
-        setDiseasesUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
-      }else{
+      console.log(response.data.data.created_at);
+      if(response.data.data.created_at !== null){
         setDiseasesUpdated("Last update " + DateParser.getParsedDate(response.data.data.created_at));
       }           
-    }        
+    }  
+    console.log(diseasesUpdated);       
   })
   .catch(e => {
     console.log(e);
@@ -67,6 +73,7 @@ const diseasesReports = () => {
     console.log(drugs)
     const data = new FormData();
     data.append('drugs', JSON.stringify(drugs));
+    setLoading(true);
     if(drugs.length > 0){ 
       console.log(data);     
       DrugsDataService.create(data)
@@ -74,6 +81,28 @@ const diseasesReports = () => {
         console.log("--------------Veikia----------");
         console.log(response.data);
         setText("Added " + response.data.data + " new items ");
+        setLoading(false);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+    }    
+  };
+  const updateDrugs = () => {
+    //console.log(drugs)
+    setLoading(true);
+    const data = new FormData();
+    data.append('drugs', JSON.stringify(drugs));
+    data.append('_method', 'PUT');
+    if(drugs.length > 0){ 
+      console.log(data);     
+      DrugsDataService.create(data)
+      .then(response => {
+        console.log("--------------Veikia atnaujinimas----------");
+        console.log(response.data);
+        setText("Added " + response.data.data.added + " new items and updated " + response.data.data.updated + " items");
+        setDrugsUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
+        setLoading(false);
       })
       .catch(e => {
         console.log(e);
@@ -98,17 +127,61 @@ const diseasesReports = () => {
       });
     }    
   };
-  const saveDiseases = () => {
-    console.log(symptoms)
+  const updateSymptoms = () => {
+    //console.log(drugs)
+    setLoadingSymptoms(true);
     const data = new FormData();
-    data.append('diseases', JSON.stringify(symptoms));
+    data.append('symptoms', JSON.stringify(symptoms));
+    data.append('_method', 'PUT');
     if(symptoms.length > 0){ 
+      console.log(data);     
+      SymptomsDataService.create(data)
+      .then(response => {
+        console.log("--------------Veikia atnaujinimas----------");
+        console.log(response.data);
+        setText("Added " + response.data.data.added + " new items and updated " + response.data.data.updated + " items");
+        setSymptomsUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
+        setLoadingSymptoms(false);
+        console.log(symptomsUpdated);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+    }    
+  };
+  const saveDiseases = () => {
+    console.log(diseases)
+    const data = new FormData();
+    data.append('diseases', JSON.stringify(diseases));
+    if(diseases.length > 0){ 
       console.log(data);     
       DiseasesDataService.create(data)
       .then(response => {
         console.log("--------------Veikia ligos----------");
         console.log(response.data);
         setText("Added " + response.data.data + " new items ");
+      })
+      .catch(e => {
+        console.log(e);
+      });
+    }    
+  };
+  const updateDiseases = () => {
+    //console.log(drugs)
+    setLoadingDiseases(true);
+    const data = new FormData();
+    data.append('diseases', JSON.stringify(diseases));
+    data.append('_method', 'PUT');
+    if(diseases.length > 0){ 
+      console.log(data);     
+      DiseasesDataService.create(data)
+      .then(response => {
+        console.log("--------------Veikia atnaujinimas----------");
+        console.log(response.data);
+        setText("Added " + response.data.data.added + " new items and updated " + response.data.data.updated + " items");
+        setDiseasesUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
+        setLoadingDiseases(false);
+        console.log(diseasesUpdated);
       })
       .catch(e => {
         console.log(e);
@@ -125,6 +198,12 @@ const diseasesReports = () => {
     console.log('---------------------------');
     console.log(data);
     setSymptoms(data);
+    console.log('---------------------------');
+  };
+  const handleOnDropDiseases = (data) => {
+    console.log('---------------------------');
+    console.log(data);
+    setDiseases(data);
     console.log('---------------------------');
   };
 
@@ -151,10 +230,11 @@ const diseasesReports = () => {
         <section className="kanban__main">          
           <div className="ml-1 kanban__main-wrapper">
             <UploadCSV 
-              buttonTitle={drugsUpdated===""?("Import Diseases"):("Update Diseases") } 
+              buttonTitle={drugsUpdated===""?("Import Drugs"):("Update Drugs") } 
               updated ={drugsUpdated}
+              loading = {loading}
               title="Upload Drugs" 
-              save={saveDrugs} 
+              save={drugsUpdated===""?(saveDrugs):(updateDrugs)} 
               handleOnDrop={handleOnDropDrugs} 
               handleOnError={handleOnError} 
               handleOnRemoveFile={handleOnRemoveFile}
@@ -166,7 +246,8 @@ const diseasesReports = () => {
               buttonTitle={symptomsUpdated===""?("Import Symptoms"):("Update Symptoms") } 
               updated={symptomsUpdated}
               title="Upload Symptoms" 
-              save={saveSymptoms} 
+              loading = {loadingSymptoms}
+              save={symptomsUpdated===""?(saveSymptoms):(updateSymptoms)} 
               handleOnDrop={handleOnDropSymptoms} 
               handleOnError={handleOnError} 
               handleOnRemoveFile={handleOnRemoveFile}
@@ -178,8 +259,9 @@ const diseasesReports = () => {
               buttonTitle={diseasesUpdated===""?("Import Diseases"):("Update Diseases") }
               updated={diseasesUpdated}
               title="Upload Diseases" 
-              save={saveDiseases} 
-              handleOnDrop={handleOnDropSymptoms} 
+              loading = {loadingDiseases}
+              save={diseasesUpdated===""?(saveDiseases):(updateDiseases)} 
+              handleOnDrop={handleOnDropDiseases} 
               handleOnError={handleOnError} 
               handleOnRemoveFile={handleOnRemoveFile}
             />

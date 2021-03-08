@@ -181,16 +181,12 @@ export default function TreatmentList() {
 const loadOptions = (inputValue, callback) => {
   DiseaseOverviewsDataService.findByName(inputValue)
     .then(response => {
-      if (response.data.data.length !== 0) {
-        console.log(response.data.data);
-        const result = response.data.data.map(x => 
-          {
-            return { value: x, label: x.name }
-          }
-        );          
-        callback(result);
-      }
-
+      const result = response.data.data.map(x => 
+        {
+          return { value: x, label: x.name }
+        }
+      );          
+      callback(result);
     })
     .catch(e => {
       setError(true);
@@ -215,8 +211,6 @@ const handleOverviewsInputChange = event =>
       disease: selected
     });
   }
-  //const val = event.value;
-  //setSelectedOverviews(val);
 };
 
 const deleteItemFromState = (id) => {

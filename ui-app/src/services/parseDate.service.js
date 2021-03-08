@@ -1,7 +1,6 @@
 
 
   const getParsedDate = (strDate)=>{
-      console.log(strDate);
     var strSplitDate = String(strDate).split(' ');
     var date = new Date(strSplitDate[0]);
     

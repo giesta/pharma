@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Validator;
 use \Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Arr;
 
 class DrugController extends ApiController
 {
@@ -76,7 +77,7 @@ class DrugController extends ApiController
     {
         $user = auth()->user();
         $drugsArr = json_decode($request->drugs);
-        $values = $this->makeDrugsArray($drugsArr);
+        $values = array_values($this->makeDrugsArray($drugsArr, 'created_at'));
         DB::table('drugs')->insert($values);
         return response()->json([
             'success' => true,
@@ -155,7 +156,7 @@ class DrugController extends ApiController
      * @param array $drugsArr
      * @return array
      */
-    private function makeDrugsArray($drugsArr){
+    private function makeDrugsArray($drugsArr, $op_field){
 
         $data = [];
         for ($i = 0; $i < count($drugsArr)-1; $i++)
@@ -166,7 +167,7 @@ class DrugController extends ApiController
                 $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['form'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['form']),strtolower($drugsArr[$i]->data->{'Farmacinė forma'})) === false) ? $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['form'].";".$drugsArr[$i]->data->{'Farmacinė forma'} : $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['form'];
                 $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package']),strtolower($drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'})) === false) ? $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package'].";".$drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'} : $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package'];
                 $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package_description'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package_description']),strtolower($drugsArr[$i]->data->{'(pakuotės) Aprašymas'})) === false) ? $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package_description'].";".$drugsArr[$i]->data->{'(pakuotės) Aprašymas'} : $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['package_description'];
-            }else{
+            }elseif($drugsArr[$i]->data->{'VID'}!==""){
                 $data[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}] = [
                 'substance' => $drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'},
                 'substance_en' => $drugsArr[$i]->data->{'Pavadinimas anglų kalba'},
@@ -177,11 +178,11 @@ class DrugController extends ApiController
                 'package' => $drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'},
                 'package_description' => $drugsArr[$i]->data->{'(pakuotės) Aprašymas'},
                 'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),
                 ];
             }            
-        }
-        $values = array_values( $data );       
-        return $values;
+        }       
+        return $data;
     }
     /**
      * Return when it was created and updated.
@@ -216,5 +217,64 @@ class DrugController extends ApiController
             'success' => false,
             'data' => 'Restricted permission',
         ], Response::HTTP_OK);       
+    }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateList(Request $request)
+    {
+        $user = auth()->user();
+        $drugsArr = json_decode($request->drugs);
+        
+        $newDrugsArr = $this->makeDrugsArray($drugsArr, 'updated_at');
+        $drugs = Drug::orderBy('updated_at', 'desc')->orderBy('created_at', 'DESC')->get();
+        $result = $this->checkDrugsChanges($drugs, $newDrugsArr);
+        return response()->json([
+            'success' => true,
+            'data' => $result,
+        ], Response::HTTP_OK);
+    }
+    /**
+     * Make the specified array
+     * 
+     * @param array $drugsArr
+     * @return array
+     */
+    private function checkDrugsChanges($drugsArr, $newDrugsArr){
+
+        $counter = 0;
+        $date = $drugsArr[0]->updated_at !== null?$drugsArr[0]->updated_at:$drugsArr[0]->created_at;
+        for ($i = 0; $i < count($drugsArr); $i++)
+        {
+            if(
+                isset($newDrugsArr[$drugsArr[$i]->substance]) &&
+                (
+                   $newDrugsArr[$drugsArr[$i]->substance]['name'] !== $drugsArr[$i]->name ||
+                   $newDrugsArr[$drugsArr[$i]->substance]['strength'] !== $drugsArr[$i]->strength ||
+                   $newDrugsArr[$drugsArr[$i]->substance]['form'] !== $drugsArr[$i]->form ||
+                   $newDrugsArr[$drugsArr[$i]->substance]['package'] !== $drugsArr[$i]->package ||
+                   $newDrugsArr[$drugsArr[$i]->substance]['package_description'] !== $drugsArr[$i]->package_description
+                )                
+            )
+            {
+                Drug::where('id', $drugsArr[$i]->id)->update(Arr::except($newDrugsArr[$drugsArr[$i]->substance], ['created_at']));
+                $date = $newDrugsArr[$drugsArr[$i]->substance]['updated_at'];
+                unset($newDrugsArr[$drugsArr[$i]->substance]);
+                $counter++;
+            }
+            elseif(isset($newDrugsArr[$drugsArr[$i]->substance])){
+                unset($newDrugsArr[$drugsArr[$i]->substance]);                
+            }                     
+        }
+        if(count($newDrugsArr) !== 0){           
+            $values = array_values( $newDrugsArr );  
+            $date = $values[0]['updated_at'];
+            DB::table('drugs')->insert($values);
+        }
+              
+        return ['updated'=>$counter, 'added'=>count($newDrugsArr), 'updated_at' => date("Y-m-d\TH:i:s\Z",strtotime($date))];
     }
 }

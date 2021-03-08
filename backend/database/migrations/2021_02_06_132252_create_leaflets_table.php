@@ -22,7 +22,7 @@ class CreateLeafletsTable extends Migration
             $table->string('use');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('drug_id');
-            $table->string('link');
+            $table->string('link')->nullable();
             $table->timestamps();
 
             $table->index('user_id');

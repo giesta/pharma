@@ -15,9 +15,9 @@ class CreateOverviewTable extends Migration
     {
         Schema::create('overviews', function (Blueprint $table) {
             $table->id();
-            $table->text('description');
-            $table->text('diagnosis');
-            $table->text('prevention');
+            $table->text('description')->nullable();
+            $table->text('diagnosis')->nullable();
+            $table->text('prevention')->nullable();
             $table->unsignedBigInteger('disease_id');
             $table->unsignedBigInteger('user_id');
             $table->timestamps();

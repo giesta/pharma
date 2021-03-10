@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Modal, Button, Form, Image } from "react-bootstrap";
+import { Modal, Button, Form, Image, Badge } from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
 
 export default function CreateModal(props) {
@@ -36,8 +36,8 @@ export default function CreateModal(props) {
             <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
         </Form.Group>
         <Form.Group controlId="public">
-            <Form.Check  label={"Public"} checked={parseInt(props.treatment.public)} onChange={props.handleChecked} name="public"/>
-            
+            <Form.Check  label={"Public"} disabled={props.treatment.isBlocked} checked={parseInt(props.treatment.public)} onChange={props.handleChecked} name="public"/>
+            {(props.treatment.isBlocked?<Badge pill variant="danger">Blocked</Badge>:"")}
         </Form.Group>
     
         <Form.Group controlId="diseases"> 

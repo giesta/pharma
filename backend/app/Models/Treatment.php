@@ -21,8 +21,16 @@ class Treatment extends Model
     public function starsCount(){
         return $this->stars()->count();
     }
+    public function reportsCount(){
+        return $this->reports()->count();
+    }
     public function star(User $user){
         $this->stars()->updateOrCreate([
+            "user_id" =>$user->id
+        ]);
+    }
+    public function report(User $user){
+        $this->reports()->updateOrCreate([
             "user_id" =>$user->id
         ]);
     }
@@ -34,8 +42,19 @@ class Treatment extends Model
             return true;
         }        
     }
+    public function isReportedBy(User $user = null){
+        if($user !== null){
+            return (boolean)$user->reports->where('treatment_id', $this->id)->count();
+        }
+        else{
+            return true;
+        }        
+    }
     public function stars(){
         return $this->hasMany(Star::class);
+    }
+    public function reports(){
+        return $this->hasMany(Report::class);
     }
     public function comments(){
         return $this->hasMany(Comment::class);

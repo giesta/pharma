@@ -28,6 +28,8 @@ class Treatment extends JsonResource
             'public' => $this->public,
             'stars' => $this->starsCount(),
             'isStar' => $this->isStarBy(auth()->user()),
+            'isBlocked' => $this->reportsCount() >= 2,
+            'isReported' => $this->isReportedBy(auth()->user()),
             'disease' => new OverviewResource($this->overview),
             'comments' => CommentResource::collection($this->comments()->orderBy("id", "desc")->get())
         ];

@@ -81,7 +81,6 @@ class App extends Component {
             <Route exact path="/reports" component={Reports} />
             <Route exact path="/settings" component={Settings} />
             <Route exact path="/scraping" component={Scraping} />
-            <Route exact path="/profile" component={Settings} />
             <Route exact path="/login" component={Login} />
           </Switch>
         </div>

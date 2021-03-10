@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
 import StarService from "../../services/treatments/stars.service";
+import ReportService from "../../services/treatments/reports.service";
 import CommentService from "../../services/treatments/comments.service";
 import DrugsDataService from "../../services/diseases/disease.drug.service";
 import DateParser from "../../services/parseDate.service";
@@ -8,7 +9,7 @@ import AuthService from "../../services/auth.service";
 import Spinner from "../layout/spinner.component";
 import DrugInfo from "../drugs/info-modal.component";
 import { Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form} from "react-bootstrap";
-import { BsStar, BsPeopleCircle } from "react-icons/bs";
+import { BsStar, BsPeopleCircle, BsExclamationCircle } from "react-icons/bs";
 
 export default function Treatment(props) {
 
@@ -18,6 +19,7 @@ export default function Treatment(props) {
     description: "",
     algorithm: "",
     isStar:true,
+    isReported:true,
     disease_id: "",
     disease: null
   };
@@ -123,6 +125,20 @@ export default function Treatment(props) {
         console.log(e);
       });
   };
+  const report = () => {
+    var data = {
+      id: AuthService.getCurrentUser().id
+    };
+    ReportService.update(currentTreatment.id, data)
+      .then(response => {    
+        if(response.data.data.length !== 0){
+          setCurrentTreatment(response.data.data);
+        }      
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
   const tweet=()=>{
     var data = {
       content: comment,
@@ -145,9 +161,18 @@ export default function Treatment(props) {
         <Spinner></Spinner>
       ):(        
       <div className="container">
-      <Row><Button variant="secondary" size="sm" disabled={currentTreatment.isStar} onClick={star}>
-      <BsStar></BsStar>{' '}<Badge variant="light">{currentTreatment.stars}</Badge>
-    </Button></Row>
+      <Row>
+        <Col>
+          <Button variant="secondary" size="sm" disabled={currentTreatment.isStar} onClick={star}>
+            <BsStar></BsStar>{' '}<Badge variant="light">{currentTreatment.stars}</Badge>
+          </Button>
+        </Col>
+        <Col>
+          <Button className="float-right" variant="outline-secondary" size="sm" disabled={currentTreatment.isReported} onClick={report}>Report {" "}
+            <BsExclamationCircle></BsExclamationCircle>
+          </Button>
+        </Col>        
+    </Row>
       <Row>
         <Col md={{ span: 6, offset: 3 }}><Image src={currentTreatment.algorithm} fluid/></Col>        
       </Row>

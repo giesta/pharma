@@ -17,6 +17,9 @@ import DiseasesList from "./components/diseases/diseases-list.component";
 import TreatmentsList from "./components/treatments/treatments-list.component";
 import Treatment from "./components/treatments/treatment.component";
 import UsersList from "./components/users/users-list.component";
+
+import Diagram from "./components/diagrams/diagram.component";
+
 import Footer from "./components/layout/footer.component";
 import MainNavbar from "./components/layout/navbar.component";
 
@@ -98,6 +101,7 @@ class App extends Component {
             <ProtectedRoute exact path="/drugs" component={DrugsList} roles={["admin", "pharmacist"]}/> 
             <ProtectedRoute exact path="/diseases" component={DiseasesList} roles={["admin", "pharmacist"]}/> 
             <ProtectedRoute exact path="/treatments" component={TreatmentsList} roles={["admin", "pharmacist"]}/> 
+            <ProtectedRoute exact path="/diagrams" component={Diagram} roles={["admin", "pharmacist"]}/> 
             <Route exact path="/treatments/:id" component={Treatment}/>            
             <ProtectedRoute exact path="/users" component={UsersList} roles={["admin"]}/>
           </Switch>

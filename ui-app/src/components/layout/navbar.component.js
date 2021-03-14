@@ -15,6 +15,7 @@ export default function MainNavbar(props) {
       {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/drugs"}>Drugs</Nav.Link>)}
       {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/diseases"}>Diseases</Nav.Link>)}
       {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/treatments"}>Treatments</Nav.Link>)}
+      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/diagrams"}>Diagrams</Nav.Link>)}
       {props.showAdminBoard && (<Nav.Link href={"/users"}>Users</Nav.Link>)}
     </Nav>
     

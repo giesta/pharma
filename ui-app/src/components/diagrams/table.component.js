@@ -16,17 +16,7 @@ export default function TableOfItems(props) {
                 </tr>
             </thead>
             <tbody>
-            {props.leaflets.map((field, counter)=>
-                <tr key = {field.id}>
-                    
-                    <td>{handleIncrement(++counter)}</td>                    
-                    <td>{field.name}</td>
-                    <td>{field.created_at}</td>
-                    <td>{field.updated_at}</td>
-                    {props.GetActionFormat(field)}
-                </tr>
-                )  
-            }
+            
             </tbody>
         </Table>
     );

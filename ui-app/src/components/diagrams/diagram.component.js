@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef  } from 'react';
+import DiagramsDataService from "../../services/diagrams/list.service";
 import { Button, Form, Row, Col} from "react-bootstrap";
 import ReactFlow, {
     removeElements,
@@ -15,19 +16,19 @@ import './updatenode.css';
 //import initialElements from './initial-elements';
 import Sidebar from './sidebar';
 
-
-
+let id = 0;
+const getId = () => `node_${id++}`;
 const initialElements = [
     {
-      id: 'connectionline-1',
+      id: getId(),
       type: 'input',
       data: { label: 'Node 1', style:{backgroundColor:''}  },
       position: { x: 250, y: 250 },
     },
   ];
 
-  let id = 0;
-const getId = () => `dndnode_${id++}`;
+  
+
 
 const UpdateNode = () => {
     const reactFlowWrapper = useRef(null);
@@ -40,6 +41,7 @@ const UpdateNode = () => {
   const [edgeSelected, setEdgeSelected] = useState(false);
   const [edgeType, setEdgeType] = useState('step');
   const [animation, setAnimation] = useState(false);
+  const [diagramName, setDiagramName] = useState('');
 
   const onElementClick=(event, element)=>{
       console.log(element);
@@ -173,12 +175,55 @@ const UpdateNode = () => {
     );
   }, [animation, setElements]);
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {      
+      event.stopPropagation();
+    }else{
+      saveDiagram(); 
+    }      
+  };
 
+  
+
+  const saveDiagram = () => {
+  var newElements = elements.map((el)=>{
+      const {id: item_id, ...rest} = el;
+      return {item_id, ...rest};
+  });
+    var data = {
+      name: diagramName,
+      nodes: JSON.stringify(newElements.filter((el)=>{
+        if(el.source === undefined){
+          return el;
+        }
+      })),
+      edges: JSON.stringify(newElements.filter((el)=>{
+        if(el.source !== undefined){
+          return el;
+        }
+      })),
+    };
+    console.log(data);
+    DiagramsDataService.create(data)
+      .then((response) => {
+        console.log(response.data);
+        
+      })
+      .catch(e => {
+        //setError(true);
+        console.log(e);
+      });
+      console.log("-----Veikia saugojimas-----");
+      console.log(elements);
+      
+  };
   return (
     <div>
-      <Form encType="multipart/form-data">
+      <Form onSubmit={handleSubmit}>
         <Form.Group controlId="name"> <Form.Label>Diagram Name</Form.Label>             
-              <Form.Control type="text" placeholder="" required value={''} name="name"/>
+              <Form.Control type="text" placeholder="" required onChange={(evt) => {setDiagramName(evt.target.value)}} name="name"/>
               <Form.Control.Feedback type="invalid">
                   Name is a required field.
               </Form.Control.Feedback>
@@ -242,10 +287,8 @@ const UpdateNode = () => {
     
     </ReactFlowProvider>
     </div>
-    <Button className="mt-3" type="submit" variant="primary">
-                            Save Diagram
-          </Button>
-          </Form>
+      <Button className="mt-3" type="submit" variant="primary">Save Diagram</Button>
+    </Form>
     </div>
   );
 };

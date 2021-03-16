@@ -80,6 +80,7 @@ Route::group(['middleware' => 'jwt.auth',
     Route::resource('diseases.drugs', DiseaseDrugController::class);
     Route::delete('diseases/{id}/drugs', 'DiseaseDrugController@deleteMany');
     Route::apiResource('users', UserController::class);
+    Route::apiResource('diagrams', DiagramController::class);
     
     Route::apiResource('scrap', ScraperController::class);
     Route::apiResource('symptoms', SymptomController::class);

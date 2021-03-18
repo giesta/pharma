@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import DiagramsDataService from "../../services/diagrams/list.service";
 import { useHistory } from "react-router-dom";
-//import diagramDelete from "../delete-modal.component";
+import DiagramDelete from "../delete-modal.component";
 import DiagramInfo from "./info-modal.component";
 //import diagramUpdate from "./update-modal.component";
 import DiagramsTable from "./table.component";
@@ -18,10 +18,6 @@ export default function DiagramsList() {
   const initialDiagramState = {  
     id: null,  
     name: "",
-    created_at: "",
-    updated_at: "",
-    nodes:[],
-    edges:[]
   };
   
   const [diagram, setDiagram] = React.useState(initialDiagramState);
@@ -118,6 +114,7 @@ export default function DiagramsList() {
       <td className="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
               function(event){ 
+                setDiagram(row);
                 var arr = row.nodes.concat(row.edges);
                 var items = arr.map((el)=>{
                   console.log(el);
@@ -145,12 +142,11 @@ export default function DiagramsList() {
                   }
                   
               });
-console.log(items);
                 setElements(initialElements); setShow(true)}}>
                 <BsPen></BsPen>
             </button>
             <button type="button" className="btn btn-outline-danger btn-sm ml-2 ts-buttom" size="sm"onClick={
-              function(event){ setId(row.id); setConfirm(true)}}>
+              function(event){ setDiagram(row); setConfirm(true)}}>
             <BsTrash></BsTrash>
             </button>
         </td>
@@ -158,7 +154,7 @@ console.log(items);
 };
 
 const deleteItemFromState = (id) => {
-  const updatedItems = diagrams.data.filter(x=>x.id!==id)
+  const updatedItems = diagrams.filter(x=>x.id!==id)
   setDiagrams(updatedItems)
 }
 
@@ -260,7 +256,8 @@ const newDiagram = () => {
       </div>       
       <div className="container">
       <DiagramsTable columns ={columns} diagrams={diagrams} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiagramsTable>
-      { info &&<DiagramInfo elements={elements} info = {info} handleCloseInfo={handleCloseInfo}></DiagramInfo> } 
+      { info &&<DiagramInfo name={diagram.name} elements={elements} info = {info} handleCloseInfo={handleCloseInfo}></DiagramInfo> } 
+      { confirm &&<DiagramDelete id={diagram.id} name={diagram.name} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiagramDelete> }
       <div>
         <Pagination 
         className="my-3"

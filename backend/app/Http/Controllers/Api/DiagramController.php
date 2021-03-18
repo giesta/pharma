@@ -163,8 +163,13 @@ class DiagramController extends Controller
      * @param  \App\Models\Diagram  $diagram
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Diagram $diagram)
+    public function destroy(Request $request, $id)
     {
-        //
+        $user = auth()->user();
+        $diagram = $user->diagrams()->findOrFail($id);
+        $diagram->nodes()->delete();
+        $diagram->edges()->delete();
+        $diagram->delete();
+        return response()->noContent();
     }
 }

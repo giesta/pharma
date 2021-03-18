@@ -30,7 +30,7 @@ const initialElements = [
   
 
 
-const UpdateNode = () => {
+const UpdateNode = (props) => {
     const reactFlowWrapper = useRef(null);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
@@ -225,7 +225,7 @@ setElements((els) =>
     DiagramsDataService.create(data)
       .then((response) => {
         console.log(response.data);
-        
+        props.history.push("/diagrams");
       })
       .catch(e => {
         //setError(true);

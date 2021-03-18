@@ -8,6 +8,7 @@ use App\Models\Edge;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use App\Http\Resources\Diagram as DiagramResource;
 
 class DiagramController extends Controller
 {
@@ -16,9 +17,43 @@ class DiagramController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = auth()->user();
+        $role = $user->roles()->first()->name;
+        $name = $request->name;
+        if($role ==="admin"){
+            return DiagramResource::collection(Diagram::with(['nodes', 'edges'])->where('diagrams.name', 'LIKE', "%$name%")->get());           
+        }else{
+            return DiagramResource::collection($user->diagrams()->with(['nodes', 'edges'])->where('diagrams.name', 'LIKE', "%$name%")->get());  
+        }
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function list(Request $request)
+    {
+        $user = auth()->user();
+        $name = $request->name;
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
+            if($name){
+                //return OverviewResource::collection(Overview::with('leaflets')->select('overviews.*', 'diseases.id as did','diseases.name')->join('diseases', 'diseases.id', '=', 'overviews.disease_id')->where('diseases.name', 'LIKE', "%$name%")->paginate(5));
+                return DiagramResource::collection(Diagram::with(['nodes', 'edges'])->where('diagrams.name', 'LIKE', "%$name%")->paginate(5));
+            }else{
+                return DiagramResource::collection(Diagram::with(['nodes', 'edges'])->paginate(5));
+            }
+            
+        }else{
+            if($name){                
+                return DiagramResource::collection($user->diagrams()->with(['nodes', 'edges'])->where('diagrams.name', 'LIKE', "%$name%")->paginate(5));
+            }else{
+                return DiagramResource::collection($user->diagrams()->with(['nodes', 'edges'])->paginate(5));
+            }            
+        }
     }
 
     /**

@@ -71,7 +71,22 @@ const UpdateNode = () => {
     var oldValue = elements.find(element=>element.id===oldEdge.id);
     setElements((els) => updateEdge(oldValue, newConnection, els));     
   } 
-
+const onNodeDragStop =(event, node)=>{
+console.log(node);
+setElements((els) =>
+      els.map((el) => {
+        if (el.id === node.id) {
+            el.position = {
+                ...el.position,
+                x: node.position.x,
+                y: node.position.y,
+            }; 
+            
+        }
+        return el;
+      })
+    );
+}
   const onConnect = (params) =>
     setElements((els) =>
       addEdge({ ...params, label:'', animated:false, type: 'step', data: {
@@ -188,6 +203,7 @@ const UpdateNode = () => {
   
 
   const saveDiagram = () => {
+    console.log(elements);
   var newElements = elements.map((el)=>{
       const {id: item_id, ...rest} = el;
       return {item_id, ...rest};
@@ -250,6 +266,7 @@ const UpdateNode = () => {
       onEdgeUpdate={onEdgeUpdate}
       onElementClick={onElementClick}
       snapToGrid={true}
+      onNodeDragStop={onNodeDragStop}
     >
 
       

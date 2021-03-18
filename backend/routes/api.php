@@ -69,6 +69,8 @@ Route::group(['middleware' => 'jwt.auth',
     Route::get('leaflets/list', 'LeafletController@list');
     Route::get('overviews/list', 'OverviewController@list');
 
+    Route::get('diagrams/list', 'DiagramController@list');
+
     Route::get('symptoms/reports', 'SymptomController@report'); 
     Route::put('symptoms', 'SymptomController@updateList');
      

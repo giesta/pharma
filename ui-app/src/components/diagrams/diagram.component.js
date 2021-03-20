@@ -17,7 +17,11 @@ import './updatenode.css';
 import Sidebar from './sidebar';
 
 let id = 0;
-const getId = () => `node_${id++}`;
+const getId = (count=0) => {
+  var elementId = `node_${id + count}`;
+  id++;
+  return elementId;
+}
 const initialElements = [
     {
       id: getId(),
@@ -33,15 +37,16 @@ const initialElements = [
 const UpdateNode = (props) => {
     const reactFlowWrapper = useRef(null);
     const [reactFlowInstance, setReactFlowInstance] = useState(null);
-
-  const [elements, setElements] = useState(initialElements);
+    const [elements, setElements] = useState(props.location.state!==undefined ? props.location.state.elements:initialElements);
+    const [nodesCount, setNodesCount] = useState(props.location.state!==undefined ? props.location.state.diagram.nodes.length:0);
+  
   const [element, setElement] = useState({});
   const [nodeName, setNodeName] = useState('Node 1');
   const [nodeBg, setNodeBg] = useState('#eee');
   const [edgeSelected, setEdgeSelected] = useState(false);
   const [edgeType, setEdgeType] = useState('step');
   const [animation, setAnimation] = useState(false);
-  const [diagramName, setDiagramName] = useState('');
+  const [diagramName, setDiagramName] = useState(props.location.state!==undefined ? props.location.state.diagram.name:'');
 
   const onElementClick=(event, element)=>{
       console.log(element);
@@ -100,6 +105,7 @@ setElements((els) =>
       };
 
       const onDrop = (event) => {
+        
         event.preventDefault();
     
         const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
@@ -109,7 +115,7 @@ setElements((els) =>
           y: event.clientY - reactFlowBounds.top,
         });
         const newNode = {
-          id: getId(),
+          id: getId(nodesCount-1),
           type,
           position,
           data: { label: `${type} node`, style:{backgroundColor:''} },          
@@ -188,15 +194,17 @@ setElements((els) =>
         return el;
       })
     );
-  }, [animation, setElements]);
+  }, [animation, setElements]);  
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     if (form.checkValidity() === false) {      
       event.stopPropagation();
+    }else if(props.location.state!==undefined){
+       updateDiagram(props.location.state.diagram.id);
     }else{
-      saveDiagram(); 
+      saveDiagram();
     }      
   };
 
@@ -235,11 +243,44 @@ setElements((els) =>
       console.log(elements);
       
   };
+  const updateDiagram = (id) => {
+    console.log(elements);
+  var newElements = elements.map((el)=>{
+      const {id: item_id, ...rest} = el;
+      return {item_id, ...rest};
+  });
+    var data = {
+      name: diagramName,
+      nodes: JSON.stringify(newElements.filter((el)=>{
+        if(el.source === undefined){
+          return el;
+        }
+      })),
+      edges: JSON.stringify(newElements.filter((el)=>{
+        if(el.source !== undefined){
+          return el;
+        }
+      })),
+    };
+    console.log(data);
+    DiagramsDataService.update(id, data)
+      .then((response) => {
+        console.log(response.data);
+        props.history.push("/diagrams");
+      })
+      .catch(e => {
+        //setError(true);
+        console.log(e);
+      });
+      console.log("-----Veikia atnaujinimas-----");
+      console.log(elements);
+      
+  };
   return (
     <div>
       <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="name"> <Form.Label>Diagram Name</Form.Label>             
-              <Form.Control type="text" placeholder="" required onChange={(evt) => {setDiagramName(evt.target.value)}} name="name"/>
+        <Form.Group controlId="name"> <Form.Label>Diagram Name</Form.Label>        
+              <Form.Control type="text" placeholder="" defaultValue={diagramName} required onChange={(evt) => {setDiagramName(evt.target.value)}} name="name"/>
               <Form.Control.Feedback type="invalid">
                   Name is a required field.
               </Form.Control.Feedback>

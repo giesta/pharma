@@ -132,9 +132,12 @@ export default function DiagramsList() {
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
               function(event){ 
-                var items = row.nodes.map((el)=>{
-                  if(el.x !== undefined){
-                    var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, type:el.type, posistion:{x:el.x, y:el.y}};
+                var arr = row.nodes.concat(row.edges);
+                
+                var items = arr.map((el)=>{
+                  console.log(el);
+                  if(el.source === undefined){
+                    var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
                     return item;
                   }else{
                     var item = {id:el.item_id, animated:el.animated?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
@@ -142,7 +145,12 @@ export default function DiagramsList() {
                   }
                   
               });
-                setElements(initialElements); setShow(true)}}>
+                setElements(items);setDiagram(row); setShow(true);
+                history.push({ 
+                  pathname: "/diagrams/update",
+                  state: { elements: items, diagram: row }
+                 });
+                }}>
                 <BsPen></BsPen>
             </button>
             <button type="button" className="btn btn-outline-danger btn-sm ml-2 ts-buttom" size="sm"onClick={

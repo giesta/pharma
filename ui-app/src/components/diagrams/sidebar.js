@@ -33,8 +33,8 @@ export default (props) => {
 <div className="updatenode__checkboxwrapper"><label>animation: </label>
 <input
             type="checkbox"
-            checked={props.animation??'on'}
-            onChange={(evt) => {props.setAnimation(evt.target.checked);console.log(evt.target.value)}}
+            checked={props.animation}
+            onChange={(evt) => {props.setAnimation(evt.target.checked);}}
           /></div>
 
 <div><label>type:</label>

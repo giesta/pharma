@@ -12,7 +12,7 @@ import { removeError } from "../../js/actions/index";
 import store from "../../js/store/index";
 import { Link } from 'react-router-dom';
 
-import initialElements from './initial-elements';
+
 export default function DiagramsList() {
 
   const initialDiagramState = {  
@@ -122,7 +122,7 @@ export default function DiagramsList() {
                     var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
                     return item;
                   }else{
-                    var item = {id:el.item_id, animated:el.animated?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
+                    var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
                     return item;
                   }
                   
@@ -140,7 +140,7 @@ export default function DiagramsList() {
                     var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
                     return item;
                   }else{
-                    var item = {id:el.item_id, animated:el.animated?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
+                    var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
                     return item;
                   }
                   
@@ -195,7 +195,6 @@ const updatediagram = () => {
   };
   DiagramsDataService.update(data.id, data)
     .then(response => {
-      console.log(response.data);
       setDiagram({
         id: response.data.data.id,
         name: response.data.data.name,

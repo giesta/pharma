@@ -4,6 +4,7 @@ import { Modal, Button} from "react-bootstrap";
 import ReactFlow, {
     Controls,
     Background,
+    ReactFlowProvider,
   } from 'react-flow-renderer';    
     
     export default function InfoModal(props) {
@@ -19,6 +20,7 @@ import ReactFlow, {
                 <Modal.Title>{props.name}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+            <ReactFlowProvider>
             <ReactFlow
                 elements={elements}
                 snapGrid={[15, 15]}
@@ -32,7 +34,7 @@ import ReactFlow, {
                 <Controls/>
                 <Background color="#aaa" gap={16} />
                 </ReactFlow>
-
+</ReactFlowProvider>
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={props.handleCloseInfo}>

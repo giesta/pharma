@@ -1,5 +1,5 @@
 import React from 'react';
-
+import DateParser from "../../services/parseDate.service";
 import { Modal, Button, Form, Badge} from "react-bootstrap";
 
 export default function InfoModal(props) {
@@ -13,46 +13,45 @@ export default function InfoModal(props) {
                     <Form.Group controlId="name">
                         <Form.Label>Name</Form.Label>
                         
-                        {props.leaflet.drug.name.split(';').map(item=>
-                        item.toUpperCase().includes("IŠREGISTRUOTAS")?
-                        <Badge pill variant="warning">{item.split('(')[0]}</Badge>
-                            :<Badge pill variant="success">{item.split('(')[0]}</Badge>
-                            )}
+                        {
+                        props.drug.registration.toUpperCase().includes("IŠREGISTRUOTAS")?
+                        <Badge pill variant="warning">{props.drug.name}</Badge>
+                            :<Badge pill variant="success">{props.drug.name}</Badge>
+                            }
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Substance</Form.Label>
-                        {props.leaflet.drug.substance.split(/\/|\(|\)/).map(item=>
+                        {props.drug.substance.split(/\/|\(|\)/).map(item=>
                         
                         <Badge pill variant="primary">{item}</Badge>
                             
                             )}
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
-                        <Form.Label>Indication</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.leaflet.indication} disabled name="indication"/>
+                        <Form.Label>ATC</Form.Label>
+                        <Form.Control type="text" placeholder="" value={props.drug.ATC} disabled name="indication"/>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
-                        <Form.Label>Contraindication</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.leaflet.contraindication} disabled name="contraindication"/>
+                        <Form.Label>Strength</Form.Label>
+                        <Form.Control type="text" placeholder="" value={props.drug.strength} disabled name="contraindication"/>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
-                        <Form.Label>Adverse effect</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.leaflet.reaction} disabled name="reaction"/>
+                        <Form.Label>Form</Form.Label>
+                        <Form.Control type="text" placeholder="" value={props.drug.form} disabled name="reaction"/>
                     </Form.Group>
                     <Form.Group controlId="exampleForm.ControlInput1">
-                        <Form.Label>Use</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.leaflet.use} disabled name="use"/>
+                        <Form.Label>Package</Form.Label>
+                        <Form.Control type="text" placeholder="" value={props.drug.package} disabled name="use"/>
                     </Form.Group>
-                        {(props.leaflet.diseases!==null && props.leaflet.diseases!==undefined)&&(<Form.Group controlId="exampleForm.ControlInput1">
-                            <Form.Label>Diseases</Form.Label>
-                            {props.leaflet.diseases.map((x)=>
-                                <Badge pill variant="dark">
-                                    {x.name}
-                                    </Badge>
-                                )  
-                            } 
+                    <Form.Group controlId="exampleForm.ControlInput1">
+                        <Form.Label>Package Description</Form.Label>
+                        <Form.Control type="text"  as="textarea" placeholder="" value={props.drug.package_description} disabled name="use"/>
                     </Form.Group>
-                        )}  
+                    <Form.Group controlId="exampleForm.ControlInput1">
+                        <Form.Label>Updated</Form.Label>
+                        <Form.Control type="text" placeholder="" value={DateParser.getParsedDate(props.drug.updated_at)} disabled name="use"/>
+                    </Form.Group>
+                        
                 </Form>
             </Modal.Body>
             <Modal.Footer>

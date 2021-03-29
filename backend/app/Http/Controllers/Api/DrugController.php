@@ -44,7 +44,12 @@ class DrugController extends ApiController
         $user = auth()->user();
         $name = $request->name;
         if($user!==null){
-            $role = $user->roles()->first()->name;
+
+            return DrugResource::collection(Drug::with('substance')->join('substances', 'substances.id', '=', 'drugs.substance_id')->select('drugs.*', 'substances.name as substance', 'substances.ATC')
+            ->where('substances.name', 'LIKE', "%$name%")
+            ->orWhere('drugs.name', 'LIKE', "%$name%")
+            ->orWhere('substances.ATC', 'LIKE', "%$name%")->paginate(5));
+            /*$role = $user->roles()->first()->name;
             if($role =="admin"){
                 if($name){
                     return DrugResource::collection(Drug::with('diseases')->where('drugs.name', 'LIKE', "%$name%")->paginate(5));
@@ -57,14 +62,14 @@ class DrugController extends ApiController
                 }else{
                     return DrugResource::collection($user->drugs()->with('diseases')->paginate(5));
                 }            
-            } 
-        }else{
+            } */
+        }/*else{
             if($name){
                 return DrugResource::collection(Drug::with('diseases')->where('drugs.name', 'LIKE', "%$name%")->paginate(5));
             }else{
                 return DrugResource::collection(Drug::with('diseases')->paginate(5));
             }            
-        }
+        }*/
                
     }
 

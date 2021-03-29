@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 import { Table, Badge } from "react-bootstrap";
 
 export default function TableOfItems(props) {
@@ -16,24 +17,24 @@ export default function TableOfItems(props) {
                 </tr>
             </thead>
             <tbody>
-            {props.leaflets.map((field, counter)=>
+            {
+            props.drugs.map((field, counter)=>
                 <tr key = {field.id}>
                     
                     <td>{handleIncrement(++counter)}</td>
-                    <td>{field.drug.name.split(';').map(item=>
-                        item.toUpperCase().includes("IŠREGISTRUOTAS")?
-                        <Badge pill variant="warning">{item.split('(')[0]}</Badge>
-                            :<Badge pill variant="success">{item.split('(')[0]}</Badge>
-                            )}</td>
-                    <td>{field.drug.substance.split(/\/|\(|\)/).map(item=>
+                    <td>{field.registration.toUpperCase().includes("IŠREGISTRUOTAS")?
+                        <Badge pill variant="warning">{field.name}</Badge>
+                            :<Badge pill variant="success">{field.name}</Badge>
+                            }</td>
+                    <td>{field.substance.split(/\/|\(|\)/).map(item=>
                         
                         <Badge pill variant="primary">{item}</Badge>
                             
                             )}</td>
-                    <td>{field.indication}</td>
-                    <td>{field.contraindication}</td>
-                    <td>{field.reaction}</td>
-                    <td>{field.use}</td>
+                    <td>{field.ATC}</td>
+                    <td>{field.strength}</td>
+                    <td>{field.form}</td>
+                    <td>{field.package}</td>                    
                     {props.GetActionFormat(field)}
                 </tr>
                 )  

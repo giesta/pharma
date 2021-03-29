@@ -17,13 +17,14 @@ export default function DrugsList() {
 
   const initialDrugState = {  
     id: null,  
-    name: [],
-    substance: [],
-    substance_en: "",
+    name: "",
+    substance: "",
     ATC:"",
+    strength:"",
     form:"",
     package:"",
     package_description:"",
+    registration:"",
   };
 
   const initialLeafletState = {  
@@ -46,19 +47,19 @@ export default function DrugsList() {
     dataField: 'substance',  
     text: 'Substance',  
     sort: true  },  
-  { dataField: 'indication',  
-    text: 'Indication',  
+  { dataField: 'ATC',  
+    text: 'ATC',  
     sort: true  },  
-  { dataField: 'contraindication',  
-    text: 'Contraindication',  
+  { dataField: 'strength',  
+    text: 'Strength',  
     sort: true },  
   {  
-    dataField: 'reaction',  
-    text: 'Reaction',  
+    dataField: 'form',  
+    text: 'Form',  
     sort: true  
   }, {  
-    dataField: 'use',  
-    text: 'Use',  
+    dataField: 'package',  
+    text: 'Package',  
     sort: true },
  {
     text: 'Actions',
@@ -95,7 +96,7 @@ export default function DrugsList() {
 
   const refreshList = () => {
     //retrieveDrugsLeaflets();
-    setLeaflet(initialLeafletState);
+    //setLeaflet(initialLeafletState);
     setPage(1);
   };
 
@@ -125,9 +126,7 @@ export default function DrugsList() {
     newLeaflet();
     setInfo(false);
   };
-  const [drugs, setDrugs] = React.useState({
-    data: [],
-  });
+  const [drugs, setDrugs] = React.useState([]);
   const [leaflets, setLeaflets] = React.useState([]);
 
   const handleInputChange = event => {
@@ -206,19 +205,19 @@ function makeOptions(field){
     };
   
   const retrieveDrugsLeaflets = (pageNumber = 1) => {
-    DrugsLeafletsDataService.findByTitle(pageNumber, searchTitle)
+    DrugsDataService.findByTitle(pageNumber, searchTitle)
       .then(response => {  
         console.log(response.data.data);
         const { current_page, per_page, total } = response.data.meta;      
         if(response.data.data.length !== 0){
-          setLeaflets(response.data.data);
+          setDrugs(response.data.data);
           setPageSize(per_page);
           setPage(current_page);     
           setTotal(total);     
         }else{
           setNoData("No");
         }
-        retrieveDrugs();     
+        //retrieveDrugs();     
       })
       .catch(e => {
         setError(true);
@@ -247,19 +246,10 @@ function makeOptions(field){
     return (
       <td className="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
-              function(event){ setLeaflet(row); setInfo(true)}}>
+              function(event){ setDrug(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
             </button>
-            <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
-              function(event){ 
-                setLeaflet(row); 
-                setShow(true)}}>
-                <BsPen></BsPen>
-            </button>
-            <button type="button" className="btn btn-outline-danger btn-sm ml-2 ts-buttom" size="sm"onClick={
-              function(event){ setId(row.id); setConfirm(true)}}>
-            <BsTrash></BsTrash>
-            </button>
+            
         </td>
     );
 };
@@ -283,7 +273,7 @@ const saveLeaflet = () => {
     .then((response) => {
       const { current_page, per_page, total } = response.data.meta;
       if(response.data.data.length !== 0){
-        setLeaflets(response.data.data);
+        setDrugs(response.data.data);
         setPageSize(per_page);     
         setTotal(total); 
       }
@@ -351,12 +341,12 @@ const newLeaflet = () => {
 };
 
 const findByTitle = () => {
-  DrugsLeafletsDataService.findByTitle(1, searchTitle)
+  DrugsDataService.findByTitle(1, searchTitle)
     .then(response => {
       const { current_page, per_page, total } = response.data.meta;          
         
           console.log(response.data.data);
-          setLeaflets(response.data.data);
+          setDrugs(response.data.data);
           setPageSize(per_page);
           setPage(current_page);     
           setTotal(total);
@@ -370,7 +360,7 @@ const findByTitle = () => {
     <div>
       {error?<ErrorBoundary/>:''}
       {drugs?(
-      drugs.data.length === 0 && noData === ''?(        
+      drugs.length === 0 && noData === ''?(        
         <Spinner></Spinner>
       ):( 
         <div>
@@ -378,10 +368,7 @@ const findByTitle = () => {
           
         <div className="d-flex justify-content-between">
         <div className="mb-3">
-          <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
-            function(event){setShow(true)}}>
-              <BsPlus></BsPlus>
-          </button>
+          
           
     </div>
           <div className="col-md-6">
@@ -389,7 +376,7 @@ const findByTitle = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search by Substance"
+            placeholder="Search by Name, Substance or ATC"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
@@ -405,14 +392,10 @@ const findByTitle = () => {
         </div>
       </div> 
     </div>       
-      <div className="container">  
-      <DrugsTable key={"drugs"} columns ={columns} leaflets = {leaflets} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DrugsTable>
+      <div className="container">  {console.log(drugs)}
+      <DrugsTable key={"drugs"} columns ={columns} drugs = {drugs} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DrugsTable>
 
-      { show && <DrugCreateUpdate selectRef = {selectRef} setSelectRef = {setSelectRef} loadDrugsOptions={loadDrugsOptions} loadOptions={loadOptions} show ={show} handleClose={handleClose} leaflet={leaflet} drug={drug} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange} diseases={overviews} handleOverviewsInputChange={handleOverviewsInputChange} drugsList = {drugs} handleSelectChange={handleSelectChange}></DrugCreateUpdate> }
-
-      { confirm &&<DrugDelete id={id} name={"Drug"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DrugDelete> }
-
-      { info &&<DrugInfo info = {info} leaflet = {leaflet} handleCloseInfo={handleCloseInfo}></DrugInfo> }  
+      { info &&<DrugInfo info = {info} drug = {drug} handleCloseInfo={handleCloseInfo}></DrugInfo> }  
       <div>
         <Pagination 
         className="my-3"

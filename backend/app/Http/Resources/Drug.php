@@ -19,12 +19,13 @@ class Drug extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'substance' => $this->substance,
-            'substance_en' => $this->substance_en,
-            'atc' => $this->ATC,
+            'ATC' => $this->ATC,
             'package' => $this->package,
             'strength' => $this->strength,
             'form' => $this->form,
+            'package' => $this->package,
             'package_description' => $this->package_description,
+            'registration' => $this->registration,
             'updated_at' => $this->updated_at,
         ];
     }

@@ -70,10 +70,11 @@ const diseasesReports = () => {
   useEffect(drugsReports,[]);
 
   const saveDrugs = () => {
-    console.log(drugs)
+    console.log(drugs);
+    setLoading(true);
     const data = new FormData();
     data.append('drugs', JSON.stringify(drugs));
-    setLoading(true);
+    
     if(drugs.length > 0){ 
       console.log(data);     
       DrugsDataService.create(data)
@@ -81,6 +82,7 @@ const diseasesReports = () => {
         console.log("--------------Veikia----------");
         console.log(response.data);
         setText("Added " + response.data.data + " new items ");
+        setDrugsUpdated("Last update " + DateParser.getParsedDate(response.data.updated_at));
         setLoading(false);
       })
       .catch(e => {
@@ -100,7 +102,7 @@ const diseasesReports = () => {
       .then(response => {
         console.log("--------------Veikia atnaujinimas----------");
         console.log(response.data);
-        setText("Added " + response.data.data.added + " new items and updated " + response.data.data.updated + " items");
+        setText("Updated " + response.data.data.updated + " drugs, added " + response.data.data.added_substances + " substances and " + response.data.data.added_drugs + " drugs");
         setDrugsUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
         setLoading(false);
       })
@@ -112,6 +114,7 @@ const diseasesReports = () => {
 
   const saveSymptoms = () => {
     console.log(symptoms)
+    setLoadingSymptoms(true);
     const data = new FormData();
     data.append('symptoms', JSON.stringify(symptoms));
     if(symptoms.length > 0){ 
@@ -120,7 +123,9 @@ const diseasesReports = () => {
       .then(response => {
         console.log("--------------Veikia simptomai----------");
         console.log(response.data);
+        setLoadingSymptoms(false);
         setText("Added " + response.data.data + " new items ");
+        setSymptomsUpdated("Last update " + DateParser.getParsedDate(response.data.updated_at));
       })
       .catch(e => {
         console.log(e);
@@ -150,6 +155,7 @@ const diseasesReports = () => {
     }    
   };
   const saveDiseases = () => {
+    setLoadingDiseases(true);
     console.log(diseases)
     const data = new FormData();
     data.append('diseases', JSON.stringify(diseases));
@@ -159,7 +165,9 @@ const diseasesReports = () => {
       .then(response => {
         console.log("--------------Veikia ligos----------");
         console.log(response.data);
+        setLoadingDiseases(false);
         setText("Added " + response.data.data + " new items ");
+        setDiseasesUpdated("Last update " + DateParser.getParsedDate(response.data.updated_at));
       })
       .catch(e => {
         console.log(e);

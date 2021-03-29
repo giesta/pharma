@@ -53,6 +53,7 @@ class DiseaseController extends Controller
         return response()->json([
             'success' => true,
             'data' => count($data),
+            'updated_at'=>date("Y-m-d\TH:i:s\Z"),
         ], Response::HTTP_OK);
 
     }

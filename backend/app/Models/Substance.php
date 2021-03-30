@@ -11,4 +11,8 @@ class Substance extends Model
     protected $fillable = [
         'name', 'name_en', 'ATC',
     ];
+    public function drugs()
+    {
+        return $this->hasMany(Drug::class);
+    }
 }

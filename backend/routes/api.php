@@ -76,6 +76,7 @@ Route::group(['middleware' => 'jwt.auth',
      
     Route::get('users/list', 'UserController@list'); 
     Route::apiResource('diseases', DiseaseController::class); 
+    Route::apiResource('substances', SubstanceController::class);
     Route::apiResource('overviews', OverviewController::class);   
     Route::apiResource('drugs', DrugController::class);
     Route::apiResource('leaflets', LeafletController::class);

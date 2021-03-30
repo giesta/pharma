@@ -61,6 +61,8 @@ export default function DiseasesList() {
   const [validated, setValidated] = React.useState(false);
   const [isWriting, setIsWriting] = React.useState(false);
 
+  const [fields, setFields] = React.useState([]);
+
   const initialDiseaseState = {  
     id: null,
     description: "",
@@ -85,6 +87,30 @@ export default function DiseasesList() {
       );
     }
   }, [isWriting,selectedDisease]);
+
+  function handleAddInput() {
+    const values = [...fields];
+    values.push({
+      drug: '',
+      uses:'',
+    });
+    setFields(values);
+  }
+
+  function handleAddedInputChange(i, event) {
+    const values = [...fields];
+    const { name, value } = event.target;
+    values[i][name] = value;
+    setFields(values);
+    console.log(fields);
+  }
+
+  function handleRemoveInput(i) {
+    const values = [...fields];
+    console.log(values);
+    values.splice(i, 1);
+    setFields(values);
+  }
 
   const onChangeSearchTitle = e => {
     const searchTitle = e.target.value;
@@ -402,7 +428,8 @@ const findByTitle = () => {
         GetActionFormat={GetActionFormat} 
         rowNumber={(page*5-5)}
       ></DiseasesTable>
-      { show && <DiseaseCreateUpdate 
+      { show && 
+      <DiseaseCreateUpdate 
         selectRef = {selectRef} 
         setSelectRef = {setSelectRef} 
         loadDiseasesOptions={loadDiseasesOptions} 
@@ -417,6 +444,9 @@ const findByTitle = () => {
         AddSelectedLeaflets={AddSelectedLeaflets} 
         handleSymptomsInputChange={handleSymptomsInputChange} 
         handleDiseaseInputChange={handleDiseaseInputChange} 
+        handleAddInput={handleAddInput}
+        handleRemoveInput={handleRemoveInput}
+        fields={fields}
       ></DiseaseCreateUpdate> }
       { confirm && <DiseaseDelete 
         id={id} 

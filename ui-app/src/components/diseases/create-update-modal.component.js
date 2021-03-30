@@ -1,8 +1,9 @@
 import React from 'react';
 
-import { Modal, Button, Form } from "react-bootstrap";
+import { Modal, Button, Form} from "react-bootstrap";
+import { Link } from 'react-router-dom';
 import AsyncSelect from 'react-select/async';
-import Select from 'react-select';
+import { BsPlus, BsX } from "react-icons/bs";
 
 export default function CreateModal(props) {
     
@@ -87,7 +88,6 @@ export default function CreateModal(props) {
                             className="basic-multi-select"
                             classNamePrefix="select"
                             isClearable="true"
-                            isMulti
                             cacheOptions
                             defaultOptions
                             loadOptions={props.loadDrugsOptions}
@@ -98,7 +98,28 @@ export default function CreateModal(props) {
                         )):('')}
                      />
                     </Form.Group>
-                }                    
+                }  
+                {props.fields.map((field, idx)=>{
+                    return (
+                        <div key={`${field}-${idx}`}>
+                    <Form.Group controlId={`${field}-${idx}`}>
+                        <Form.Label>Uses{idx}</Form.Label>
+                        <Form.Control type="text"  as="textarea" placeholder=""  name="uses"/>
+                    </Form.Group>
+                    <div class="row">
+  
+  <div class="col-auto"><a type="button" className="link_danger" onClick={()=>props.handleRemoveInput(idx)} >
+                        <BsX></BsX>
+                    </a></div>
+</div>
+                    
+                    </div>
+                    )
+                })}    
+                
+                <div class="col-auto mr-auto"><a type="button" className="link_success" size="sm" onClick={props.handleAddInput} >
+              <BsPlus></BsPlus>
+          </a></div>                      
                      <Form.Group controlId="prevention">
                         <Form.Label>Prevention</Form.Label>
                         <Form.Control type="text"  as="textarea" placeholder="" value={props.disease.prevention} onChange={props.handleInputChange} name="prevention"/>

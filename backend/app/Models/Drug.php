@@ -19,4 +19,8 @@ class Drug extends Model
     {
         return $this->belongsToMany(Overview::class, 'overviews_drugs', 'overview_id', 'drug_id')->withPivot('uses');
     }
+    public function treatments()
+    {
+        return $this->belongsToMany(Treatment::class, 'treatments_drugs', 'treatment_id', 'drug_id');
+    }
 }

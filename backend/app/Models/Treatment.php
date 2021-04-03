@@ -10,7 +10,7 @@ class Treatment extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'title', 'description', 'algorithm', 'public', 'user_id', 'overview_id'
+        'title', 'description', 'algorithm', 'public', 'user_id', 'overview_id', 'uses'
     ];
     public function overview(){
         return $this->belongsTo(Overview::class,'overview_id', 'id');
@@ -58,5 +58,9 @@ class Treatment extends Model
     }
     public function comments(){
         return $this->hasMany(Comment::class);
+    }
+    public function drugs()
+    {
+        return $this->belongsToMany(Drug::class, 'treatments_drugs', 'treatment_id', 'drug_id');
     }
 }

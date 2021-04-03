@@ -127,6 +127,7 @@ class TreatmentController extends Controller
         $path = $request->file('algorithm')->store('public/algorithms');
         try{
             $treatment = Treatment::create(array_merge($request->all(), ['user_id' => $user->id, 'algorithm'=>$path]));
+            $treatment->drugs()->attach(json_decode($request->drugs));
         }catch (QueryException $ex) { // Anything that went wrong
             abort(500, $ex->message);
         }

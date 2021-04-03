@@ -106,7 +106,7 @@ function makeDrugsOptions(field){
             </Form.Control.Feedback>
             <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             </Form.Group>
-            <Form.Group controlId="description">
+            <Form.Group controlId="uses">
             <Form.Label>Drug Treatment Adjustment</Form.Label>
             <Form.Control type="text" as="textarea" placeholder="" required value={props.treatment.uses} onChange={props.handleInputChange} name="uses"/>
             <Form.Control.Feedback type="invalid">
@@ -149,7 +149,7 @@ function makeDrugsOptions(field){
                 onChange={props.handleOverviewsInputChange}
             />
             </Form.Group> 
-            {console.log(props.loadDrugsOptions)}
+            {console.log(props.treatment)}
             {props.fields.map((field, idx)=>{
                     return (
                         <div key={`${field}-${idx}`} className="border border-secondary p-3 mt-2">

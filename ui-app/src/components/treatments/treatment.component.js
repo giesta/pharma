@@ -152,6 +152,22 @@ export default function Treatment(props) {
       console.log(e);
     });
   }
+
+  function getDrugsSubstances(field){    
+  
+    const arr =field.drugs.map(x =>x.substance);
+    const result = [];
+    const map = new Map();
+    for (const item of arr) {
+        if(!map.has(item)){
+            map.set(item, true); 
+            //console.log(drugs);   // set any value to Map
+            result.push(item);
+        }
+}
+    console.log(result);
+    return result;
+  };
   
   return (
     <div>
@@ -192,8 +208,8 @@ export default function Treatment(props) {
         <Col md="auto">
          <ListGroup className="mt-1">
          <ListGroup.Item variant="light">Drugs</ListGroup.Item>
-          {currentDrugs.drugs!==undefined&&currentDrugs.drugs.map((field)=>
-         <ListGroup.Item key={field.id} action onClick={function(event){ setDrug(field); setShow(true)}}>{field.drug.substance}</ListGroup.Item>
+          {currentTreatment.drugs!==undefined&&currentTreatment.drugs.map((field)=>
+         <ListGroup.Item key={field.id} action onClick={function(event){ setDrug(field); setShow(true)}}>{field.substance.name}</ListGroup.Item>
           )}
           </ListGroup>
         </Col>   

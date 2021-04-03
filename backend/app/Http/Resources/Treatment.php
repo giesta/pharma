@@ -7,6 +7,7 @@ use App\Http\Resources\Overview as OverviewResource;
 use App\Http\Resources\Comment as CommentResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Config;
+use App\Http\Resources\Drug as DrugResource;
 
 class Treatment extends JsonResource
 {
@@ -31,6 +32,8 @@ class Treatment extends JsonResource
             'isBlocked' => $this->reportsCount() >= 2,
             'isReported' => $this->isReportedBy(auth()->user()),
             'disease' => new OverviewResource($this->overview),
+            'uses' => $this->uses,
+            'drugs' => DrugResource::collection($this->drugs),
             'comments' => CommentResource::collection($this->comments()->orderBy("id", "desc")->get())
         ];
     }

@@ -1,9 +1,18 @@
 import React from 'react';
 
-import { Modal, Button, Form, Image } from "react-bootstrap";
+import { Modal, Button, Form, Image, Badge } from "react-bootstrap";
 
 
 export default function InfoModal(props) {
+    function getUsesValue(field, selectedDrug){    
+  
+       
+        console.log(field);
+        console.log(selectedDrug);
+        var arr = field.drugs.find(item=>item.form===selectedDrug.form&&item.strength===selectedDrug.strength&&item.name==selectedDrug.selected[0].name);
+      console.log(arr.uses);
+      return arr.uses;
+    };
     return (
         <div>{console.log(props.info)}
             <Modal show={props.info} onHide={props.handleCloseInfo}>
@@ -25,6 +34,11 @@ export default function InfoModal(props) {
                         <Form.Label>Description</Form.Label>
                         <Form.Control type="text" as="textarea" placeholder="" value={props.treatment.description} disabled name="description"/>
                     </Form.Group>
+                    <Form.Group controlId="uses">
+                        <Form.Label>Drug Treatment Adjustment</Form.Label>
+                        <Form.Control type="text" as="textarea" value={props.treatment.uses} disabled name="uses"/>
+                        
+                    </Form.Group>
                     <Form.Group controlId="public">
                         <Form.Check  label={"Public"} checked={parseInt(props.treatment.public)} name="public" disabled/>
                         
@@ -32,8 +46,44 @@ export default function InfoModal(props) {
                     {(props.treatment.disease!== null && props.treatment.disease!== undefined)&&(<Form.Group controlId="treatment.disease.name">
                         <Form.Label>Disease</Form.Label>
                         <Form.Control type="text" placeholder="" value={props.treatment.disease.name} disabled name="algorithm"/>
-                    </Form.Group>)
-                    } 
+                    </Form.Group>)}
+                    {
+                        props.fields.map((field, idx)=>{
+                        return (
+                            <div key={`${field}-${idx}`} className="border border-secondary p-3 mt-2">
+                            <Form.Group controlId={"drugs"+`${idx}`}>
+                            <h4>Drug</h4>    
+                            <Form.Label>Substance</Form.Label>  
+                            <Form.Control type="text" placeholder="" value={field.drug.name} disabled/>        
+                        </Form.Group>
+                        <div>
+                        <Form.Label>Names</Form.Label>
+                                        {field.selected!==undefined && field.selected.length!==0?(field.selected.map((item)=>
+                                                  item.registration.toUpperCase().includes("IŠREGISTRUOTAS")?
+                                                  <Badge pill variant="warning">{item.name}</Badge>
+                                                      :<Badge pill variant="success">{item.name}</Badge>
+                                              )):('')
+                                              }
+                                          </div>
+                        <Form.Group controlId={"form"+`${idx}`}>    
+                            <Form.Label>Form</Form.Label>  
+                            <Form.Control type="text" placeholder="" value={field.form} disabled/>        
+                        </Form.Group>
+                        <Form.Group controlId={"strength"+`${idx}`}>    
+                            <Form.Label>Strength</Form.Label>  
+                            <Form.Control type="text" placeholder="" value={field.strength} disabled/>        
+                        </Form.Group>
+                        <Form.Group controlId={"uses"+`${idx}`}>    
+                            <Form.Label>Uses</Form.Label>  
+                            <Form.Control type="text" as="textarea" placeholder="" value={getUsesValue(props.treatment.disease, field)} disabled/> 
+                        </Form.Group>     
+                        
+                        </div>
+                        )
+                    })
+                    }
+                    
+                    
                 </Form>
             </Modal.Body>
             <Modal.Footer>

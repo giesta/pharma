@@ -185,6 +185,7 @@ class TreatmentController extends Controller
             try{
                 Storage::delete($treatment->algorithm);
                 $treatment->update(array_merge($request->all(), ['algorithm'=>$path]));
+                $treatment->drugs()->sync(json_decode($request->drugs));
             }
             catch (QueryException $ex) { // Anything that went wrong
                 abort(500, "Could not update Treatment");
@@ -192,6 +193,7 @@ class TreatmentController extends Controller
         }else{
             try{
                 $treatment->update($request->only(['title', 'description', 'overview_id', 'public', 'dislikes', 'likes']));
+                $treatment->drugs()->sync(json_decode($request->drugs));
             }
             catch (QueryException $ex) { // Anything that went wrong
                 abort(500, "Could not update Treatment");
@@ -216,6 +218,7 @@ class TreatmentController extends Controller
             $treatment = $user->treatments()->findOrFail($id);
         }
         Storage::delete($treatment->algorithm);
+        $treatment->drugs()->detach();
         $treatment->delete();
         return response()->noContent();
     }

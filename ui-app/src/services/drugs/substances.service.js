@@ -1,6 +1,6 @@
 import http from "../../http-common";
 
-const getAll = () => {
+/*const getAll = () => {
   return http.get(`/leaflets`);
 };
 const getAllPaginate = (pageNumber) => {
@@ -29,20 +29,20 @@ const removeAll = () => {
 
 const findByTitle = (pageNumber, name) => {
   return http.get(`/leaflets/list?page=${pageNumber}&&name=${name}`);
-};
+};*/
 const findBySubstance = (name) => {
   return http.get(`/substances?name=${name}`);
 };
 
 const services = {
-  getAll,
+  /*getAll,
   getAllPaginate,
   get,
   create,
   update,
   remove,
   removeAll,
-  findByTitle,
+  findByTitle,*/
   findBySubstance
 };
 

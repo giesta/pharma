@@ -32,6 +32,7 @@ export default function DiagramsList() {
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(3);
+  const [noData, setNoData] = React.useState('');
 
   const [searchTitle, setSearchTitle] = React.useState("");
   
@@ -82,7 +83,9 @@ export default function DiagramsList() {
           setDiagrams(response.data.data);
           setPageSize(per_page);
           setPage(current_page);     
-          setTotal(total);
+          setTotal(total);          
+        }else{
+          setNoData('No Data');
         }       
       })
       .catch(e => {
@@ -231,7 +234,7 @@ const newDiagram = () => {
   return (
     <div>
       {diagrams?(
-      diagrams.length===0?(        
+      diagrams.length===0 && noData===''?(        
         <Spinner></Spinner>
       ):(  
         <div>

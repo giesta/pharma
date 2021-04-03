@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import diseasesDataService from "../../services/diseases/list.service";
 import SymptomsDataService from "../../services/diseases/symptoms.service";
-import DrugsLeafletsDataService from "../../services/drugs/leaflets.serevice";
+import DrugsSubstancesDataService from "../../services/drugs/substances.service";
 import DiseaseOverviewsDataService from "../../services/diseases/overviews.service";
 import DiseaseDelete from "../delete-modal.component";
 import DiseaseCreateUpdate from "./create-update-modal.component";
@@ -34,15 +34,10 @@ export default function DiseasesList() {
     dataField: 'Actions',
     editable: false 
   }];
-
-  const [options, setOptions] = React.useState([]);
   const [selectRef, setSelectRef] = React.useState(null);
   
   const [selectedDisease, setSelectedDisease] = React.useState(null);
   const [noData, setNoData] = React.useState('');
-  const [leaflets, setLeaflets] = React.useState({
-    data: [],
-  });
   const [symptoms, setSymptoms] = React.useState([]);
   const [selectedSymptoms, setSelectedSymptoms] = React.useState([]);
 
@@ -50,7 +45,6 @@ export default function DiseasesList() {
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
-  const [selectedLeaflets, setSelectedLeaflets] = React.useState([]);
   const [error, setError] = React.useState(false);
   const [searchTitle, setSearchTitle] = React.useState("");
 
@@ -62,6 +56,7 @@ export default function DiseasesList() {
   const [isWriting, setIsWriting] = React.useState(false);
 
   const [fields, setFields] = React.useState([]);
+
 
   const initialDiseaseState = {  
     id: null,
@@ -93,11 +88,81 @@ export default function DiseasesList() {
     values.push({
       drug: '',
       uses:'',
+      form:'',
+      strength:'',
+      selected:[]
     });
     setFields(values);
   }
+  const AddSelectedDrugs = (i, event) =>
+    {
+      if(event === null){
+        const values = [...fields];
+        values[i]['drug']='';
+        values[i]['form'] = '';
+        values[i]['strength']='';
+        values[i]['selected']=[];
+        setFields(values);
+        console.log(fields);
+      }else{
+        const value = event.value;
+        const values = [...fields];
+        values[i]['drug'] = value;
+        values[i]['form'] = '';
+        values[i]['strength']='';
+        values[i]['selected']=[];
+        setFields(values);
+        console.log(fields);
+      }
+      
+      //setSelectedLeaflets(arr);
+    };
+
+    const addSelectedForm = (i, event) =>
+    {
+      if(event === null){
+        const values = [...fields];
+        values[i]['form']='';
+        values[i]['strength']='';
+        values[i]['selected']=[];
+        setFields(values);
+        console.log(fields);
+      }else{
+        const value = event.value;
+        const values = [...fields];
+        values[i]['form'] = value;
+        values[i]['strength']='';
+        values[i]['selected']=[];
+        setFields(values);
+        console.log(fields);
+      }
+      
+      //setSelectedLeaflets(arr);
+    };
+    const addSelectedStrength = (i, event) =>
+    {
+      if(event === null){
+        const values = [...fields];
+        values[i]['strength']='';
+        values[i]['selected']=[];
+        setFields(values);
+        console.log(fields);
+      }else{
+        const value = event.value;
+        const values = [...fields];
+        values[i]['strength'] = value;
+        var arr = values[i]['drug'].drugs.filter(item=>item.form===values[i]['form']&&item.strength===values[i]['strength']);
+        values[i]['selected'] = arr;
+        //console.log(arr);
+        setFields(values);
+        console.log(fields);
+      }
+      
+      //setSelectedLeaflets(arr);
+    };
 
   function handleAddedInputChange(i, event) {
+    console.log(event);
     const values = [...fields];
     const { name, value } = event.target;
     values[i][name] = value;
@@ -107,6 +172,7 @@ export default function DiseasesList() {
 
   function handleRemoveInput(i) {
     const values = [...fields];
+    console.log(i);
     console.log(values);
     values.splice(i, 1);
     setFields(values);
@@ -146,13 +212,14 @@ export default function DiseasesList() {
     setValidated(false); 
     setSelectedDisease(null); 
     setIsWriting(true);     
-    
+    setFields([]);
   };
   const handleCloseConfirm = () => setConfirm(false);
   const handleCloseInfo = () => {
     newDisease();
     setInfo(false);
     setValidated(false);
+    setFields([]);
   };
   const [diseases, setDiseases] = React.useState({
     data: [],
@@ -165,9 +232,8 @@ export default function DiseasesList() {
   };
 
   const loadDrugsOptions = (inputValue, callback) => {    
-      DrugsLeafletsDataService.findBySubstance(inputValue)
+    DrugsSubstancesDataService.findBySubstance(inputValue)
         .then(response => {
-            setLeaflets(response.data.data);
             console.log(response.data.data);
             const result = response.data.data.map(x => makeOptions(x));          
            callback(result);      
@@ -204,25 +270,45 @@ export default function DiseasesList() {
   };
 function makeOptions(field){
   if(field.drug === undefined){
-    return { value: field.id, label: field.name };
+    return { value: field, label: field.name };
   }else{
     return { value: field.id, label: field.drug.substance };
   }
+  
+} 
+function setFieldsArray(drugs){
+  var arr = drugs.map(item=>{
+    return {drug: item.substance, uses:item.uses, form:item.form, strength:item.strength}
+  });
+const result = [];
+const map = new Map();
+for (const item of arr) {
+    if(!map.has(item.drug+item.form+item.strength)){
+        map.set(item.drug+item.form+item.strength, true); 
+        console.log(drugs);   // set any value to Map
+        var arrNames = drugs.filter(x=>x.form===item.form&&x.strength===item.strength&&x.substance.name===item.drug.name);
+        result.push({
+          drug: item.drug, 
+          uses:item.uses, 
+          form:item.form, 
+          strength:item.strength,
+          selected:arrNames,
+        });
+    }
+}
+  setFields(result);
   
 } 
   
   
   const handleSymptomsInputChange = event =>
     {
-      const arr = event.map(item=>item.value);
+      console.log(event);
+      const arr = event.map(item=>item.value.id);
       setSelectedSymptoms(arr);
     };
 
-    const AddSelectedLeaflets = event =>
-    {
-      const arr = event.map(item=>item.value);
-      setSelectedLeaflets(arr);
-    };
+    
     const handleDiseaseInputChange = event =>
     {
       setIsWriting(true);
@@ -246,18 +332,6 @@ function makeOptions(field){
         console.log(e);
       });
   };
-
-  const retrieveDrugsLeaflets = () => {
-    DrugsLeafletsDataService.getAll()
-      .then(response => {        
-        if(response.data.data.length !== 0){
-          setLeaflets({...leaflets, data: response.data.data});
-        }        
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
   const retrieveDiseasesOverviews = (pageNumber  = 1) => {
     DiseaseOverviewsDataService.findByTitle(pageNumber, searchTitle)
       .then(response => {
@@ -270,8 +344,7 @@ function makeOptions(field){
           setTotal(total);          
         }else{
           setNoData("No");
-        }
-        retrieveDrugsLeaflets();     
+        }    
       })
       .catch(e => {
         setError(true);        
@@ -284,11 +357,13 @@ function makeOptions(field){
     return (
       <td className="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
-              function(event){ setDisease(row); setInfo(true)}}>
+              function(event){setFieldsArray(row.drugs); setDisease(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
-              function(event){setSelectedDisease(row.disease_id); setDisease(row); setShow(true);setSelectedSymptoms(row.symptoms.map(item=>item.id)); setSelectedLeaflets(row.drugs.map(item=>item.id))}}>
+              function(event){
+                console.log(row.disease_id);
+                setFieldsArray(row.drugs);setSelectedDisease(row.disease_id); setDisease(row); setShow(true);setSelectedSymptoms(row.symptoms.map(item=>item.id));}}>
                 <BsPen></BsPen>
             </button>
             <button type="button" className="btn btn-outline-danger btn-sm ml-2 ts-buttom" size="sm"onClick={
@@ -304,17 +379,21 @@ const deleteItemFromState = (id) => {
   setOverviews(updatedItems);
 }
 const saveDisease = () => {
+  var drugsArr = fields.map(item=>{
+    return {selected:item.selected, uses:item.uses}
+  });
   var data = {
-    disease_id: selectedDisease,
+    disease_id: selectedDisease.id,
     description: disease.description,
     diagnosis: disease.diagnosis,
     prevention: disease.prevention,
-    drugs: JSON.stringify(selectedLeaflets),
+    drugs: JSON.stringify(drugsArr),
     symptoms: JSON.stringify(selectedSymptoms),
   };
   console.log(data);
   DiseaseOverviewsDataService.create(data)
-    .then(() => {
+    .then((response) => {
+      console.log(response.data.data);
       refreshList();
       handleClose();            
     })
@@ -325,17 +404,18 @@ const saveDisease = () => {
 };
 
 const updateDisease = () => {
-  console.log(selectedSymptoms);
-  console.log(selectedDisease);
+  var drugsArr = fields.map(item=>{
+    return {selected:item.selected, uses:item.uses}
+  });
   var data = {
     id: disease.id,
+    disease_id: selectedDisease.id===undefined?selectedDisease:selectedDisease.id,
     description: disease.description,
     diagnosis: disease.diagnosis,
     prevention: disease.prevention,
-    disease_id: selectedDisease,
+    drugs: JSON.stringify(drugsArr),
     symptoms: JSON.stringify(selectedSymptoms),
-    drugs: JSON.stringify(selectedLeaflets)
-  };
+  };console.log(data);
   DiseaseOverviewsDataService.update(data.id, data)
     .then((resp) => {  
       console.log(resp);
@@ -441,13 +521,17 @@ const findByTitle = () => {
         validated={validated} 
         handleSubmit={handleSubmit} 
         handleInputChange={handleInputChange} 
-        AddSelectedLeaflets={AddSelectedLeaflets} 
+        AddSelectedDrugs={AddSelectedDrugs} 
         handleSymptomsInputChange={handleSymptomsInputChange} 
         handleDiseaseInputChange={handleDiseaseInputChange} 
         handleAddInput={handleAddInput}
         handleRemoveInput={handleRemoveInput}
         fields={fields}
+        handleAddedInputChange={handleAddedInputChange}
+        addSelectedForm={addSelectedForm}        
+        addSelectedStrength={addSelectedStrength}
       ></DiseaseCreateUpdate> }
+
       { confirm && <DiseaseDelete 
         id={id} 
         name={"Disease"} 
@@ -455,7 +539,7 @@ const findByTitle = () => {
         handleCloseConfirm={handleCloseConfirm} 
         confirm={confirm}
       ></DiseaseDelete> }
-      { info && <DiseaseInfo info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }
+      { info && <DiseaseInfo fields={fields} info = {info} disease={disease} handleCloseInfo={handleCloseInfo}></DiseaseInfo> }
       <div>
         <Pagination 
         className="my-3"

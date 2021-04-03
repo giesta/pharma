@@ -71,13 +71,20 @@ class OverviewController extends Controller
         $user = auth()->user();
         try{
             $overview = Overview::create(array_merge($request->all(), ['user_id' => $user->id]));
-            $overview->leaflets()->attach(json_decode($request->drugs));
+            
             $overview->symptoms()->attach(json_decode($request->symptoms));
+            $drugs = json_decode($request->drugs);
+            foreach($drugs as $drug){
+                foreach($drug->selected as $selected){
+                    $overview->drugs()->attach($selected->id, ['uses'=> $drug->uses]);
+                }                
+            }
+            
         }catch (QueryException $ex) { // Anything that went wrong
             abort(500, $ex->getMessage());
         }
         return new OverviewResource(
-            $user->overviews()->with('leaflets')->findOrFail($overview->id)
+            $user->overviews()->with('drugs')->findOrFail($overview->id)
         );
 
     }
@@ -112,8 +119,14 @@ class OverviewController extends Controller
         }        
         try{
             $overview->update($request->only(['description', 'diagnosis', 'prevention', 'disease_id']));
-            $overview->leaflets()->sync(json_decode($request->drugs));
             $overview->symptoms()->sync(json_decode($request->symptoms));
+            $drugs = json_decode($request->drugs);
+            $tem = [];
+            foreach($drugs as $drug){
+                foreach($drug->selected as $selected){
+                    $tem[$selected->id] = ['uses'=> $drug->uses];
+                }                
+            }$overview->drugs()->sync($tem);
         }
         catch (QueryException $ex) { // Anything that went wrong
             abort(500, $ex);
@@ -136,7 +149,7 @@ class OverviewController extends Controller
         }else{
             $overview = $user->overviews()->findOrFail($id);
         } 
-        $overview->leaflets()->detach();
+        $overview->drugs()->detach();
         $overview->symptoms()->detach();
         $overview->delete();
         return response()->noContent();

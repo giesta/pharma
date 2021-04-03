@@ -3,7 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\Leaflet as LeafletResource;
+use App\Http\Resources\DrugWithUses as DrugResource;
 
 class Overview extends JsonResource
 {
@@ -23,7 +23,7 @@ class Overview extends JsonResource
             'diagnosis' => $this->diagnosis,
             'prevention' => $this->prevention,
             'symptoms' => $this->symptoms,
-            'drugs' => LeafletResource::collection($this->whenLoaded('leaflets')),
+            'drugs' => DrugResource::collection($this->drugs),
         ];
     }
 }

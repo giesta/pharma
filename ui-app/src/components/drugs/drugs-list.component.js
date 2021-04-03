@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import AuthService from "../../services/auth.service"; 
 import DrugsDataService from "../../services/drugs/list.service";
-import DrugsLeafletsDataService from "../../services/drugs/leaflets.serevice";
+//import DrugsLeafletsDataService from "../../services/drugs/substances.service";
 import DiseasesDataService from "../../services/diseases/list.service";
 import DiseaseOverviewsDataService from "../../services/diseases/overviews.service";
 import DrugDelete from "../delete-modal.component";
@@ -95,12 +95,12 @@ export default function DrugsList() {
   };
 
   const refreshList = () => {
-    //retrieveDrugsLeaflets();
+    //retrieveDrugs();
     //setLeaflet(initialLeafletState);
     setPage(1);
   };
 
-  const handleSubmit = (event) => {
+  /*const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     if (form.checkValidity() === false) {      
@@ -114,22 +114,22 @@ export default function DrugsList() {
       } 
     }
     setValidated(true);       
-  };
+  };*/
 
-  const handleClose = () =>{
+  /*const handleClose = () =>{
     newLeaflet();
     setShow(false);
     setValidated(false);
-  };
-  const handleCloseConfirm = () => setConfirm(false);
+  };*/
+  /*const handleCloseConfirm = () => setConfirm(false);*/
   const handleCloseInfo = () => {
-    newLeaflet();
+    //newLeaflet();
     setInfo(false);
   };
   const [drugs, setDrugs] = React.useState([]);
   const [leaflets, setLeaflets] = React.useState([]);
 
-  const handleInputChange = event => {
+ /* const handleInputChange = event => {
     const { name, value } = event.target;
     setLeaflet({ ...leaflet, [name]: value });
   };
@@ -160,9 +160,9 @@ export default function DrugsList() {
         id:leaflet.id
       });
     }    
-  };
+  };*/
 
-  const loadOptions = (inputValue, callback) => {
+  /*const loadOptions = (inputValue, callback) => {
     DiseaseOverviewsDataService.findByName(inputValue)
       .then(response => {
           console.log(response.data.data);
@@ -196,7 +196,7 @@ function makeOptions(field){
     return { value: field.id, label: field.drug.substance };
   }
   
-}   
+}   */
   
   const handleOverviewsInputChange = event =>
     {
@@ -204,7 +204,7 @@ function makeOptions(field){
       setSelectedOverviews(arr);
     };
   
-  const retrieveDrugsLeaflets = (pageNumber = 1) => {
+  const retrieveDrugs = (pageNumber = 1) => {
     DrugsDataService.findByTitle(pageNumber, searchTitle)
       .then(response => {  
         console.log(response.data.data);
@@ -224,7 +224,7 @@ function makeOptions(field){
         console.log(e);
       });
   };
-  const retrieveDrugs = () => {
+  /*const retrieveDrugs = () => {
     DrugsDataService.getAll()
       .then(response => {  
         console.log(response.data.data);    
@@ -238,8 +238,8 @@ function makeOptions(field){
         setError(true);
         console.log(e);
       });
-  };
-  useEffect(retrieveDrugsLeaflets, []);
+  };*/
+  useEffect(retrieveDrugs, []);
 
   const GetActionFormat = (row) =>{
     
@@ -258,7 +258,7 @@ const deleteItemFromState = (id) => {
   const updatedItems = leaflets.filter(x=>x.id!==id)
   setLeaflets(updatedItems)
 }
-const saveLeaflet = () => {
+/*const saveLeaflet = () => {
   
   var data = {
     token: AuthService.getCurrentUser().access_token,
@@ -338,7 +338,7 @@ const deleteItem = (id) => {
 
 const newLeaflet = () => {
   setLeaflet(initialLeafletState);
-};
+};*/
 
 const findByTitle = () => {
   DrugsDataService.findByTitle(1, searchTitle)
@@ -402,7 +402,7 @@ const findByTitle = () => {
         activePage={page} 
         totalItemsCount={total}
         itemsCountPerPage={pageSize}
-        onChange={(pageNumber)=>retrieveDrugsLeaflets(pageNumber)}
+        onChange={(pageNumber)=>retrieveDrugs(pageNumber)}
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"

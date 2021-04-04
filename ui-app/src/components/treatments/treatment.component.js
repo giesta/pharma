@@ -5,13 +5,17 @@ import ReportService from "../../services/treatments/reports.service";
 import CommentService from "../../services/treatments/comments.service";
 import DrugsDataService from "../../services/diseases/disease.drug.service";
 import DateParser from "../../services/parseDate.service";
+import NestedList from "./nested-list.component";
 import AuthService from "../../services/auth.service";
 import Spinner from "../layout/spinner.component";
 import DrugInfo from "../drugs/info-modal.component";
 import { Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form} from "react-bootstrap";
 import { BsStar, BsPeopleCircle, BsExclamationCircle } from "react-icons/bs";
-
+import fetchNodes from "./fetchNodes";
+const nodes = fetchNodes();
 export default function Treatment(props) {
+
+
 
   const initialTreatmentState = {  
     id: null,  
@@ -159,10 +163,33 @@ export default function Treatment(props) {
     const result = [];
     const map = new Map();
     for (const item of arr) {
-        if(!map.has(item)){
-            map.set(item, true); 
+        if(!map.has(item.name)){
+            map.set(item.name, true);
+            const map1 = new Map();
+            var temp = [];
+            temp = field.drugs.filter(x =>x.substance.name===item.name);
+            var t1 = [];
+            for (const item2 of temp) {
+              if(!map1.has(item2.form)){
+                  map1.set(item2.form, true);
+                  const map2 = new Map();
+                  var t2 = [];
+                  var temp2 = [];
+                  temp2 = field.drugs.filter(x =>x.substance.name===item.name&&x.form===item2.form);
+                for (const item3 of temp2) {
+                  if(!map2.has(item.strength)){
+                      map2.set(item.strength, true);
+                      
+                      var array = field.disease.drugs.filter(x =>x.substance.name===item.name&&x.form===item2.form&&x.strength===item3.strength);
+                      t2.push({label:item3.strength, children:array.map((item)=>{return {label:item.name, drug:item}})});//drugs
+                  }
+                }
+
+                  t1.push({label:item2.form, children:t2});//form
+              }
+            }
             //console.log(drugs);   // set any value to Map
-            result.push(item);
+            result.push({label:item.name, children:t1});//substance
         }
 }
     console.log(result);
@@ -190,7 +217,7 @@ export default function Treatment(props) {
         </Col>        
     </Row>
       <Row>
-        <Col md={{ span: 6, offset: 3 }}><Image src={currentTreatment.algorithm} fluid/></Col>        
+        <Col md={{ span: 6, offset: 3 }}><a target="_blank" href={currentTreatment.algorithm}><Image src={currentTreatment.algorithm} fluid/></a></Col>        
       </Row>
       <Row>
         <Col className="mt-1" md={{ span: 6, offset: 3 }}>
@@ -208,10 +235,9 @@ export default function Treatment(props) {
         <Col md="auto">
          <ListGroup className="mt-1">
          <ListGroup.Item variant="light">Drugs</ListGroup.Item>
-          {currentTreatment.drugs!==undefined&&currentTreatment.drugs.map((field)=>
-         <ListGroup.Item key={field.id} action onClick={function(event){ setDrug(field); setShow(true)}}>{field.substance.name}</ListGroup.Item>
-          )}
-          </ListGroup>
+          
+          
+<NestedList nodes={getDrugsSubstances(currentTreatment)}></NestedList></ListGroup>
         </Col>   
         <Col md="auto">
           {currentTreatment.disease!==null&&(
@@ -227,9 +253,19 @@ export default function Treatment(props) {
               <label>
                 <strong>Symptoms:</strong>
               </label>{" "}{console.log(currentTreatment.disease.symptoms)}
-              
-              
               {currentTreatment.disease.symptoms.map(item=><Badge variant="secondary">{item.name}</Badge>)}
+              <label>
+                <strong>Diagnosis:</strong>
+              </label>{" "}
+                
+              <label>{currentTreatment.disease.diagnosis}</label>
+              <label>
+                <strong>Prevention:</strong>
+              </label>{" "}
+                
+              <label>{currentTreatment.disease.prevention}</label>
+              
+              
           </Card.Text>
           </Card.Body>
         </Card>)}

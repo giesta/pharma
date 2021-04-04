@@ -7,8 +7,8 @@ import { BsPlusCircle, BsXCircle } from "react-icons/bs";
 
 export default function CreateModal(props) {
     function makeOptionsForm(field, selectedDrug){
-        console.log(field);
-        console.log(selectedDrug);
+        //console.log(field);
+        //console.log(selectedDrug);
         var arr = field.drugs.filter(item=>item.substance.name===selectedDrug.drug.name);
         const result = [];
         const map = new Map();
@@ -22,12 +22,12 @@ export default function CreateModal(props) {
                 });
             }
 }
-        console.log(arr);
+        //console.log(arr);
         return result;        
       } 
       function makeOptionsStrength(field, selectedDrug){
-        console.log(field);
-        console.log(selectedDrug);
+        //console.log(field);
+        //console.log(selectedDrug);
         var arr = field.drugs.filter(item=>item.substance.name===selectedDrug.drug.name&&item.form===selectedDrug.form);
         const result = [];
         const map = new Map();
@@ -62,17 +62,17 @@ function makeDrugsOptions(field){
                 });
             }
 }
-        console.log(result);
+        //console.log(result);
         return result;
       };
 
       function getUsesValue(field, selectedDrug){    
   
        
-        console.log(field);
-        console.log(selectedDrug);
+        //console.log(field);
+        //console.log(selectedDrug);
         var arr = field.drugs.find(item=>item.form===selectedDrug.form&&item.strength===selectedDrug.strength&&item.name==selectedDrug.selected[0].name);
-      console.log(arr.uses);
+      //console.log(arr.uses);
       return arr.uses;
     };
     return (
@@ -90,6 +90,21 @@ function makeDrugsOptions(field){
                 <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             </Form.Group>  
             {props.url===null?(<Image src={props.treatment.algorithm} fluid/>):(<Image src={props.url} fluid/>)}
+            <Form.Group controlId="diagram">
+            <Form.Label>Diagram</Form.Label> {console.log(props.diagramsOptions)} 
+                        <Select
+                            name="diagram"
+                            className="basic-multi-select"
+                            classNamePrefix="select"
+                            isClearable="true"
+                            cacheOptions
+                            defaultOptions
+                            options={props.diagramsOptions}
+                            //value={props.treatment.diagram!==undefined?({value: props.treatment.diagram, label: props.treatment.diagram.name}):('')}
+                            onChange={e=>props.addSelectedDiagram(e)}
+                            defaultValue={props.treatment.diagram!==null&&props.treatment.diagram!==undefined?({value: props.treatment.diagram, label: props.treatment.diagram.name}):('')}
+                     />
+                    </Form.Group>
             <Form.Group controlId="title">
             <Form.Label>Title</Form.Label>
             <Form.Control required type="text" placeholder=""  value={props.treatment.title} onChange={props.handleInputChange} name="title"/>

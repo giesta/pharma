@@ -9,7 +9,7 @@ class Diagram extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 'user_id',
+        'name', 'user_id', 'updated_at'
     ];
     public function nodes(){
         return $this->hasMany(Node::class);

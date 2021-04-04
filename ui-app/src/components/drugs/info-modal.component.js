@@ -19,34 +19,45 @@ export default function InfoModal(props) {
                             :<Badge pill variant="success">{props.drug.name}</Badge>
                             }
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="substance">
                         <Form.Label>Substance</Form.Label>
-                        {props.drug.substance.split(/\/|\(|\)/).map(item=>
+                        {props.drug.substance.name===undefined?(props.drug.substance.split(/\/|\(|\)/).map(item=>
                         
                         <Badge pill variant="primary">{item}</Badge>
                             
-                            )}
+                            )):(props.drug.substance.name.split(/\/|\(|\)/).map(item=>
+                        
+                                <Badge pill variant="primary">{item}</Badge>
+                                    
+                                    ))}
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="atc">
                         <Form.Label>ATC</Form.Label>
-                        <Form.Control type="text" placeholder="" value={props.drug.ATC} disabled name="indication"/>
+                        <Form.Control type="text" placeholder="" value={props.drug.ATC!==null?(props.drug.ATC):(props.drug.substance.ATC)} disabled name="indication"/>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="strength">
                         <Form.Label>Strength</Form.Label>
                         <Form.Control type="text" placeholder="" value={props.drug.strength} disabled name="contraindication"/>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="form">
                         <Form.Label>Form</Form.Label>
                         <Form.Control type="text" placeholder="" value={props.drug.form} disabled name="reaction"/>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="package">
                         <Form.Label>Package</Form.Label>
                         <Form.Control type="text" placeholder="" value={props.drug.package} disabled name="use"/>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="package_description">
                         <Form.Label>Package Description</Form.Label>
                         <Form.Control type="text"  as="textarea" placeholder="" value={props.drug.package_description} disabled name="use"/>
                     </Form.Group>
+                    {props.drug.uses!==undefined?( 
+                    <Form.Group controlId="uses">
+                        <Form.Label>Uses</Form.Label>
+                        <Form.Control type="text"  as="textarea" placeholder="" value={props.drug.uses} disabled name="use"/>
+                    </Form.Group>
+                    ):('')}
+                   
                     <Form.Group controlId="exampleForm.ControlInput1">
                         <Form.Label>Updated</Form.Label>
                         <Form.Control type="text" placeholder="" value={DateParser.getParsedDate(props.drug.updated_at)} disabled name="use"/>

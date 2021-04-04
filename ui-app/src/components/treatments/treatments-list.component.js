@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
+import DiagramsDataService from "../../services/diagrams/list.service";
 import DiseasesDataService from "../../services/diseases/list.service";
 import DiseaseOverviewsDataService from "../../services/diseases/overviews.service";
 import TreatmentTable from "./table.component";
@@ -13,14 +14,7 @@ import ErrorBoundary from "../layout/error.component";
 
 export default function TreatmentList() {
 
-  const initialTreatmentState = {  
-    id: null,  
-    title: "",
-    description: "",
-    algorithm: "",
-    public: 0,
-    disease: null
-  };
+  
   const columns = [{  
       dataField: '',  
       text: 'No' },  
@@ -44,7 +38,7 @@ export default function TreatmentList() {
     }
   ];
 
-  const [treatment, setTreatment] = React.useState(initialTreatmentState);
+  
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [url, setUrl] = React.useState(null);
   const [noData, setNoData] = React.useState('');
@@ -55,7 +49,8 @@ export default function TreatmentList() {
   const [info, setInfo] = React.useState(false);
 
   const [overviews, setOverviews] = React.useState([]);
-  const [selectedOverview, setSelectedOverview] = React.useState([]); 
+  const [selectedDiagram, setSelectedDiagram] = React.useState(null); 
+  const [diagramsOptions, setDiagramsOptions] = React.useState([]); 
   
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
@@ -68,7 +63,31 @@ export default function TreatmentList() {
   const [selectRef, setSelectRef] = React.useState(null);
 
   const [fields, setFields] = React.useState([]);
+  const [isWriting, setIsWriting] = React.useState(false);
 
+
+  const initialTreatmentState = {  
+    id: null,  
+    title: "",
+    description: "",
+    algorithm: "",
+    diagram:selectedDiagram,
+    public: 0,
+    disease: null
+  };
+  const [treatment, setTreatment] = React.useState(initialTreatmentState);
+
+  useEffect(() => {
+    if (isWriting) {
+      setIsWriting(false);
+      setTreatment({
+        ...treatment,
+        diagram: selectedDiagram,
+      }
+      );
+    }
+    console.log(treatment);
+  }, [isWriting, selectedDiagram]);
 
   function handleAddInput() {
     const values = [...fields];
@@ -146,6 +165,19 @@ export default function TreatmentList() {
       }
       
       //setSelectedLeaflets(arr);
+    };
+
+    const addSelectedDiagram = (event) =>
+    {
+      setIsWriting(true);
+      if(event === null){
+        setSelectedDiagram(null);
+      }else{
+        const value = event.value;
+        console.log(value)
+        setSelectedDiagram(value);
+        console.log(selectedDiagram)
+      }
     };
 
   function handleAddedInputChange(i, event) {
@@ -318,6 +350,27 @@ const loadOptions = (inputValue, callback) => {
     });
 };
 
+
+const getDiagramsOptions = () => {
+  DiagramsDataService.getAll()
+    .then(response => {      
+      if(response.data.data.length !== 0){
+        //setDiagrams(response.data.data);  
+        const result =  response.data.data.map(x=>
+          {
+            return { value: x, label: x.name }
+          }
+        ) 
+        setDiagramsOptions(result);      
+      }      
+    })
+    .catch(e => {
+      console.log(e);
+      setError(true);
+    });
+};
+useEffect(getDiagramsOptions,[]);
+
 const handleOverviewsInputChange = event =>
 {
   setFields([]);
@@ -362,7 +415,8 @@ drugsArr = newArr.map(item=>item.id);
     data.append("public", treatment.public);
     data.append("uses", treatment.uses);
     data.append("drugs", JSON.stringify(drugsArr));
-    console.log(drugsArr);
+    data.append("diagram_id", selectedDiagram.id);
+    console.log(data.diagram_id);
 TreatmentsDataService.create(data)
     .then((response) => {
       console.log(response.data.data);
@@ -380,21 +434,23 @@ TreatmentsDataService.create(data)
 const updateTreatment = () => {
   var drugsArr = fields.map(item=>item.selected);
   var newArr = [];
-newArr = [].concat(...drugsArr);
-drugsArr = newArr.map(item=>item.id);
+  newArr = [].concat(...drugsArr);
+  drugsArr = newArr.map(item=>item.id);
   const data = new FormData();
   data.append('Content-Type','multipart/formdata');
   data.append('_method', 'PUT');
   if(selectedFile!==null){
       data.append("algorithm", selectedFile);        
   } 
+  console.log(treatment.diagram.id);
   data.set("title", treatment.title);
   data.set("description", treatment.description);
   data.set("public", treatment.public);
   data.set("overview_id", treatment.disease.id);
   data.append("uses", treatment.uses);
   data.append("drugs", JSON.stringify(drugsArr));
-  console.log(drugsArr);
+  data.append("diagram_id", treatment.diagram.id);
+  
   TreatmentsDataService.update(treatment.id, data)
     .then(response => {
       setFields([]);
@@ -448,6 +504,7 @@ const findByTitle = () => {
       console.log(e);
     });
 };
+
   return (
     <div>
       {Treatments?(
@@ -512,6 +569,8 @@ const findByTitle = () => {
   handleAddInput={handleAddInput}
   handleRemoveInput={handleRemoveInput}
   AddSelectedDrugs={AddSelectedDrugs}
+  diagramsOptions={diagramsOptions}
+  addSelectedDiagram={addSelectedDiagram}
   >
     </TreatmentCreateUpdate>}
       

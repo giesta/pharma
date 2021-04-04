@@ -192,7 +192,7 @@ class TreatmentController extends Controller
             } 
         }else{
             try{
-                $treatment->update($request->only(['title', 'description', 'overview_id', 'public', 'dislikes', 'likes']));
+                $treatment->update($request->only(['title', 'description', 'overview_id', 'public', 'dislikes', 'likes', 'diagram_id']));
                 $treatment->drugs()->sync(json_decode($request->drugs));
             }
             catch (QueryException $ex) { // Anything that went wrong

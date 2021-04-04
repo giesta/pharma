@@ -21,11 +21,10 @@ class DiagramController extends Controller
     {
         $user = auth()->user();
         $role = $user->roles()->first()->name;
-        $name = $request->name;
         if($role ==="admin"){
-            return DiagramResource::collection(Diagram::with(['nodes', 'edges'])->where('diagrams.name', 'LIKE', "%$name%")->get());           
+            return DiagramResource::collection(Diagram::with(['nodes', 'edges'])->get());           
         }else{
-            return DiagramResource::collection($user->diagrams()->with(['nodes', 'edges'])->where('diagrams.name', 'LIKE', "%$name%")->get());  
+            return DiagramResource::collection($user->diagrams()->with(['nodes', 'edges'])->get());  
         }
     }
 
@@ -133,7 +132,7 @@ class DiagramController extends Controller
         $diagram = $user->diagrams()->findOrFail($id);
 
         try{
-            $diagram->update($request->only(['name']));
+            $diagram->update(array_merge($request->only(['name, updated_at']), ['updated_at' => date("Y-m-d H:i:s")]));
             $diagram->nodes()->delete();
             $diagram->edges()->delete();
             $nodes = json_decode($request->nodes);

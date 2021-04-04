@@ -36,7 +36,7 @@ const UpdateNode = (props) => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState(props.location.state!==undefined ? props.location.state.elements:initialElements);
-  const [nodesCount, setNodesCount] = useState(props.location.state!==undefined ? props.location.state.diagram.nodes.length:1);
+  const [nodesCount, setNodesCount] = useState(props.location.state!==undefined ? props.location.state.diagram.nodes[props.location.state.diagram.nodes.length-1].item_id.split('_')[1]:1);
   
   const [element, setElement] = useState({});
   const [nodeName, setNodeName] = useState('Node 1');
@@ -51,11 +51,11 @@ const UpdateNode = (props) => {
       setElement(element);
       if(element.data !== undefined){
          setNodeName(element.data.label); 
-         setNodeBg(element.data.style.backgroundColor)
+         setNodeBg(element.data.style.backgroundColor);
          if(element.source !== undefined){
              setEdgeType(element.type);
-             setAnimation(element.data.animated)
-             setNodeBg(element.data.style.stroke)
+             setAnimation(element.data.animated);
+             setNodeBg(element.data.style.stroke);
          }         
       }else{
         setNodeName(element.label);
@@ -152,6 +152,7 @@ setElements((els) =>
             ...el.data,
             style: { ...el.style, backgroundColor: nodeBg },
             };
+            el.style={background: nodeBg};
           }else{
             // it's important that you create a new object here
             // in order to notify react flow about the change

@@ -18,7 +18,7 @@ export default function CreateModal(props) {
  
     function makeOptionsForm(field, selectedDrug){
         //console.log(field);
-        //console.log(selectedDrug);
+        console.log(field);
         var arr = field.drugs.filter(item=>item.substance.name===selectedDrug.drug.name);
         const result = [];
         const map = new Map();
@@ -230,7 +230,7 @@ function makeDrugsOptions(field){
                             defaultOptions
                             value={field.form!==''?({value: field.form, label: field.form}):('')}
                             onChange={(e)=>props.addSelectedForm(idx, e)}
-                            options={field.drug !== ''?(makeOptionsForm(props.treatment.disease, field)):('')}
+                            options={field.drug !== ''&&props.treatment.disease!==null?(makeOptionsForm(props.treatment.disease, field)):('')}
                             defaultValue={field.form!==''?({value: field.form, label: field.form}):('')}/>
                     </Form.Group>
                     ):('')
@@ -249,7 +249,7 @@ function makeDrugsOptions(field){
                             defaultOptions
                             value={field.strength!==''?({value: field.strength, label: field.strength}):('')}
                             onChange={(e)=>props.addSelectedStrength(idx, e)}
-                            options={field.form !== ''?(makeOptionsStrength(props.treatment.disease,field)):('')}
+                            options={field.form !== ''&&props.treatment.disease!==null?(makeOptionsStrength(props.treatment.disease,field)):('')}
                             defaultValue={field.strength!==''?({value: field.strength, label: field.strength}):('')}/>
                     </Form.Group>
                     ):('')                     
@@ -265,7 +265,7 @@ function makeDrugsOptions(field){
                       {field.strength !== ''?(
                     <Form.Group controlId={`${field}-${idx}`}>
                         <Form.Label>Uses</Form.Label>
-                        <Form.Control type="text"  as="textarea" placeholder="" value={getUsesValue(props.treatment.disease, field)} disabled  name="uses"/>
+                        <Form.Control type="text"  as="textarea" placeholder="" value={props.treatment.disease!==null?(getUsesValue(props.treatment.disease, field)):('')} disabled  name="uses"/>
                     </Form.Group>):('')}
                     <div className="row">
   

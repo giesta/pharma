@@ -120,18 +120,29 @@ class TreatmentController extends Controller
     public function store(StoreTreatmentRequest $request)
     {
         $user = auth()->user();
+        $path = "";
         $diseaseOverview = Overview::findOrFail($request->overview_id);
+        
         if(!$request->hasFile('algorithm')) {
-            return response()->json(['upload file not found'], 400);
+            if($request->algorithm!==""){
+                $oldTreatment = Treatment::findOrFail($request->treatment_id);
+                $type = explode("/", $oldTreatment->algorithm);
+                $path = "public/algorithms/".date("YmdHis").$type[2];
+                Storage::copy($oldTreatment->algorithm, $path);
+            }else{
+                return response()->json(['upload file not found'], 400);
+            }            
+        }else{
+            $path = $request->file('algorithm')->store('public/algorithms');
         }
-        $path = $request->file('algorithm')->store('public/algorithms');
+        
         try{
             $treatment = Treatment::create(array_merge($request->all(), ['user_id' => $user->id, 'algorithm'=>$path]));
             $treatment->drugs()->attach(json_decode($request->drugs));
         }catch (QueryException $ex) { // Anything that went wrong
             abort(500, $ex->message);
         }
-        
+        //return response()->json(['neveikia'], 400);
         return new TreatmentResource(
             $treatment
         );

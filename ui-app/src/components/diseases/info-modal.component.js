@@ -28,7 +28,7 @@ export default function InfoModal(props) {
                     </Form.Group>
                     <Form.Group controlId="symptoms">
                         <Form.Label>Symptoms</Form.Label>
-                        {props.disease.symptoms.map(item=>
+                        {props.disease.symptoms!==undefined??props.disease.symptoms.map(item=>
                            <Badge pill variant="dark"> {item.name}</Badge>
                             )}
                     </Form.Group> {console.log(props.fields)}

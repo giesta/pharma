@@ -4,14 +4,17 @@ import StarService from "../../services/treatments/stars.service";
 import ReportService from "../../services/treatments/reports.service";
 import CommentService from "../../services/treatments/comments.service";
 import DrugsDataService from "../../services/diseases/disease.drug.service";
+import DiseaseOverviewsDataService from "../../services/diseases/overviews.service";
+import DiagramsDataService from "../../services/diagrams/list.service";
 import DateParser from "../../services/parseDate.service";
 import NestedList from "./nested-list.component";
 import DiagramInfo from "../diagrams/info-modal.component";
 import AuthService from "../../services/auth.service";
 import Spinner from "../layout/spinner.component";
 import DrugInfo from "../drugs/info-modal.component";
+import DownloadTreatment from "./download-modal.component";
 import { Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form} from "react-bootstrap";
-import { BsStar, BsPeopleCircle, BsExclamationCircle, BsInfoCircle } from "react-icons/bs";
+import { BsStar, BsPeopleCircle, BsExclamationCircle, BsInfoCircle, BsCloudDownload } from "react-icons/bs";
 import fetchNodes from "./fetchNodes";
 import ReactFlow, {
   Controls,
@@ -57,6 +60,10 @@ export default function Treatment(props) {
   const [userData] = React.useState(AuthService.getCurrentUser());
   const [showDiagram, setShowDiagram] = React.useState(false);
   const [elements, setElements] = React.useState([]);
+  const [confirm, setConfirm] = React.useState(false);
+  const [confirmToOverwrite, setConfirmToOverwrite] = React.useState(false);
+  const [identifier, setIdentifier] = React.useState(null);
+  const [diagramId, setDiagramId] = React.useState(null);
 
   const onChangeComment = e => {
     const comment = e.target.value;
@@ -66,6 +73,18 @@ export default function Treatment(props) {
   const handleClose = () =>{
     newDrug();
     setShow(false);
+  };
+
+  const handleCloseConfirm = () => {
+    console.log(confirm);
+    console.log(confirmToOverwrite);
+    setConfirm(false);
+    console.log(confirm);
+    console.log(confirmToOverwrite);
+  };
+  const handleCloseConfirmToOverwrite = () => {
+    setConfirmToOverwrite(false);
+    setIdentifier(null);
   };
 
   const handleCloseInfo = () => {
@@ -84,12 +103,9 @@ export default function Treatment(props) {
     }else{
       tweet();
       setValidated(false);
-    }
-           
-  };
-  
+    }           
+  };  
   useEffect(()=>{ 
-
     const getDrugs = (id) => {
       DrugsDataService.getPublic(id)
         .then(response => {    
@@ -209,11 +225,11 @@ export default function Treatment(props) {
 }
     return result;
   };
+  
 
   function getElements(diagram){
     var arr = diagram.nodes.concat(diagram.edges);
     var items = arr.map((el)=>{
-      console.log(el);
       if(el.source === undefined){
         var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
         return item;
@@ -226,6 +242,161 @@ export default function Treatment(props) {
   //setElements(items);
 return items;
 }
+
+const downloadItem = () => {
+  
+  console.log(currentTreatment.disease.name);
+  DiseaseOverviewsDataService.findByTitle(1, currentTreatment.disease.name)
+      .then(response => {
+          //console.log(response.data);
+          if(response.data.data.length > 0){
+            //console.log(response.data.data);
+            console.log(response.data.data[0])
+            setIdentifier(response.data.data[0].id);
+            
+            handleCloseConfirm();
+            setConfirmToOverwrite(true);
+          }else{
+            handleCloseConfirm();
+            createDisease();
+          }
+          
+      })
+};
+
+const updateDisease = () => {
+  console.log(currentTreatment.disease.drugs);
+  var drugsArr = currentTreatment.disease.drugs.map(item=>{
+    return {selected:[item], uses:item.uses}
+  });
+  console.log(drugsArr);
+  var data = {
+    id: identifier,
+    disease_id: currentTreatment.disease.disease_id,
+    description: currentTreatment.disease.description,
+    diagnosis: currentTreatment.disease.diagnosis,
+    prevention: currentTreatment.disease.prevention,
+    drugs: JSON.stringify(drugsArr),
+    symptoms: JSON.stringify(currentTreatment.disease.symptoms.map(item=>item.id)),
+  };console.log(data);
+  DiseaseOverviewsDataService.update(data.id, data)
+    .then((resp) => {  
+      console.log(resp);
+      saveDiagram();
+      //saveTreatment();
+      /*const updatedItems = overviews.filter(x=>x.id!==disease.id)
+      updatedItems.push(resp.data.data);
+      setOverviews(updatedItems);
+      handleClose();*/
+    })
+    .catch(e => {
+      //setError(true);
+      console.log(e);
+    });
+};
+const createDisease = () => {
+  console.log(currentTreatment.disease.drugs);
+  var drugsArr = currentTreatment.disease.drugs.map(item=>{
+    return {selected:[item], uses:item.uses}
+  });
+  console.log(drugsArr);
+  var data = {
+    disease_id: currentTreatment.disease.disease_id,
+    description: currentTreatment.disease.description,
+    diagnosis: currentTreatment.disease.diagnosis,
+    prevention: currentTreatment.disease.prevention,
+    drugs: JSON.stringify(drugsArr),
+    symptoms: JSON.stringify(currentTreatment.disease.symptoms.map(item=>item.id)),
+  };console.log(data);
+  DiseaseOverviewsDataService.create(data)
+    .then((resp) => {  
+      console.log(resp.data.data.id);
+      
+      setIdentifier(resp.data.data.id);
+      saveDiagram(resp.data.data.id);
+      
+      
+      /*const updatedItems = overviews.filter(x=>x.id!==disease.id)
+      updatedItems.push(resp.data.data);
+      setOverviews(updatedItems);
+      handleClose();*/
+    })
+    .catch(e => {
+      //setError(true);
+      console.log(e);
+    });
+};
+
+const saveTreatment = (diagramId, overviewId) => {
+  var drugsArr = currentTreatment.drugs;
+  var newArr = [];
+newArr = [].concat(...drugsArr);
+drugsArr = newArr.map(item=>item.id);
+var data = {
+    treatment_id:currentTreatment.id,
+    algorithm:currentTreatment.algorithm,
+    title:currentTreatment.title,
+    description:currentTreatment.description,
+    overview_id:overviewId<0?identifier:overviewId,
+    public: 0,
+    uses:currentTreatment.uses,
+    drugs:JSON.stringify(drugsArr),
+    diagram_id: diagramId,
+};
+    console.log(data);
+TreatmentsDataService.create(data)
+    .then((response) => {
+      console.log(response.data.data);
+      handleClose();
+      props.history.push("/treatments");
+      //props.history.push("/treatments");
+      /*setFields([]);
+      refreshList();
+      setUrl(null);
+      handleClose();*/
+    })
+    .catch(e => {
+      //setError(true);
+      console.log(e);
+    });
+};
+
+const saveDiagram = (overviewId=-1) => {
+  //console.log();
+  //setElements(getElements(currentTreatment.diagram));
+  console.log(elements);
+var newElements = elements.map((el)=>{
+    const {id: item_id, ...rest} = el;
+    return {item_id, ...rest};
+});
+  var data = {
+    name: currentTreatment.diagram.name,
+    nodes: JSON.stringify(newElements.filter((el)=>{
+      if(el.source === undefined){
+        return el;
+      }
+    })),
+    edges: JSON.stringify(newElements.filter((el)=>{
+      if(el.source !== undefined){
+        return el;
+      }
+    })),
+  };
+  console.log(data);
+  DiagramsDataService.create(data)
+    .then((response) => {
+      console.log(response.data.data.id);
+      setDiagramId(response.data.data.id)
+      saveTreatment(response.data.data.id, overviewId);
+    })
+    .catch(e => {
+      //setError(true);
+      console.log(e);
+    });
+    console.log("-----Veikia saugojimas-----");
+    console.log(elements);
+    
+};
   
   return (
     <div>
@@ -239,6 +410,8 @@ return items;
         <Col>
           <Button variant="secondary" size="sm" disabled={currentTreatment.isStar} onClick={star}>
             <BsStar></BsStar>{' '}<Badge variant="light">{currentTreatment.stars}</Badge>
+          </Button>{' '}
+          <Button variant="outline-info" size="sm" onClick={()=>{setElements(getElements(currentTreatment.diagram));setConfirm(true);}}> <BsCloudDownload/>{' '}
           </Button>
         </Col>
         <Col>
@@ -400,6 +573,8 @@ return items;
       </div>
 { show &&<DrugInfo info = {show} leaflet = {drug} handleCloseInfo={handleClose}></DrugInfo> } 
 { showDiagram &&<DiagramInfo name={currentTreatment.diagram.name} elements={elements} info = {showDiagram} handleCloseInfo={handleCloseInfo}></DiagramInfo> }
+{confirm&&< DownloadTreatment treatment={currentTreatment} buttonText={'Download'} text={'All related data will be overwritten!'} name={"Treatment"} onClickMethod={downloadItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ DownloadTreatment>}
+{confirmToOverwrite&&< DownloadTreatment identifier={identifier} treatment={currentTreatment} buttonText={'Overwrite'} text={'We found related disease! Do you want to overwrite this data?'} name={"Treatment"} onClickMethod={updateDisease} onClickMethodCancel={saveDiagram} handleCloseConfirm={handleCloseConfirmToOverwrite} confirm={confirmToOverwrite} ></ DownloadTreatment>}
   </div>  )
     ):(<div>
       <br />

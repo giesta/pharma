@@ -96,7 +96,7 @@ export default function CreateModal(props) {
                         defaultOptions
                         loadOptions={props.loadOptions}
                         onChange={props.handleSymptomsInputChange}
-                        defaultValue={props.disease.symptoms!==null?(props.disease.symptoms.map(item=>
+                        defaultValue={props.disease.symptoms!==null&&props.disease.symptoms!==undefined?(props.disease.symptoms.map(item=>
                         ({value: item, label: item.name})
                     
                         )):('')}

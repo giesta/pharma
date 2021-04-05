@@ -71,8 +71,9 @@ export default function TreatmentList() {
     title: "",
     description: "",
     algorithm: "",
-    diagram:selectedDiagram,
+    diagram:null,
     public: 0,
+    drugs:[],
     disease: null
   };
   const [treatment, setTreatment] = React.useState(initialTreatmentState);
@@ -174,9 +175,7 @@ export default function TreatmentList() {
         setSelectedDiagram(null);
       }else{
         const value = event.value;
-        console.log(value)
         setSelectedDiagram(value);
-        console.log(selectedDiagram)
       }
     };
 
@@ -316,7 +315,6 @@ for (const item of arr) {
   function getElements(diagram){
     var arr = diagram.nodes.concat(diagram.edges);
     var items = arr.map((el)=>{
-      console.log(el);
       if(el.source === undefined){
         var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
         return item;
@@ -438,7 +436,6 @@ drugsArr = newArr.map(item=>item.id);
 TreatmentsDataService.create(data)
     .then((response) => {
       console.log(response.data.data);
-      setFields([]);
       refreshList();
       setUrl(null);
       handleClose();
@@ -480,6 +477,7 @@ const updateTreatment = () => {
         disease: response.data.data.disease
       });
       setUrl(null);
+      setSelectedDiagram(null);
       handleClose();
       const updatedItems = Treatments.data.filter(x=>x.id!==treatment.id)
       updatedItems.push(response.data.data);

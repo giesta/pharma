@@ -37,7 +37,7 @@ const Leaf2 = ({ drug, label }, idx) => {
         onClick={function(event){ setCurrentDrug(drug); setShow(true)}}
       >
         <FaMedrt /> {label}
-        </ListGroup.Item >{console.log(currentDrug)}
+        </ListGroup.Item >
         { show &&<DrugInfo info = {show} drug = {currentDrug} handleCloseInfo={handleClose}></DrugInfo> } 
         </>
     );

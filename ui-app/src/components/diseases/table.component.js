@@ -22,11 +22,11 @@ export default function TableOfItems(props) {
                     <td>{field.name}</td>
                     <td>{field.description}</td>
                     <td>
-                    {field.symptoms.map(item=>
+                    {field.symptoms!==undefined?(field.symptoms.map(item=>
                         
                         <Badge pill variant="primary">{item.name}</Badge>
                             
-                            )}
+                            )):('')}
                     </td>
                     {props.GetActionFormat(field)}
                 </tr>

@@ -6,16 +6,25 @@ import CommentService from "../../services/treatments/comments.service";
 import DrugsDataService from "../../services/diseases/disease.drug.service";
 import DateParser from "../../services/parseDate.service";
 import NestedList from "./nested-list.component";
+import DiagramInfo from "../diagrams/info-modal.component";
 import AuthService from "../../services/auth.service";
 import Spinner from "../layout/spinner.component";
 import DrugInfo from "../drugs/info-modal.component";
 import { Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form} from "react-bootstrap";
-import { BsStar, BsPeopleCircle, BsExclamationCircle } from "react-icons/bs";
+import { BsStar, BsPeopleCircle, BsExclamationCircle, BsInfoCircle } from "react-icons/bs";
 import fetchNodes from "./fetchNodes";
+import ReactFlow, {
+  Controls,
+  Background,
+  ReactFlowProvider,
+} from 'react-flow-renderer'; 
 const nodes = fetchNodes();
 export default function Treatment(props) {
 
-
+  const onLoad = (reactFlowInstance) => {
+    console.log('flow loaded:', reactFlowInstance);
+    reactFlowInstance.fitView({ padding: 0.8, includeHiddenNodes: true });
+  };
 
   const initialTreatmentState = {  
     id: null,  
@@ -46,6 +55,8 @@ export default function Treatment(props) {
   const [comment, setComment] = React.useState('');
   const [validated, setValidated] = React.useState(false);
   const [userData] = React.useState(AuthService.getCurrentUser());
+  const [showDiagram, setShowDiagram] = React.useState(false);
+  const [elements, setElements] = React.useState([]);
 
   const onChangeComment = e => {
     const comment = e.target.value;
@@ -55,6 +66,10 @@ export default function Treatment(props) {
   const handleClose = () =>{
     newDrug();
     setShow(false);
+  };
+
+  const handleCloseInfo = () => {
+    setShowDiagram(false);
   };
   const newDrug = () => {
     setDrug(initialDrugState);
@@ -192,9 +207,25 @@ export default function Treatment(props) {
             result.push({label:item.name, children:t1});//substance
         }
 }
-    console.log(result);
     return result;
   };
+
+  function getElements(diagram){
+    var arr = diagram.nodes.concat(diagram.edges);
+    var items = arr.map((el)=>{
+      console.log(el);
+      if(el.source === undefined){
+        var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
+        return item;
+      }else{
+        var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
+        return item;
+      }
+      
+  });
+  //setElements(items);
+return items;
+}
   
   return (
     <div>
@@ -219,6 +250,38 @@ export default function Treatment(props) {
       <Row>
         <Col md={{ span: 6, offset: 3 }}><a target="_blank" href={currentTreatment.algorithm}><Image src={currentTreatment.algorithm} fluid/></a></Col>        
       </Row>
+      {currentTreatment.diagram!==null?(
+        <Row>
+        <Col md={{ span: 6, offset: 3 }}>
+          <div className=" mt-2">
+            <h6>Diagram: "{currentTreatment.diagram.name}" <Button variant="outline-info" size="sm" onClick={() =>{setElements(getElements(currentTreatment.diagram));setShowDiagram(true)} }>
+            <BsInfoCircle/>{' '}
+          </Button></h6>
+          
+          </div>
+             
+        <div className=" mt-2 mb-2 border">   
+              
+                <ReactFlowProvider>
+                <ReactFlow
+                    elements={currentTreatment.diagram!==undefined?(getElements(currentTreatment.diagram)):([])}
+                    snapGrid={[15, 15]}
+                    style={{ width: "100%", height: 400 }} 
+                    elementsSelectable={false}
+                    nodesConnectable={false}
+                    nodesDraggable={false}
+                    snapToGrid={true}
+                    onLoad={onLoad}
+                    >
+                    <Controls/>
+                    <Background color="#aaa" gap={16} />
+                    </ReactFlow>
+                </ReactFlowProvider>
+                </div>
+          </Col>        
+      </Row>
+      ):('')}
+      
       <Row>
         <Col className="mt-1" md={{ span: 6, offset: 3 }}>
          <Jumbotron fluid>
@@ -231,14 +294,7 @@ export default function Treatment(props) {
          </Jumbotron>
           </Col>        
         </Row>
-      <Row className="justify-content-md-center">
-        <Col md="auto">
-         <ListGroup className="mt-1">
-         <ListGroup.Item variant="light">Drugs</ListGroup.Item>
-          
-          
-<NestedList nodes={getDrugsSubstances(currentTreatment)}></NestedList></ListGroup>
-        </Col>   
+        <Row className="justify-content-md-center">
         <Col md="auto">
           {currentTreatment.disease!==null&&(
         <Card border="light" className="mt-1" style={{ width: '18rem' }}>
@@ -271,6 +327,33 @@ export default function Treatment(props) {
         </Card>)}
         </Col>
       </Row>
+      {currentTreatment.uses!==null&currentTreatment.uses!==""?(
+      <Row className="justify-content-md-center">
+        <Col md="auto">
+        <Card border="light" className="mt-1" style={{ width: '18rem' }}>
+          <Card.Body>
+          <Card.Title>Drug Treatment</Card.Title>
+          <Card.Text>
+              <label>
+                <strong>Uses:</strong>
+              </label>{" "}
+                {currentTreatment.uses}
+                              
+          </Card.Text>
+          </Card.Body>
+        </Card>
+        </Col>
+      </Row>
+      ):('')}
+      <Row className="justify-content-md-center">
+        <Col md="auto">
+         <ListGroup className="mt-1">
+         <ListGroup.Item variant="light">Drugs</ListGroup.Item>
+          
+          
+<NestedList nodes={getDrugsSubstances(currentTreatment)}></NestedList></ListGroup>
+        </Col>   
+        </Row>
       <div className="container">
       {userData!==null?(
       <Row>
@@ -316,6 +399,7 @@ export default function Treatment(props) {
 
       </div>
 { show &&<DrugInfo info = {show} leaflet = {drug} handleCloseInfo={handleClose}></DrugInfo> } 
+{ showDiagram &&<DiagramInfo name={currentTreatment.diagram.name} elements={elements} info = {showDiagram} handleCloseInfo={handleCloseInfo}></DiagramInfo> }
   </div>  )
     ):(<div>
       <br />

@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Overview as OverviewResource;
 use App\Http\Resources\Comment as CommentResource;
+use App\Http\Resources\Diagram as DiagramResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Config;
 use App\Http\Resources\Drug as DrugResource;
@@ -35,7 +36,7 @@ class Treatment extends JsonResource
             'uses' => $this->uses,
             'drugs' => DrugResource::collection($this->drugs),
             'comments' => CommentResource::collection($this->comments()->orderBy("id", "desc")->get()),
-            'diagram' => $this->diagram
+            'diagram' => new DiagramResource($this->diagram)
         ];
     }
 }

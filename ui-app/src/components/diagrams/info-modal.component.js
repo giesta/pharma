@@ -10,7 +10,7 @@ import ReactFlow, {
     export default function InfoModal(props) {
     const onLoad = (reactFlowInstance) => {
       console.log('flow loaded:', reactFlowInstance);
-      reactFlowInstance.fitView({ padding: 0.8, includeHiddenNodes: true });
+      reactFlowInstance.fitView({ padding: 0.2, includeHiddenNodes: true });
     };
         console.log(props.elements);
       const [elements, setElements] = useState(props.elements);

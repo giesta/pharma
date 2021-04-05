@@ -64,7 +64,7 @@ export default function TreatmentList() {
 
   const [fields, setFields] = React.useState([]);
   const [isWriting, setIsWriting] = React.useState(false);
-
+  const [elements, setElements] = React.useState([]);
 
   const initialTreatmentState = {  
     id: null,  
@@ -312,6 +312,23 @@ for (const item of arr) {
       });
   };
   useEffect(retrieveTreatments, []);
+  
+  function getElements(diagram){
+    var arr = diagram.nodes.concat(diagram.edges);
+    var items = arr.map((el)=>{
+      console.log(el);
+      if(el.source === undefined){
+        var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
+        return item;
+      }else{
+        var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
+        return item;
+      }
+      
+  });
+return items;
+}
+
   const GetActionFormat = (row) =>{
     
     return (
@@ -322,6 +339,7 @@ for (const item of arr) {
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
               function(event){ setFieldsArray(row.drugs);setTreatment(row);
+                
               setShow(true);}}>
                 <BsPen></BsPen>
             </button>
@@ -571,12 +589,20 @@ const findByTitle = () => {
   AddSelectedDrugs={AddSelectedDrugs}
   diagramsOptions={diagramsOptions}
   addSelectedDiagram={addSelectedDiagram}
+  getElements={getElements}
   >
     </TreatmentCreateUpdate>}
       
   {confirm&&< TreatmentDelete id={id} name={"Treatment"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ TreatmentDelete>}
 
-  {info&&<TreatmentInfo fields = {fields} info = {info}  treatment={treatment} handleCloseInfo={handleCloseInfo} ></TreatmentInfo>}
+  {info&&<TreatmentInfo 
+  fields = {fields} 
+  info = {info}  
+  treatment={treatment} 
+  handleCloseInfo={handleCloseInfo} 
+  getElements={getElements}
+  >
+  </TreatmentInfo>}
   <div>
         <Pagination 
         className="my-3"

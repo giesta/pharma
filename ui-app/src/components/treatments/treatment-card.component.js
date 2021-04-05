@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Button, Badge, Card, CardDeck, ListGroup, ListGroupItem } from "react-bootstrap";
 import { BsEyeSlash, BsEye, BsStar } from "react-icons/bs";
+import { FaCommentMedical } from "react-icons/fa";
 
 export default function TreatmentCard(props) {
     return (
@@ -21,6 +22,7 @@ export default function TreatmentCard(props) {
               <Card.Body>
                 <Card.Link href={"/treatments/" + field.id}>Read More </Card.Link>{ }
                 <Button variant="outline-primary" disabled size={"sm"}><BsStar color="#AA5725"></BsStar> <Badge color="DED18D">{field.stars}</Badge></Button>{' '}
+                <Button variant="outline-primary" disabled size={"sm"}><FaCommentMedical color="#000000"></FaCommentMedical> <Badge color="DED18D">{field.comments.length}</Badge></Button>{' '}
               </Card.Body>
             </Card>
           </div>

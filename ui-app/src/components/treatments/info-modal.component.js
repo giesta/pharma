@@ -1,16 +1,21 @@
 import React from 'react';
 
 import { Modal, Button, Form, Image, Badge } from "react-bootstrap";
-
+import ReactFlow, {
+    Controls,
+    Background,
+    ReactFlowProvider,
+  } from 'react-flow-renderer'; 
 
 export default function InfoModal(props) {
+    const onLoad = (reactFlowInstance) => {
+        console.log('flow loaded:', reactFlowInstance);
+        reactFlowInstance.fitView({ padding: 0.8, includeHiddenNodes: true });
+      };
     function getUsesValue(field, selectedDrug){    
-  
-       
-        console.log(field);
-        console.log(selectedDrug);
+
         var arr = field.drugs.find(item=>item.form===selectedDrug.form&&item.strength===selectedDrug.strength&&item.name==selectedDrug.selected[0].name);
-      console.log(arr.uses);
+
       return arr.uses;
     };
     return (
@@ -26,6 +31,27 @@ export default function InfoModal(props) {
                         <Form.Control type="text" placeholder="" value={props.treatment.algorithm}  disabled name="algorithm"/>
                     </Form.Group>  
                     <Image src={props.treatment.algorithm} fluid/>
+                    {props.treatment.diagram!==null?(
+            <Form.Group controlId="treatment.diagram"><Form.Label>Diagram: "{props.treatment.diagram.name}"</Form.Label>
+            <div className="mb-4 border">            
+                <ReactFlowProvider>
+                <ReactFlow
+                    elements={props.treatment.diagram!==undefined?(props.getElements(props.treatment.diagram)):([])}
+                    snapGrid={[15, 15]}
+                    style={{ width: "100%", height: 300 }} 
+                    elementsSelectable={false}
+                    nodesConnectable={false}
+                    nodesDraggable={false}
+                    snapToGrid={true}
+                    onLoad={onLoad}
+                    >
+                    <Controls/>
+                    <Background color="#aaa" gap={16} />
+                    </ReactFlow>
+                </ReactFlowProvider>
+                </div>
+            </Form.Group>
+            ):('')}
                     <Form.Group controlId="treatment.title">
                         <Form.Label>Title</Form.Label>
                         <Form.Control type="text" placeholder="" value={props.treatment.title} disabled name="title"/>

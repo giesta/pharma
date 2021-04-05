@@ -4,8 +4,18 @@ import { Modal, Button, Form, Image, Badge } from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import { BsPlusCircle, BsXCircle } from "react-icons/bs";
+import ReactFlow, {
+    Controls,
+    Background,
+    ReactFlowProvider,
+  } from 'react-flow-renderer'; 
 
 export default function CreateModal(props) {
+    const onLoad = (reactFlowInstance) => {
+        console.log('flow loaded:', reactFlowInstance);
+        reactFlowInstance.fitView({ padding: 0.8, includeHiddenNodes: true });
+      };
+ 
     function makeOptionsForm(field, selectedDrug){
         //console.log(field);
         //console.log(selectedDrug);
@@ -90,8 +100,31 @@ function makeDrugsOptions(field){
                 <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
             </Form.Group>  
             {props.url===null?(<Image src={props.treatment.algorithm} fluid/>):(<Image src={props.url} fluid/>)}
+            
+            
             <Form.Group controlId="diagram">
-            <Form.Label>Diagram</Form.Label> {console.log(props.diagramsOptions)} 
+            <Form.Label>Diagram</Form.Label>
+            
+            {props.treatment.diagram!==null?(
+            <div className="mb-4 border">
+                <ReactFlowProvider>
+                <ReactFlow
+                    elements={props.treatment.diagram!==undefined?(props.getElements(props.treatment.diagram)):([])}
+                    snapGrid={[15, 15]}
+                    style={{ width: "100%", height: 300 }} 
+                    elementsSelectable={false}
+                    nodesConnectable={false}
+                    nodesDraggable={false}
+                    snapToGrid={true}
+                    onLoad={onLoad}
+                    >
+                    <Controls/>
+                    <Background color="#aaa" gap={16} />
+                    </ReactFlow>
+                </ReactFlowProvider>
+                </div>
+            ):('')}
+            
                         <Select
                             name="diagram"
                             className="basic-multi-select"
@@ -105,6 +138,7 @@ function makeDrugsOptions(field){
                             defaultValue={props.treatment.diagram!==null&&props.treatment.diagram!==undefined?({value: props.treatment.diagram, label: props.treatment.diagram.name}):('')}
                      />
                     </Form.Group>
+                    
             <Form.Group controlId="title">
             <Form.Label>Title</Form.Label>
             <Form.Control required type="text" placeholder=""  value={props.treatment.title} onChange={props.handleInputChange} name="title"/>

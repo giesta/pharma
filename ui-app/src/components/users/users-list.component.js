@@ -178,7 +178,14 @@ const updateUser = () => {
 const deleteItem = (id) => {
   UsersDataService.remove(id)
     .then(() => {
-      deleteItemFromState(id);
+      if(users.data.length > 1){
+        retrieveUsers(page);
+      }else if(page > 1){
+        retrieveUsers(page - 1);
+      }else{
+        retrieveUsers();
+      }
+      //deleteItemFromState(id);
       handleCloseConfirm();
     })
     .catch(e => {

@@ -217,7 +217,16 @@ const updatediagram = () => {
 const deleteItem = (id) => {
   DiagramsDataService.remove(id)
     .then(() => {
-      deleteItemFromState(id);
+      //deleteItemFromState(id);
+      if(diagrams.length > 1){
+        retrieveDiagrams(page);
+      }else if(page > 1){
+        retrieveDiagrams(page - 1);
+      }
+      else{
+        retrieveDiagrams();
+      }
+      
       handleCloseConfirm();
     })
     .catch(e => {

@@ -488,11 +488,19 @@ const updateTreatment = () => {
       console.log(e);
     });
 };
-
 const deleteItem = (id) => {
   TreatmentsDataService.remove(id)
     .then(() => {
-      deleteItemFromState(id);
+      //deleteItemFromState(id);
+      if(Treatments.data.length>1){
+        retrieveTreatments(page);
+      }else if(page > 1){
+        retrieveTreatments(page - 1);
+      }
+      else{
+        retrieveTreatments();
+      }
+      
       handleCloseConfirm();
     })
     .catch(e => {

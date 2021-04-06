@@ -433,7 +433,15 @@ const updateDisease = () => {
 const deleteItem = (id) => {
   DiseaseOverviewsDataService.remove(id)
     .then(() => {
-      deleteItemFromState(id);
+      //deleteItemFromState(id);
+      if(overviews.length>1){
+        retrieveDiseasesOverviews(page);
+      }else if(page > 1){
+        retrieveDiseasesOverviews(page-1);
+      }else{
+        retrieveDiseasesOverviews();
+      }
+      
       handleCloseConfirm();
     })
     .catch(e => {

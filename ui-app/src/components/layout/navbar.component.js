@@ -16,12 +16,13 @@ export default function MainNavbar(props) {
       {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/diseases"}>Diseases</Nav.Link>)}
       {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/treatments"}>Treatments</Nav.Link>)}
       {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/diagrams"}>Diagrams</Nav.Link>)}
+      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/interactions"}>Interactions</Nav.Link>)}
       {props.showAdminBoard && (<Nav.Link href={"/users"}>Users</Nav.Link>)}
     </Nav>
     
     {props.currentUser ? (
       <Nav>
-              <Nav.Link href={"/profile"}>{props.currentUser.user.name}</Nav.Link>
+              <Nav.Link href={"/profile"}>{props.currentUser.name}</Nav.Link>
               <Nav.Link eventKey={2} href="/login" onClick={props.logOut}>
               LogOut
       </Nav.Link>

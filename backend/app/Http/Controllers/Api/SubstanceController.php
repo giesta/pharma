@@ -21,7 +21,7 @@ class SubstanceController extends Controller
     {
         $user = auth()->user();
         $name = $request->name;      
-        return SubstanceResource::collection(Substance::with('drugs')->where('substances.name', 'LIKE', "%$name%")->limit(900)->get());
+        return SubstanceResource::collection(Substance::with('drugs')->where('substances.name', 'LIKE', "%$name%")->limit(100)->get());
     }
 
     /**

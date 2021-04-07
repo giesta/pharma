@@ -7,17 +7,19 @@ import { BsPlusCircle, BsXCircle } from "react-icons/bs";
 
 
 export default function Interactions() {
+    const [loading, setLoading] = React.useState(false);
 
     const initialFieldsArray=[{
-        atc: '',
+        ATC: '',
     }]
 
     const [fields, setFields] = React.useState(initialFieldsArray);
-
+    const [valuesOfId, setValuesOfId] = React.useState([]);
+    const [interactions, setInteractions] = React.useState([]);
     function handleAddInput() {
         const values = [...fields];
         values.push({
-          atc: '',
+          ATC: '',
         });
         setFields(values);
       }
@@ -25,12 +27,12 @@ export default function Interactions() {
         {
           if(event === null){
             const values = [...fields];
-            values[i]['atc']='';
+            values[i]['ATC']='';
             setFields(values);
           }else{
             const value = event.value;
             const values = [...fields];
-            values[i]['atc']= value;
+            values[i]['ATC']= value;
             setFields(values);
             console.log(fields);
           }
@@ -60,6 +62,49 @@ export default function Interactions() {
             });
       };
 
+     const getInter = (values) =>{
+        var query = "";
+        console.log(values);
+        for(const value of values){
+          query += value+"+";
+        }
+        console.log(query);
+        DrugsSubstancesDataService.getInteractions(query).then(response=>{
+            console.log(response.data);
+            if(response.data.fullInteractionTypeGroup!==undefined){
+                setInteractions(response.data.fullInteractionTypeGroup);
+            }else{
+                setInteractions("Not Found");
+            }
+            
+        })
+        setLoading(false);
+     }
+
+      const getInteraction = async () =>{
+          console.log(fields);
+          var values = [];
+          for (const item of fields){
+            console.log(item.ATC);
+            //const values = [...valuesOfId];
+            const value = await DrugsSubstancesDataService.getRXUI(item.ATC)
+            
+            .then(response=>{
+                
+                if(response.data.idGroup.rxnormId!==undefined){
+                   console.log(response.data.idGroup.rxnormId);   
+                   return response.data.idGroup.rxnormId[0];
+                }
+            })
+            //console.log(value);
+            values.push(value); 
+            //setValuesOfId(values);
+            
+          }
+          console.log(values);
+          getInter(values);
+      }
+
 
   return (
     <div>
@@ -71,7 +116,7 @@ export default function Interactions() {
       {fields.map((field, idx)=>{
                     return (
                         <div key={`${field}-${idx}`} className="border border-secondary p-3 mt-2">
-                        <div controlId="drugs">
+                        
                         <h4>Drug</h4>    
                         <label>Name</label>  
                         <AsyncSelect
@@ -84,7 +129,7 @@ export default function Interactions() {
                             loadOptions={loadDrugsOptions}
                             onChange={e=>AddSelectedDrugs(idx, e)}
                      />
-                    </div>
+                    
                     
                    {idx>0?(<div className="row">
   
@@ -97,12 +142,34 @@ export default function Interactions() {
                     )
                 })}    
                 
-                <div class="col-auto mr-auto mt-2"><a type="button" className="link_success" size="sm" onClick={handleAddInput} >
+                <div className="col-auto mr-auto mt-2"><a type="button" className="link_success" size="sm" onClick={handleAddInput} >
                 Add Drug <BsPlusCircle></BsPlusCircle>
           </a></div>  
       
   </div>
-  </div></div>
+  </div>{console.log(loading)}
+  <button type="button" disabled={loading} className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
+            function(event){setLoading(true);getInteraction();}}>
+              {loading && (
+                  <span className="spinner-border spinner-border-sm"></span>
+                )} Check Interactions
+  </button>
+  {interactions.length > 0?(
+  <div className="border border-secondary p-3 mt-2">{console.log(interactions)}
+      {interactions[0].fullInteractionType!==undefined?(interactions.map(item=>{
+          console.log(item.fullInteractionType);
+         return item.fullInteractionType.map(item=>{
+              console.log(item.interactionPair)
+             return item.interactionPair.map(item=>{
+                  console.log(item.description);
+                  return (<p>{item.description}</p>)
+              })
+          })
+      })):(interactions)}
+  </div>
+  ):('')}
+  </div>
+  
     
     
   );

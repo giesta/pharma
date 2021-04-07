@@ -1,4 +1,5 @@
 import http from "../../http-common";
+import httpInteraction from "../../http-interaction";
 
 /*const getAll = () => {
   return http.get(`/leaflets`);
@@ -33,6 +34,12 @@ const findByTitle = (pageNumber, name) => {
 const findBySubstance = (name) => {
   return http.get(`/substances?name=${name}`);
 };
+const getRXUI = (atc) => {
+  return httpInteraction.get(`/rxcui.json?idtype=ATC&id=${atc}`);
+};
+const getInteractions = (query) => {
+  return httpInteraction.get(`/interaction/list.json?rxcuis=${query}`);
+};
 
 const services = {
   /*getAll,
@@ -43,7 +50,9 @@ const services = {
   remove,
   removeAll,
   findByTitle,*/
-  findBySubstance
+  findBySubstance,
+  getRXUI,
+  getInteractions
 };
 
 export default services;

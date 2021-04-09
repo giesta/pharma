@@ -22,9 +22,9 @@ export default function TableOfItems(props) {
                     <td>{field.name}</td>
                     <td>{field.description}</td>
                     <td>
-                    {field.symptoms!==undefined?(field.symptoms.map(item=>
+                    {field.symptoms!==undefined?(field.symptoms.map((item, idx)=>
                         
-                        <Badge pill variant="primary">{item.name}</Badge>
+                        <Badge key={idx} pill variant="primary">{item.name}</Badge>
                             
                             )):('')}
                     </td>

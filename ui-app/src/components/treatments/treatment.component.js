@@ -46,7 +46,7 @@ export default function Treatment(props) {
     indication: "",
     contraindication: "",
     reaction: "",
-    use: "",
+    uses: "",
     diseases: []
   };
 
@@ -177,7 +177,7 @@ export default function Treatment(props) {
   const tweet=()=>{
     var data = {
       content: comment,
-      user_id: userData.user.id,      
+      user_id: userData.id,      
       treatment_id: currentTreatment.id,
     };
     CommentService.create(data).then(response=>{
@@ -488,7 +488,7 @@ var newElements = elements.map((el)=>{
               <label>
                 <strong>Symptoms:</strong>
               </label>{" "}{console.log(currentTreatment.disease.symptoms)}
-              {currentTreatment.disease.symptoms.map(item=><Badge variant="secondary">{item.name}</Badge>)}
+              {currentTreatment.disease.symptoms.map((item, idx)=><Badge key={idx} variant="secondary">{item.name}</Badge>)}
               <label>
                 <strong>Diagnosis:</strong>
               </label>{" "}

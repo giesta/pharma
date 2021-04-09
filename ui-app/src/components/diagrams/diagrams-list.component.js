@@ -85,6 +85,7 @@ export default function DiagramsList() {
           setPage(current_page);     
           setTotal(total);          
         }else{
+          setDiagrams(response.data.data);
           setNoData('No Data');
         }       
       })

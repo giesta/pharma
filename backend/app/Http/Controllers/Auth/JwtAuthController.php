@@ -13,27 +13,38 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Traits\ResponseApiToken;
 use App\Http\Requests\TokenRequest;
+use App\Services\LicenseService;
  
 class JwtAuthController extends Controller
 {
     public $token = true;
     use ResponseApiToken;
   
-    public function register(Request $request)
+    public function register(Request $request, LicenseService $licenseService)
     { 
+
+        $url = 'https://vapris.vvkt.lt/vvkt-web/public/personLicenses?nameFilter=&licenseType=7&licenseState=VALID&validFrom=&validTo=&licenceNumber='.$request->stamp_number;
+        
+        $data = $licenseService->scrap($url);
+        if($data[0]!==$request->name || $data[1]!==$request->last_name || $data[2] !== $request->stamp_number){
+            return response()->json(['message'=>'No such pharmacist was found'], 401);
+        }
+
          $validator = Validator::make($request->all(), 
                       [ 
                       'name' => 'required',
+                      'last_name' => 'required',
                       'email' => 'required|email|unique:users',
+                      'stamp_number' => 'required',
                       'password' => 'required',  
                       'c_password' => 'required|same:password', 
                      ]);  
  
          if ($validator->fails()) { 
-               return response()->json(['message'=>$validator->errors()], 401);  
+               return response()->json(['message'=>$validator->errors()], 400);  
             }    
         $user = new User();
-        $user->name = $request->name;
+        $user->name = $request->name." ".$request->last_name;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
         $user->save();

@@ -23,16 +23,18 @@ class AuthService {
     localStorage.removeItem("user");
   }
 
-  register(name, email, password, c_password) {
+  register(name, last_name, stamp_number, email, password, c_password) {
     return axios.post(API_URL + "register", {
       name,
+      last_name,
+      stamp_number,
       email,
       password,
       c_password,
     }).then(response => {
       if (response.data.access_token) { 
         localStorage.setItem("token", response.data.access_token);           
-        localStorage.setItem("user", jwt_decode(response.data.access_token).user);
+        localStorage.setItem("user", JSON.stringify(jwt_decode(response.data.access_token).user));
       }
       return response;
     });

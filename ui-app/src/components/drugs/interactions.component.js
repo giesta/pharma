@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 
 import DrugsSubstancesDataService from "../../services/drugs/substances.service";
+import { Alert} from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import { BsPlusCircle, BsXCircle } from "react-icons/bs";
@@ -142,13 +143,13 @@ export default function Interactions() {
                     )
                 })}    
                 
-                <div className="col-auto mr-auto mt-2"><a type="button" className="link_success" size="sm" onClick={handleAddInput} >
+                <div className="col-auto mr-auto mt-2 mb-2"><a type="button" className="link_success" size="sm" onClick={handleAddInput} >
                 Add Drug <BsPlusCircle></BsPlusCircle>
           </a></div>  
       
   </div>
   </div>{console.log(loading)}
-  <button type="button" disabled={loading} className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
+  <button type="button" disabled={loading} className="btn btn-outline-success btn-sm ts-buttom mt-2" size="sm" onClick={
             function(event){setLoading(true);getInteraction();}}>
               {loading && (
                   <span className="spinner-border spinner-border-sm"></span>
@@ -160,9 +161,15 @@ export default function Interactions() {
           console.log(item.fullInteractionType);
          return item.fullInteractionType.map(item=>{
               console.log(item.interactionPair)
-             return item.interactionPair.map(item=>{
+             return item.interactionPair.map((item, idx)=>{
                   console.log(item.description);
-                  return (<p>{item.description}</p>)
+                  if(item.severity==="high"){
+                      return (<Alert key={idx} variant="danger">{item.description}</Alert>)
+                  }else{
+                      return (<div><p key={idx}><strong>{"Interaction between "+item.interactionConcept[0].minConceptItem.name+" and "+item.interactionConcept[1].minConceptItem.name}</strong></p>
+                      <p key={idx}>{item.description}</p></div>)
+                  }
+                  
               })
           })
       })):(interactions)}

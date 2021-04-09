@@ -343,6 +343,7 @@ for (const item of arr) {
           setPage(current_page);     
           setTotal(total);          
         }else{
+          setOverviews(response.data.data);
           setNoData("No");
         }    
       })
@@ -435,10 +436,13 @@ const deleteItem = (id) => {
     .then(() => {
       //deleteItemFromState(id);
       if(overviews.length>1){
+        console.log(1)
         retrieveDiseasesOverviews(page);
       }else if(page > 1){
+        console.log(2)
         retrieveDiseasesOverviews(page-1);
       }else{
+        console.log(2)
         retrieveDiseasesOverviews();
       }
       

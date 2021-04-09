@@ -16,7 +16,7 @@ export default function InfoModal(props) {
 
         var arr = field.drugs.find(item=>item.form===selectedDrug.form&&item.strength===selectedDrug.strength&&item.name==selectedDrug.selected[0].name);
 
-      return arr.uses;
+      return arr&&arr.uses;
     };
     return (
         <div>{console.log(props.info)}
@@ -99,10 +99,14 @@ export default function InfoModal(props) {
                             <Form.Label>Strength</Form.Label>  
                             <Form.Control type="text" placeholder="" value={field.strength} disabled/>        
                         </Form.Group>
-                        <Form.Group controlId={"uses"+`${idx}`}>    
+                        {
+                        getUsesValue(props.treatment.disease, field)!==undefined?(
+                            <Form.Group controlId={"uses"+`${idx}`}>    
                             <Form.Label>Uses</Form.Label>  
                             <Form.Control type="text" as="textarea" placeholder="" value={getUsesValue(props.treatment.disease, field)} disabled/> 
-                        </Form.Group>     
+                            </Form.Group>  
+                        ):''}
+                           
                         
                         </div>
                         )

@@ -288,6 +288,7 @@ for (const item of arr) {
           setPage(current_page);     
           setTotal(total);          
         }else{
+          setTreatments({...Treatments, data: response.data.data});
           setNoData("No");
         }
         retrieveDiseases();     

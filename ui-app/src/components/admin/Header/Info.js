@@ -10,7 +10,7 @@ function  Info() {
   const user = AuthService.getCurrentUser();
     return (
       <React.Fragment>
-        <div className="name-user">{user.user.name}</div>
+        <div className="name-user">{user.name}</div>
         <div className="avatar-user">          
           <Navbar brand='React-Bootstrap'>
           <Nav>

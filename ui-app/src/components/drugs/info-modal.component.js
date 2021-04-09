@@ -51,7 +51,7 @@ export default function InfoModal(props) {
                         <Form.Label>Package Description</Form.Label>
                         <Form.Control type="text"  as="textarea" placeholder="" value={props.drug.package_description} disabled name="use"/>
                     </Form.Group>
-                    {props.drug.uses!==undefined?( 
+                    {props.drug.uses!==undefined && props.drug.uses!==null?( 
                     <Form.Group controlId="uses">
                         <Form.Label>Uses</Form.Label>
                         <Form.Control type="text"  as="textarea" placeholder="" value={props.drug.uses} disabled name="use"/>

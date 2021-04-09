@@ -8,7 +8,7 @@ use App\Http\Resources\Comment as CommentResource;
 use App\Http\Resources\Diagram as DiagramResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Config;
-use App\Http\Resources\Drug as DrugResource;
+use App\Http\Resources\DrugWithUses as DrugResource;
 
 class Treatment extends JsonResource
 {

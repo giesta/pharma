@@ -99,13 +99,11 @@ export default function InfoModal(props) {
                             <Form.Label>Strength</Form.Label>  
                             <Form.Control type="text" placeholder="" value={field.strength} disabled/>        
                         </Form.Group>
-                        {
-                        getUsesValue(props.treatment.disease, field)!==undefined?(
+                        
                             <Form.Group controlId={"uses"+`${idx}`}>    
                             <Form.Label>Uses</Form.Label>  
-                            <Form.Control type="text" as="textarea" placeholder="" value={getUsesValue(props.treatment.disease, field)} disabled/> 
-                            </Form.Group>  
-                        ):''}
+                            <Form.Control type="text" as="textarea" placeholder="" value={field.uses} disabled/> 
+                            </Form.Group> 
                            
                         
                         </div>

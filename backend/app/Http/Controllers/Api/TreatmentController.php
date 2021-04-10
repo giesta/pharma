@@ -138,7 +138,14 @@ class TreatmentController extends Controller
         
         try{
             $treatment = Treatment::create(array_merge($request->all(), ['user_id' => $user->id, 'algorithm'=>$path]));
-            $treatment->drugs()->attach(json_decode($request->drugs));
+            //$treatment->drugs()->attach(json_decode($request->drugs));
+            $drugs = json_decode($request->drugs);
+                $tem = [];
+                foreach($drugs as $drug){
+                    //$overview->drugs()->attach($drug->id, ['uses'=> $drug->uses]); 
+                    $tem[$drug->id] = ['uses'=> $drug->uses];                              
+                }
+                $treatment->drugs()->attach($tem);
         }catch (QueryException $ex) { // Anything that went wrong
             abort(500, $ex->message);
         }
@@ -196,7 +203,14 @@ class TreatmentController extends Controller
             try{
                 Storage::delete($treatment->algorithm);
                 $treatment->update(array_merge($request->all(), ['algorithm'=>$path]));
-                $treatment->drugs()->sync(json_decode($request->drugs));
+                
+                $drugs = json_decode($request->drugs);
+                $tem = [];
+                foreach($drugs as $drug){
+                    //$overview->drugs()->attach($drug->id, ['uses'=> $drug->uses]); 
+                    $tem[$drug->id] = ['uses'=> $drug->uses];                              
+                }
+                $treatment->drugs()->sync($tem);
             }
             catch (QueryException $ex) { // Anything that went wrong
                 abort(500, "Could not update Treatment");
@@ -204,7 +218,13 @@ class TreatmentController extends Controller
         }else{
             try{
                 $treatment->update($request->only(['title', 'description', 'overview_id', 'public', 'dislikes', 'likes', 'diagram_id']));
-                $treatment->drugs()->sync(json_decode($request->drugs));
+                $drugs = json_decode($request->drugs);
+                $tem = [];
+                foreach($drugs as $drug){
+                    //$overview->drugs()->attach($drug->id, ['uses'=> $drug->uses]); 
+                    $tem[$drug->id] = ['uses'=> $drug->uses];                              
+                }
+                $treatment->drugs()->sync($tem);
             }
             catch (QueryException $ex) { // Anything that went wrong
                 abort(500, "Could not update Treatment");

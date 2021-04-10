@@ -212,11 +212,7 @@ export default function Treatment(props) {
                       map2.set(item.strength, true);
                       
                       var array = field.drugs.filter(x =>x.substance.name===item.name&&x.form===item2.form&&x.strength===item3.strength);
-                      t2.push({label:item3.strength, children:array.map((item)=>{
-                        var d = field.disease.drugs.find(x =>x.substance.name===item.substance.name&&x.form===item.form&&x.strength===item.strength);
-                        //console.log(d);
-                        if(d!==undefined)
-                          item['uses'] = d.uses;
+                      t2.push({label:item3.strength, children:array.map((item)=>{                        
                         return {label:item.name, drug:item}
                       })});//drugs
                   }

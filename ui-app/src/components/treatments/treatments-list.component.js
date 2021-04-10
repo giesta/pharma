@@ -158,7 +158,7 @@ export default function TreatmentList() {
         const value = event.value;
         const values = [...fields];
         values[i]['strength'] = value;
-        var arr = values[i]['drug'].drugs.filter(item=>item.form===values[i]['form']&&item.strength===values[i]['strength']);
+        var arr = treatment.disease.drugs.filter(item=>item.form===values[i]['form']&&item.strength===values[i]['strength']);
         values[i]['selected'] = arr;
         //console.log(arr);
         setFields(values);
@@ -257,6 +257,7 @@ for (const item of arr) {
   const handleCloseInfo = () => {
     newTreatment();
     setInfo(false);
+    setFields([]);
   };
   const [Treatments, setTreatments] = React.useState({
     data: [],
@@ -419,7 +420,10 @@ const saveTreatment = () => {
   var drugsArr = fields.map(item=>item.selected);
   var newArr = [];
 newArr = [].concat(...drugsArr);
-drugsArr = newArr.map(item=>item.id);
+
+drugsArr = newArr.map(item=>{
+  return {id: item.id, uses:item.uses}
+});
     const data = new FormData();
     console.log(treatment.disease);
     data.append('Content-Type','multipart/formdata');
@@ -451,7 +455,9 @@ const updateTreatment = () => {
   var drugsArr = fields.map(item=>item.selected);
   var newArr = [];
   newArr = [].concat(...drugsArr);
-  drugsArr = newArr.map(item=>item.id);
+  drugsArr = newArr.map(item=>{
+    return {id: item.id, uses:item.uses}
+  });console.log(drugsArr);
   const data = new FormData();
   data.append('Content-Type','multipart/formdata');
   data.append('_method', 'PUT');

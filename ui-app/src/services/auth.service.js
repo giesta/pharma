@@ -15,7 +15,7 @@ class AuthService {
           localStorage.setItem("token", response.data.access_token);              
           localStorage.setItem("user", JSON.stringify(jwt_decode(response.data.access_token).user));
         }
-        return response.data;
+        return jwt_decode(response.data.access_token).user;
       });
   }
 

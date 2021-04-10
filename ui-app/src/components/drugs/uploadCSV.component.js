@@ -17,11 +17,11 @@ export default function CSVReader2(props) {
           </button>
           
     </div>
-          <div class="col-6 col-sm-3">
+          <div className="col-6 col-sm-3">
             <h5>{props.title} </h5>
             <h6>{props.updated} </h6>
           </div>
-          <div class="col-6 col-sm-3">
+          <div className="col-6 col-sm-3">
             <CSVReader
               onDrop={props.handleOnDrop}
               onError={props.handleOnError}

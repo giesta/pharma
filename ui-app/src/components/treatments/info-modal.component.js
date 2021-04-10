@@ -25,12 +25,15 @@ export default function InfoModal(props) {
                 <Modal.Title>Info</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <Form>
+                <Form>{props.treatment.algorithm!==''?(
+                    <>
                     <Form.Group controlId="treatment.algorithm">
                         <Form.Label>Algorithm</Form.Label>
                         <Form.Control type="text" placeholder="" value={props.treatment.algorithm}  disabled name="algorithm"/>
                     </Form.Group>  
                     <Image src={props.treatment.algorithm} fluid/>
+                    </>
+                    ):''}
                     {props.treatment.diagram!==null?(
             <Form.Group controlId="treatment.diagram"><Form.Label>Diagram: "{props.treatment.diagram.name}"</Form.Label>
             <div className="mb-4 border">            

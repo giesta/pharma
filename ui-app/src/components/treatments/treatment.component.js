@@ -284,7 +284,11 @@ const updateDisease = () => {
   DiseaseOverviewsDataService.update(data.id, data)
     .then((resp) => {  
       console.log(resp);
-      saveDiagram();
+      if(currentTreatment.diagram !==null){
+        saveDiagram();
+      }else{
+        saveTreatment(identifier);
+      }
       //saveTreatment();
       /*const updatedItems = overviews.filter(x=>x.id!==disease.id)
       updatedItems.push(resp.data.data);
@@ -315,7 +319,12 @@ const createDisease = () => {
       console.log(resp.data.data.id);
       
       setIdentifier(resp.data.data.id);
-      saveDiagram(resp.data.data.id);
+      if(currentTreatment.diagram !==null){
+        saveDiagram(resp.data.data.id);
+      }else{
+        saveTreatment(resp.data.data.id);
+      }
+      
       
       
       /*const updatedItems = overviews.filter(x=>x.id!==disease.id)
@@ -329,22 +338,31 @@ const createDisease = () => {
     });
 };
 
-const saveTreatment = (diagramId, overviewId) => {
+const saveTreatment = (overviewId, diagramId=-1) => {
   var drugsArr = currentTreatment.drugs;
   var newArr = [];
 newArr = [].concat(...drugsArr);
-drugsArr = newArr.map(item=>item.id);
+drugsArr = newArr.map(item=>{
+  return {id: item.id, uses:item.uses}
+});
 var data = {
-    treatment_id:currentTreatment.id,
-    algorithm:currentTreatment.algorithm,
-    title:currentTreatment.title,
-    description:currentTreatment.description,
-    overview_id:overviewId<0?identifier:overviewId,
-    public: 0,
-    uses:currentTreatment.uses,
-    drugs:JSON.stringify(drugsArr),
-    diagram_id: diagramId,
+  treatment_id:currentTreatment.id,
+  title:currentTreatment.title,
+  description:currentTreatment.description,
+  overview_id:overviewId<0?identifier:overviewId,
+  public: 0,
+  uses:currentTreatment.uses,
+  drugs:JSON.stringify(drugsArr),
 };
+if(diagramId!==-1){  
+  data['diagram_id']= diagramId;
+};
+if(currentTreatment.algorithm!==''){
+  data['algorithm']= currentTreatment.algorithm;
+}else{
+  data['algorithm']= '';
+}
+
     console.log(data);
 TreatmentsDataService.create(data)
     .then((response) => {
@@ -389,7 +407,7 @@ var newElements = elements.map((el)=>{
     .then((response) => {
       console.log(response.data.data.id);
       setDiagramId(response.data.data.id)
-      saveTreatment(response.data.data.id, overviewId);
+      saveTreatment( overviewId, response.data.data.id);
     })
     .catch(e => {
       //setError(true);
@@ -413,7 +431,7 @@ var newElements = elements.map((el)=>{
           <Button variant="secondary" size="sm" disabled={currentTreatment.isStar} onClick={star}>
             <BsStar></BsStar>{' '}<Badge variant="light">{currentTreatment.stars}</Badge>
           </Button>{' '}
-          <Button variant="outline-info" size="sm" onClick={()=>{setElements(getElements(currentTreatment.diagram));setConfirm(true);}}> <BsCloudDownload/>{' '}
+          <Button variant="outline-info" size="sm" onClick={()=>{if(currentTreatment.diagram!==null){setElements(getElements(currentTreatment.diagram))};setConfirm(true);}}> <BsCloudDownload/>{' '}
           </Button>
         </Col>
         <Col>

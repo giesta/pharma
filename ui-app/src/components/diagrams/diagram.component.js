@@ -114,7 +114,7 @@ setElements((els) =>
           y: event.clientY - reactFlowBounds.top,
         });
         const newNode = {
-          id: getId(nodesCount-1),
+          id: getId(nodesCount),
           type,
           position,
           data: { label: `${type} node`, style:{backgroundColor:''} },          

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Modal, Button, Form, Image, Badge } from "react-bootstrap";
+import { Modal, Button, Form, Image, Badge, Alert } from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import { BsPlusCircle, BsXCircle } from "react-icons/bs";
@@ -91,20 +91,32 @@ function makeDrugsOptions(field){
             <Modal.Title>Treatment info</Modal.Title>
         </Modal.Header>
         <Form encType="multipart/form-data" validated={props.validated} onSubmit={props.handleSubmit}>
-        <Modal.Body>  
-            <Form.Group >   
-                {props.treatment.id===null?(<Form.Control type = "file" id="algorithm"  label="Algorithm" required onChange={props.handleInputChange} name="algorithm"/> ):(<Form.Control type = "file" id="algorithm"  label="Algorithm" onChange={props.handleInputChange} name="algorithm"/> )}         
+        <Modal.Body> 
+            {props.error?(<Alert variant="danger">Must be chosen image or diagram!</Alert>):''}
+
+        {(props.treatment.diagram===undefined||props.treatment.diagram===null)?(
+            <>
+            <Form.Group > 
+            <Form.Label for="algorithm" className="btn btn-outline-success btn-sm ts-buttom">Select Image</Form.Label>  
+                <Form.Control type = "file" id="algorithm" style={{display: "none"}}  label="Algorithm" onChange={props.handleInputChange} name="algorithm"/>        
                 <Form.Control.Feedback type="invalid">
                     File is a required field.
                 </Form.Control.Feedback>
                 <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
-            </Form.Group>  
-            {props.url===null?(<Image src={props.treatment.algorithm} fluid/>):(<Image src={props.url} fluid/>)}
+            </Form.Group>
+            {console.log(props.url)}  
+            {props.url!==null||props.treatment.algorithm!==''?(
+            <div className="img-wrap">
+                <a id="clear" type="button" className="link_danger" onClick={props.removeImageFile} ><BsXCircle/></a>
+                {props.url===null?(<Image src={props.treatment.algorithm} fluid/>):(<Image src={props.url} fluid/>)}
+            </div>
+            ):''}
             
-            
-            <Form.Group controlId="diagram">
+            </>):''}
+            {console.log(props.treatment.algorithm)}
+            {((props.treatment.algorithm===null||props.treatment.algorithm==='')&&props.url===null)?(
+                <Form.Group controlId="diagram">
             <Form.Label>Diagram</Form.Label>
-            
             {props.treatment.diagram!==null?(
             <div className="mb-4 border">
                 <ReactFlowProvider>
@@ -138,6 +150,8 @@ function makeDrugsOptions(field){
                             defaultValue={props.treatment.diagram!==null&&props.treatment.diagram!==undefined?({value: props.treatment.diagram, label: props.treatment.diagram.name}):('')}
                      />
                     </Form.Group>
+                ):''}  
+            
                     
             <Form.Group controlId="title">
             <Form.Label>Title</Form.Label>

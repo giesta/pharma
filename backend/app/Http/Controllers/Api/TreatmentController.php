@@ -124,13 +124,11 @@ class TreatmentController extends Controller
         $diseaseOverview = Overview::findOrFail($request->overview_id);
         
         if(!$request->hasFile('algorithm')) {
-            if($request->algorithm!==""){
+            if($request->has('algorithm')&&$request->algorithm!==''&&$request->algorithm!==null){
                 $oldTreatment = Treatment::findOrFail($request->treatment_id);
                 $type = explode("/", $oldTreatment->algorithm);
                 $path = "public/algorithms/".date("YmdHis").$type[2];
                 Storage::copy($oldTreatment->algorithm, $path);
-            }else{
-                return response()->json(['upload file not found'], 400);
             }            
         }else{
             $path = $request->file('algorithm')->store('public/algorithms');
@@ -143,7 +141,7 @@ class TreatmentController extends Controller
                 $tem = [];
                 foreach($drugs as $drug){
                     //$overview->drugs()->attach($drug->id, ['uses'=> $drug->uses]); 
-                    $tem[$drug->id] = ['uses'=> $drug->uses];                              
+                  $tem[$drug->id] = ['uses'=> $drug->uses];                              
                 }
                 $treatment->drugs()->attach($tem);
         }catch (QueryException $ex) { // Anything that went wrong
@@ -202,32 +200,36 @@ class TreatmentController extends Controller
             $path = $request->file('algorithm')->store('public/algorithms');
             try{
                 Storage::delete($treatment->algorithm);
-                $treatment->update(array_merge($request->all(), ['algorithm'=>$path]));
+                if($treatment->diagram!==null){
+                    $treatment->diagram()->dissociate();
+                }                
+                $treatment->update(array_merge($request->except(['diagram_id']), ['algorithm'=>$path]));
                 
                 $drugs = json_decode($request->drugs);
                 $tem = [];
-                foreach($drugs as $drug){
-                    //$overview->drugs()->attach($drug->id, ['uses'=> $drug->uses]); 
+                foreach($drugs as $drug){ 
                     $tem[$drug->id] = ['uses'=> $drug->uses];                              
                 }
                 $treatment->drugs()->sync($tem);
             }
             catch (QueryException $ex) { // Anything that went wrong
-                abort(500, "Could not update Treatment");
+                abort(500, $ex->getMessage());
             } 
         }else{
+            if($request->algorithm===''&&$treatment->algorithm!==''){
+                Storage::delete($treatment->algorithm);
+            }
             try{
-                $treatment->update($request->only(['title', 'description', 'overview_id', 'public', 'dislikes', 'likes', 'diagram_id']));
+                $treatment->update($request->only(['title', 'description', 'overview_id', 'public', 'dislikes', 'likes', 'diagram_id', 'algorithm']));
                 $drugs = json_decode($request->drugs);
                 $tem = [];
                 foreach($drugs as $drug){
-                    //$overview->drugs()->attach($drug->id, ['uses'=> $drug->uses]); 
                     $tem[$drug->id] = ['uses'=> $drug->uses];                              
                 }
                 $treatment->drugs()->sync($tem);
             }
             catch (QueryException $ex) { // Anything that went wrong
-                abort(500, "Could not update Treatment");
+                abort(500, $ex->message());
             }
         }
         return new TreatmentResource($treatment);

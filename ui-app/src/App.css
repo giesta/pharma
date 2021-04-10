@@ -156,4 +156,21 @@ td{
   max-width: 200px;
 }
 
+.img-wrap {
+  position: relative;
+  float:left;
+  }
+  
+   .img-wrap #clear {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  z-index: 100;
+  
+  }
+  
+   .hide{
+    display:none;
+   }
+
  

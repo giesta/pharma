@@ -20,11 +20,15 @@ class Treatment extends JsonResource
      */
     public function toArray($request)
     {
+        $path = '';
+        if($this->algorithm!==''&&$this->algorithm!==null){
+            $path = Config::get('app.url').Storage::url($this->algorithm);
+        }
         return [
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
-            'algorithm' => Config::get('app.url').Storage::url($this->algorithm),
+            'algorithm' => $path,
             'created' => date_format($this->created_at, 'Y-m-d'),
             'updated' => date_format($this->updated_at, 'Y-m-d'),
             'public' => $this->public,

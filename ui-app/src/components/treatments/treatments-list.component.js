@@ -37,8 +37,6 @@ export default function TreatmentList() {
       editable: false 
     }
   ];
-
-  
   const [selectedFile, setSelectedFile] = React.useState(null);
   const [url, setUrl] = React.useState(null);
   const [noData, setNoData] = React.useState('');
@@ -61,6 +59,7 @@ export default function TreatmentList() {
   const [validated, setValidated] = React.useState(false);
 
   const [selectRef, setSelectRef] = React.useState(null);
+  const [imageRef, setImageRef] = React.useState(null);
 
   const [fields, setFields] = React.useState([]);
   const [isWriting, setIsWriting] = React.useState(false);
@@ -85,7 +84,9 @@ export default function TreatmentList() {
         ...treatment,
         diagram: selectedDiagram,
       }
+      
       );
+      setError(false);
     }
     console.log(treatment);
   }, [isWriting, selectedDiagram]);
@@ -234,7 +235,11 @@ for (const item of arr) {
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
-    if (form.checkValidity() === false) {      
+    if(treatment.diagram===null&&url===null&&treatment.algorithm===''){
+      setError(true);
+      event.stopPropagation();
+    }
+    else if (form.checkValidity() === false) {      
       event.stopPropagation();
     }else{
       if(treatment.id===null){
@@ -270,8 +275,18 @@ for (const item of arr) {
     if(event.target.files!==undefined && event.target.files!==null ){
         setSelectedFile(event.target.files[0]);
         setUrl(URL.createObjectURL(event.target.files[0]));
+        setError(false);
     }  
     setTreatment({ ...treatment, [name]: value });
+  };
+  const removeImageFile = event =>{
+    setSelectedFile(null);
+    setUrl(null);
+    setTreatment({
+      ...treatment,
+      algorithm: '',
+    }
+    );
   };
   const handleChecked = event =>{
     setTreatment({ ...treatment, public: event.target.checked ? 1 : 0 });
@@ -429,6 +444,8 @@ drugsArr = newArr.map(item=>{
     data.append('Content-Type','multipart/formdata');
     if(selectedFile!==null){
         data.append("algorithm", selectedFile);        
+    }else{
+      data.append("algorithm", '');
     } 
     data.append("title", treatment.title);
     data.append("description", treatment.description);
@@ -436,8 +453,11 @@ drugsArr = newArr.map(item=>{
     data.append("public", treatment.public);
     data.append("uses", treatment.uses);
     data.append("drugs", JSON.stringify(drugsArr));
-    data.append("diagram_id", selectedDiagram.id);
-    console.log(data.diagram_id);
+    if(treatment.diagram!== null){
+      data.append("diagram_id", treatment.diagram.id);
+    }else{
+      data.append("diagram_id", treatment.diagram.id);
+    }
 TreatmentsDataService.create(data)
     .then((response) => {
       console.log(response.data.data);
@@ -463,15 +483,21 @@ const updateTreatment = () => {
   data.append('_method', 'PUT');
   if(selectedFile!==null){
       data.append("algorithm", selectedFile);        
-  } 
-  console.log(treatment.diagram.id);
+  }else{
+    data.append("algorithm", treatment.algorithm);
+  }
   data.set("title", treatment.title);
   data.set("description", treatment.description);
   data.set("public", treatment.public);
   data.set("overview_id", treatment.disease.id);
   data.append("uses", treatment.uses);
   data.append("drugs", JSON.stringify(drugsArr));
-  data.append("diagram_id", treatment.diagram.id);
+  if(treatment.diagram!== null){
+    data.append("diagram_id", treatment.diagram.id);
+  }else{
+    data.append("diagram_id", null);
+  }
+  
   
   TreatmentsDataService.update(treatment.id, data)
     .then(response => {
@@ -603,6 +629,9 @@ const findByTitle = () => {
   diagramsOptions={diagramsOptions}
   addSelectedDiagram={addSelectedDiagram}
   getElements={getElements}
+  removeImageFile={removeImageFile}
+  imageRef={setImageRef}
+  error={error}
   >
     </TreatmentCreateUpdate>}
       

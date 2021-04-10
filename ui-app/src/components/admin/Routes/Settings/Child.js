@@ -17,6 +17,8 @@ function Child()  {
   const [loading, setLoading] = React.useState(false);
   const [loadingSymptoms, setLoadingSymptoms] = React.useState(false);
   const [loadingDiseases, setLoadingDiseases] = React.useState(false);
+  const [disabled, setDisabled] = React.useState(false);
+  const [loadingLinks, setLoadingLinks] = React.useState(false);
 
   const drugsReports = () => {        
       DrugsDataService.reports()
@@ -224,6 +226,18 @@ const diseasesReports = () => {
     console.log(data);
     console.log('---------------------------');
   };
+
+  const updateLinks = () => {
+       console.log("tik");
+    DrugsDataService.scrap()
+      .then(response => {
+        console.log("--------------Veikia----------");
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+    };
     return (
       <React.Fragment>
         <section className="kanban__nav">
@@ -241,6 +255,7 @@ const diseasesReports = () => {
               buttonTitle={drugsUpdated===""?("Import Drugs"):("Update Drugs") } 
               updated ={drugsUpdated}
               loading = {loading}
+              disabled={disabled}
               title="Upload Drugs" 
               save={drugsUpdated===""?(saveDrugs):(updateDrugs)} 
               handleOnDrop={handleOnDropDrugs} 
@@ -274,6 +289,20 @@ const diseasesReports = () => {
               handleOnRemoveFile={handleOnRemoveFile}
             />
           </div>
+          {drugsUpdated!==""?(
+          <div className="ml-1 mt-4 kanban__main-wrapper">
+            <div className="container">
+              <div className="row">
+                <div className="col-6 col-sm-3">
+                  <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={()=>updateLinks()}>
+                    Update Drugs Links
+                  </button>          
+                </div>          
+              </div>
+            </div>
+          </div>
+        ):''}
+          
         </section>
       </React.Fragment>
     );

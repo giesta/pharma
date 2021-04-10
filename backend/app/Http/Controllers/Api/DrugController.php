@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
 use \Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
+use App\Services\LinksService;
 
 class DrugController extends ApiController
 {
@@ -445,5 +446,15 @@ class DrugController extends ApiController
             }            
         }       
         return ['array'=>$array, 'updated'=>$counter, 'added_substances'=>count($substances), 'added_drugs'=>count($data), 'updated_at' => date("Y-m-d\TH:i:s\Z",strtotime($date))];
+    }
+    public function updateLinks(LinksService $linksService)
+    {
+        $url = 'https://www.ligos.lt/lt/ligos/';
+        
+        //$data = $linksService->scrap($url);
+        return response()->json([
+            'success' => true,
+            'data' => 'veikia',
+        ], Response::HTTP_OK);
     }
 }

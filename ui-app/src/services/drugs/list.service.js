@@ -36,6 +36,9 @@ const findBySubstance = (name) => {
 const reports = () => {
   return http.get(`/drugs/reports`);
 };
+const scrap = () => {
+  return http.get(`/drugs/links`);
+};
 
 const services = {
   getAll,
@@ -47,7 +50,8 @@ const services = {
   removeAll,
   findByTitle,
   findBySubstance,
-  reports
+  reports,
+  scrap
 };
 
 export default services;

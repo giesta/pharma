@@ -38,6 +38,7 @@ return items;
           <div className="col-xs-6 col-md-4" key={field.id}>
              <Card style={{ width: '18rem', flex:1}}>
                {field.algorithm!==''?(<Card.Img variant="top" src={field.algorithm} style={{height: '300px'}} />):(
+                 <div>
                  <ReactFlowProvider>
                  <ReactFlow
                      elements={field.diagram!==undefined&&field.diagram!==null?(getElements(field.diagram)):([])}
@@ -52,6 +53,7 @@ return items;
                      <Background color="#aaa" gap={16} />
                      </ReactFlow>
                  </ReactFlowProvider>
+                 </div>
                 )}
               
               <Card.Body>

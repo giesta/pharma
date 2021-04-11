@@ -22,6 +22,7 @@ class Diagram extends JsonResource
             'related_treatments' => $this->treatments,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'author' => $this->user->id,
         ];
     }
 }

@@ -40,7 +40,7 @@ class Treatment extends JsonResource
             'uses' => $this->uses,
             'drugs' => DrugResource::collection($this->drugs),
             'comments' => CommentResource::collection($this->comments()->orderBy("id", "desc")->get()),
-            'diagram' => new DiagramResource($this->diagram)
+            'diagram' => new DiagramResource($this->diagram),
         ];
     }
 }

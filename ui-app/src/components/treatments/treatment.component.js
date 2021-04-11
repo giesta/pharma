@@ -525,9 +525,13 @@ const updateDiagram = async () => {
                 <div>
                   
                   {currentTreatment.diagram.related_treatments.map((item, idx)=>{
-                    if(item.title !== currentTreatment.title){
+                    
+                    if(item.id !== currentTreatment.id && currentTreatment.diagram.author === userData.id){
+                      
                       return (<a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a>)
-                    }                    
+                    }else if(item.id !== currentTreatment.id && item.public===1){
+                      return (<a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a>)
+                    }                  
                   })}
                 </div>
           </Col>        

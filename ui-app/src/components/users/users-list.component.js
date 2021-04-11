@@ -20,9 +20,7 @@ export default function UsersList() {
   };
 
   const [user, setUser] = React.useState(initialUserState);
-  const [users, setUsers] = React.useState({
-    data: [],
-  });
+  const [users, setUsers] = React.useState([]);
 
   const [show, setShow] = React.useState(false);
   const [id, setId] = React.useState(0);
@@ -44,16 +42,17 @@ export default function UsersList() {
     setSearchTitle(searchTitle);
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {      
-      event.stopPropagation();
-    }else{
-        handleInputChange(event); 
-        updateUser();
-    }
-    setValidated(true);       
+  const handleSubmit = (form) => {
+    console.log(form);
+    handleInputChange(form); 
+    updateUser(form);       
+  };
+
+
+
+  const handleInputChange = form => {
+    const { name, value } = form;
+    setUser({ ...user, [name]: value });
   };
 
   const handleClose = () =>{
@@ -69,17 +68,14 @@ export default function UsersList() {
     setInfo(false);
   };
 
-  const handleInputChange = event => {
-    const { name, value } = event.target;
-    setUser({ ...user, [name]: value });
-  };
   
   const retrieveUsers = (pageNumber = 1) => {
     UsersDataService.findByTitle(pageNumber, searchTitle)
       .then(response => {  
         const { current_page, per_page, total } = response.data.meta;        
         if(response.data.data.length !== 0){
-          setUsers({...users, data: response.data.data});
+          console.log(current_page);
+          setUsers(response.data.data);
           setPageSize(per_page);
           setPage(current_page);     
           setTotal(total);
@@ -96,7 +92,7 @@ export default function UsersList() {
       .then(response => {
         const { current_page, per_page, total } = response.data.meta;          
           if(response.data.data.length !== 0){
-            setUsers({...users, data: response.data.data});
+            setUsers(response.data.data);
             setPageSize(per_page);
             setPage(current_page);     
             setTotal(total);          
@@ -107,6 +103,8 @@ export default function UsersList() {
         setError(true);
       });
   };
+
+
   
   const GetActionFormat = (row) =>{
     
@@ -150,24 +148,32 @@ const columns = [{
      } 
 ];
 
-const updateUser = () => {
+const updateUser = (form) => {
   var data = {
     id: user.id,
-    name: user.name,
-    email: user.email
+    email: form.email,
   };
+  if(form.password!==''){
+    data['password'] = form.password;
+  }
   UsersDataService.update(data.id, data)
     .then(response => {
       console.log(response.data);
       setUser({
         id: response.data.data.id,
         name: response.data.data.name,
-        email: response.data.data.email,
+        email: response.data.data.email,        
       });
+      let values = [...users];
+      values = values.map((item)=>{
+        if(item.id === response.data.data.id){
+          return response.data.data;
+        }else{
+          return item;
+        }
+      });
+      setUsers(values);
       handleClose();
-      const updatedItems = users.data.filter(x=>x.id!==user.id)
-      updatedItems.push(response.data.data);
-      setUsers({...users, data: updatedItems});
     })
     .catch(e => {
       setError(true);
@@ -202,7 +208,7 @@ const newUser = () => {
   return (
     <div>
       {users?(
-      users.data.length===0?(        
+      users.length===0?(        
         <Spinner></Spinner>
       ):(  
         <div>
@@ -226,7 +232,7 @@ const newUser = () => {
             </button>
           </div>
         </div>
-      </div>       
+      </div>   
       <div className="container">
       <UsersTable columns ={columns} users={users} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></UsersTable>
       { show &&<UserUpdate error={error} show ={show} handleClose={handleClose} user={user} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange}></UserUpdate> }

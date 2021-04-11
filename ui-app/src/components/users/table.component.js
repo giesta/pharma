@@ -17,7 +17,7 @@ export default function TableOfItems(props) {
         </thead>
         <tbody>
       
-        {props.users.data.map((field, count = 0)=>
+        {props.users.map((field, count = 0)=>
               <tr key={count}>
               <td >{handleIncrement(++count)}</td>
               <td>{field.name}</td>

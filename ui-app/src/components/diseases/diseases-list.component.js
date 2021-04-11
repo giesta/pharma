@@ -172,8 +172,6 @@ export default function DiseasesList() {
 
   function handleRemoveInput(i) {
     const values = [...fields];
-    console.log(i);
-    console.log(values);
     values.splice(i, 1);
     setFields(values);
   }

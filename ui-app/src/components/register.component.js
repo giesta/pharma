@@ -314,7 +314,6 @@ renderRedirect = () => {
                   }
                   role="alert"
                 >
-                  {console.log("n: " + this.state.message)}
                   {Array.isArray(this.state.message)?this.state.message.map(item=>item):this.state.message}
                 </div>
               </div>

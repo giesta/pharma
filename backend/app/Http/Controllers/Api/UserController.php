@@ -104,9 +104,13 @@ class UserController extends Controller
         } else {
             try {
                 $userCurrent = auth()->user();
-                if($userCurrent->id === $id || $userCurrent->roles()->first()->name === "admin"){
+                if($userCurrent->id == $id || $userCurrent->roles()->first()->name === "admin"){
                     $user = User::findOrFail($id);
-                    $user->update($request->only(['name', 'email']));
+                    $user->email = $request->email;
+                    if(isset($request->password)){
+                        $user->password = bcrypt($request->password);
+                    }                    
+                    $user->save();
                     return new UserResource($user);
                 }else{
                     abort(403, "Permission denied");

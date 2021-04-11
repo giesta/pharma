@@ -40,7 +40,7 @@ return items;
                {field.algorithm!==''?(<Card.Img variant="top" src={field.algorithm} style={{height: '300px'}} />):(
                  <ReactFlowProvider>
                  <ReactFlow
-                     elements={field.diagram!==undefined?(getElements(field.diagram)):([])}
+                     elements={field.diagram!==undefined&&field.diagram!==null?(getElements(field.diagram)):([])}
                      style={{ width: "100%", height: 300 }} 
                      elementsSelectable={false}
                      nodesConnectable={false}

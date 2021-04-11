@@ -455,8 +455,6 @@ drugsArr = newArr.map(item=>{
     data.append("drugs", JSON.stringify(drugsArr));
     if(treatment.diagram!== null){
       data.append("diagram_id", treatment.diagram.id);
-    }else{
-      data.append("diagram_id", treatment.diagram.id);
     }
 TreatmentsDataService.create(data)
     .then((response) => {

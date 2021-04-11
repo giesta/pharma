@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, callback, useCallback } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
 import StarService from "../../services/treatments/stars.service";
 import ReportService from "../../services/treatments/reports.service";
@@ -13,7 +13,7 @@ import AuthService from "../../services/auth.service";
 import Spinner from "../layout/spinner.component";
 import DrugInfo from "../drugs/info-modal.component";
 import DownloadTreatment from "./download-modal.component";
-import { Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form} from "react-bootstrap";
+import { Alert, Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form} from "react-bootstrap";
 import { BsStar, BsPeopleCircle, BsExclamationCircle, BsInfoCircle, BsCloudDownload } from "react-icons/bs";
 import fetchNodes from "./fetchNodes";
 import ReactFlow, {
@@ -22,6 +22,9 @@ import ReactFlow, {
   ReactFlowProvider,
 } from 'react-flow-renderer'; 
 const nodes = fetchNodes();
+var idDiagram=null;
+var idDisease=null;
+console.log(idDiagram);
 export default function Treatment(props) {
 
   const onLoad = (reactFlowInstance) => {
@@ -64,8 +67,9 @@ export default function Treatment(props) {
   const [confirmToOverwrite, setConfirmToOverwrite] = React.useState(false);
   const [diagramToOverwrite, setDiagramToOverwrite] = React.useState(false);
   const [text, setText] = React.useState('');
-  const [diagramId, setDiagramId] = React.useState(null);
-  const [diseaseId, setDiseaseId] = React.useState(null);
+  const [successMessage, setSuccessMessage] = React.useState(false);
+
+  
 
   const onChangeComment = e => {
     const comment = e.target.value;
@@ -86,8 +90,6 @@ export default function Treatment(props) {
   };
   const handleCloseDiagramToOverwrite = () => {
     setDiagramToOverwrite(false);
-    setDiseaseId(null);
-    setDiagramId(null);
   };
 
   const handleCloseInfo = () => {
@@ -251,20 +253,18 @@ return items;
 const downloadItem = async () => {
   
   console.log(currentTreatment.disease.name);
-  const value = await DiseaseOverviewsDataService.findByTitle(1, currentTreatment.disease.name)
+  const values = await DiseaseOverviewsDataService.findByTitle(1, currentTreatment.disease.name)
       .then(response => {
           //console.log(response.data);
           if(response.data.data.length > 0){
-            //console.log(response.data.data);
-            console.log(response.data.data[0])
-            //setIdentifier(response.data.data[0].id);
-            setDiseaseId(response.data.data[0].id); 
+            idDisease = response.data.data[0].id;
             setText('We found related disease! Do you want to overwrite this '+currentTreatment.disease.name + ' disease?');          
           }
           return response.data.data;
           
       })
-      if(value.length > 0){
+      //idDisease = values[0].id;
+      if(values.length > 0){
         handleCloseConfirm();
         setConfirmToOverwrite(true);
       }else{
@@ -281,10 +281,8 @@ const downloadDiagram = async () => {
             //console.log(response.data.data);
             console.log(response.data.data[0])
             for( var i = 0; i < response.data.data.length; i++) {
-              console.log(response.data.data[i].nodes.length);
-              console.log(currentTreatment.diagram.nodes.length);
               if(response.data.data[i].name===currentTreatment.diagram.name&&response.data.data[i].nodes.length===currentTreatment.diagram.nodes.length&&response.data.data[i].edges.length===currentTreatment.diagram.nodes.length){
-                setDiagramId(response.data.data[i].id);
+                idDiagram = response.data.data[i].id;
                 setText('We found related diagram! Do you want to overwrite this '+currentTreatment.diagram.name+ ' diagram?');
                 handleCloseConfirmToOverwrite();
                 setDiagramToOverwrite(true);
@@ -296,7 +294,8 @@ const downloadDiagram = async () => {
           
       })
       if(values.length===0){
-        handleCloseDiagramToOverwrite();
+        handleCloseConfirm(); 
+        handleCloseConfirmToOverwrite();       
         saveDiagram();
       }
 };
@@ -308,7 +307,7 @@ const updateDisease = async () => {
   });
   console.log(drugsArr);
   var data = {
-    id: diseaseId,
+    id: idDisease,
     disease_id: currentTreatment.disease.disease_id,
     description: currentTreatment.disease.description,
     diagnosis: currentTreatment.disease.diagnosis,
@@ -318,23 +317,15 @@ const updateDisease = async () => {
   };console.log(data);
   const value = await DiseaseOverviewsDataService.update(data.id, data)
     .then((resp) => {  
-      console.log("atnaujinimas baigtas ligos"+resp);
       return resp.data.data;
-      //saveTreatment();
-      /*const updatedItems = overviews.filter(x=>x.id!==disease.id)
-      updatedItems.push(resp.data.data);
-      setOverviews(updatedItems);
-      handleClose();*/
     })
     .catch(e => {
-      //setError(true);
       console.log(e);
     });
     if(currentTreatment.diagram !==null){
       downloadDiagram();
-      //saveDiagram();
     }else{
-      saveTreatment(diseaseId);
+      saveTreatment(idDisease);
     }
 };
 const createDisease = async () => {
@@ -353,25 +344,20 @@ const createDisease = async () => {
   };console.log(data);
   const value = await DiseaseOverviewsDataService.create(data)
     .then((resp) => {  
-      console.log(resp.data.data.id);
-      
-      //setIdentifier(resp.data.data.id);
-      setDiseaseId(resp.data.data.id);
+      idDisease = resp.data.data.id;
       return resp.data.data; 
     })
     .catch(e => {
-      //setError(true);
       console.log(e);
     });
     if(currentTreatment.diagram !==null){
       downloadDiagram();
-      //saveDiagram(resp.data.data.id);
     }else{
-      saveTreatment(value.id);
+      saveTreatment(idDisease);
     }
 };
 
-const saveTreatment = () => {
+const saveTreatment =async () => {
   var drugsArr = currentTreatment.drugs;
   var newArr = [];
 newArr = [].concat(...drugsArr);
@@ -382,41 +368,37 @@ var data = {
   treatment_id:currentTreatment.id,
   title:currentTreatment.title,
   description:currentTreatment.description,
-  overview_id:diseaseId,
+  overview_id:idDisease,
   public: 0,
   uses:currentTreatment.uses,
   drugs:JSON.stringify(drugsArr),
 };
 if(currentTreatment.diagram!==null){  
-  data['diagram_id']= diagramId;
+  data['diagram_id']= idDiagram;
 };
 if(currentTreatment.algorithm!==''){
   data['algorithm']= currentTreatment.algorithm;
+  handleCloseConfirmToOverwrite();
 }else{
   data['algorithm']= '';
 }
 
     console.log(data);
-TreatmentsDataService.create(data)
+const value = await TreatmentsDataService.create(data)
     .then((response) => {
-      console.log(response.data.data);
-      handleClose();
-      props.history.push("/treatments");
-      //props.history.push("/treatments");
-      /*setFields([]);
-      refreshList();
-      setUrl(null);
-      handleClose();*/
+      return response.data.data;
     })
     .catch(e => {
-      //setError(true);
       console.log(e);
     });
+    handleClose();
+    handleCloseConfirm();
+    handleCloseDiagramToOverwrite();
+    //
+    setSuccessMessage(true);
 };
 
 const saveDiagram = async () => {
-  //console.log();
-  //setElements(getElements(currentTreatment.diagram));
   console.log(elements);
 var newElements = elements.map((el)=>{
     const {id: item_id, ...rest} = el;
@@ -438,23 +420,19 @@ var newElements = elements.map((el)=>{
   console.log(data);
   const value = await DiagramsDataService.create(data)
     .then((response) => {
-      console.log(response.data.data.id);
-      setDiagramId(response.data.data.id);
+      idDiagram = response.data.data.id;
       return response.data.data;
     })
     .catch(e => {
-      //setError(true);
       console.log(e);
     });
-    saveTreatment();
-    console.log("-----Veikia saugojimas-----");
-    console.log(elements);
-    
+    idDiagram = value.id;
+    if(value.id !== null){
+      saveTreatment();
+    }    
 };
 
-const updateDiagram = async () => {
-  console.log("Atnaujinimas diagramos");
- 
+const updateDiagram = async () => { 
   var newElements = elements.map((el)=>{
     const {id: item_id, ...rest} = el;
     return {item_id, ...rest};
@@ -472,22 +450,14 @@ const updateDiagram = async () => {
       }
     })),
   };
-  console.log(data);
-  const value = await DiagramsDataService.update(diagramId, data)
+  const value = await DiagramsDataService.update(idDiagram, data)
     .then((response) => {
-      console.log(response.data);
-      setDiagramId(response.data.data.id);
-      return response.data.data;
-      
-      //props.history.push("/diagrams");
+      return response.data.data;   
     })
     .catch(e => {
-      //setError(true);
       console.log(e);
     });
     saveTreatment();
-    console.log("-----Veikia atnaujinimas-----");
-    console.log(elements);
     
 };
   
@@ -499,6 +469,14 @@ const updateDiagram = async () => {
         <Spinner></Spinner>
       ):(        
       <div className="container">
+        {successMessage?(
+          <Row>
+            <Col>
+              <Alert variant="success" onClose={() => setSuccessMessage(false)} dismissible>Download Success</Alert>
+            </Col>
+          </Row>
+        ):''}
+        
       <Row>
         <Col>
           <Button variant="secondary" size="sm" disabled={currentTreatment.isStar} onClick={star}>
@@ -675,8 +653,8 @@ const updateDiagram = async () => {
 { show &&<DrugInfo info = {show} leaflet = {drug} handleCloseInfo={handleClose}></DrugInfo> } 
 { showDiagram &&<DiagramInfo name={currentTreatment.diagram.name} elements={elements} info = {showDiagram} handleCloseInfo={handleCloseInfo}></DiagramInfo> }
 {confirm&&< DownloadTreatment treatment={currentTreatment} buttonText={'Download'} text={'All related data will be overwritten!'} name={"Treatment"} onClickMethod={downloadItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ DownloadTreatment>}
-{confirmToOverwrite&&< DownloadTreatment identifier={diseaseId} treatment={currentTreatment} buttonText={'Overwrite'} text={text} name={"Disease"} onClickMethod={updateDisease} onClickMethodCancel={currentTreatment.diagram!==null?downloadDiagram:saveTreatment} handleCloseConfirm={handleCloseConfirmToOverwrite} confirm={confirmToOverwrite} ></ DownloadTreatment>}
-{diagramToOverwrite&&< DownloadTreatment identifier={diagramId} treatment={currentTreatment} buttonText={'Overwrite'} text={text} name={"Diagram"} onClickMethod={updateDiagram} onClickMethodCancel={saveTreatment} handleCloseConfirm={handleCloseDiagramToOverwrite} confirm={diagramToOverwrite} ></ DownloadTreatment>}
+{confirmToOverwrite&&< DownloadTreatment identifier={idDisease} treatment={currentTreatment} buttonText={'Overwrite'} text={text} name={"Disease"} onClickMethod={updateDisease} onClickMethodCancel={currentTreatment.diagram!==null?downloadDiagram:saveTreatment} handleCloseConfirm={handleCloseConfirmToOverwrite} confirm={confirmToOverwrite} ></ DownloadTreatment>}
+{diagramToOverwrite&&< DownloadTreatment identifier={idDiagram} treatment={currentTreatment} buttonText={'Overwrite'} text={text} name={"Diagram"} onClickMethod={updateDiagram} onClickMethodCancel={saveTreatment} handleCloseConfirm={handleCloseDiagramToOverwrite} confirm={diagramToOverwrite} ></ DownloadTreatment>}
   </div>  )
     ):(<div>
       <br />

@@ -36,7 +36,7 @@ const UpdateNode = (props) => {
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState(props.location.state!==undefined ? props.location.state.elements:initialElements);
-  const [nodesCount, setNodesCount] = useState(props.location.state!==undefined ? props.location.state.diagram.nodes[props.location.state.diagram.nodes.length-1].item_id.split('_')[1]:1);
+  const [nodesCount, setNodesCount] = useState(props.location.state!==undefined&&props.location.state.diagram!==undefined&&props.location.state.diagram.nodes[props.location.state.diagram.nodes.length-1]!==undefined ? props.location.state.diagram.nodes[props.location.state.diagram.nodes.length-1].item_id.split('_')[1]:1);
   
   const [element, setElement] = useState({});
   const [nodeName, setNodeName] = useState('Node 1');

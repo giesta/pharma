@@ -14,7 +14,7 @@ export default function ModalDelete(props) {
   Are you sure?
         </Modal.Body>
         <Modal.Footer>
-          {props.onClickMethodCancel!==undefined?(<Button variant="secondary" onClick={()=>props.onClickMethodCancel(-1)}>
+          {props.onClickMethodCancel!==undefined?(<Button variant="secondary" onClick={props.onClickMethodCancel}>
             No
           </Button>):(<Button variant="secondary" onClick={props.handleCloseConfirm}>
             Close

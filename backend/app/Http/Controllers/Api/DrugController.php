@@ -449,12 +449,25 @@ class DrugController extends ApiController
     }
     public function updateLinks(LinksService $linksService)
     {
-        $url = 'https://www.ligos.lt/lt/ligos/';
-        
+        ini_set('max_execution_time', 1600);
+        $drugs = Drug::all();
+        //$url = 'https://vapris.vvkt.lt/vvkt-web/public/medications?showData=true&mainSearchField=ranitidinas&strength=&pharmaceuticalForm=&atcCode=';
+        $links = 'namas';
+        $url = 'namo';
+        $web = 'https://vapris.vvkt.lt';
+        $downloadLink='https://vapris.vvkt.lt/vvkt-web/public/medications/view/';
+        foreach ($drugs as $drug){
+            $url = 'https://vapris.vvkt.lt/vvkt-web/public/medications?showData=true&mainSearchField='.$drug->name.'&strength='.$drug->strength.'&pharmaceuticalForm='.$drug->form;
+            $links = $linksService->scrap($url, $web); 
+            if(count($links)>0){
+                Drug::where('id', $drug->id)->update(array('link' => $downloadLink.$links[0]));
+            }            
+        }
+
         //$data = $linksService->scrap($url);
         return response()->json([
             'success' => true,
-            'data' => 'veikia',
+            'data' => $links,
         ], Response::HTTP_OK);
     }
 }

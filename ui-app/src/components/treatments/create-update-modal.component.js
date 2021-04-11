@@ -269,10 +269,10 @@ function makeDrugsOptions(field){
                     ):('')                     
                     }
                     <div>
-                    {field.selected!==undefined && field.selected.length!==0?(field.selected.map((item)=>
+                    {field.selected!==undefined && field.selected.length!==0?(field.selected.map((item, idx)=>
                               item.registration.toUpperCase().includes("IŠREGISTRUOTAS")?
-                              <Badge pill variant="warning">{item.name}</Badge>
-                                  :<Badge pill variant="success">{item.name}</Badge>
+                              <Badge key={"name_"+idx} pill variant="warning">{item.name}</Badge>
+                                  :<Badge key={"name_"+idx} pill variant="success">{item.name}</Badge>
                           )):('')
                           }
                       </div>

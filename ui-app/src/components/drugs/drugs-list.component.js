@@ -3,6 +3,7 @@ import AuthService from "../../services/auth.service";
 import DrugsDataService from "../../services/drugs/list.service";
 //import DrugsLeafletsDataService from "../../services/drugs/substances.service";
 import DiseasesDataService from "../../services/diseases/list.service";
+import DocViewer from "./doc-viewer-modal.component";
 import DiseaseOverviewsDataService from "../../services/diseases/overviews.service";
 import DrugDelete from "../delete-modal.component";
 import DrugInfo from "./info-modal.component";
@@ -11,7 +12,7 @@ import DrugsTable from "./table.component";
 import Spinner from "../layout/spinner.component";
 import ErrorBoundary from "../layout/error.component";
 import Pagination from "react-js-pagination";
-import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
+import { BsPen, BsTrash, BsInfoCircle, BsPlus, BsEye, BsDownload } from "react-icons/bs";
 
 export default function DrugsList() {
 
@@ -80,6 +81,8 @@ export default function DrugsList() {
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
+  const [view, setView] = React.useState(false);
+  const [docs, setDocs] = React.useState('');
    
   const [validated, setValidated] = React.useState(false);
 
@@ -249,6 +252,23 @@ function makeOptions(field){
               function(event){ setDrug(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
             </button>
+            {row.link!==null?(
+              <>
+              <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
+              function(event){
+                setView(true);
+                const docs = row.link;
+                setDocs(docs);
+                console.log(row);
+                }}>
+                <BsEye/>
+            </button>
+            <a type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" href={row.link} size="sm">
+                <BsDownload/>
+            </a>
+            </>
+            ):('')}
+            
             
         </td>
     );
@@ -396,6 +416,7 @@ const findByTitle = () => {
       <DrugsTable key={"drugs"} columns ={columns} drugs = {drugs} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DrugsTable>
 
       { info &&<DrugInfo info = {info} drug = {drug} handleCloseInfo={handleCloseInfo}></DrugInfo> }  
+      {view&&<DocViewer view={view} setDocs = {setDocs} setView={setView} docs={docs} />}
       <div>
         <Pagination 
         className="my-3"

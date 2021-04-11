@@ -17,4 +17,7 @@ class Diagram extends Model
     public function edges(){
         return $this->hasMany(Edge::class);
     }
+    public function treatments(){
+        return $this->hasMany(Treatment::class);
+    }
 }

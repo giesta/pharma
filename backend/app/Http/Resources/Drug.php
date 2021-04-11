@@ -26,6 +26,7 @@ class Drug extends JsonResource
             'package' => $this->package,
             'package_description' => $this->package_description,
             'registration' => $this->registration,
+            'link' => $this->link,
             'updated_at' => $this->updated_at,
         ];
     }

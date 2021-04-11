@@ -19,6 +19,7 @@ class Diagram extends JsonResource
             'name' => $this->name,
             'nodes' => $this->nodes,
             'edges' => $this->edges,
+            'related_treatments' => $this->treatments,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

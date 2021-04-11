@@ -62,8 +62,10 @@ export default function Treatment(props) {
   const [elements, setElements] = React.useState([]);
   const [confirm, setConfirm] = React.useState(false);
   const [confirmToOverwrite, setConfirmToOverwrite] = React.useState(false);
-  const [identifier, setIdentifier] = React.useState(null);
+  const [diagramToOverwrite, setDiagramToOverwrite] = React.useState(false);
+  const [text, setText] = React.useState('');
   const [diagramId, setDiagramId] = React.useState(null);
+  const [diseaseId, setDiseaseId] = React.useState(null);
 
   const onChangeComment = e => {
     const comment = e.target.value;
@@ -76,15 +78,16 @@ export default function Treatment(props) {
   };
 
   const handleCloseConfirm = () => {
-    console.log(confirm);
-    console.log(confirmToOverwrite);
     setConfirm(false);
-    console.log(confirm);
-    console.log(confirmToOverwrite);
   };
   const handleCloseConfirmToOverwrite = () => {
     setConfirmToOverwrite(false);
-    setIdentifier(null);
+    
+  };
+  const handleCloseDiagramToOverwrite = () => {
+    setDiagramToOverwrite(false);
+    setDiseaseId(null);
+    setDiagramId(null);
   };
 
   const handleCloseInfo = () => {
@@ -245,35 +248,67 @@ export default function Treatment(props) {
 return items;
 }
 
-const downloadItem = () => {
+const downloadItem = async () => {
   
   console.log(currentTreatment.disease.name);
-  DiseaseOverviewsDataService.findByTitle(1, currentTreatment.disease.name)
+  const value = await DiseaseOverviewsDataService.findByTitle(1, currentTreatment.disease.name)
       .then(response => {
           //console.log(response.data);
           if(response.data.data.length > 0){
             //console.log(response.data.data);
             console.log(response.data.data[0])
-            setIdentifier(response.data.data[0].id);
-            
-            handleCloseConfirm();
-            setConfirmToOverwrite(true);
-          }else{
-            handleCloseConfirm();
-            createDisease();
+            //setIdentifier(response.data.data[0].id);
+            setDiseaseId(response.data.data[0].id); 
+            setText('We found related disease! Do you want to overwrite this '+currentTreatment.disease.name + ' disease?');          
           }
+          return response.data.data;
           
       })
+      if(value.length > 0){
+        handleCloseConfirm();
+        setConfirmToOverwrite(true);
+      }else{
+        handleCloseConfirm();
+        createDisease();
+      }
 };
 
-const updateDisease = () => {
+const downloadDiagram = async () => {
+  const values = await DiagramsDataService.findByTitle(1, currentTreatment.diagram.name)
+      .then(response => {
+          //console.log(response.data);
+          if(response.data.data.length > 0){
+            //console.log(response.data.data);
+            console.log(response.data.data[0])
+            for( var i = 0; i < response.data.data.length; i++) {
+              console.log(response.data.data[i].nodes.length);
+              console.log(currentTreatment.diagram.nodes.length);
+              if(response.data.data[i].name===currentTreatment.diagram.name&&response.data.data[i].nodes.length===currentTreatment.diagram.nodes.length&&response.data.data[i].edges.length===currentTreatment.diagram.nodes.length){
+                setDiagramId(response.data.data[i].id);
+                setText('We found related diagram! Do you want to overwrite this '+currentTreatment.diagram.name+ ' diagram?');
+                handleCloseConfirmToOverwrite();
+                setDiagramToOverwrite(true);
+                break;
+              }
+            }           
+          }
+          return response.data.data;
+          
+      })
+      if(values.length===0){
+        handleCloseDiagramToOverwrite();
+        saveDiagram();
+      }
+};
+
+const updateDisease = async () => {
   console.log(currentTreatment.disease.drugs);
   var drugsArr = currentTreatment.disease.drugs.map(item=>{
     return {selected:[item], uses:item.uses}
   });
   console.log(drugsArr);
   var data = {
-    id: identifier,
+    id: diseaseId,
     disease_id: currentTreatment.disease.disease_id,
     description: currentTreatment.disease.description,
     diagnosis: currentTreatment.disease.diagnosis,
@@ -281,14 +316,10 @@ const updateDisease = () => {
     drugs: JSON.stringify(drugsArr),
     symptoms: JSON.stringify(currentTreatment.disease.symptoms.map(item=>item.id)),
   };console.log(data);
-  DiseaseOverviewsDataService.update(data.id, data)
+  const value = await DiseaseOverviewsDataService.update(data.id, data)
     .then((resp) => {  
-      console.log(resp);
-      if(currentTreatment.diagram !==null){
-        saveDiagram();
-      }else{
-        saveTreatment(identifier);
-      }
+      console.log("atnaujinimas baigtas ligos"+resp);
+      return resp.data.data;
       //saveTreatment();
       /*const updatedItems = overviews.filter(x=>x.id!==disease.id)
       updatedItems.push(resp.data.data);
@@ -299,8 +330,14 @@ const updateDisease = () => {
       //setError(true);
       console.log(e);
     });
+    if(currentTreatment.diagram !==null){
+      downloadDiagram();
+      //saveDiagram();
+    }else{
+      saveTreatment(diseaseId);
+    }
 };
-const createDisease = () => {
+const createDisease = async () => {
   console.log(currentTreatment.disease.drugs);
   var drugsArr = currentTreatment.disease.drugs.map(item=>{
     return {selected:[item], uses:item.uses}
@@ -314,31 +351,27 @@ const createDisease = () => {
     drugs: JSON.stringify(drugsArr),
     symptoms: JSON.stringify(currentTreatment.disease.symptoms.map(item=>item.id)),
   };console.log(data);
-  DiseaseOverviewsDataService.create(data)
+  const value = await DiseaseOverviewsDataService.create(data)
     .then((resp) => {  
       console.log(resp.data.data.id);
       
-      setIdentifier(resp.data.data.id);
-      if(currentTreatment.diagram !==null){
-        saveDiagram(resp.data.data.id);
-      }else{
-        saveTreatment(resp.data.data.id);
-      }
-      
-      
-      
-      /*const updatedItems = overviews.filter(x=>x.id!==disease.id)
-      updatedItems.push(resp.data.data);
-      setOverviews(updatedItems);
-      handleClose();*/
+      //setIdentifier(resp.data.data.id);
+      setDiseaseId(resp.data.data.id);
+      return resp.data.data; 
     })
     .catch(e => {
       //setError(true);
       console.log(e);
     });
+    if(currentTreatment.diagram !==null){
+      downloadDiagram();
+      //saveDiagram(resp.data.data.id);
+    }else{
+      saveTreatment(value.id);
+    }
 };
 
-const saveTreatment = (overviewId, diagramId=-1) => {
+const saveTreatment = () => {
   var drugsArr = currentTreatment.drugs;
   var newArr = [];
 newArr = [].concat(...drugsArr);
@@ -349,12 +382,12 @@ var data = {
   treatment_id:currentTreatment.id,
   title:currentTreatment.title,
   description:currentTreatment.description,
-  overview_id:overviewId<0?identifier:overviewId,
+  overview_id:diseaseId,
   public: 0,
   uses:currentTreatment.uses,
   drugs:JSON.stringify(drugsArr),
 };
-if(diagramId!==-1){  
+if(currentTreatment.diagram!==null){  
   data['diagram_id']= diagramId;
 };
 if(currentTreatment.algorithm!==''){
@@ -381,7 +414,7 @@ TreatmentsDataService.create(data)
     });
 };
 
-const saveDiagram = (overviewId=-1) => {
+const saveDiagram = async () => {
   //console.log();
   //setElements(getElements(currentTreatment.diagram));
   console.log(elements);
@@ -403,17 +436,57 @@ var newElements = elements.map((el)=>{
     })),
   };
   console.log(data);
-  DiagramsDataService.create(data)
+  const value = await DiagramsDataService.create(data)
     .then((response) => {
       console.log(response.data.data.id);
-      setDiagramId(response.data.data.id)
-      saveTreatment( overviewId, response.data.data.id);
+      setDiagramId(response.data.data.id);
+      return response.data.data;
     })
     .catch(e => {
       //setError(true);
       console.log(e);
     });
+    saveTreatment();
     console.log("-----Veikia saugojimas-----");
+    console.log(elements);
+    
+};
+
+const updateDiagram = async () => {
+  console.log("Atnaujinimas diagramos");
+ 
+  var newElements = elements.map((el)=>{
+    const {id: item_id, ...rest} = el;
+    return {item_id, ...rest};
+});
+  var data = {
+    name: currentTreatment.diagram.name,
+    nodes: JSON.stringify(newElements.filter((el)=>{
+      if(el.source === undefined){
+        return el;
+      }
+    })),
+    edges: JSON.stringify(newElements.filter((el)=>{
+      if(el.source !== undefined){
+        return el;
+      }
+    })),
+  };
+  console.log(data);
+  const value = await DiagramsDataService.update(diagramId, data)
+    .then((response) => {
+      console.log(response.data);
+      setDiagramId(response.data.data.id);
+      return response.data.data;
+      
+      //props.history.push("/diagrams");
+    })
+    .catch(e => {
+      //setError(true);
+      console.log(e);
+    });
+    saveTreatment();
+    console.log("-----Veikia atnaujinimas-----");
     console.log(elements);
     
 };
@@ -470,6 +543,14 @@ var newElements = elements.map((el)=>{
                     <Background color="#aaa" gap={16} />
                     </ReactFlow>
                 </ReactFlowProvider>
+                </div>
+                <div>
+                  
+                  {currentTreatment.diagram.related_treatments.map((item, idx)=>{
+                    if(item.title !== currentTreatment.title){
+                      return (<a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a>)
+                    }                    
+                  })}
                 </div>
           </Col>        
       </Row>
@@ -594,7 +675,8 @@ var newElements = elements.map((el)=>{
 { show &&<DrugInfo info = {show} leaflet = {drug} handleCloseInfo={handleClose}></DrugInfo> } 
 { showDiagram &&<DiagramInfo name={currentTreatment.diagram.name} elements={elements} info = {showDiagram} handleCloseInfo={handleCloseInfo}></DiagramInfo> }
 {confirm&&< DownloadTreatment treatment={currentTreatment} buttonText={'Download'} text={'All related data will be overwritten!'} name={"Treatment"} onClickMethod={downloadItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ DownloadTreatment>}
-{confirmToOverwrite&&< DownloadTreatment identifier={identifier} treatment={currentTreatment} buttonText={'Overwrite'} text={'We found related disease! Do you want to overwrite this data?'} name={"Treatment"} onClickMethod={updateDisease} onClickMethodCancel={saveDiagram} handleCloseConfirm={handleCloseConfirmToOverwrite} confirm={confirmToOverwrite} ></ DownloadTreatment>}
+{confirmToOverwrite&&< DownloadTreatment identifier={diseaseId} treatment={currentTreatment} buttonText={'Overwrite'} text={text} name={"Disease"} onClickMethod={updateDisease} onClickMethodCancel={currentTreatment.diagram!==null?downloadDiagram:saveTreatment} handleCloseConfirm={handleCloseConfirmToOverwrite} confirm={confirmToOverwrite} ></ DownloadTreatment>}
+{diagramToOverwrite&&< DownloadTreatment identifier={diagramId} treatment={currentTreatment} buttonText={'Overwrite'} text={text} name={"Diagram"} onClickMethod={updateDiagram} onClickMethodCancel={saveTreatment} handleCloseConfirm={handleCloseDiagramToOverwrite} confirm={diagramToOverwrite} ></ DownloadTreatment>}
   </div>  )
     ):(<div>
       <br />

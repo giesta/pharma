@@ -8,11 +8,15 @@ import {
   FaPills,
   FaVial,
   FaBriefcaseMedical,
-  FaMedrt
+  FaMedrt,
+  FaEye,
+  FaFileDownload,
+  FaInfoCircle
 } from "react-icons/fa";
 import { ListGroup} from "react-bootstrap";
 import DrugInfo from "../drugs/info-modal.component";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import DocViewer from "../drugs/doc-viewer-modal.component";
 
 const leaf = { paddingLeft: "70px" };
 const branch = { paddingLeft: "40px" };
@@ -21,6 +25,8 @@ const leaf2 = { paddingLeft: "100px" };
 const Leaf2 = ({ drug, label }, idx) => {
     const [currentDrug, setCurrentDrug] = useState({});
     const [show, setShow] = useState(false);
+    const [view, setView] = useState(false);
+    const [docs, setDocs] = useState('');
     const handleClose = () =>{
         newDrug();
         setShow(false);
@@ -31,14 +37,33 @@ const Leaf2 = ({ drug, label }, idx) => {
     return (
         <>
         <ListGroup.Item 
-        action
         style={leaf2}
-        key={`leaf-${idx}`}
-        onClick={function(event){ setCurrentDrug(drug); setShow(true)}}
+        key={`leaf-${idx}`}        
       >
-        <FaMedrt /> {label}
+        <FaMedrt /> 
+        {label}
+        <a type="button" className="btn link_info btn-sm ts-buttom" size="sm" onClick={function(event){ setCurrentDrug(drug); setShow(true)}}>
+            <FaInfoCircle/>
+        </a>
+        {drug.link!==null?(
+            <>
+            
+            <a type="button" className="btn btn-sm link_info ts-buttom" onClick={
+              function(event){
+                setView(true);
+                const docs = drug.link;
+                setDocs(drug.link);
+                console.log(drug);
+                }} size="sm">
+            <FaEye/>
+        </a>
+            <a type="button" className="btn link_info btn-sm ts-buttom" href={drug.link} size="sm"><FaFileDownload/></a>
+            </>
+        ):('')}
+         
         </ListGroup.Item >
         { show &&<DrugInfo info = {show} drug = {currentDrug} handleCloseInfo={handleClose}></DrugInfo> } 
+        {view&&<DocViewer view={view} setDocs = {setDocs} setView={setView} docs={docs} />}
         </>
     );
   };

@@ -148,6 +148,9 @@ footer p { font-size:13px; color:#CCC; padding-bottom:0px; margin-bottom:8px;}
 .link_danger:hover {color: #f00;}
 .link_success {color: rgb(12, 134, 42);}
 .link_success:hover {color: rgb(12, 134, 42);text-decoration: none;}
+.link_info {color: rgb(26, 115, 232);}
+.link_info:hover {color: rgb(9, 101, 187);text-decoration: none;}
+
 
 td{
   white-space: nowrap;

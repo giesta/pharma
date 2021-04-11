@@ -11,15 +11,28 @@ class LinksService
      * 
      * @return array
      */
-    public function scrap($url)
+    public function scrap($url1, $url2)
     {
         $client  = new Client(HttpClient::create(['timeout' => 60]));
-        $crawler = $client->request('GET', $url);
+        $crawler = $client->request('GET', $url1);
        //Get the symptoms part 1
-        $valid = $crawler->filter('table')->filter('tbody')->filter('tr')->filter('td')->each(function ($td, $i) {
-                return $td->text();
+        $links = $crawler->filter('.result-item')->filter('ul li a')->each(function ($link) {
+            return $link->attr('href');
         });
-       
+        $valid=[];
+        if(count($links) > 0){
+            foreach ($links as $link){
+                $newUrl = $url2.$link;
+                $crawler = $client->request('GET', $newUrl);
+
+                $values = $crawler->filter('.form-horizontal')->filter('a')->each(function ($link) {
+                    return $link->attr('href');
+                });
+                if(count($values)>0){
+                    $valid = $values;
+                }
+            }
+        }      
       return $valid;
     }
 }

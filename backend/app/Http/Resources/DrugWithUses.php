@@ -27,6 +27,7 @@ class DrugWithUses extends JsonResource
             'package' => $this->package,
             'package_description' => $this->package_description,
             'registration' => $this->registration,
+            'link' => $this->link,
             'uses' => $this->pivot->uses,
             'updated_at' => $this->updated_at,
         ];

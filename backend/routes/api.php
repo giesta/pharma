@@ -89,7 +89,8 @@ Route::group(['middleware' => 'jwt.auth',
     Route::apiResource('scrap', ScraperController::class);
     Route::apiResource('symptoms', SymptomController::class);
     Route::apiResource('treatments', TreatmentController::class);
-    Route::post('stars/{id}', 'TreatmentStarsController@update');
+    //Route::post('stars/{id}', 'TreatmentStarsController@update');
+    Route::post('rate/{id}', 'TreatmentController@rate');
     Route::put('reports/{id}', 'ReportController@update');
     Route::post('comments', 'CommentController@store'); 
     

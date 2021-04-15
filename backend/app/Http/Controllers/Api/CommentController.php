@@ -13,7 +13,10 @@ class CommentController extends Controller
 {
     public function store(Request $request){
         $comment = Comment::create($request->all()); 
-        $treatment = Treatment::findOrFail($request->treatment_id);
-        return new TreatmentResource($treatment);
+        return redirect()->action(
+        [TreatmentController::class, 'show'], ['treatment' => $request->treatment_id]
+        );
+        /*$treatment = Treatment::findOrFail($request->treatment_id);
+        return new TreatmentResource($treatment);*/
     }
 }

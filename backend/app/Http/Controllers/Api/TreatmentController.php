@@ -255,4 +255,11 @@ class TreatmentController extends Controller
         $treatment->delete();
         return response()->noContent();
     }
+
+    public function rate(Request $request, $id){
+
+        $treatment = Treatment::findOrFail($id);
+        $treatment->star(auth()->user());
+        return new TreatmentResource($treatment);
+    }
 }

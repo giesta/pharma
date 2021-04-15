@@ -151,11 +151,8 @@ export default function Treatment(props) {
   }, [props.match.params.id]);
 
   
-  const star = () => {
-    var data = {
-      id: AuthService.getCurrentUser().id
-    };
-    StarService.update(currentTreatment.id, data)
+  const rate = () => {
+    StarService.rate(currentTreatment.id)
       .then(response => {    
         if(response.data.data.length !== 0){
           setCurrentTreatment(response.data.data);
@@ -479,7 +476,7 @@ const updateDiagram = async () => {
         
       <Row>
         <Col>
-          <Button variant="secondary" size="sm" disabled={currentTreatment.isStar} onClick={star}>
+          <Button variant="secondary" size="sm" disabled={currentTreatment.isStar} onClick={rate}>
             <BsStar></BsStar>{' '}<Badge variant="light">{currentTreatment.stars}</Badge>
           </Button>{' '}
           <Button variant="outline-info" size="sm" onClick={()=>{if(currentTreatment.diagram!==null){setElements(getElements(currentTreatment.diagram))};setConfirm(true);}}> <BsCloudDownload/>{' '}

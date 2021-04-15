@@ -12,6 +12,7 @@ use App\Http\Resources\Disease as DiseaseResource;
 use App\Http\Requests\StoreDiseaseRequest;
 use App\Http\Requests\TokenRequest;
 use \Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class DiseaseController extends Controller
 {
@@ -23,12 +24,7 @@ class DiseaseController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $role = $user->roles()->first()->name;
-        if($role ==="admin"){
-            return DiseaseResource::collection(Disease::with('drugs')->get());
-        }else{
-            return DiseaseResource::collection($user->diseases()->with('drugs')->get());
-        }
+        return DiseaseResource::collection(Disease::all());        
     }
     /**
      * Display a listing of the resource.
@@ -39,21 +35,7 @@ class DiseaseController extends Controller
     {
         $user = auth()->user();
         $name = $request->name;
-        $role = $user->roles()->first()->name;
-        if($role ==="admin"){
-            if($name){
-                return DiseaseResource::collection(Disease::with('drugs')->where('diseases.name', 'LIKE', "%$name%")->paginate(5));
-            }else{
-                return DiseaseResource::collection(Disease::with('drugs')->paginate(5));
-            }
-            
-        }else{
-            if($name){                
-                return DiseaseResource::collection($user->diseases()->with('drugs')->where('diseases.name', 'LIKE', "%$name%")->paginate(5));
-            }else{
-                return DiseaseResource::collection($user->diseases()->with('drugs')->paginate(5));
-            }            
-        }
+        return DiseaseResource::collection(Disease::where('diseases.name', 'LIKE', "%$name%")->limit(900)->get());         
     }
 
     /**
@@ -62,18 +44,18 @@ class DiseaseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreDiseaseRequest $request): DiseaseResource
+    public function store(Request $request)
     {
         $user = auth()->user();
-        try{
-            $disease = Disease::create(array_merge($request->all(), ['user_id' => $user->id]));
-            $disease->drugs()->attach(json_decode($request->drugs));
-        }catch (QueryException $ex) { // Anything that went wrong
-            abort(500, $ex->getMessage());
-        }
-        return new DiseaseResource(
-            $user->diseases()->with('drugs')->findOrFail($disease->id)
-        );
+        $diseasesArr = json_decode($request->diseases);
+        $data = array_values($this->makeDiseasesArray($diseasesArr));
+        DB::table('diseases')->insert($data);
+        return response()->json([
+            'success' => true,
+            'data' => count($data),
+            'updated_at'=>date("Y-m-d\TH:i:s\Z"),
+        ], Response::HTTP_OK);
+
     }
 
     /**
@@ -84,10 +66,10 @@ class DiseaseController extends Controller
         $user = auth()->user();
         $role = $user->roles()->first()->name;
         if($role ==="admin"){
-            $disease = Disease::with('drugs')->findOrFail($id);
+            $disease = Disease::with('leaflets')->findOrFail($id);
             return new DiseaseResource($disease);
         }else{ 
-            return new DiseaseResource($user->diseases()->with('drugs')->findOrFail($id));
+            return new DiseaseResource($user->diseases()->with('leaflets')->findOrFail($id));
         }
     }
 
@@ -108,13 +90,14 @@ class DiseaseController extends Controller
             $disease = $user->diseases()->findOrFail($id);
         }
         try{         
-            $disease->update($request->only(['name', 'description', 'symptoms']));
-            $disease->drugs()->sync(json_decode($request->drugs));
+            $disease->update($request->only(['name', 'description']));
+            $disease->leaflets()->sync(json_decode($request->drugs));
+            $disease->symptoms()->sync(json_decode($request->symptoms));
         }
         catch (QueryException $ex) { // Anything that went wrong
-            abort(500, "Could not update Disease");
+            abort(500, $ex->getMessage());
         }
-        return new DiseaseResource($disease->with('drugs')->findOrFail($id));
+        return new DiseaseResource($disease->with('leaflets')->findOrFail($id));
     }
 
     /**
@@ -126,14 +109,109 @@ class DiseaseController extends Controller
     public function destroy(Request $request, $id)
     {
         $user = auth()->user();
+        $role = $user->roles()->first()->name;
         if($role ==="admin"){
             $disease = Disease::findOrFail($id);
         }else{
             $disease = $user->diseases()->findOrFail($id);
         }
-        $disease->drugs()->detach();
+        $disease->leaflets()->detach();
+        $disease->symptoms()->detach();
         $disease->delete();
 
         return response()->noContent();
+    }
+    /**
+     * Make the specified array
+     * 
+     * @param array $diseasesArr
+     * @return array
+     */
+    private function makeDiseasesArray($diseasesArr){
+
+        $data = [];
+        for ($i = 0; $i < count($diseasesArr); $i++)
+        {
+            $data[$diseasesArr[$i]->data->{'Pavadinimas'}] = [
+            'name' => $diseasesArr[$i]->data->{'Pavadinimas'},
+            'created_at' => date("Y-m-d H:i:s"),
+            ];          
+        }        
+        return $data;
+    }
+    /**
+     * Returns when it was created and updated.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function report()
+    {
+        $user = auth()->user();
+        $role = $user->roles()->first()->name;
+        if($role ==="admin"){
+
+            $disease = Disease::orderBy('created_at', 'desc')->first();
+            if($disease !== null){
+                return response()->json([
+                'success' => true,
+                'data' => [
+                    'created_at' => $disease->created_at,
+                    ],
+                ], Response::HTTP_OK);
+            }else{
+                return response()->json([
+                    'success' => false,
+                    'data' => 'Not Found',
+                ], Response::HTTP_OK);
+            }            
+        }
+        return response()->json([
+            'success' => false,
+            'data' => 'Restricted permission',
+        ], Response::HTTP_OK);       
+    }
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateList(Request $request)
+    {
+        $user = auth()->user();
+        $diseasesArr = json_decode($request->diseases);
+        
+        $newDiseasesArr = $this->makeDiseasesArray($diseasesArr);
+        $diseases = Disease::orderBy('created_at', 'DESC')->get();
+        $result = $this->checkSymptomsChanges($diseases, $newDiseasesArr);
+        return response()->json([
+            'success' => true,
+            'data' => $result,
+        ], Response::HTTP_OK);
+    }
+    /**
+     * Make the specified array
+     * 
+     * @param array $drugsArr
+     * @return array
+     */
+    private function checkSymptomsChanges($diseasesArr, $newDiseasesArr){
+
+        $counter = 0;
+        $date = $diseasesArr[0]->created_at;
+        for ($i = 0; $i < count($diseasesArr); $i++)
+        {
+            if(isset($newDiseasesArr[$diseasesArr[$i]->name]))
+            {               
+                unset($newDiseasesArr[$diseasesArr[$i]->name]);
+            }                    
+        }
+        if(count($newDiseasesArr) !== 0){            
+            $values = array_values( $newDiseasesArr ); 
+            $date = $values[0]['created_at'];
+            DB::table('diseases')->insert($values);
+        }              
+        return ['updated'=>$counter, 'added'=>count( $newDiseasesArr ), 'updated_at' => date("Y-m-d\TH:i:s\Z",strtotime($date))];
     }
 }

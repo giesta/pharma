@@ -29,6 +29,8 @@ export default function ControlledTabs() {
       const [pagePrivate, setPagePrivate] = React.useState(1);
       const [totalPrivate, setTotalPrivate] = React.useState(0);
       const [pageSizePrivate, setPageSizePrivate] = React.useState(3);
+
+      
       
       
     const onChangeSearchTitle = e => {
@@ -109,11 +111,12 @@ export default function ControlledTabs() {
               <Spinner></Spinner>
             ):(
         <Tabs
+          unmountOnExit={true}
           id="controlled-tab-example"
           activeKey={key}
           onSelect={(k) => setKey(k)}
         >
-          <Tab eventKey="public" title="Public">
+          <Tab eventKey="public" title="Public" >
             
           <div className="col-md-6">
         <div className="input-group mt-2">

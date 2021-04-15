@@ -24,7 +24,7 @@ class StoreDiseaseRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:255',
+            'disease_id' => 'required',
         ];
     }
 }

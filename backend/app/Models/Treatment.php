@@ -10,10 +10,10 @@ class Treatment extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'title', 'description', 'algorithm', 'public', 'user_id', 'disease_id'
+        'title', 'description', 'algorithm', 'public', 'user_id', 'overview_id', 'uses', 'diagram_id'
     ];
-    public function disease(){
-        return $this->belongsTo(Disease::class,'disease_id', 'id');
+    public function overview(){
+        return $this->belongsTo(Overview::class,'overview_id', 'id');
     }
     public function user(){
         return $this->belongsTo(User::class, 'user_id', 'id');
@@ -21,8 +21,16 @@ class Treatment extends Model
     public function starsCount(){
         return $this->stars()->count();
     }
+    public function reportsCount(){
+        return $this->reports()->count();
+    }
     public function star(User $user){
         $this->stars()->updateOrCreate([
+            "user_id" =>$user->id
+        ]);
+    }
+    public function report(User $user){
+        $this->reports()->updateOrCreate([
             "user_id" =>$user->id
         ]);
     }
@@ -34,10 +42,28 @@ class Treatment extends Model
             return true;
         }        
     }
+    public function isReportedBy(User $user = null){
+        if($user !== null){
+            return (boolean)$user->reports->where('treatment_id', $this->id)->count();
+        }
+        else{
+            return true;
+        }        
+    }
     public function stars(){
         return $this->hasMany(Star::class);
     }
+    public function reports(){
+        return $this->hasMany(Report::class);
+    }
     public function comments(){
         return $this->hasMany(Comment::class);
+    }
+    public function drugs()
+    {
+        return $this->belongsToMany(Drug::class, 'treatments_drugs', 'treatment_id', 'drug_id')->withPivot('uses');
+    }
+    public function diagram(){
+        return $this->belongsTo(Diagram::class);
     }
 }

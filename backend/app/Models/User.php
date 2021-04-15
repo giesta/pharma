@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Http\Resources\User as UserResource;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -59,7 +60,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return [];
+        return ['user'=>new UserResource($this)];
     }
 
     public function treatments(){
@@ -68,8 +69,14 @@ class User extends Authenticatable implements JWTSubject
     public function diseases(){
         return $this->hasMany(Disease::class);
     }
+    public function overviews(){
+        return $this->hasMany(Overview::class);
+    }
     public function drugs(){
         return $this->hasMany(Drug::class);
+    }
+    public function leaflets(){
+        return $this->hasMany(Leaflet::class);
     }
     public function roles()
     {
@@ -77,9 +84,17 @@ class User extends Authenticatable implements JWTSubject
     }
     public function comments()
     {
-        return $this->belongsToMany(Comment::class);
+        return $this->hasMany(Comment::class);
     }
     public function stars(){
         return $this->hasMany(Star::class);
+    }
+
+    public function reports(){
+        return $this->hasMany(Report::class);
+    }
+
+    public function diagrams(){
+        return $this->hasMany(Diagram::class);
     }
 }

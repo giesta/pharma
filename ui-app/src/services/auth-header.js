@@ -3,7 +3,9 @@ export default function authHeader() {
   
   if (user && user.access_token) {
       //alert(localStorage.getItem('user'));
-    return { "Content-type": "application/json",
+    return { 
+      "Access-Control-Allow-Origin": "*",
+      "Content-type": "application/json",
       Authorization: 'Bearer ' + user.access_token
   };
   } else {

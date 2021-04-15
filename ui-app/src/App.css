@@ -88,7 +88,7 @@ label {
 }
  .main-container {
   min-height: 100vh; /* will cover the 100% of viewport */
-  overflow: hidden;
+  overflow: auto;
   display: block;
   position: relative;
   padding-bottom: 100px; /* height of your footer */
@@ -138,4 +138,42 @@ footer p { font-size:13px; color:#CCC; padding-bottom:0px; margin-bottom:8px;}
 .social_footer_ul li { padding-left:20px; padding-top:10px; float:left; }
 .social_footer_ul li a { color:#CCC; border:1px solid #CCC; padding:8px;border-radius:50%;}
 .social_footer_ul li i {  width:20px; height:20px; text-align:center;}
+
+@media (min-width: 1200px) {
+  .container{
+      max-width: 1170px;
+  }
+}
+.link_danger {color: #f00;}
+.link_danger:hover {color: #f00;}
+.link_success {color: rgb(12, 134, 42);}
+.link_success:hover {color: rgb(12, 134, 42);text-decoration: none;}
+.link_info {color: rgb(26, 115, 232);}
+.link_info:hover {color: rgb(9, 101, 187);text-decoration: none;}
+
+
+td{
+  white-space: nowrap;
+  text-overflow: hidden;
+  overflow: hidden;
+  max-width: 200px;
+}
+
+.img-wrap {
+  position: relative;
+  float:left;
+  }
+  
+   .img-wrap #clear {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  z-index: 100;
+  
+  }
+  
+   .hide{
+    display:none;
+   }
+
  

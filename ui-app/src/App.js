@@ -13,12 +13,28 @@ import Home from "./components/home.component";
 import Profile from "./components/profile.component";
 import BoardUser from "./components/board-user.component";
 import DrugsList from "./components/drugs/drugs-list.component";
+import DrugsInteractions from "./components/drugs/interactions.component";
 import DiseasesList from "./components/diseases/diseases-list.component";
 import TreatmentsList from "./components/treatments/treatments-list.component";
 import Treatment from "./components/treatments/treatment.component";
 import UsersList from "./components/users/users-list.component";
+
+import Diagram from "./components/diagrams/diagrams-list.component";
+import CreateDiagram from "./components/diagrams/diagram.component";
+
 import Footer from "./components/layout/footer.component";
 import MainNavbar from "./components/layout/navbar.component";
+
+import Loadable from "react-loadable";
+
+import Logo from "./components/admin/Logo/Logo.js";
+import Header from "./components/admin/Header/Header.js";
+import Basic from "./components/admin/Routes/Basic/Basic.js";
+import Manage from "./components/admin/Routes/Manage/Manage.js";
+import Reports from "./components/admin/Routes/Reports/Reports.js";
+import Schedule from "./components/admin/Routes/Schedule/Schedule.js";
+import Settings from "./components/admin/Routes/Settings/Settings.js";
+import Scraping from "./components/admin/Routes/Scraping/Scraping.js";
 
 class App extends Component {
   constructor(props) {
@@ -52,10 +68,30 @@ class App extends Component {
     const { currentUser, showPharmacistBoard, showAdminBoard } = this.state;
 
     return (
+
+      
       
       <div>
-
-   {MainNavbar(showPharmacistBoard, showAdminBoard, currentUser, this.logOut)} 
+        {
+        showAdminBoard?(
+        <div className="kanban-wrapper">
+        <div className="kanban">
+          <Logo />
+          <Header />
+          <Sidebar />
+          <Switch>
+            <Route exact path="/boards" component={Basic} />
+            <Route exact path="/manage" component={Manage} />
+            <Route exact path="/schedule" component={Schedule} />
+            <Route exact path="/reports" component={Reports} />
+            <Route exact path="/settings" component={Settings} />
+            <Route exact path="/scraping" component={Scraping} />
+            <Route exact path="/login" component={Login} />
+          </Switch>
+        </div>
+      </div>
+      ):(<>
+      <MainNavbar showPharmacistBoard = {showPharmacistBoard} showAdminBoard = {showAdminBoard} currentUser = {currentUser} logOut = {this.logOut} />
 
         <div className="container main-container mt-3">
           <Switch>
@@ -63,18 +99,33 @@ class App extends Component {
             <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />
             <ProtectedRoute exact path="/profile" component={Profile} roles={["admin", "pharmacist"]}/> 
-            <ProtectedRoute path="/user" component={BoardUser} roles={["admin", "pharmacist"]}/> 
+            <ProtectedRoute exact path="/user" component={BoardUser} roles={["admin", "pharmacist"]}/> 
             <ProtectedRoute exact path="/drugs" component={DrugsList} roles={["admin", "pharmacist"]}/> 
             <ProtectedRoute exact path="/diseases" component={DiseasesList} roles={["admin", "pharmacist"]}/> 
             <ProtectedRoute exact path="/treatments" component={TreatmentsList} roles={["admin", "pharmacist"]}/> 
+            <ProtectedRoute exact path="/diagrams" component={Diagram} roles={["admin", "pharmacist"]}/>
+            <ProtectedRoute exact path="/interactions" component={DrugsInteractions} roles={["admin", "pharmacist"]}/>
+            <ProtectedRoute exact path="/diagrams/create" component={CreateDiagram} roles={["admin", "pharmacist"]}/>
+            <ProtectedRoute exact path="/diagrams/update" component={CreateDiagram} roles={["admin", "pharmacist"]}/>
             <Route exact path="/treatments/:id" component={Treatment}/>            
-            <ProtectedRoute path="/users" component={UsersList} roles={["admin"]}/>
+            <ProtectedRoute exact path="/users" component={UsersList} roles={["admin"]}/>
           </Switch>
         </div>
         <Footer></Footer>
-      </div>
+        </>
+      )
+      }
+</div>
+   
     );
   }
 }
+
+const Loading = () => <div className="loading">Loading...</div>;
+
+const Sidebar = Loadable({
+  loader: () => import("./components/admin/Sidebar/Sidebar.js"),
+  loading: Loading
+});
 
 export default App;

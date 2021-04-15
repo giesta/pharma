@@ -30,6 +30,15 @@ const removeAll = () => {
 const findByTitle = (pageNumber, name) => {
   return http.get(`/drugs/list?page=${pageNumber}&&name=${name}`);
 };
+const findBySubstance = (name) => {
+  return http.get(`/drugs/?name=${name}`);
+};
+const reports = () => {
+  return http.get(`/drugs/reports`);
+};
+const scrap = () => {
+  return http.get(`/drugs/links`);
+};
 
 const services = {
   getAll,
@@ -39,7 +48,10 @@ const services = {
   update,
   remove,
   removeAll,
-  findByTitle
+  findByTitle,
+  findBySubstance,
+  reports,
+  scrap
 };
 
 export default services;

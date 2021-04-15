@@ -1,3 +1,10 @@
+@import "assets/reset/reset.css";
+@import "components/admin/Logo/Logo.css";
+@import "components/admin/Header/Header.css";
+@import "components/admin/Sidebar/Sidebar.css";
+@import "components/admin/Nav/Nav.css";
+@import "components/admin/Main/Main.css";
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

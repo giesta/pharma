@@ -28,7 +28,7 @@ const removeAll = () => {
 };
 
 const findByTitle = (pageNumber, name) => {
-  return http.get(`/users/list?pageNumber=${pageNumber}&&name=${name}`);
+  return http.get(`/users/list?page=${pageNumber}&&name=${name}`);
 };
 
 const services = {

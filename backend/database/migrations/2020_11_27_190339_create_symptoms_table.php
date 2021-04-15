@@ -15,14 +15,8 @@ class CreateSymptomsTable extends Migration
     {
         Schema::create('symptoms', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->unsignedBigInteger('disease_id');  
+            $table->string('name')->unique(); 
             $table->timestamps();
-
-            $table->index('disease_id');
-            $table->foreign('disease_id')->references('id')->on('diseases')
-            ->onDelete('cascade')
-            ->onUpdate('no action');
         });
     }
 

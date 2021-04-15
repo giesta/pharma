@@ -4,6 +4,7 @@ import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import { isEmail } from "validator";
 import { Redirect } from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
 import AuthService from "../services/auth.service";
 
@@ -36,6 +37,24 @@ const vusername = value => {
     );
   }
 };
+const vName = value => {
+  if (value.length < 3 || value.length > 20) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        The name must be between 3 and 20 characters.
+      </div>
+    );
+  }
+};
+const vLastName = value => {
+  if (value.length < 3 || value.length > 20) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        The last name must be between 3 and 20 characters.
+      </div>
+    );
+  }
+};
 
 const vpassword = value => {
   if (value.length < 6 || value.length > 40) {
@@ -60,13 +79,17 @@ export default class Register extends Component {
   constructor(props) {
     super(props);
     this.handleRegister = this.handleRegister.bind(this);
-    this.onChangeUsername = this.onChangeUsername.bind(this);
+    this.onChangeName = this.onChangeName.bind(this);
+    this.onChangeLastName = this.onChangeLastName.bind(this);
+    this.onChangeStampNumber = this.onChangeStampNumber.bind(this);
     this.onChangeEmail = this.onChangeEmail.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
     this.onChangeCPassword = this.onChangeCPassword.bind(this);
 
     this.state = {
-      username: "",
+      name: "",
+      last_name:"",
+      stamp_number:"",
       email: "",
       password: "",
       c_password: "",
@@ -97,9 +120,19 @@ renderRedirect = () => {
   }
 }
 
-  onChangeUsername(e) {
+  onChangeName(e) {
     this.setState({
-      username: e.target.value
+      name: e.target.value
+    });
+  }
+  onChangeLastName(e) {
+    this.setState({
+      last_name: e.target.value
+    });
+  }
+  onChangeStampNumber(e) {
+    this.setState({
+      stamp_number: e.target.value
     });
   }
 
@@ -132,33 +165,41 @@ renderRedirect = () => {
 
     if (this.checkBtn.context._errors.length === 0) {
       AuthService.register(
-        this.state.username,
+        this.state.name,
+        this.state.last_name,
+        this.state.stamp_number,
         this.state.email,
         this.state.password,
         this.state.c_password,
       ).then(
         response => {
+          console.log(response.data)
           this.setState({
-            message: response.data.user.name,
+            message: [jwt_decode(response.data.access_token).user.name],
             successful: true
           });
           this.setRedirect();
         },
         error => {
-          console.log(error);
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message.email)||
-              (error.response &&
-                error.response.data &&
-                error.response.data.message.name) ||
-                (error.response &&
-                  error.response.data &&
-                  error.response.data.message.password) ||
-                  error.message ||
-                  error.toString();
-
+          var resMessage ="";
+          console.log(error.response.data);
+          if(error.response!==undefined && error.response.data!==undefined&&error.response.data.message!==undefined){
+            if(error.response.data.message.email!==undefined){
+              resMessage=error.response.data.message.email;
+            }else if(error.response.data.message.name!==undefined){
+              resMessage=error.response.data.message.name;
+            }else if(error.response.data.message.last_name!==undefined){
+              resMessage=error.response.data.message.last_name;
+            }else if(error.response.data.message.password!==undefined){
+              resMessage=error.response.data.message.password;
+            }else{
+              resMessage=error.response.data.message;
+            }
+          }else if(error.message!==undefined){
+            resMessage=error.message;
+          }else{
+            resMessage=error.toString();
+          }
           this.setState({
             successful: false,
             message: resMessage
@@ -188,14 +229,37 @@ renderRedirect = () => {
             {!this.state.successful && (
               <div>
                 <div className="form-group">
-                  <label htmlFor="username">Username</label>
+                  <label htmlFor="name">Name</label>
                   <Input
                     type="text"
                     className="form-control"
-                    name="username"
-                    value={this.state.username}
-                    onChange={this.onChangeUsername}
-                    validations={[required, vusername]}
+                    name="name"
+                    value={this.state.name}
+                    onChange={this.onChangeName}
+                    validations={[required, vName]}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="lastName">Last Name</label>
+                  <Input
+                    type="text"
+                    className="form-control"
+                    name="lastName"
+                    value={this.state.last_name}
+                    onChange={this.onChangeLastName}
+                    validations={[required, vLastName]}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="stamp_number">Stamp Number</label>
+                  <Input
+                    type="text"
+                    className="form-control"
+                    name="stamp_number"
+                    value={this.state.stamp_number}
+                    onChange={this.onChangeStampNumber}
+                    validations={[required]}
                   />
                 </div>
 
@@ -250,7 +314,7 @@ renderRedirect = () => {
                   }
                   role="alert"
                 >
-                  {this.state.message.map(item=>item)}
+                  {Array.isArray(this.state.message)?this.state.message.map(item=>item):this.state.message}
                 </div>
               </div>
             )}

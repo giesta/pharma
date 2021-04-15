@@ -59,17 +59,38 @@ Route::group(['middleware' => 'jwt.auth',
 ], function () {
     
     Route::get('diseases/list', 'DiseaseController@list'); 
+    Route::get('diseases/reports', 'DiseaseController@report'); 
+    Route::put('diseases', 'DiseaseController@updateList');
+
     Route::get('drugs/list', 'DrugController@list');
+    Route::get('drugs/reports', 'DrugController@report');
+    Route::put('drugs', 'DrugController@updateList');
+    Route::get('drugs/links', 'DrugController@updateLinks');
+
+    Route::get('leaflets/list', 'LeafletController@list');
+    Route::get('overviews/list', 'OverviewController@list');
+
+    Route::get('diagrams/list', 'DiagramController@list');
+
+    Route::get('symptoms/reports', 'SymptomController@report'); 
+    Route::put('symptoms', 'SymptomController@updateList');
      
     Route::get('users/list', 'UserController@list'); 
-    Route::apiResource('diseases', DiseaseController::class);   
+    Route::apiResource('diseases', DiseaseController::class); 
+    Route::apiResource('substances', SubstanceController::class);
+    Route::apiResource('overviews', OverviewController::class);   
     Route::apiResource('drugs', DrugController::class);
+    Route::apiResource('leaflets', LeafletController::class);
     Route::resource('diseases.drugs', DiseaseDrugController::class);
     Route::delete('diseases/{id}/drugs', 'DiseaseDrugController@deleteMany');
     Route::apiResource('users', UserController::class);
+    Route::apiResource('diagrams', DiagramController::class);
     
+    Route::apiResource('scrap', ScraperController::class);
+    Route::apiResource('symptoms', SymptomController::class);
     Route::apiResource('treatments', TreatmentController::class);
     Route::post('stars/{id}', 'TreatmentStarsController@update');
+    Route::put('reports/{id}', 'ReportController@update');
     Route::post('comments', 'CommentController@store'); 
     
 

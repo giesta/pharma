@@ -1,5 +1,5 @@
 import React from 'react';
-
+import DateParser from "../../services/parseDate.service";
 import { Modal, Button, Form, Badge} from "react-bootstrap";
 
 export default function InfoModal(props) {
@@ -10,40 +10,59 @@ export default function InfoModal(props) {
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="name">
                         <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.drug.name} disabled name="name"/>
+                        
+                        {
+                        props.drug.registration.toUpperCase().includes("IŠREGISTRUOTAS")?
+                        <Badge pill variant="warning">{props.drug.name}</Badge>
+                            :<Badge pill variant="success">{props.drug.name}</Badge>
+                            }
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
+                    <Form.Group controlId="substance">
                         <Form.Label>Substance</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.drug.substance} disabled name="substance"/>
+                        {props.drug.substance.name===undefined?(props.drug.substance.split(/\/|\(|\)/).map(item=>
+                        
+                        <Badge pill variant="primary">{item}</Badge>
+                            
+                            )):(props.drug.substance.name.split(/\/|\(|\)/).map(item=>
+                        
+                                <Badge pill variant="primary">{item}</Badge>
+                                    
+                                    ))}
                     </Form.Group>
+                    <Form.Group controlId="atc">
+                        <Form.Label>ATC</Form.Label>
+                        <Form.Control type="text" placeholder="" value={props.drug.ATC!==null?(props.drug.ATC):(props.drug.substance.ATC)} disabled name="indication"/>
+                    </Form.Group>
+                    <Form.Group controlId="strength">
+                        <Form.Label>Strength</Form.Label>
+                        <Form.Control type="text" placeholder="" value={props.drug.strength} disabled name="contraindication"/>
+                    </Form.Group>
+                    <Form.Group controlId="form">
+                        <Form.Label>Form</Form.Label>
+                        <Form.Control type="text" placeholder="" value={props.drug.form} disabled name="reaction"/>
+                    </Form.Group>
+                    <Form.Group controlId="package">
+                        <Form.Label>Package</Form.Label>
+                        <Form.Control type="text" placeholder="" value={props.drug.package} disabled name="use"/>
+                    </Form.Group>
+                    <Form.Group controlId="package_description">
+                        <Form.Label>Package Description</Form.Label>
+                        <Form.Control type="text"  as="textarea" placeholder="" value={props.drug.package_description} disabled name="use"/>
+                    </Form.Group>
+                    {props.drug.uses!==undefined && props.drug.uses!==null?( 
+                    <Form.Group controlId="uses">
+                        <Form.Label>Uses</Form.Label>
+                        <Form.Control type="text"  as="textarea" placeholder="" value={props.drug.uses} disabled name="use"/>
+                    </Form.Group>
+                    ):('')}
+                   
                     <Form.Group controlId="exampleForm.ControlInput1">
-                        <Form.Label>Indication</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.drug.indication} disabled name="indication"/>
+                        <Form.Label>Updated</Form.Label>
+                        <Form.Control type="text" placeholder="" value={DateParser.getParsedDate(props.drug.updated_at)} disabled name="use"/>
                     </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
-                        <Form.Label>Contraindication</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.drug.contraindication} disabled name="contraindication"/>
-                    </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
-                        <Form.Label>Adverse effect</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.drug.reaction} disabled name="reaction"/>
-                    </Form.Group>
-                    <Form.Group controlId="exampleForm.ControlInput1">
-                        <Form.Label>Use</Form.Label>
-                        <Form.Control type="text" placeholder="" required value={props.drug.use} disabled name="use"/>
-                    </Form.Group>
-                        {(props.drug.diseases!==null && props.drug.diseases!==undefined)&&(<Form.Group controlId="exampleForm.ControlInput1">
-                            <Form.Label>Diseases</Form.Label>
-                            {props.drug.diseases.map((x)=>
-                                <Badge pill variant="dark">
-                                    {x.name}
-                                    </Badge>
-                                )  
-                            } 
-                    </Form.Group>
-                        )}  
+                        
                 </Form>
             </Modal.Body>
             <Modal.Footer>

@@ -16,18 +16,19 @@ class CreateDrugsTable extends Migration
         Schema::create('drugs', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('substance');
-            $table->string('indication');
-            $table->string('contraindication');
-            $table->string('reaction');
-            $table->string('use');
-            $table->unsignedBigInteger('user_id');
+            $table->text('strength')->nullable();
+            $table->string('form')->nullable();
+            $table->text('package')->nullable();
+            $table->text('package_description')->nullable();
+            $table->string('registration')->nullable();
+            $table->unsignedBigInteger('substance_id');
+            $table->string('link')->nullable();
             $table->timestamps();
 
-            $table->index('user_id');
-            $table->foreign('user_id')
-                ->references('id')->on('users')
-                ->onDelete('cascade')
+            $table->index('substance_id');
+            $table->foreign('substance_id')
+                ->references('id')->on('substances')
+                ->onDelete('no action')
                 ->onUpdate('no action');
         });
     }

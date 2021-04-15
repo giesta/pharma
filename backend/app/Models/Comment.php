@@ -13,16 +13,16 @@ class Comment extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'content', 'user_id', 'treatment_id'];
+    protected $fillable = ['content', 'user_id', 'treatment_id'];
 
     /**
      * App\User relationship
      *
-     * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function users()
+    public function user()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
     public function treatment(){
         return $this->belongsTo(Treatment::class, 'treatment_id', 'id');

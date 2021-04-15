@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Table } from "react-bootstrap";
+
+import { Table, Badge } from "react-bootstrap";
 
 export default function TableOfItems(props) {
     const handleIncrement = (counter) => {
@@ -16,16 +17,24 @@ export default function TableOfItems(props) {
                 </tr>
             </thead>
             <tbody>
-            {props.drugs.data.map((field, counter)=>
+            {
+            props.drugs.map((field, counter)=>
                 <tr key = {field.id}>
                     
                     <td>{handleIncrement(++counter)}</td>
-                    <td>{field.name}</td>
-                    <td>{field.substance}</td>
-                    <td>{field.indication}</td>
-                    <td>{field.contraindication}</td>
-                    <td>{field.reaction}</td>
-                    <td>{field.use}</td>
+                    <td>{field.registration.toUpperCase().includes("IŠREGISTRUOTAS")?
+                        <Badge pill variant="warning">{field.name}</Badge>
+                            :<Badge pill variant="success">{field.name}</Badge>
+                            }</td>
+                    <td>{field.substance.split(/\/|\(|\)/).map(item=>
+                        
+                        <Badge pill variant="primary">{item}</Badge>
+                            
+                            )}</td>
+                    <td>{field.ATC}</td>
+                    <td>{field.strength}</td>
+                    <td>{field.form}</td>
+                    <td>{field.package}</td>                    
                     {props.GetActionFormat(field)}
                 </tr>
                 )  

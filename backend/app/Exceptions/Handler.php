@@ -106,7 +106,7 @@ class Handler extends ExceptionHandler
         }    
         if($exception instanceof QueryException){
 
-            return $this->errorResponse("Problem with DataBase", 500);
+            return $this->errorResponse($exception->getMessage(), 500);
         }      
 
         if (config('app.debug')) {

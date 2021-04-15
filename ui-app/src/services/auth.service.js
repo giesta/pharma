@@ -1,4 +1,5 @@
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 const API_URL = "http://127.0.0.1:8000/api/auth/";
 
@@ -10,10 +11,11 @@ class AuthService {
         password
       })
       .then(response => {
-        if (response.data.access_token) {              
-          localStorage.setItem("user", JSON.stringify(response.data));
+        if (response.data.access_token) { 
+          localStorage.setItem("token", response.data.access_token);              
+          localStorage.setItem("user", JSON.stringify(jwt_decode(response.data.access_token).user));
         }
-        return response.data;
+        return jwt_decode(response.data.access_token).user;
       });
   }
 
@@ -21,15 +23,18 @@ class AuthService {
     localStorage.removeItem("user");
   }
 
-  register(name, email, password, c_password) {
+  register(name, last_name, stamp_number, email, password, c_password) {
     return axios.post(API_URL + "register", {
       name,
+      last_name,
+      stamp_number,
       email,
       password,
       c_password,
     }).then(response => {
-      if (response.data.access_token) {            
-        localStorage.setItem("user", JSON.stringify(response.data));
+      if (response.data.access_token) { 
+        localStorage.setItem("token", response.data.access_token);           
+        localStorage.setItem("user", JSON.stringify(jwt_decode(response.data.access_token).user));
       }
       return response;
     });

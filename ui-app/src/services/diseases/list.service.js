@@ -27,8 +27,12 @@ const removeAll = () => {
   return http.delete(`/diseases`);
 };
 
-const findByTitle = (pageNumber, name) => {
-  return http.get(`/diseases/list?page=${pageNumber}&&name=${name}`);
+const findByTitle = (name) => {
+  return http.get(`/diseases/list?name=${name}`);
+};
+
+const reports = () => {
+  return http.get(`/diseases/reports`);
 };
 
 const services = {
@@ -39,7 +43,8 @@ const services = {
   update,
   remove,
   removeAll,
-  findByTitle
+  findByTitle,
+  reports
 };
 
 export default services;

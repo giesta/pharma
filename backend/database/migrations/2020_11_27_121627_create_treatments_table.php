@@ -16,11 +16,11 @@ class CreateTreatmentsTable extends Migration
         Schema::create('treatments', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('description');
+            $table->text('description');
             $table->string('algorithm');
             $table->integer('public')->default(0);
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('disease_id');           
+            $table->unsignedBigInteger('overview_id');           
             $table->timestamps();
 
             $table->index('user_id');
@@ -29,8 +29,8 @@ class CreateTreatmentsTable extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('no action');
 
-            $table->index('disease_id');
-            $table->foreign('disease_id')->references('id')->on('diseases')
+            $table->index('overview_id');
+            $table->foreign('overview_id')->references('id')->on('overviews')
             ->onDelete('cascade')
             ->onUpdate('no action');
                 

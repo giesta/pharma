@@ -5,6 +5,7 @@ import { BsPencilSquare} from "react-icons/bs";
 import { removeError } from "../js/actions/index";
 import store from "../js/store/index";
 import UsersDataService from "../services/users/users.service";
+import { Alert, Row, Col } from "react-bootstrap";
 
 export default function Profile() {
 
@@ -18,6 +19,7 @@ export default function Profile() {
   const [show, setShow] = React.useState(false);
   const [currentUser, setCurrentUser] = React.useState(AuthService.getCurrentUser());
   const [validated, setValidated] = React.useState(false);
+  const [successMessage, setSuccessMessage] = React.useState(false);
 
   const [error, setError] = React.useState(false);
   const {dispatch} = store;
@@ -56,6 +58,7 @@ export default function Profile() {
         value['email'] = response.data.data.email;
         localStorage.setItem('user', JSON.stringify(value));
         handleClose();
+        setSuccessMessage(true);
       })
       .catch(e => {
         setError(true);
@@ -65,6 +68,13 @@ export default function Profile() {
 
     return (
       <div className="container">
+        {successMessage?(
+          <Row>
+            <Col>
+              <Alert variant="success" onClose={() => setSuccessMessage(false)} dismissible>Profile updated successfully</Alert>
+            </Col>
+          </Row>
+        ):''}
         <header className="jumbotron">
           <h3>
             <strong>{currentUser.name}</strong> Profile

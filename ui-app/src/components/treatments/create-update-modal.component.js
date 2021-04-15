@@ -278,8 +278,8 @@ function makeDrugsOptions(field){
                       </div>
                       {field.strength !== ''?(
                     <Form.Group controlId={`${field}-${idx}`}>
-                        <Form.Label>Uses</Form.Label>
-                        <Form.Control type="text"  as="textarea" placeholder="" value={ field.uses} disabled  name="uses"/>
+                        <Form.Label>Uses</Form.Label>{console.log(field)}
+                        <Form.Control type="text"  as="textarea" placeholder="" value={ field.uses !==null && field.uses!==''?(field.uses):(getUsesValue(props.treatment.disease, field))} disabled  name="uses"/>
                     </Form.Group>):('')}
                     <div className="row">
   

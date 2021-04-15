@@ -15,7 +15,7 @@ class ScraperController extends Controller
      */
     public function index(ScraperService $scraperService)
     {
-        $url = 'https://www.ligos.lt/lt/simptomai/';
+        $url = 'https://www.ligos.lt/lt/ligos/';
         
         $data = $scraperService->scrap($url);
         return response()->json([

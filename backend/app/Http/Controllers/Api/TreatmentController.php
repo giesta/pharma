@@ -262,4 +262,22 @@ class TreatmentController extends Controller
         $treatment->star(auth()->user());
         return new TreatmentResource($treatment);
     }
+
+    /**
+     * report to remove the treatment from public list.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Report  $report
+     * @return \Illuminate\Http\Response
+     */
+    public function report(Request $request, $id)
+    {
+        $treatment = Treatment::findOrFail($id);
+        $treatment->report(auth()->user());
+        if($treatment->reportsCount() >= 2){
+            $treatment->public = 0;
+            $treatment->save();
+        }
+        return new TreatmentResource($treatment);
+    }
 }

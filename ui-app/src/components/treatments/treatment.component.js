@@ -163,10 +163,7 @@ export default function Treatment(props) {
       });
   };
   const report = () => {
-    var data = {
-      id: AuthService.getCurrentUser().id
-    };
-    ReportService.update(currentTreatment.id, data)
+    ReportService.report(currentTreatment.id)
       .then(response => {    
         if(response.data.data.length !== 0){
           setCurrentTreatment(response.data.data);

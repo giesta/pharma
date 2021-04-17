@@ -11,12 +11,12 @@ export default function MainNavbar(props) {
   <Navbar.Collapse id="responsive-navbar-nav">
 
     <Nav className="mr-auto">
-    <Nav.Link href={"/"}>Home</Nav.Link>
-      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/drugs"}>Drugs</Nav.Link>)}
-      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/diseases"}>Diseases</Nav.Link>)}
-      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/treatments"}>Treatments</Nav.Link>)}
-      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/diagrams"}>Diagrams</Nav.Link>)}
-      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/interactions"}>Interactions</Nav.Link>)}
+    <Nav.Link href={"/"}>Pagrindinis</Nav.Link>
+      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/drugs"}>Vaistai</Nav.Link>)}
+      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/diseases"}>Ligos</Nav.Link>)}
+      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/treatments"}>Algoritmai</Nav.Link>)}
+      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/diagrams"}>Diagramos</Nav.Link>)}
+      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/interactions"}>Sąveikos</Nav.Link>)}
       {props.showAdminBoard && (<Nav.Link href={"/users"}>Users</Nav.Link>)}
     </Nav>
     
@@ -24,14 +24,14 @@ export default function MainNavbar(props) {
       <Nav>
               <Nav.Link href={"/profile"}>{props.currentUser.name}</Nav.Link>
               <Nav.Link eventKey={2} href="/login" onClick={props.logOut}>
-              LogOut
+              Atsijungti
       </Nav.Link>
       </Nav>
           ) : (
 <Nav>
-              <Nav.Link href={"/login"}>Login</Nav.Link>
+              <Nav.Link href={"/login"}>Prisijungti</Nav.Link>
               <Nav.Link eventKey={2} href={"/register"}>
-              Sign Up
+              Užsiregistruoti
       </Nav.Link>
       </Nav>            
           )}

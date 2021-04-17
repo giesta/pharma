@@ -5,7 +5,7 @@ import { Alert} from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import { BsPlusCircle, BsXCircle } from "react-icons/bs";
-
+import ErrorBoundary from "../layout/error.component";
 
 export default function Interactions() {
     const [loading, setLoading] = React.useState(false);
@@ -17,6 +17,7 @@ export default function Interactions() {
     const [fields, setFields] = React.useState(initialFieldsArray);
     const [valuesOfId, setValuesOfId] = React.useState([]);
     const [interactions, setInteractions] = React.useState([]);
+    const [error, setError] = React.useState(false);
     function handleAddInput() {
         const values = [...fields];
         values.push({
@@ -63,7 +64,7 @@ export default function Interactions() {
             });
       };
 
-     const getInter = (values) =>{
+     const showInteraction = (values) =>{
         var query = "";
         console.log(values);
         for(const value of values){
@@ -78,7 +79,10 @@ export default function Interactions() {
                 setInteractions("Not Found");
             }
             
-        })
+        }).catch(e => {
+          setError(true);
+          console.log(e);
+        });
         setLoading(false);
      }
 
@@ -90,36 +94,41 @@ export default function Interactions() {
             //const values = [...valuesOfId];
             const value = await DrugsSubstancesDataService.getRXUI(item.ATC)
             
-            .then(response=>{
-                
+            .then(response=>{                
                 if(response.data.idGroup.rxnormId!==undefined){
                    console.log(response.data.idGroup.rxnormId);   
                    return response.data.idGroup.rxnormId[0];
                 }
-            })
+            }).catch(e => {
+              setError(true);
+              console.log(e);
+            });
             //console.log(value);
             values.push(value); 
             //setValuesOfId(values);
             
           }
           console.log(values);
-          getInter(values);
+          showInteraction(values);
       }
 
 
   return (
     <div>
-      
+      {error?<ErrorBoundary/>:''}
         <div>      
       <div className="container">
+        <div className="mb-4">
+          <h4>Sąveikų tarp vaistų patikrinimas</h4>
+        </div>
           
 
       {fields.map((field, idx)=>{
                     return (
                         <div key={`${field}-${idx}`} className="border border-secondary p-3 mt-2">
                         
-                        <h4>Drug</h4>    
-                        <label>Name</label>  
+                        <h4>Vaistas</h4>    
+                        <label>Pavadinimas</label>  
                         <AsyncSelect
                             name="drugs"
                             className="basic-multi-select"
@@ -127,6 +136,7 @@ export default function Interactions() {
                             isClearable="true"
                             cacheOptions
                             defaultOptions
+                            placeholder={"Pasirinkti ..."}
                             loadOptions={loadDrugsOptions}
                             onChange={e=>AddSelectedDrugs(idx, e)}
                      />
@@ -134,8 +144,8 @@ export default function Interactions() {
                     
                    {idx>0?(<div className="row">
   
-  <div className="container text-right"><a type="button" className="link_danger" onClick={()=>handleRemoveInput(idx)} >
-                        <BsXCircle></BsXCircle>
+  <div className="container text-right mt-2"><a type="button" className="link_danger" onClick={()=>handleRemoveInput(idx)} >
+                        Šalinti <BsXCircle></BsXCircle>
                     </a></div></div>):('')} 
 
                     
@@ -144,16 +154,16 @@ export default function Interactions() {
                 })}    
                 
                 <div className="col-auto mr-auto mt-2 mb-2"><a type="button" className="link_success" size="sm" onClick={handleAddInput} >
-                Add Drug <BsPlusCircle></BsPlusCircle>
+                Įtraukti vaistą <BsPlusCircle></BsPlusCircle>
           </a></div>  
       
-  </div>
-  </div>{console.log(loading)}
+  
+  
   <button type="button" disabled={loading} className="btn btn-outline-success btn-sm ts-buttom mt-2" size="sm" onClick={
             function(event){setLoading(true);getInteraction();}}>
               {loading && (
                   <span className="spinner-border spinner-border-sm"></span>
-                )} Check Interactions
+                )} Tikrinti sąveiką
   </button>
   {interactions.length > 0?(
   <div className="border border-secondary p-3 mt-2">{console.log(interactions)}
@@ -175,7 +185,7 @@ export default function Interactions() {
       })):(interactions)}
   </div>
   ):('')}
-  </div>
+  </div></div></div>
   
     
     

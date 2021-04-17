@@ -13,7 +13,7 @@ import AuthService from "../../services/auth.service";
 import Spinner from "../layout/spinner.component";
 import DrugInfo from "../drugs/info-modal.component";
 import DownloadTreatment from "./download-modal.component";
-import { Alert, Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form} from "react-bootstrap";
+import { Alert, Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { BsStar, BsPeopleCircle, BsExclamationCircle, BsInfoCircle, BsCloudDownload } from "react-icons/bs";
 import fetchNodes from "./fetchNodes";
 import ReactFlow, {
@@ -271,16 +271,18 @@ const downloadDiagram = async () => {
   const values = await DiagramsDataService.findByTitle(1, currentTreatment.diagram.name)
       .then(response => {
           //console.log(response.data);
-          if(response.data.data.length > 0){
-            //console.log(response.data.data);
-            console.log(response.data.data[0])
+          if(response.data.data.length > 0){            
             for( var i = 0; i < response.data.data.length; i++) {
-              if(response.data.data[i].name===currentTreatment.diagram.name&&response.data.data[i].nodes.length===currentTreatment.diagram.nodes.length&&response.data.data[i].edges.length===currentTreatment.diagram.nodes.length){
+              if(response.data.data[i].name===currentTreatment.diagram.name&&response.data.data[i].nodes.length===currentTreatment.diagram.nodes.length&&response.data.data[i].edges.length===currentTreatment.diagram.edges.length){
                 idDiagram = response.data.data[i].id;
                 setText('We found related diagram! Do you want to overwrite this '+currentTreatment.diagram.name+ ' diagram?');
-                handleCloseConfirmToOverwrite();
+                handleCloseConfirmToOverwrite();                
                 setDiagramToOverwrite(true);
                 break;
+              }else{
+                handleCloseConfirm(); 
+                handleCloseConfirmToOverwrite();       
+                saveDiagram();
               }
             }           
           }
@@ -464,39 +466,66 @@ const updateDiagram = async () => {
       ):(        
       <div className="container">
         {successMessage?(
-          <Row>
+          <Row className="mt-2">
             <Col>
-              <Alert variant="success" onClose={() => setSuccessMessage(false)} dismissible>Download Success</Alert>
+              <Alert variant="success" onClose={() => setSuccessMessage(false)} dismissible>Operacija atlikta sėkmingai</Alert>
             </Col>
           </Row>
         ):''}
         
       <Row>
         <Col>
-          <Button variant="secondary" size="sm" disabled={currentTreatment.isStar} onClick={rate}>
+        <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="button-rate-1">{currentTreatment.isStar?('Įvertinta'):('Įvertinti')}</Tooltip>}
+          ><span className="d-inline-block">
+          <Button variant="secondary" size="sm" disabled={currentTreatment.isStar} style={currentTreatment.isStar?( {pointerEvents: 'none' }):({})} onClick={rate}>
             <BsStar></BsStar>{' '}<Badge variant="light">{currentTreatment.stars}</Badge>
-          </Button>{' '}
+          </Button>
+          </span>
+          </OverlayTrigger>{' '}
+          <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="button-download-1">Įtraukti į asmeninį sąrašą</Tooltip>}
+          >
           <Button variant="outline-info" size="sm" onClick={()=>{if(currentTreatment.diagram!==null){setElements(getElements(currentTreatment.diagram))};setConfirm(true);}}> <BsCloudDownload/>{' '}
           </Button>
+          </OverlayTrigger>
         </Col>
         <Col>
-          <Button className="float-right" variant="outline-secondary" size="sm" disabled={currentTreatment.isReported} onClick={report}>Report {" "}
+          <Button className="float-right" variant="outline-secondary" size="sm" disabled={currentTreatment.isReported} onClick={report}>{currentTreatment.isReported?('Siūlymas šalinti priimtas'):('Siūlau šalinti')} {" "}
             <BsExclamationCircle></BsExclamationCircle>
           </Button>
         </Col>        
     </Row>
-      <Row>
-        <Col md={{ span: 6, offset: 3 }}><a target="_blank" href={currentTreatment.algorithm}><Image src={currentTreatment.algorithm} fluid/></a></Col>        
+    <Row>
+        <Col className="mt-2">
+         <Jumbotron fluid>
+          <Container>
+            <h2>{currentTreatment.title}</h2>
+            <p>
+              {currentTreatment.description}
+            </p>
+          </Container>
+         </Jumbotron>
+          </Col>        
+        </Row>
+        {currentTreatment.algorithm!==''?(
+        <Row className="mb-2"><Col></Col>
+        <Col className="col-md-auto"><a target="_blank" href={currentTreatment.algorithm}><Image src={currentTreatment.algorithm} fluid/></a></Col>        
+        <Col></Col>
       </Row>
+      ):('')}
+      
       {currentTreatment.diagram!==null?(
         <Row>
-        <Col md={{ span: 6, offset: 3 }}>
-          <div className=" mt-2">
-            <h6>Diagram: "{currentTreatment.diagram.name}" <Button variant="outline-info" size="sm" onClick={() =>{setElements(getElements(currentTreatment.diagram));setShowDiagram(true)} }>
-            <BsInfoCircle/>{' '}
-          </Button></h6>
-          
+        <Col>
+          <div>
+            <h6>Diagrama: "{currentTreatment.diagram.name}" {" "}
+          </h6>
           </div>
+
+          
              
         <div className=" mt-2 mb-2 border">   
               
@@ -504,7 +533,7 @@ const updateDiagram = async () => {
                 <ReactFlow
                     elements={currentTreatment.diagram!==undefined?(getElements(currentTreatment.diagram)):([])}
                     snapGrid={[15, 15]}
-                    style={{ width: "100%", height: 400 }} 
+                    style={{ width: "100%", height: 600 }} 
                     elementsSelectable={false}
                     nodesConnectable={false}
                     nodesDraggable={false}
@@ -532,41 +561,33 @@ const updateDiagram = async () => {
       </Row>
       ):('')}
       
-      <Row>
-        <Col className="mt-1" md={{ span: 6, offset: 3 }}>
-         <Jumbotron fluid>
-          <Container>
-            <h1>{currentTreatment.title}</h1>
-            <p>
-              {currentTreatment.description}
-            </p>
-          </Container>
-         </Jumbotron>
-          </Col>        
-        </Row>
+      
         <Row className="justify-content-md-center">
-        <Col md="auto">
+        <Col>
           {currentTreatment.disease!==null&&(
-        <Card border="light" className="mt-1" style={{ width: '18rem' }}>
+        <Card border="light" className="mt-1  w-100">
           <Card.Body>
-          <Card.Title>Disease</Card.Title>
+          <Card.Title>Ligos informacija:</Card.Title>
           <Card.Subtitle className="mb-2 text-muted">{currentTreatment.disease.name}</Card.Subtitle>
           <Card.Text>
               <label>
-                <strong>Description:</strong>
+                <strong>Aprašymas:</strong>
               </label>{" "}
                 {currentTreatment.disease.description}
               <label>
-                <strong>Symptoms:</strong>
+                <strong>Simptomai:</strong>
               </label>{" "}{console.log(currentTreatment.disease.symptoms)}
-              {currentTreatment.disease.symptoms.map((item, idx)=><Badge key={idx} variant="secondary">{item.name}</Badge>)}
+              {currentTreatment.disease.symptoms.map((item, idx)=>{
+                return  <><Badge key={idx} variant="secondary">{item.name}</Badge><br /></>
+                  
+              })}
               <label>
-                <strong>Diagnosis:</strong>
+                <strong>Diagnozė:</strong>
               </label>{" "}
                 
               <label>{currentTreatment.disease.diagnosis}</label>
               <label>
-                <strong>Prevention:</strong>
+                <strong>Prevencija:</strong>
               </label>{" "}
                 
               <label>{currentTreatment.disease.prevention}</label>
@@ -579,13 +600,13 @@ const updateDiagram = async () => {
       </Row>
       {currentTreatment.uses!==null&currentTreatment.uses!==""?(
       <Row className="justify-content-md-center">
-        <Col md="auto">
-        <Card border="light" className="mt-1" style={{ width: '18rem' }}>
+        <Col>
+        <Card border="light" className="mt-1  w-100">
           <Card.Body>
-          <Card.Title>Drug Treatment</Card.Title>
+          <Card.Title>Gydymas vaistais</Card.Title>
           <Card.Text>
               <label>
-                <strong>Uses:</strong>
+                <strong>Vartojimas:</strong>
               </label>{" "}
                 {currentTreatment.uses}
                               
@@ -596,37 +617,25 @@ const updateDiagram = async () => {
       </Row>
       ):('')}
       <Row className="justify-content-md-center">
-        <Col md="auto">
+        <Col>
          <ListGroup className="mt-1">
-         <ListGroup.Item variant="light">Drugs</ListGroup.Item>
+         <ListGroup.Item variant="light">Vaistai:</ListGroup.Item>
           
           
 <NestedList nodes={getDrugsSubstances(currentTreatment)}></NestedList></ListGroup>
         </Col>   
         </Row>
-      <div className="container">
-      {userData!==null?(
+      <div className="container mt-4">
       <Row>
-        <Col></Col>
-        <Col className="col-6">
-        <Form noValidate validated={validated} onSubmit={handleSubmit}>
-          <Form.Group controlId="Comment">
-            <Form.Label>Comments</Form.Label>
-            <Form.Control className="border border-secondary rounded" as="textarea" required rows={3} placeholder="Leave a comment" value = {comment} onChange={onChangeComment}/>
-          </Form.Group>
-          <Button type="submit" variant="secondary" className="mb-2">
-            Comment
-          </Button>
-        </Form>
-        
+        <Col className="border-bottom border-dark">        
+          <h5>Diskusija:</h5>       
         </Col>
-        <Col></Col>
-        </Row>):('')}
+        </Row>
         <Row>
         <Col></Col>
-        <Col className="col-6">
+        <Col className="col-9">
             <ListGroup variant="flush">
-              {currentTreatment.comments.map((field)=>
+              {currentTreatment.comments.length!==0?(currentTreatment.comments.map((field)=>
                 <ListGroup.Item key={field.id}>
                 <Row>
                   <div className="mr-4">
@@ -641,22 +650,41 @@ const updateDiagram = async () => {
                   </div>
                 </Row>
               </ListGroup.Item>
-              )}            
+              )):(<div className="mt-2">
+                <p>Pradėkite diskusiją</p>
+              </div>
+                
+                )}            
           </ListGroup> 
         </Col>
         <Col></Col>
         </Row>
-
+        {userData!==null?(
+      <Row>
+        <Col></Col>
+        <Col className="col-9">
+        <Form noValidate validated={validated} onSubmit={handleSubmit}>
+          <Form.Group controlId="Comment">
+            <Form.Control className="border border-secondary rounded" as="textarea" required rows={3} placeholder="Jūsų nuomonė" value = {comment} onChange={onChangeComment}/>
+          </Form.Group>
+          <Button type="submit" variant="secondary" className="mb-2">
+            Skelbti
+          </Button>
+        </Form>
+        
+        </Col>
+        <Col></Col>
+        </Row>):('')}
       </div>
 { show &&<DrugInfo info = {show} leaflet = {drug} handleCloseInfo={handleClose}></DrugInfo> } 
 { showDiagram &&<DiagramInfo name={currentTreatment.diagram.name} elements={elements} info = {showDiagram} handleCloseInfo={handleCloseInfo}></DiagramInfo> }
-{confirm&&< DownloadTreatment treatment={currentTreatment} buttonText={'Download'} text={'All related data will be overwritten!'} name={"Treatment"} onClickMethod={downloadItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ DownloadTreatment>}
-{confirmToOverwrite&&< DownloadTreatment identifier={idDisease} treatment={currentTreatment} buttonText={'Overwrite'} text={text} name={"Disease"} onClickMethod={updateDisease} onClickMethodCancel={currentTreatment.diagram!==null?downloadDiagram:saveTreatment} handleCloseConfirm={handleCloseConfirmToOverwrite} confirm={confirmToOverwrite} ></ DownloadTreatment>}
-{diagramToOverwrite&&< DownloadTreatment identifier={idDiagram} treatment={currentTreatment} buttonText={'Overwrite'} text={text} name={"Diagram"} onClickMethod={updateDiagram} onClickMethodCancel={saveTreatment} handleCloseConfirm={handleCloseDiagramToOverwrite} confirm={diagramToOverwrite} ></ DownloadTreatment>}
+{confirm&&< DownloadTreatment treatment={currentTreatment} buttonText={'Įtraukti'} text={'Visa susijusi informacija gali būti perrašyta!'} name={"gydymo algoritmą"} onClickMethod={downloadItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ DownloadTreatment>}
+{confirmToOverwrite&&< DownloadTreatment identifier={idDisease} treatment={currentTreatment} buttonText={'Overwrite'} text={text} name={"ligą"} onClickMethod={updateDisease} onClickMethodCancel={currentTreatment.diagram!==null?downloadDiagram:saveTreatment} handleCloseConfirm={handleCloseConfirmToOverwrite} confirm={confirmToOverwrite} ></ DownloadTreatment>}
+{diagramToOverwrite&&< DownloadTreatment identifier={idDiagram} treatment={currentTreatment} buttonText={'Overwrite'} text={text} name={"diagramą"} onClickMethod={updateDiagram} onClickMethodCancel={saveTreatment} handleCloseConfirm={handleCloseDiagramToOverwrite} confirm={diagramToOverwrite} ></ DownloadTreatment>}
   </div>  )
     ):(<div>
       <br />
-      <p>Some Went Wrong...</p>
+      <p>Kažkas blogai...</p>
     </div>)      
     }</div>    
   );

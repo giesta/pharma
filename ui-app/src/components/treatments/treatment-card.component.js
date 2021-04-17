@@ -60,11 +60,11 @@ return items;
           <Card.Title>{field.title} {field.public?(<BsEye color="#ACD1B6"></BsEye>):(<BsEyeSlash color="#E96166"></BsEyeSlash>)}</Card.Title>               
               </Card.Body>
               <ListGroup className="list-group-flush">
-                <ListGroupItem>Created: {field.created}</ListGroupItem>
-                <ListGroupItem>Updated: {field.updated}</ListGroupItem>               
+                <ListGroupItem>Sukurta: {field.created}</ListGroupItem>
+                <ListGroupItem>Atnaujinta: {field.updated}</ListGroupItem>               
               </ListGroup>
               <Card.Body>
-                <Card.Link href={"/treatments/" + field.id}>Read More </Card.Link>{ }
+                <Card.Link href={"/treatments/" + field.id}>Daugiau </Card.Link>{ }
                 <Button variant="outline-primary" disabled size={"sm"}><BsStar color="#AA5725"></BsStar> <Badge color="DED18D">{field.stars}</Badge></Button>{' '}
                 <Button variant="outline-primary" disabled size={"sm"}><FaCommentMedical color="#000000"></FaCommentMedical> <Badge color="DED18D">{field.comments.length}</Badge></Button>{' '}
               </Card.Body>

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Overview;
 use Illuminate\Http\Request;
-
+use Validator;
 use JWTAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -69,6 +69,14 @@ class OverviewController extends Controller
     public function store(StoreDiseaseRequest $request)
     {
         $user = auth()->user();
+        $validator = Validator::make($request->all(), 
+        [ 
+        'disease_id' => 'required',
+        ]);  
+ 
+        if ($validator->fails()) { 
+            return response()->json(['message'=>$validator->errors()], 400);  
+        }
         try{
             $overview = Overview::create(array_merge($request->all(), ['user_id' => $user->id]));
             
@@ -112,6 +120,14 @@ class OverviewController extends Controller
     {
         $user = auth()->user();
         $role = $user->roles()->first()->name;
+        $validator = Validator::make($request->all(), 
+        [ 
+        'disease_id' => 'required',
+        ]);  
+ 
+        if ($validator->fails()) { 
+            return response()->json(['message'=>$validator->errors()], 400);  
+        }
         if($role ==="admin"){
             $overview = Overview::findOrFail($id);
         }else{

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
+use Validator;
 use App\Models\Diagram;
 use App\Models\Node;
 use App\Models\Edge;
@@ -74,6 +74,14 @@ class DiagramController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
+        $validator = Validator::make($request->all(), 
+        [ 
+        'name' => 'required',
+        ]);  
+ 
+        if ($validator->fails()) { 
+            return response()->json(['message'=>$validator->errors()], 400);  
+        }
 
         try{
             $diagram = Diagram::create(['name'=>$request->name,'user_id' => $user->id]);
@@ -128,6 +136,15 @@ class DiagramController extends Controller
     public function update(Request $request, $id)
     {
         $user = auth()->user();
+
+        $validator = Validator::make($request->all(), 
+        [ 
+        'name' => 'required',
+        ]);  
+ 
+        if ($validator->fails()) { 
+            return response()->json(['message'=>$validator->errors()], 400);  
+        }
 
         $diagram = $user->diagrams()->findOrFail($id);
 

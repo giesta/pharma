@@ -116,14 +116,14 @@ export default function ControlledTabs() {
           activeKey={key}
           onSelect={(k) => setKey(k)}
         >
-          <Tab eventKey="public" title="Public" >
+          <Tab eventKey="public" title="Vieši" >
             
           <div className="col-md-6">
         <div className="input-group mt-2">
           <input
             type="text"
             className="form-control"
-            placeholder="Search by title"
+            placeholder="Ieškoti pagal pavadinimą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
@@ -133,7 +133,7 @@ export default function ControlledTabs() {
               type="button"
               onClick={findByTitle}
             >
-              Search
+              Ieškoti
             </button>
           </div>
         </div>
@@ -149,18 +149,18 @@ export default function ControlledTabs() {
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"
-        firstPageText="First"
-        lastPageText="Last"
+        firstPageText="Pradžia"
+        lastPageText="Pabaiga"
         ></Pagination> 
       </div>
       </Tab>
-      {(user !== null)?(<Tab eventKey="private" title="Private">
+      {(user !== null)?(<Tab eventKey="private" title="Asmeniniai">
           <div className="col-md-6">
         <div className="input-group mt-2">
           <input
             type="text"
             className="form-control"
-            placeholder="Search by title"
+            placeholder="Ieškoti pagal pavadinimą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
@@ -170,7 +170,7 @@ export default function ControlledTabs() {
               type="button"
               onClick={findByTitle2}
             >
-              Search
+              Ieškoti
             </button>
           </div>
         </div>
@@ -186,8 +186,8 @@ export default function ControlledTabs() {
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"
-        firstPageText="First"
-        lastPageText="Last"
+        firstPageText="Pradžia"
+        lastPageText="Pabaiga"
         ></Pagination> 
       </div>
           </Tab>):('')

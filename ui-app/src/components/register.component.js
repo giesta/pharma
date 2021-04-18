@@ -12,7 +12,7 @@ const required = value => {
   if (!value) {
     return (
       <div className="alert alert-danger" role="alert">
-        This field is required!
+        Šis laukas yra privalomas!
       </div>
     );
   }
@@ -22,26 +22,17 @@ const email = value => {
   if (!isEmail(value)) {
     return (
       <div className="alert alert-danger" role="alert">
-        This is not a valid email.
+        Elektroninio pašto adresas netinkamo formato.
       </div>
     );
   }
 };
 
-const vusername = value => {
-  if (value.length < 3 || value.length > 20) {
-    return (
-      <div className="alert alert-danger" role="alert">
-        The username must be between 3 and 20 characters.
-      </div>
-    );
-  }
-};
 const vName = value => {
   if (value.length < 3 || value.length > 20) {
     return (
       <div className="alert alert-danger" role="alert">
-        The name must be between 3 and 20 characters.
+        Vardas gali būti nuo 3 iki 20 simbolių.
       </div>
     );
   }
@@ -50,7 +41,7 @@ const vLastName = value => {
   if (value.length < 3 || value.length > 20) {
     return (
       <div className="alert alert-danger" role="alert">
-        The last name must be between 3 and 20 characters.
+        Pavardė gali būti nuo 3 iki 20 simbolių.
       </div>
     );
   }
@@ -60,7 +51,7 @@ const vpassword = value => {
   if (value.length < 6 || value.length > 40) {
     return (
       <div className="alert alert-danger" role="alert">
-        The password must be between 6 and 40 characters.
+        Slaptažodis turi būti nuo 6 iki 40 simbolių.
       </div>
     );
   }
@@ -69,7 +60,7 @@ const c_password = value => {
     if (value.length < 6 || value.length > 40) {
       return (
         <div className="alert alert-danger" role="alert">
-          The password must be between 6 and 40 characters.
+          Slaptažodis turi būti nuo 6 iki 40 simbolių.
         </div>
       );
     }
@@ -103,7 +94,7 @@ export default class Register extends Component {
       if (this.state.password !== confirm_password) {
       return (
         <div className="alert alert-danger" role="alert">
-          Passwords do not match.
+          Slaptažodžiai nesutampa.
         </div>
       );
     }
@@ -229,7 +220,7 @@ renderRedirect = () => {
             {!this.state.successful && (
               <div>
                 <div className="form-group">
-                  <label htmlFor="name">Name</label>
+                  <label htmlFor="name">Vardas</label>
                   <Input
                     type="text"
                     className="form-control"
@@ -240,7 +231,7 @@ renderRedirect = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="lastName">Last Name</label>
+                  <label htmlFor="lastName">Pavardė</label>
                   <Input
                     type="text"
                     className="form-control"
@@ -252,7 +243,7 @@ renderRedirect = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="stamp_number">Stamp Number</label>
+                  <label htmlFor="stamp_number">Spaudo numeris</label>
                   <Input
                     type="text"
                     className="form-control"
@@ -264,7 +255,7 @@ renderRedirect = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="email">Email</label>
+                  <label htmlFor="email">El. pašto adresas</label>
                   <Input
                     type="text"
                     className="form-control"
@@ -276,7 +267,7 @@ renderRedirect = () => {
                 </div>
 
                 <div className="form-group">
-                  <label htmlFor="password">Password</label>
+                  <label htmlFor="password">Slaptažodis</label>
                   <Input
                     type="password"
                     className="form-control"
@@ -287,7 +278,7 @@ renderRedirect = () => {
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="password">Confirm Password</label>
+                  <label htmlFor="password">Patvirtinti slaptažodį</label>
                   <Input
                     type="password"
                     className="form-control"
@@ -299,7 +290,7 @@ renderRedirect = () => {
                 </div>
 
                 <div className="form-group">
-                  <button className="btn btn-primary btn-block">Sign Up</button>
+                  <button className="btn btn-primary btn-block">Užsiregistruoti</button>
                 </div>
               </div>
             )}

@@ -22,14 +22,6 @@ class JwtAuthController extends Controller
   
     public function register(Request $request, LicenseService $licenseService)
     { 
-
-        $url = 'https://vapris.vvkt.lt/vvkt-web/public/personLicenses?nameFilter=&licenseType=7&licenseState=VALID&validFrom=&validTo=&licenceNumber='.$request->stamp_number;
-        
-        $data = $licenseService->scrap($url);
-        if($data[0]!==$request->name || $data[1]!==$request->last_name || $data[2] !== $request->stamp_number){
-            return response()->json(['message'=>'No such pharmacist was found'], 401);
-        }
-
          $validator = Validator::make($request->all(), 
                       [ 
                       'name' => 'required',
@@ -40,9 +32,15 @@ class JwtAuthController extends Controller
                       'c_password' => 'required|same:password', 
                      ]);  
  
-         if ($validator->fails()) { 
-               return response()->json(['message'=>$validator->errors()], 400);  
-            }    
+        if ($validator->fails()) { 
+            return response()->json(['message'=>$validator->errors()], 400);  
+        } 
+        $url = 'https://vapris.vvkt.lt/vvkt-web/public/personLicenses?nameFilter=&licenseType=7&licenseState=VALID&validFrom=&validTo=&licenceNumber='.$request->stamp_number;
+        
+        $data = $licenseService->scrap($url);
+        if(empty($data) || $data[0]!==$request->name || $data[1]!==$request->last_name || $data[2] !== $request->stamp_number){
+            return response()->json(['message'=>'No such pharmacist was found'], 401);
+        }   
         $user = new User();
         $user->name = $request->name." ".$request->last_name;
         $user->email = $request->email;
@@ -68,7 +66,7 @@ class JwtAuthController extends Controller
         if (!$jwt_token = JWTAuth::attempt($input)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Invalid Email or Password',
+                'message' => 'Toks naudotojas nerastas!',
             ], Response::HTTP_UNAUTHORIZED);
         }
   

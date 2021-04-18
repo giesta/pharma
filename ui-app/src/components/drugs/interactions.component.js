@@ -128,7 +128,7 @@ export default function Interactions() {
                         <div key={`${field}-${idx}`} className="border border-secondary p-3 mt-2">
                         
                         <h4>Vaistas</h4>    
-                        <label>Pavadinimas</label>  
+                        <label>Veiklioji medžiaga</label>  
                         <AsyncSelect
                             name="drugs"
                             className="basic-multi-select"
@@ -159,7 +159,7 @@ export default function Interactions() {
       
   
   
-  <button type="button" disabled={loading} className="btn btn-outline-success btn-sm ts-buttom mt-2" size="sm" onClick={
+  <button type="button" disabled={loading} className="btn btn-outline-dark btn-sm ts-buttom mt-2" size="sm" onClick={
             function(event){setLoading(true);getInteraction();}}>
               {loading && (
                   <span className="spinner-border spinner-border-sm"></span>

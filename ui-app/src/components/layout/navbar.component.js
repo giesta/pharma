@@ -1,12 +1,14 @@
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
+import logo from '../../logo.svg';
 
 
 export default function MainNavbar(props) {
 
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-  <Navbar.Brand href="https://www.youtube.com/watch?v=6B_6K-splRU">Code Of Universe</Navbar.Brand>
+  <Navbar.Brand href="/"><img className="brand" src={logo} fluid></img>{' '}
+    PharmaApp</Navbar.Brand>
   <Navbar.Toggle aria-controls="responsive-navbar-nav" />
   <Navbar.Collapse id="responsive-navbar-nav">
 

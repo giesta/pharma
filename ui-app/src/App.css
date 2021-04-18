@@ -195,9 +195,13 @@ border-width: 4px;
 border-style:solid;
   border-width: 5px;
 }
-   .border-10{
-    border-style:solid;
-     border-width: 10px;
-    }
+.border-10{
+border-style:solid;
+  border-width: 10px;
+}
+.brand{
+  max-height: 30px;
+  
+}
 
  

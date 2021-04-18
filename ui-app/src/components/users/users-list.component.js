@@ -184,7 +184,7 @@ const updateUser = (form) => {
 const deleteItem = (id) => {
   UsersDataService.remove(id)
     .then(() => {
-      if(users.data.length > 1){
+      if(users.length > 1){
         retrieveUsers(page);
       }else if(page > 1){
         retrieveUsers(page - 1);

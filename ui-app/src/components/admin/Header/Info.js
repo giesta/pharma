@@ -15,14 +15,15 @@ function  Info() {
           <Navbar brand='React-Bootstrap'>
           <Nav>
             <DropdownButton
+            variant="dark"
               menuAlign={{ lg: 'left' }}
               title={
                 <span><img src={require("../../../assets/img/thompson.jpg").default} /></span>
               }
             >
-              <Dropdown.Item eventKey='0'><BsPeopleCircle/> User Profile</Dropdown.Item>
+              <Dropdown.Item eventKey='0'><BsPeopleCircle/> Naudotojo profilis</Dropdown.Item>
               <Dropdown.Item divider="true" />
-              <Dropdown.Item eventKey='1' href="/login" onClick={logOut}><BsBoxArrowRight/> Logout</Dropdown.Item>
+              <Dropdown.Item eventKey='1' href="/login" onClick={logOut}><BsBoxArrowRight/> Atsijungti</Dropdown.Item>
             </DropdownButton>
           </Nav>
         </Navbar>

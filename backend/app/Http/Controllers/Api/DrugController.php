@@ -452,8 +452,8 @@ class DrugController extends ApiController
         ini_set('max_execution_time', 10000);
         $drugs = Drug::where('id','>', '8144')->get();
         //$url = 'https://vapris.vvkt.lt/vvkt-web/public/medications?showData=true&mainSearchField=ranitidinas&strength=&pharmaceuticalForm=&atcCode=';
-        $links = 'namas';
-        $url = 'namo';
+        $links = '';
+        $url = '';
         $web = 'https://vapris.vvkt.lt';
         $downloadLink='https://vapris.vvkt.lt/vvkt-web/public/medications/view/';
         foreach ($drugs as $drug){
@@ -463,7 +463,6 @@ class DrugController extends ApiController
                 Drug::where('id', $drug->id)->update(array('link' => $downloadLink.$links[0]));
             }            
         }
-
         //$data = $linksService->scrap($url);
         return response()->json([
             'success' => true,

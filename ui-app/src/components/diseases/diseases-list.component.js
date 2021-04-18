@@ -11,6 +11,7 @@ import Spinner from "../layout/spinner.component";
 import Pagination from "react-js-pagination";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 import ErrorBoundary from "../layout/error.component";
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 export default function DiseasesList() {
 
@@ -18,19 +19,19 @@ export default function DiseasesList() {
 
   const columns = [{  
     dataField: 'no',  
-    text: 'No' },  
+    text: 'Nr' },  
   {  
     dataField: 'name',  
-    text: 'Name',  
+    text: 'Pavadinimas',  
     sort:true}, {  
     dataField: 'description',  
-    text: 'Description',  
+    text: 'Aprašymas',  
     sort: true  },  
   { dataField: 'symptoms',  
-    text: 'Symptoms',  
+    text: 'Simptomai',  
     sort: true  },  
   {
-    text: 'Actions',
+    text: 'Veiksmai',
     dataField: 'Actions',
     editable: false 
   }];
@@ -323,7 +324,6 @@ for (const item of arr) {
       .then(response => {        
         if(response.data.data.length !== 0){
           setSymptoms(response.data.data);
-          console.log(symptoms);
         }        
       })
       .catch(e => {
@@ -335,7 +335,6 @@ for (const item of arr) {
       .then(response => {
         const { current_page, per_page, total } = response.data.meta;          
         if(response.data.data.length !== 0){
-          console.log(response.data.data);
           setOverviews(response.data.data); 
           setPageSize(per_page);
           setPage(current_page);     
@@ -475,6 +474,7 @@ const findByTitle = () => {
   return (
     <div>
       {error?<ErrorBoundary/>:''}
+      <div className="mb-2"><h5>Ligos</h5></div>
       {overviews?(
       overviews.length===0 && noData===''?( 
         <div> <Spinner></Spinner> </div>         
@@ -483,10 +483,15 @@ const findByTitle = () => {
           
         <div className="d-flex justify-content-between">
         <div className="mb-3">
+        <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="button-rate-1">Sukurti naują</Tooltip>}
+          >
     <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
             function(event){setShow(true)}}>
               <BsPlus></BsPlus>
           </button>
+          </OverlayTrigger>
           
     </div>
           <div className="col-md-6">
@@ -494,7 +499,7 @@ const findByTitle = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search by title"
+            placeholder="Ieškoti pagal pavadinimą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
@@ -504,7 +509,7 @@ const findByTitle = () => {
               type="button"
               onClick={findByTitle}
             >
-              Search
+              Ieškoti
             </button>
           </div>
         </div>
@@ -560,8 +565,8 @@ const findByTitle = () => {
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"
-        firstPageText="First"
-        lastPageText="Last"
+        firstPageText="Pradžia"
+        lastPageText="Pabaiga"
         ></Pagination> 
       </div>
   </div> 

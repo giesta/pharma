@@ -38,7 +38,7 @@ import ReactFlow, {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={props.handleCloseInfo}>
-                    Close
+                    Užverti
                 </Button>
             </Modal.Footer>
         </Modal>

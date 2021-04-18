@@ -33,10 +33,10 @@ return items;
 }
     return (
       
-      <CardDeck>     
+      <CardDeck >     
           {props.Treatments.map((field)=>
           <div className="col-xs-6 col-md-4" key={field.id}>
-             <Card style={{ width: '18rem', flex:1}}>
+             <Card className="card-padding" style={{ width: '18rem', flex:1}}>
                {field.algorithm!==''?(<Card.Img variant="top" src={field.algorithm} style={{height: '300px'}} />):(
                  <div>
                  <ReactFlowProvider>

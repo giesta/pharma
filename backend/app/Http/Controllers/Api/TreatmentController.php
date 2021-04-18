@@ -220,7 +220,7 @@ class TreatmentController extends Controller
                 Storage::delete($treatment->algorithm);
             }
             try{
-                $treatment->update($request->only(['title', 'description', 'overview_id', 'public', 'dislikes', 'likes', 'diagram_id', 'algorithm']));
+                $treatment->update($request->only(['title', 'description', 'overview_id', 'public', 'dislikes', 'likes', 'diagram_id', 'algorithm', 'uses']));
                 $drugs = json_decode($request->drugs);
                 $tem = [];
                 foreach($drugs as $drug){
@@ -229,7 +229,7 @@ class TreatmentController extends Controller
                 $treatment->drugs()->sync($tem);
             }
             catch (QueryException $ex) { // Anything that went wrong
-                abort(500, $ex->message());
+                abort(500, $ex->getMessage());
             }
         }
         return new TreatmentResource($treatment);

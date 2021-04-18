@@ -24,7 +24,7 @@ const initialElements = [
     {
       id: getId(),
       type: 'input',
-      data: { label: 'Node 1', style:{backgroundColor:''}  },
+      data: { label: 'Viršūnė 1', style:{backgroundColor:''}  },
       position: { x: 250, y: 250 },
     },
   ];
@@ -39,7 +39,7 @@ const UpdateNode = (props) => {
   const [nodesCount, setNodesCount] = useState(props.location.state!==undefined&&props.location.state.diagram!==undefined&&props.location.state.diagram.nodes[props.location.state.diagram.nodes.length-1]!==undefined ? props.location.state.diagram.nodes[props.location.state.diagram.nodes.length-1].item_id.split('_')[1]:1);
   
   const [element, setElement] = useState({});
-  const [nodeName, setNodeName] = useState('Node 1');
+  const [nodeName, setNodeName] = useState('Viršūnė');
   const [nodeBg, setNodeBg] = useState('#eee');
   const [edgeSelected, setEdgeSelected] = useState(false);
   const [edgeType, setEdgeType] = useState('step');
@@ -117,7 +117,7 @@ setElements((els) =>
           id: getId(nodesCount),
           type,
           position,
-          data: { label: `${type} node`, style:{backgroundColor:''} },          
+          data: { label: `Viršūnė`, style:{backgroundColor:''} },          
         };    
         setElements((es) => es.concat(newNode));
       };
@@ -292,12 +292,12 @@ setElements((els) =>
   return (
     <div>
       <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="name"> <Form.Label>Diagram Name</Form.Label>        
+        <Form.Group controlId="name"> <Form.Label>Diagramos pavadinimas</Form.Label>        
               <Form.Control type="text" placeholder="" defaultValue={diagramName} required onChange={(evt) => {setDiagramName(evt.target.value)}} name="name"/>
               <Form.Control.Feedback type="invalid">
-                  Name is a required field.
+                  Pavadinimas yra privalomas.
               </Form.Control.Feedback>
-              <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
+              <Form.Control.Feedback>Atrodo gerai!</Form.Control.Feedback>
           </Form.Group>
       
       
@@ -358,7 +358,7 @@ setElements((els) =>
     
     </ReactFlowProvider>
     </div>
-      <Button className="mt-3" type="submit" variant="primary">Save Diagram</Button>
+      <Button className="mt-3" type="submit" variant="primary">Išsaugoti</Button>
     </Form>
     </div>
   );

@@ -136,8 +136,11 @@ export default function Interactions() {
                             isClearable="true"
                             cacheOptions
                             defaultOptions
-                            placeholder={"Pasirinkti ..."}
+                            
                             loadOptions={loadDrugsOptions}
+                            placeholder={"Pasirinkti ..."}
+                            loadingMessage={() => "Ieškoma ..."}
+                            noOptionsMessage={() => "Nerasta"}
                             onChange={e=>AddSelectedDrugs(idx, e)}
                      />
                     

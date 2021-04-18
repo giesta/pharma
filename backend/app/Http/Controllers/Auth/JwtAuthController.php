@@ -66,10 +66,9 @@ class JwtAuthController extends Controller
         if (!$jwt_token = JWTAuth::attempt($input)) {
             return response()->json([
                 'success' => false,
-                'message' => 'Toks naudotojas nerastas!',
+                'message' => 'Blogas el. pašto adresas arba slaptažodis!',
             ], Response::HTTP_UNAUTHORIZED);
-        }
-  
+        }  
         return $this->respondWithToken($jwt_token);
     }
   

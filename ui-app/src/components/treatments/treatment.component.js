@@ -13,7 +13,7 @@ import AuthService from "../../services/auth.service";
 import Spinner from "../layout/spinner.component";
 import DrugInfo from "../drugs/info-modal.component";
 import DownloadTreatment from "./download-modal.component";
-import { Alert, Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Alert, Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form, OverlayTrigger, Tooltip, Accordion } from "react-bootstrap";
 import { BsStar, BsPeopleCircle, BsExclamationCircle, BsInfoCircle, BsCloudDownload } from "react-icons/bs";
 import fetchNodes from "./fetchNodes";
 import ReactFlow, {
@@ -68,7 +68,7 @@ export default function Treatment(props) {
   const [diagramToOverwrite, setDiagramToOverwrite] = React.useState(false);
   const [text, setText] = React.useState('');
   const [successMessage, setSuccessMessage] = React.useState(false);
-
+  const [relatedTreatments, setRelatedTreatments] = React.useState([]);
   
 
   const onChangeComment = e => {
@@ -252,7 +252,7 @@ const downloadItem = async () => {
           //console.log(response.data);
           if(response.data.data.length > 0){
             idDisease = response.data.data[0].id;
-            setText('We found related disease! Do you want to overwrite this '+currentTreatment.disease.name + ' disease?');          
+            setText('Mes radome susijusią ligą! Ar norite perrašyti šią "'+currentTreatment.disease.name + '" ligą?');          
           }
           return response.data.data;
           
@@ -270,12 +270,11 @@ const downloadItem = async () => {
 const downloadDiagram = async () => {
   const values = await DiagramsDataService.findByTitle(1, currentTreatment.diagram.name)
       .then(response => {
-          //console.log(response.data);
           if(response.data.data.length > 0){            
             for( var i = 0; i < response.data.data.length; i++) {
               if(response.data.data[i].name===currentTreatment.diagram.name&&response.data.data[i].nodes.length===currentTreatment.diagram.nodes.length&&response.data.data[i].edges.length===currentTreatment.diagram.edges.length){
                 idDiagram = response.data.data[i].id;
-                setText('We found related diagram! Do you want to overwrite this '+currentTreatment.diagram.name+ ' diagram?');
+                setText('Mes radome susijusią diagramą! Ar norite perrašyti šią "'+currentTreatment.diagram.name+ '" diagramą?');
                 handleCloseConfirmToOverwrite();                
                 setDiagramToOverwrite(true);
                 break;
@@ -456,6 +455,22 @@ const updateDiagram = async () => {
     saveTreatment();
     
 };
+
+const getRelatedTreatments =()=>{
+  if(currentTreatment.diagram!== undefined){
+      let values = currentTreatment.diagram.related_treatments.map((item, idx)=>{
+                      
+      if(item.id !== currentTreatment.id && currentTreatment.diagram.author === userData.id){
+        
+        return (<><a key={"related_"+idx} href={"/treatments/" + item.id}>"{item.title}"{' '}</a><br></br></>)
+      }else if(item.id !== currentTreatment.id && item.public===1){
+        return (<><a key={"related_"+idx} href={"/treatments/" + item.id}>"{item.title}"{' '}</a><br></br></>)
+      }                  
+    });
+    setRelatedTreatments(values);
+  }  
+};
+useEffect(getRelatedTreatments, [currentTreatment])
   
   return (
     <div>
@@ -527,7 +542,7 @@ const updateDiagram = async () => {
 
           
              
-        <div className=" mt-2 mb-2 border">   
+        <div className=" mt-2 border">   
               
                 <ReactFlowProvider>
                 <ReactFlow
@@ -545,17 +560,21 @@ const updateDiagram = async () => {
                     </ReactFlow>
                 </ReactFlowProvider>
                 </div>
-                <div>
-                  
-                  {currentTreatment.diagram.related_treatments.map((item, idx)=>{
+                <div>{console.log(relatedTreatments)}
+                  {relatedTreatments.length>0?(                    
+                    <Accordion defaultActiveKey="0">
+                      <Card>
+                        <Accordion.Toggle as={Card.Header} eventKey="1">
+                          <h6>Susiję gydymo algoritmai</h6>
+                        </Accordion.Toggle>
+                        <Accordion.Collapse eventKey="1">
+                          <Card.Body>{relatedTreatments.map(item=>{return item})}</Card.Body>
+                        </Accordion.Collapse>
+                        </Card>
+                    </Accordion>
                     
-                    if(item.id !== currentTreatment.id && currentTreatment.diagram.author === userData.id){
-                      
-                      return (<a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a>)
-                    }else if(item.id !== currentTreatment.id && item.public===1){
-                      return (<a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a>)
-                    }                  
-                  })}
+                    ):('')}
+                  
                 </div>
           </Col>        
       </Row>
@@ -679,8 +698,8 @@ const updateDiagram = async () => {
 { show &&<DrugInfo info = {show} leaflet = {drug} handleCloseInfo={handleClose}></DrugInfo> } 
 { showDiagram &&<DiagramInfo name={currentTreatment.diagram.name} elements={elements} info = {showDiagram} handleCloseInfo={handleCloseInfo}></DiagramInfo> }
 {confirm&&< DownloadTreatment treatment={currentTreatment} buttonText={'Įtraukti'} text={'Visa susijusi informacija gali būti perrašyta!'} name={"gydymo algoritmą"} onClickMethod={downloadItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ DownloadTreatment>}
-{confirmToOverwrite&&< DownloadTreatment identifier={idDisease} treatment={currentTreatment} buttonText={'Overwrite'} text={text} name={"ligą"} onClickMethod={updateDisease} onClickMethodCancel={currentTreatment.diagram!==null?downloadDiagram:saveTreatment} handleCloseConfirm={handleCloseConfirmToOverwrite} confirm={confirmToOverwrite} ></ DownloadTreatment>}
-{diagramToOverwrite&&< DownloadTreatment identifier={idDiagram} treatment={currentTreatment} buttonText={'Overwrite'} text={text} name={"diagramą"} onClickMethod={updateDiagram} onClickMethodCancel={saveTreatment} handleCloseConfirm={handleCloseDiagramToOverwrite} confirm={diagramToOverwrite} ></ DownloadTreatment>}
+{confirmToOverwrite&&< DownloadTreatment identifier={idDisease} treatment={currentTreatment} buttonText={'Perrašyti'} text={text} name={"ligą"} onClickMethod={updateDisease} onClickMethodCancel={currentTreatment.diagram!==null?downloadDiagram:saveTreatment} handleCloseConfirm={handleCloseConfirmToOverwrite} confirm={confirmToOverwrite} ></ DownloadTreatment>}
+{diagramToOverwrite&&< DownloadTreatment identifier={idDiagram} treatment={currentTreatment} buttonText={'Perrašyti'} text={text} name={"diagramą"} onClickMethod={updateDiagram} onClickMethodCancel={saveTreatment} handleCloseConfirm={handleCloseDiagramToOverwrite} confirm={diagramToOverwrite} ></ DownloadTreatment>}
   </div>  )
     ):(<div>
       <br />

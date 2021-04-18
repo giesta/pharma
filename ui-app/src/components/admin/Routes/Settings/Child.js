@@ -17,18 +17,17 @@ function Child()  {
   const [loading, setLoading] = React.useState(false);
   const [loadingSymptoms, setLoadingSymptoms] = React.useState(false);
   const [loadingDiseases, setLoadingDiseases] = React.useState(false);
-  const [disabled, setDisabled] = React.useState(false);
   const [loadingLinks, setLoadingLinks] = React.useState(false);
+  const [disabled, setDisabled] = React.useState(false);
 
   const drugsReports = () => {        
       DrugsDataService.reports()
       .then(response => {
         if(response.data.success){
-          console.log(response.data.data.created_at);
           if(response.data.data.updated_at !== null){
-            setDrugsUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
+            setDrugsUpdated("Paskutinis atnaujinimas " + DateParser.getParsedDate(response.data.data.updated_at));
           }else{
-            setDrugsUpdated("Last update " + DateParser.getParsedDate(response.data.data.created_at));
+            setDrugsUpdated("Paskutinis atnaujinimas " + DateParser.getParsedDate(response.data.data.created_at));
           }           
         } 
         symptomsReports(); 
@@ -44,9 +43,8 @@ function Child()  {
     SymptomsDataService.reports()
     .then(response => {
       if(response.data.success){
-        console.log(response.data.data.created_at);
         if(response.data.data.created_at !== null){         
-          setSymptomsUpdated("Last update " + DateParser.getParsedDate(response.data.data.created_at));
+          setSymptomsUpdated("Paskutinis atnaujinimas " + DateParser.getParsedDate(response.data.data.created_at));
         }           
       }      
     })
@@ -58,12 +56,10 @@ const diseasesReports = () => {
   DiseasesDataService.reports()
   .then(response => {
     if(response.data.success){
-      console.log(response.data.data.created_at);
       if(response.data.data.created_at !== null){
-        setDiseasesUpdated("Last update " + DateParser.getParsedDate(response.data.data.created_at));
+        setDiseasesUpdated("Paskutinis atnaujinimas " + DateParser.getParsedDate(response.data.data.created_at));
       }           
-    }  
-    console.log(diseasesUpdated);       
+    }        
   })
   .catch(e => {
     console.log(e);
@@ -72,7 +68,6 @@ const diseasesReports = () => {
   useEffect(drugsReports,[]);
 
   const saveDrugs = () => {
-    console.log(drugs);
     setLoading(true);
     const data = new FormData();
     data.append('drugs', JSON.stringify(drugs));
@@ -81,10 +76,8 @@ const diseasesReports = () => {
       console.log(data);     
       DrugsDataService.create(data)
       .then(response => {
-        console.log("--------------Veikia----------");
-        console.log(response.data);
-        setText("Added " + response.data.data + " new items ");
-        setDrugsUpdated("Last update " + DateParser.getParsedDate(response.data.updated_at));
+        setText("Pridėta " + response.data.data + " naujų elementų ");
+        setDrugsUpdated("Paskutinis atnaujinimas " + DateParser.getParsedDate(response.data.updated_at));
         setLoading(false);
       })
       .catch(e => {
@@ -93,18 +86,14 @@ const diseasesReports = () => {
     }    
   };
   const updateDrugs = () => {
-    //console.log(drugs)
     setLoading(true);
     const data = new FormData();
     data.append('drugs', JSON.stringify(drugs));
     data.append('_method', 'PUT');
-    if(drugs.length > 0){ 
-      console.log(data);     
+    if(drugs.length > 0){     
       DrugsDataService.create(data)
       .then(response => {
-        console.log("--------------Veikia atnaujinimas----------");
-        console.log(response.data);
-        setText("Updated " + response.data.data.updated + " drugs, added " + response.data.data.added_substances + " substances and " + response.data.data.added_drugs + " drugs");
+        setText("Atnaujinta " + response.data.data.updated + " vaistų, pridėta " + response.data.data.added_substances + " veikliųjų medžiagų ir " + response.data.data.added_drugs + " vaistų");
         setDrugsUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
         setLoading(false);
       })
@@ -123,11 +112,9 @@ const diseasesReports = () => {
       console.log(data);     
       SymptomsDataService.create(data)
       .then(response => {
-        console.log("--------------Veikia simptomai----------");
-        console.log(response.data);
         setLoadingSymptoms(false);
-        setText("Added " + response.data.data + " new items ");
-        setSymptomsUpdated("Last update " + DateParser.getParsedDate(response.data.updated_at));
+        setText("Pridėta " + response.data.data + " naujų elementų ");
+        setSymptomsUpdated("Paskutinis atnaujinimas " + DateParser.getParsedDate(response.data.updated_at));
       })
       .catch(e => {
         console.log(e);
@@ -135,21 +122,16 @@ const diseasesReports = () => {
     }    
   };
   const updateSymptoms = () => {
-    //console.log(drugs)
     setLoadingSymptoms(true);
     const data = new FormData();
     data.append('symptoms', JSON.stringify(symptoms));
     data.append('_method', 'PUT');
-    if(symptoms.length > 0){ 
-      console.log(data);     
+    if(symptoms.length > 0){   
       SymptomsDataService.create(data)
       .then(response => {
-        console.log("--------------Veikia atnaujinimas----------");
-        console.log(response.data);
-        setText("Added " + response.data.data.added + " new items and updated " + response.data.data.updated + " items");
+        setText("Pridėta " + response.data.data.added + " naujų elementų");
         setSymptomsUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
         setLoadingSymptoms(false);
-        console.log(symptomsUpdated);
       })
       .catch(e => {
         console.log(e);
@@ -165,11 +147,9 @@ const diseasesReports = () => {
       console.log(data);     
       DiseasesDataService.create(data)
       .then(response => {
-        console.log("--------------Veikia ligos----------");
-        console.log(response.data);
         setLoadingDiseases(false);
-        setText("Added " + response.data.data + " new items ");
-        setDiseasesUpdated("Last update " + DateParser.getParsedDate(response.data.updated_at));
+        setText("Pridėta " + response.data.data + " naujų elementų");
+        setDiseasesUpdated("Paskutinis atnaujinimas " + DateParser.getParsedDate(response.data.updated_at));
       })
       .catch(e => {
         console.log(e);
@@ -177,7 +157,6 @@ const diseasesReports = () => {
     }    
   };
   const updateDiseases = () => {
-    //console.log(drugs)
     setLoadingDiseases(true);
     const data = new FormData();
     data.append('diseases', JSON.stringify(diseases));
@@ -186,12 +165,9 @@ const diseasesReports = () => {
       console.log(data);     
       DiseasesDataService.create(data)
       .then(response => {
-        console.log("--------------Veikia atnaujinimas----------");
-        console.log(response.data);
-        setText("Added " + response.data.data.added + " new items and updated " + response.data.data.updated + " items");
-        setDiseasesUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
+        setText("Pridėta " + response.data.data.added + " naujų elementų");
+        setDiseasesUpdated("Paskutinis atnaujinimas " + DateParser.getParsedDate(response.data.data.updated_at));
         setLoadingDiseases(false);
-        console.log(diseasesUpdated);
       })
       .catch(e => {
         console.log(e);
@@ -199,22 +175,13 @@ const diseasesReports = () => {
     }    
   };
   const handleOnDropDrugs = (data) => {
-    console.log('---------------------------');
-    console.log(data);
     setDrugs(data);
-    console.log('---------------------------');
   };
   const handleOnDropSymptoms = (data) => {
-    console.log('---------------------------');
-    console.log(data);
     setSymptoms(data);
-    console.log('---------------------------');
   };
   const handleOnDropDiseases = (data) => {
-    console.log('---------------------------');
-    console.log(data);
     setDiseases(data);
-    console.log('---------------------------');
   };
 
   const handleOnError = (err, file, inputElem, reason) => {
@@ -222,17 +189,15 @@ const diseasesReports = () => {
   };
 
   const handleOnRemoveFile = (data) => {
-    console.log('---------------------------');
     console.log(data);
-    console.log('---------------------------');
   };
 
   const updateLinks = () => {
-       console.log("tik");
+    setLoadingLinks(true);
     DrugsDataService.scrap()
       .then(response => {
-        console.log("--------------Veikia----------");
-        console.log(response.data);
+        setText("Nuorodos atnaujintos sėkmingai");
+        setLoadingLinks(false);
       })
       .catch(e => {
         console.log(e);
@@ -244,7 +209,7 @@ const diseasesReports = () => {
           <div>{text!==""?(<Alert variant={'success'}>{text}</Alert>):('')}</div>
           <div className="kanban__nav-wrapper">          
             <div className="kanban__nav-name">
-              <div className="kanban-name">Studio Settings</div>                
+              <div className="kanban-name">Nustatymai</div>                
             </div>
             
           </div>
@@ -252,11 +217,11 @@ const diseasesReports = () => {
         <section className="kanban__main">          
           <div className="ml-1 kanban__main-wrapper">
             <UploadCSV 
-              buttonTitle={drugsUpdated===""?("Import Drugs"):("Update Drugs") } 
+              buttonTitle={drugsUpdated===""?("Importuoti vaistus"):("Atnaujinti vaistus") } 
               updated ={drugsUpdated}
               loading = {loading}
               disabled={disabled}
-              title="Upload Drugs" 
+              title="Įkelti vaistus" 
               save={drugsUpdated===""?(saveDrugs):(updateDrugs)} 
               handleOnDrop={handleOnDropDrugs} 
               handleOnError={handleOnError} 
@@ -266,9 +231,9 @@ const diseasesReports = () => {
         
           <div className="ml-1 mt-4 kanban__main-wrapper">
             <UploadCSV 
-              buttonTitle={symptomsUpdated===""?("Import Symptoms"):("Update Symptoms") } 
+              buttonTitle={symptomsUpdated===""?("Importuoti simptomus"):("Atnaujinti simptomus") } 
               updated={symptomsUpdated}
-              title="Upload Symptoms" 
+              title="Įkelti simptomus" 
               loading = {loadingSymptoms}
               save={symptomsUpdated===""?(saveSymptoms):(updateSymptoms)} 
               handleOnDrop={handleOnDropSymptoms} 
@@ -279,9 +244,9 @@ const diseasesReports = () => {
         
           <div className="ml-1 mt-4 kanban__main-wrapper">
             <UploadCSV 
-              buttonTitle={diseasesUpdated===""?("Import Diseases"):("Update Diseases") }
+              buttonTitle={diseasesUpdated===""?("Importuoti ligas"):("Atnaujinti ligas") }
               updated={diseasesUpdated}
-              title="Upload Diseases" 
+              title="Įkelti ligas" 
               loading = {loadingDiseases}
               save={diseasesUpdated===""?(saveDiseases):(updateDiseases)} 
               handleOnDrop={handleOnDropDiseases} 
@@ -295,7 +260,9 @@ const diseasesReports = () => {
               <div className="row">
                 <div className="col-6 col-sm-3">
                   <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={()=>updateLinks()}>
-                    Update Drugs Links
+                  {loadingLinks && (
+                  <span className="spinner-border spinner-border-sm"></span>
+                )}Atnaujinti vaistų nuorodas
                   </button>          
                 </div>          
               </div>

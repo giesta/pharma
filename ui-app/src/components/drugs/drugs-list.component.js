@@ -40,30 +40,30 @@ export default function DrugsList() {
 
   const columns = [{  
     dataField: 'no',  
-    text: 'No' },  
+    text: 'Nr' },  
   {  
     dataField: 'name',  
-    text: 'Name',  
+    text: 'Pavadinimas',  
     sort:true}, {  
     dataField: 'substance',  
-    text: 'Substance',  
+    text: 'Veiklioji',  
     sort: true  },  
   { dataField: 'ATC',  
     text: 'ATC',  
     sort: true  },  
   { dataField: 'strength',  
-    text: 'Strength',  
+    text: 'Stiprumas',  
     sort: true },  
   {  
     dataField: 'form',  
-    text: 'Form',  
+    text: 'Forma',  
     sort: true  
   }, {  
     dataField: 'package',  
-    text: 'Package',  
+    text: 'Pakuotė',  
     sort: true },
  {
-    text: 'Actions',
+    text: 'Veiksmai',
     dataField: 'Actions',
     editable: false 
  }];
@@ -379,6 +379,7 @@ const findByTitle = () => {
   return (
     <div>
       {error?<ErrorBoundary/>:''}
+      <div className="mb-2"><h5>Vaistai</h5></div>
       {drugs?(
       drugs.length === 0 && noData === ''?(        
         <Spinner></Spinner>
@@ -396,7 +397,7 @@ const findByTitle = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search by Name, Substance or ATC"
+            placeholder="Ieškoti pagal pavadinimą, veikliąją medžiagą ar ATC"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
@@ -406,7 +407,7 @@ const findByTitle = () => {
               type="button"
               onClick={findByTitle}
             >
-              Search
+              Ieškoti
             </button>
           </div>
         </div>
@@ -427,8 +428,8 @@ const findByTitle = () => {
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"
-        firstPageText="First"
-        lastPageText="Last"
+        firstPageText="Pradžia"
+        lastPageText="Pabaiga"
         ></Pagination> 
       </div>
          

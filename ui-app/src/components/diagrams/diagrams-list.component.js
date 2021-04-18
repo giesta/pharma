@@ -11,6 +11,7 @@ import { BsPlus, BsPen, BsTrash, BsInfoCircle} from "react-icons/bs";
 import { removeError } from "../../js/actions/index";
 import store from "../../js/store/index";
 import { Link } from 'react-router-dom';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 
 export default function DiagramsList() {
@@ -172,20 +173,20 @@ const deleteItemFromState = (id) => {
 
 const columns = [{  
     dataField: 'no',  
-    text: 'No' },  
+    text: 'Nr' },  
   {  
     dataField: 'name',  
-    text: 'Name',  
+    text: 'Pavadinimas',  
     sort:true}, {  
     dataField: 'created_at',  
-    text: 'Created',  
+    text: 'Sukurta',  
     sort: true  }, 
     {  
       dataField: 'updated_at',  
-      text: 'Updated',  
+      text: 'Atnaujinta',  
       sort: true  },  
     {
-        text: 'Actions',
+        text: 'Veiksmai',
         dataField: 'Actions',
         editable: false 
      } 
@@ -243,15 +244,21 @@ const newDiagram = () => {
 
   return (
     <div>
+      <div className="mb-2"><h5>Diagramos</h5></div>
       {diagrams?(
       diagrams.length===0 && noData===''?(        
         <Spinner></Spinner>
       ):(  
         <div>
           <div className="mb-3">
+          <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="button-rate-1">Sukurti naują</Tooltip>}
+          >
           <Link to="/diagrams/create" className="btn btn-outline-success btn-sm ts-buttom" size="sm">
               <BsPlus></BsPlus>
           </Link>
+          </OverlayTrigger>
           
     </div>
         <div className="col-md-6 float-right">
@@ -259,7 +266,7 @@ const newDiagram = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search by name"
+            placeholder="Ieškoti pagal pavadinimą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
@@ -269,7 +276,7 @@ const newDiagram = () => {
               type="button"
               onClick={findByTitle}
             >
-              Search
+              Ieškoti
             </button>
           </div>
         </div>
@@ -288,8 +295,8 @@ const newDiagram = () => {
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"
-        firstPageText="First"
-        lastPageText="Last"
+        firstPageText="Pradžia"
+        lastPageText="Pabaiga"
         ></Pagination> 
       </div>
   </div>

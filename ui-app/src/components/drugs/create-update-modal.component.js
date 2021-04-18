@@ -23,6 +23,9 @@ export default function CreateModal(props) {
                         isClearable="true"
                         cacheOptions
                         defaultOptions
+                        placeholder={"Pasirinkti ..."}
+                        loadingMessage={() => "Ieškoma ..."}
+                        noOptionsMessage={() => "Nerasta"}
                         loadOptions={props.loadDrugsOptions}
                         onChange={props.handleSelectChange}
                         defaultValue={props.leaflet.drug.id!==null?({value: props.leaflet.drug.id, label: props.leaflet.drug.substance}):('')}                   
@@ -106,6 +109,9 @@ export default function CreateModal(props) {
                         isMulti
                         cacheOptions
                         defaultOptions
+                        placeholder={"Pasirinkti ..."}
+                        loadingMessage={() => "Ieškoma ..."}
+                        noOptionsMessage={() => "Nerasta"}
                         loadOptions={props.loadOptions}
                         onChange={props.handleOverviewsInputChange}
                         defaultValue={props.leaflet.diseases!==null?(props.leaflet.diseases.map(item=>

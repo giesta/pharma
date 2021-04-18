@@ -7,17 +7,17 @@ export default function ModalDelete(props) {
     return (
 <Modal show={props.confirm} onHide={props.handleCloseConfirm}>
         <Modal.Header closeButton>
-    <Modal.Title>Delete {props.name}</Modal.Title>
+    <Modal.Title>Trinti {props.name}</Modal.Title>
   </Modal.Header>
   <Modal.Body>
-  Are you sure?
+  Ar jūs tuo tikras?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={props.handleCloseConfirm}>
-            Close
+            Užverti
           </Button>
           <Button variant="primary" onClick={()=>props.deleteItem(props.id)}>
-            Delete
+            Trinti
           </Button>
         </Modal.Footer>
       </Modal>

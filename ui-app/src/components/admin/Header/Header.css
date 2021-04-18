@@ -2,7 +2,7 @@
   grid-area: header;
   display: flex;
   justify-content: space-between;
-  background: linear-gradient(90deg, #9ea7fc 0%, #65b6f7 100%);
+  background-color: #000000;
 }
 
 .kanban__header-search {

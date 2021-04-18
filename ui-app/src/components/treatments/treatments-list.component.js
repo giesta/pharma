@@ -9,7 +9,8 @@ import TreatmentCreateUpdate from "./create-update-modal.component";
 import TreatmentInfo from "./info-modal.component";
 import Spinner from "../layout/spinner.component";
 import Pagination from "react-js-pagination";
-import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
+import { BsPen, BsTrash, BsInfoCircle, BsPlus, BsEye } from "react-icons/bs";
+import {OverlayTrigger, Tooltip} from "react-bootstrap";
 import ErrorBoundary from "../layout/error.component";
 
 export default function TreatmentList() {
@@ -17,22 +18,22 @@ export default function TreatmentList() {
   
   const columns = [{  
       dataField: '',  
-      text: 'No' },  
+      text: 'Nr' },  
     {  
       dataField: 'title',  
-      text: 'Title',  
+      text: 'Pavadinimas',  
       sort:true}, {  
       dataField: 'description',  
-      text: 'Description',  
+      text: 'Aprašymas',  
       sort: true  }, {  
       dataField: 'disease',  
-      text: 'Disease',  
+      text: 'Liga',  
       sort: true  }, {  
       dataField: 'public',  
-      text: 'Public',  
+      text: 'Viešas',  
       sort: false  },   
       {
-      text: 'Actions',
+      text: 'Veiksmai',
       dataField: 'Actions',
       editable: false 
     }
@@ -352,6 +353,9 @@ return items;
               function(event){ setFieldsArray(row.drugs); setTreatment(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
             </button>
+            <a type="button" href={"/treatments/"+row.id} className="btn btn-outline-secondary btn-sm ml-2 ts-buttom" size="sm">
+                <BsEye/>
+            </a>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
               function(event){ setFieldsArray(row.drugs);setTreatment(row);
                 
@@ -505,7 +509,7 @@ const updateTreatment = () => {
         description: response.data.data.description,
         algorithm: response.data.data.algorithm,
         public: response.data.data.public,
-        disease: response.data.data.disease
+        disease: response.data.data.disease,
       });
       setUrl(null);
       setSelectedDiagram(null);
@@ -562,6 +566,8 @@ const findByTitle = () => {
 
   return (
     <div>
+      <div className="mb-2"><h5>Gydymo algoritmai</h5></div>
+      
       {Treatments?(
       Treatments.data.length === 0 && noData === ''?(        
         <Spinner></Spinner>
@@ -570,10 +576,15 @@ const findByTitle = () => {
           {error?<ErrorBoundary/>:''}
         <div className="d-flex justify-content-between">
         <div className="mb-3">
+        <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="button-rate-1">Sukurti naują</Tooltip>}
+          >
     <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
             function(event){setShow(true)}}>
               <BsPlus></BsPlus>
           </button>
+          </OverlayTrigger>
           
     </div>
           <div className="col-md-6">
@@ -581,7 +592,7 @@ const findByTitle = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search by title"
+            placeholder="Ieškoti pagal pavadinimą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
@@ -591,7 +602,7 @@ const findByTitle = () => {
               type="button"
               onClick={findByTitle}
             >
-              Search
+              Ieškoti
             </button>
           </div>
         </div>
@@ -633,7 +644,7 @@ const findByTitle = () => {
   >
     </TreatmentCreateUpdate>}
       
-  {confirm&&< TreatmentDelete id={id} name={"Treatment"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ TreatmentDelete>}
+  {confirm&&< TreatmentDelete id={id} name={"gydymą"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ TreatmentDelete>}
 
   {info&&<TreatmentInfo 
   fields = {fields} 
@@ -653,8 +664,8 @@ const findByTitle = () => {
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"
-        firstPageText="First"
-        lastPageText="Last"
+        firstPageText="Pradžia"
+        lastPageText="Pabaiga"
         ></Pagination> 
       </div>
       

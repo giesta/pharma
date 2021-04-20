@@ -8,7 +8,7 @@ class Child extends React.Component {
         <section className="kanban__nav">
           <div className="kanban__nav-wrapper">
             <div className="kanban__nav-name">
-              <div className="kanban-name">Users Manage</div>
+              <div className="kanban-name">Naudotojų valdymas</div>
             </div>
           </div>
         </section>

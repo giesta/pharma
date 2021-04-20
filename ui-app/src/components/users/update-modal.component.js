@@ -7,10 +7,10 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 
 const schema = yup.object().shape({
-    email: yup.string().email('A valid email is required').required(),
-    password: yup.string().min(6, 'Password is too short - should be 6 chars minimum.'),
+    email: yup.string().email('Blogas el. pašto adreso formatas').required('El. pašto adresas yra privalomas'),
+    password: yup.string().min(6, 'Slaptažodis per trumpas - mažiausiai turi būti 6 simboliai.'),
     passwordConfirmation: yup.string()
-    .test('passwords-match', 'Passwords must match', function(value){
+    .test('passwords-match', 'Slaptažodžiai privalo sutapti', function(value){
       return this.parent.password === value
     }),
   });
@@ -25,7 +25,7 @@ const CreateModal=(props)=> (
         <Modal show={props.show} onHide={props.handleClose}>
 
       <Modal.Header closeButton>
-                <Modal.Title>User info</Modal.Title>
+                <Modal.Title>Naudotojo informacija</Modal.Title>
             </Modal.Header>
 
             {console.log(props.errors)}
@@ -50,11 +50,11 @@ const CreateModal=(props)=> (
         <Modal.Body> 
         
             <Form.Group controlId="username">
-              <Form.Label>Username</Form.Label>
+              <Form.Label>Vardas</Form.Label>
               <Form.Control plaintext readOnly defaultValue={props.user.name} />              
             </Form.Group>
             <Form.Group controlId="email">
-              <Form.Label>Email</Form.Label>
+              <Form.Label>El. paštas</Form.Label>
               <Form.Control
                 type="email"
                 name="email"
@@ -68,7 +68,7 @@ const CreateModal=(props)=> (
                 </Form.Control.Feedback>
             </Form.Group>
             <Form.Group controlId="password">
-              <Form.Label>Password</Form.Label>
+              <Form.Label>Slaptažodis</Form.Label>
               <Form.Control
                 type="password"
                 placeholder=""
@@ -83,7 +83,7 @@ const CreateModal=(props)=> (
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group controlId="passwordConfirmation">
-              <Form.Label>Password Confirmation</Form.Label>
+              <Form.Label>Slaptažodžio patvirtinimas</Form.Label>
               <Form.Control
                 type="password"
                 placeholder=""
@@ -101,10 +101,10 @@ const CreateModal=(props)=> (
     
             <Modal.Footer>
                 <Button variant="secondary" onClick={props.handleClose}>
-                    Close
+                    Užverti
                 </Button>
                 {<Button type="submit" variant="primary">
-                    Update User
+                    Atnaujinti
                 </Button>}          
             </Modal.Footer>
             </Form>)}

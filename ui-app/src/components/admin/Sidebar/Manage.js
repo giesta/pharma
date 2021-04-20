@@ -7,7 +7,7 @@ class Manage extends React.Component {
       <NavLink to="/manage" activeClassName="active-area">
         <div className="manage-area">
           <i className="material-icons">people</i>
-          <span>Manage</span>
+          <span>Naudotojai</span>
         </div>
       </NavLink>
     );

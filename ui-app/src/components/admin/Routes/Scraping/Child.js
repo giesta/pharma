@@ -1,5 +1,5 @@
 import React from "react";
-import Scraping from "../../../symptoms/scrap.component";
+import Profile from "../../../profile.component";
 
 class Child extends React.Component {
   render() {
@@ -8,13 +8,13 @@ class Child extends React.Component {
         <section className="kanban__nav">
           <div className="kanban__nav-wrapper">
             <div className="kanban__nav-name">
-              <div className="kanban-name">Studio Scraping</div>                
+              <div className="kanban-name"></div>                
             </div>
             
           </div>
         </section>
         <section className="kanban__main">
-          <div className="kanban__main-wrapper"><Scraping/></div>
+          <div className="kanban__main-wrapper"><Profile/></div>
         </section>
       </React.Fragment>
     );

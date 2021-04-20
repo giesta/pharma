@@ -687,6 +687,9 @@ useEffect(getRelatedTreatments, [currentTreatment])
         <Form noValidate validated={validated} onSubmit={handleSubmit}>
           <Form.Group controlId="Comment">
             <Form.Control className="border border-secondary rounded" as="textarea" required rows={3} placeholder="Jūsų nuomonė" value = {comment} onChange={onChangeComment}/>
+            <Form.Control.Feedback type="invalid">
+              Komentaras negali būti tuščias.
+            </Form.Control.Feedback>
           </Form.Group>
           <Button type="submit" variant="secondary" className="mb-2">
             Skelbti

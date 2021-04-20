@@ -11,12 +11,11 @@ class Sidebar extends React.Component {
     return (
       <section className="kanban__sidebar">
         <div className="kanban__sidebar-menu">
+          <Medication />
           <Manage />
-          <Boards />
-          <Schedule />
           <Reports />
           <Settings />
-          <Medication />
+          
         </div>
         
       </section>

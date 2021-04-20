@@ -6,9 +6,9 @@ class Settings extends React.Component {
     return (
       <NavLink to="/scraping" activeClassName="active-area">
         <div className="kanban__sidebar-settings">
-          <i className="material-icons">local_hospital</i>
+          <i className="material-icons">face</i>
           <span >
-            Symptoms
+            Profilis
           </span>
         </div>
       </NavLink>

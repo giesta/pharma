@@ -450,7 +450,8 @@ class DrugController extends ApiController
     public function updateLinks(LinksService $linksService)
     {
         ini_set('max_execution_time', 10000);
-        $drugs = Drug::where('id','>', '8144')->get();
+        //$drugs = Drug::where('id','>', '8144')->get();
+        $drugs = Drug::all();
         //$url = 'https://vapris.vvkt.lt/vvkt-web/public/medications?showData=true&mainSearchField=ranitidinas&strength=&pharmaceuticalForm=&atcCode=';
         $links = '';
         $url = '';

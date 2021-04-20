@@ -133,16 +133,16 @@ const deleteItemFromState = (id) => {
 
 const columns = [{  
     dataField: 'no',  
-    text: 'No' },  
+    text: 'Nr' },  
   {  
     dataField: 'name',  
-    text: 'Name',  
+    text: 'Vardas',  
     sort:true}, {  
     dataField: 'email',  
-    text: 'Email',  
+    text: 'El. paštas',  
     sort: true  },   
     {
-        text: 'Actions',
+        text: 'Veiksmai',
         dataField: 'Actions',
         editable: false 
      } 
@@ -218,7 +218,7 @@ const newUser = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search by name"
+            placeholder="Ieškoti pagal vardą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
@@ -228,7 +228,7 @@ const newUser = () => {
               type="button"
               onClick={findByTitle}
             >
-              Search
+              Ieškoti
             </button>
           </div>
         </div>
@@ -236,7 +236,7 @@ const newUser = () => {
       <div className="container">
       <UsersTable columns ={columns} users={users} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></UsersTable>
       { show &&<UserUpdate error={error} show ={show} handleClose={handleClose} user={user} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange}></UserUpdate> }
-      { confirm &&<UserDelete id={id} name={"User"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></UserDelete> }
+      { confirm &&<UserDelete id={id} name={"naudotoją"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></UserDelete> }
       { info && <UserInfo info = {info} user={user} handleCloseInfo={handleCloseInfo}></UserInfo> }
       <div>
         <Pagination 
@@ -248,8 +248,8 @@ const newUser = () => {
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"
-        firstPageText="First"
-        lastPageText="Last"
+        firstPageText="Pradžia"
+        lastPageText="Pabaiga"
         ></Pagination> 
       </div>
   </div>

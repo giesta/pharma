@@ -6,8 +6,8 @@ class Reports extends React.Component {
     return (
       <NavLink to="/reports" activeClassName="active-area">
         <div className="reports-area">
-          <i className="material-icons">assessment</i>
-          <span>Drugs</span>
+          <i className="material-icons">local_pharmacy</i>
+          <span>Vaistai</span>
         </div>
       </NavLink>
     );

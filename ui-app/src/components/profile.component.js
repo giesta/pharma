@@ -71,13 +71,13 @@ export default function Profile() {
         {successMessage?(
           <Row>
             <Col>
-              <Alert variant="success" onClose={() => setSuccessMessage(false)} dismissible>Profile updated successfully</Alert>
+              <Alert variant="success" onClose={() => setSuccessMessage(false)} dismissible>Profilis atnaujintas sėkmingai</Alert>
             </Col>
           </Row>
         ):''}
         <header className="jumbotron">
           <h3>
-            <strong>{currentUser.name}</strong> Profile
+            <strong>{currentUser.name}</strong> profilis
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
               function(event){ setUser(currentUser); setShow(true)}}>
                 <BsPencilSquare/>

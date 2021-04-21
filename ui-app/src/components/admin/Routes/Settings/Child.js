@@ -69,6 +69,7 @@ const diseasesReports = () => {
 
   const saveDrugs = () => {
     setLoading(true);
+    setDisabled(true);
     const data = new FormData();
     data.append('drugs', JSON.stringify(drugs));
     
@@ -79,14 +80,18 @@ const diseasesReports = () => {
         setText("Pridėta " + response.data.data + " naujų elementų ");
         setDrugsUpdated("Paskutinis atnaujinimas " + DateParser.getParsedDate(response.data.updated_at));
         setLoading(false);
+        setDisabled(false);
       })
       .catch(e => {
+        setLoading(false);
+        setDisabled(false);
         console.log(e);
       });
     }    
   };
   const updateDrugs = () => {
     setLoading(true);
+    setDisabled(true);
     const data = new FormData();
     data.append('drugs', JSON.stringify(drugs));
     data.append('_method', 'PUT');
@@ -96,8 +101,11 @@ const diseasesReports = () => {
         setText("Atnaujinta " + response.data.data.updated + " vaistų, pridėta " + response.data.data.added_substances + " veikliųjų medžiagų ir " + response.data.data.added_drugs + " vaistų");
         setDrugsUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
         setLoading(false);
+        setDisabled(false);
       })
       .catch(e => {
+        setLoading(false);
+        setDisabled(false);
         console.log(e);
       });
     }    
@@ -106,6 +114,7 @@ const diseasesReports = () => {
   const saveSymptoms = () => {
     console.log(symptoms)
     setLoadingSymptoms(true);
+    setDisabled(true);
     const data = new FormData();
     data.append('symptoms', JSON.stringify(symptoms));
     if(symptoms.length > 0){ 
@@ -113,16 +122,20 @@ const diseasesReports = () => {
       SymptomsDataService.create(data)
       .then(response => {
         setLoadingSymptoms(false);
+        setDisabled(false);
         setText("Pridėta " + response.data.data + " naujų elementų ");
         setSymptomsUpdated("Paskutinis atnaujinimas " + DateParser.getParsedDate(response.data.updated_at));
       })
       .catch(e => {
+        setLoadingSymptoms(false);
+        setDisabled(false);
         console.log(e);
       });
     }    
   };
   const updateSymptoms = () => {
     setLoadingSymptoms(true);
+    setDisabled(true);
     const data = new FormData();
     data.append('symptoms', JSON.stringify(symptoms));
     data.append('_method', 'PUT');
@@ -132,14 +145,18 @@ const diseasesReports = () => {
         setText("Pridėta " + response.data.data.added + " naujų elementų");
         setSymptomsUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
         setLoadingSymptoms(false);
+        setDisabled(true);
       })
       .catch(e => {
+        setLoadingSymptoms(false);
+        setDisabled(false);
         console.log(e);
       });
     }    
   };
   const saveDiseases = () => {
     setLoadingDiseases(true);
+    setDisabled(true);
     console.log(diseases)
     const data = new FormData();
     data.append('diseases', JSON.stringify(diseases));
@@ -148,16 +165,20 @@ const diseasesReports = () => {
       DiseasesDataService.create(data)
       .then(response => {
         setLoadingDiseases(false);
+        setDisabled(false);
         setText("Pridėta " + response.data.data + " naujų elementų");
         setDiseasesUpdated("Paskutinis atnaujinimas " + DateParser.getParsedDate(response.data.updated_at));
       })
       .catch(e => {
+        setLoadingDiseases(false);
+        setDisabled(false);
         console.log(e);
       });
     }    
   };
   const updateDiseases = () => {
     setLoadingDiseases(true);
+    setDisabled(true);
     const data = new FormData();
     data.append('diseases', JSON.stringify(diseases));
     data.append('_method', 'PUT');
@@ -168,8 +189,11 @@ const diseasesReports = () => {
         setText("Pridėta " + response.data.data.added + " naujų elementų");
         setDiseasesUpdated("Paskutinis atnaujinimas " + DateParser.getParsedDate(response.data.data.updated_at));
         setLoadingDiseases(false);
+        setDisabled(false);
       })
       .catch(e => {
+        setLoadingDiseases(false);
+        setDisabled(false);
         console.log(e);
       });
     }    
@@ -194,12 +218,16 @@ const diseasesReports = () => {
 
   const updateLinks = () => {
     setLoadingLinks(true);
+    setDisabled(true);
     DrugsDataService.scrap()
       .then(response => {
         setText("Nuorodos atnaujintos sėkmingai");
         setLoadingLinks(false);
+        setDisabled(false);
       })
       .catch(e => {
+        setLoadingLinks(false);
+        setDisabled(false);
         console.log(e);
       });
     };
@@ -235,6 +263,7 @@ const diseasesReports = () => {
               updated={symptomsUpdated}
               title="Įkelti simptomus" 
               loading = {loadingSymptoms}
+              disabled={disabled}
               save={symptomsUpdated===""?(saveSymptoms):(updateSymptoms)} 
               handleOnDrop={handleOnDropSymptoms} 
               handleOnError={handleOnError} 
@@ -248,6 +277,7 @@ const diseasesReports = () => {
               updated={diseasesUpdated}
               title="Įkelti ligas" 
               loading = {loadingDiseases}
+              disabled={disabled}
               save={diseasesUpdated===""?(saveDiseases):(updateDiseases)} 
               handleOnDrop={handleOnDropDiseases} 
               handleOnError={handleOnError} 
@@ -259,7 +289,7 @@ const diseasesReports = () => {
             <div className="container">
               <div className="row">
                 <div className="col-6 col-sm-3">
-                  <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={()=>updateLinks()}>
+                  <button type="button" disabled={disabled} className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={()=>updateLinks()}>
                   {loadingLinks && (
                   <span className="spinner-border spinner-border-sm"></span>
                 )}Atnaujinti vaistų nuorodas

@@ -20,7 +20,14 @@ class AuthService {
   }
 
   logout() {
-    localStorage.removeItem("user");
+    return axios
+      .post(API_URL + "logout")
+      .then(response => {
+        if (response.data.success) { 
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+        }
+      });    
   }
 
   register(name, last_name, stamp_number, email, password, c_password) {

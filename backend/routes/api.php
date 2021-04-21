@@ -37,7 +37,7 @@ Route::group([
     'prefix' => 'auth',
     'namespace' => 'App\Http\Controllers\Auth'
 ],function($router){
-    Route::get('logout', 'JwtAuthController@logout');
+    Route::post('logout', 'JwtAuthController@logout');
     Route::get('getMe', 'JwtAuthController@getMe');    
 });
 

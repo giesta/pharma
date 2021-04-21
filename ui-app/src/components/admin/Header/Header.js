@@ -8,7 +8,9 @@ class Header extends React.Component {
   render() {
     return (
       <section className="kanban__header text-right">
+        <div className="kanban__header-search"></div>
         <div className="kanban__header-info ">
+        <div className="mail-icon"></div>
           <Info />
         </div>
       </section>

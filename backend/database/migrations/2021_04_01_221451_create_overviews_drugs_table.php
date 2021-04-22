@@ -20,7 +20,7 @@ class CreateOverviewsDrugsTable extends Migration
 
             $table->foreign('overview_id')
               ->references('id')
-              ->on('overviews')->onDelete('no action')->onUpdate('no action');
+              ->on('overviews')->onDelete('cascade')->onUpdate('no action');
 
             $table->unsignedBigInteger('drug_id');
             

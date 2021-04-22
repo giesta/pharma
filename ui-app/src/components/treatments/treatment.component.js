@@ -24,7 +24,6 @@ import ReactFlow, {
 const nodes = fetchNodes();
 var idDiagram=null;
 var idDisease=null;
-console.log(idDiagram);
 export default function Treatment(props) {
 
   const onLoad = (reactFlowInstance) => {

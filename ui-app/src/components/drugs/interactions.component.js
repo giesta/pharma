@@ -36,16 +36,11 @@ export default function Interactions() {
             const values = [...fields];
             values[i]['ATC']= value;
             setFields(values);
-            console.log(fields);
           }
-          
-          //setSelectedLeaflets(arr);
         };
 
         function handleRemoveInput(i) {
             const values = [...fields];
-            console.log(i);
-            console.log(values);
             values.splice(i, 1);
             setFields(values);
           }
@@ -53,7 +48,6 @@ export default function Interactions() {
     const loadDrugsOptions = (inputValue, callback) => {    
         DrugsSubstancesDataService.findBySubstance(inputValue)
             .then(response => {
-                console.log(response.data.data);
                 const result = response.data.data.map(x => {
                     return {value:x.ATC, label:x.name};
                 });          
@@ -66,17 +60,14 @@ export default function Interactions() {
 
      const showInteraction = (values) =>{
         var query = "";
-        console.log(values);
         for(const value of values){
           query += value+"+";
         }
-        console.log(query);
         DrugsSubstancesDataService.getInteractions(query).then(response=>{
-            console.log(response.data);
             if(response.data.fullInteractionTypeGroup!==undefined){
                 setInteractions(response.data.fullInteractionTypeGroup);
             }else{
-                setInteractions("Not Found");
+                setInteractions("Vaistų tarpusavio sąveika nerasta, bet tai nereiškia, kad jos nėra.");
             }
             
         }).catch(e => {
@@ -87,28 +78,19 @@ export default function Interactions() {
      }
 
       const getInteraction = async () =>{
-          console.log(fields);
           var values = [];
           for (const item of fields){
-            console.log(item.ATC);
-            //const values = [...valuesOfId];
-            const value = await DrugsSubstancesDataService.getRXUI(item.ATC)
-            
+            const value = await DrugsSubstancesDataService.getRXUI(item.ATC)            
             .then(response=>{                
-                if(response.data.idGroup.rxnormId!==undefined){
-                   console.log(response.data.idGroup.rxnormId);   
+                if(response.data.idGroup.rxnormId!==undefined){  
                    return response.data.idGroup.rxnormId[0];
                 }
             }).catch(e => {
               setError(true);
               console.log(e);
             });
-            //console.log(value);
-            values.push(value); 
-            //setValuesOfId(values);
-            
+            values.push(value);             
           }
-          console.log(values);
           showInteraction(values);
       }
 
@@ -169,13 +151,11 @@ export default function Interactions() {
                 )} Tikrinti sąveiką
   </button>
   {interactions.length > 0?(
-  <div className="border border-secondary p-3 mt-2">{console.log(interactions)}
+  <div className="border border-secondary p-3 mt-2">
+    <h6>Gauti duomenys apie vaistų sąveiką (anglų kalba):</h6>
       {interactions[0].fullInteractionType!==undefined?(interactions.map(item=>{
-          console.log(item.fullInteractionType);
          return item.fullInteractionType.map(item=>{
-              console.log(item.interactionPair)
              return item.interactionPair.map((item, idx)=>{
-                  console.log(item.description);
                   if(item.severity==="high"){
                       return (<Alert key={idx} variant="danger">{item.description}</Alert>)
                   }else{

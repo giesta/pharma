@@ -18,7 +18,7 @@ class AddDiagramIdToTreatmentsTable extends Migration
             
             $table->foreign('diagram_id')
               ->references('id')
-              ->on('diagrams')->onDelete('no action')->onUpdate('no action');
+              ->on('diagrams')->onDelete('cascade')->onUpdate('no action');
         });
     }
 

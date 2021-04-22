@@ -158,7 +158,6 @@ const updateUser = (form) => {
   }
   UsersDataService.update(data.id, data)
     .then(response => {
-      console.log(response.data);
       setUser({
         id: response.data.data.id,
         name: response.data.data.name,

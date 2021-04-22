@@ -97,7 +97,7 @@ function makeDrugsOptions(field){
         {(props.treatment.diagram===undefined||props.treatment.diagram===null)?(
             <>
             <Form.Group > 
-            <Form.Label for="algorithm" className="btn btn-outline-success btn-sm ts-buttom">Select Image</Form.Label>  
+            <Form.Label for="algorithm" className="btn btn-outline-success btn-sm ts-buttom">Pasirinkti schemą</Form.Label>  
                 <Form.Control type = "file" id="algorithm" style={{display: "none"}}  label="Algorithm" onChange={props.handleInputChange} name="algorithm"/>        
                 <Form.Control.Feedback type="invalid">
                     Failas būtinas.

@@ -133,6 +133,7 @@ class UserController extends Controller
             $userCurrent = auth()->user();
             if($userCurrent->id != $id && $userCurrent->roles()->first()->name === "admin"){
                 $user = User::findOrFail($id);
+                $user->roles()->detach();
                 $user->delete();
                 return response()->noContent();
             }else{

@@ -19,7 +19,7 @@ class CreateTreatmentsDrugsTable extends Migration
 
             $table->foreign('treatment_id')
               ->references('id')
-              ->on('treatments')->onDelete('no action')->onUpdate('no action');
+              ->on('treatments')->onDelete('cascade')->onUpdate('no action');
 
             $table->unsignedBigInteger('drug_id');
             

@@ -2,11 +2,10 @@ import React from "react";
 import { Navbar, Nav, Dropdown, DropdownButton } from 'react-bootstrap';
 import { BsBoxArrowRight, BsPeopleCircle } from "react-icons/bs";
 import AuthService from "../../../services/auth.service";
+import { useHistory } from "react-router-dom";
 
-function  Info() {
-  function logOut() {
-    AuthService.logout();
-  } 
+function  Info(props) {
+  let history = useHistory(); 
   const user = AuthService.getCurrentUser();
     return (
       <React.Fragment>
@@ -23,7 +22,7 @@ function  Info() {
             >
               <Dropdown.Item eventKey='0'><BsPeopleCircle/> Naudotojo profilis</Dropdown.Item>
               <Dropdown.Item divider="true" />
-              <Dropdown.Item eventKey='1' href="/login" onClick={logOut}><BsBoxArrowRight/> Atsijungti</Dropdown.Item>
+              <Dropdown.Item eventKey='1' onClick={()=>{props.logOut(); history.push("/login")}}><BsBoxArrowRight/> Atsijungti</Dropdown.Item>
             </DropdownButton>
           </Nav>
         </Navbar>

@@ -21,7 +21,11 @@ class AuthService {
 
   logout() {
     return axios
-      .post(API_URL + "logout")
+      .post(API_URL + "logout",{},{
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      })
       .then(response => {
         if (response.data.success) { 
           localStorage.removeItem("user");

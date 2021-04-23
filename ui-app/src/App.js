@@ -62,6 +62,11 @@ class App extends Component {
 
   logOut() {
     AuthService.logout();
+    this.setState({        
+      currentUser: undefined,
+      showAdminBoard: false,
+      showPharmacistBoard: false,
+    });
   } 
 
   render() {
@@ -77,16 +82,15 @@ class App extends Component {
         <div className="kanban-wrapper">
         <div className="kanban">
           <Logo />
-          <Header />
+          <Header logOut = {this.logOut}/>
           <Sidebar />
           <Switch>
-            <Route exact path="/boards" component={Basic} />
-            <Route exact path="/manage" component={Manage} />
-            <Route exact path="/schedule" component={Schedule} />
-            <Route exact path="/reports" component={Reports} />
-            <Route exact path="/settings" component={Settings} />
-            <Route exact path="/scraping" component={Scraping} />
-            <Route exact path="/login" component={Login} />
+            <ProtectedRoute exact path="/boards" component={Basic} roles={["admin"]}/>
+            <ProtectedRoute exact path="/manage" component={Manage} roles={["admin"]}/>
+            <ProtectedRoute exact path="/schedule" component={Schedule} roles={["admin"]}/>
+            <ProtectedRoute exact path="/reports" component={Reports} roles={["admin"]}/>
+            <ProtectedRoute exact path="/settings" component={Settings} roles={["admin"]}/>
+            <ProtectedRoute exact path="/admin" component={Scraping} roles={["admin"]}/>
           </Switch>
         </div>
       </div>
@@ -95,9 +99,9 @@ class App extends Component {
 
         <div className="container main-container mt-3">
           <Switch>
-            <Route exact path={["/", "/home"]} component={Home} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/register" component={Register} />
+            <Route exact path={["/home"]} component={Home} />
+            <Route exact path={["/", "/login"]} component={Login} />
+            <Route exact path="/register" component={Register} />            
             <ProtectedRoute exact path="/profile" component={Profile} roles={["admin", "pharmacist"]}/> 
             <ProtectedRoute exact path="/user" component={BoardUser} roles={["admin", "pharmacist"]}/> 
             <ProtectedRoute exact path="/drugs" component={DrugsList} roles={["admin", "pharmacist"]}/> 

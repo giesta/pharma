@@ -56,7 +56,7 @@ export default class Login extends Component {
       AuthService.login(this.state.username, this.state.password).then(
         (user) => {
           if(user.role === "admin"){
-            this.props.history.push("/settings");
+            this.props.history.push("/admin");
           }else{
             this.props.history.push("/profile");
           }
@@ -101,7 +101,7 @@ export default class Login extends Component {
             }}
           >
             <div className="form-group">
-              <label htmlFor="username">El. pašto adresas</label>
+              <label>El. pašto adresas</label>
               <Input
                 type="text"
                 className="form-control"
@@ -113,7 +113,7 @@ export default class Login extends Component {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Slaptažodis</label>
+              <label>Slaptažodis</label>
               <Input
                 type="password"
                 className="form-control"

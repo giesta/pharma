@@ -29,6 +29,13 @@
   color: #61dafb;
 }
 
+.admin-container {
+  min-height: 100vh; /* will cover the 100% of viewport */
+  overflow: auto;
+  display: block;
+  position: relative;
+ }
+
 body {
   font-family: 'Roboto', sans-serif;
 }

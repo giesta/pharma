@@ -34,7 +34,7 @@ import Manage from "./components/admin/Routes/Manage/Manage.js";
 import Reports from "./components/admin/Routes/Reports/Reports.js";
 import Schedule from "./components/admin/Routes/Schedule/Schedule.js";
 import Settings from "./components/admin/Routes/Settings/Settings.js";
-import Scraping from "./components/admin/Routes/Scraping/Scraping.js";
+import AdminProfile from "./components/admin/Routes/Profile/Profile.js";
 
 class App extends Component {
   constructor(props) {
@@ -79,6 +79,7 @@ class App extends Component {
       <div>
         {
         showAdminBoard?(
+          <div className="admin-container">
         <div className="kanban-wrapper">
         <div className="kanban">
           <Logo />
@@ -90,9 +91,10 @@ class App extends Component {
             <ProtectedRoute exact path="/schedule" component={Schedule} roles={["admin"]}/>
             <ProtectedRoute exact path="/reports" component={Reports} roles={["admin"]}/>
             <ProtectedRoute exact path="/settings" component={Settings} roles={["admin"]}/>
-            <ProtectedRoute exact path="/admin" component={Scraping} roles={["admin"]}/>
+            <ProtectedRoute exact path="/admin" component={AdminProfile} roles={["admin"]}/>
           </Switch>
         </div>
+      </div>
       </div>
       ):(<>
       <MainNavbar showPharmacistBoard = {showPharmacistBoard} showAdminBoard = {showAdminBoard} currentUser = {currentUser} logOut = {this.logOut} />
@@ -115,10 +117,11 @@ class App extends Component {
             <ProtectedRoute exact path="/users" component={UsersList} roles={["admin"]}/>
           </Switch>
         </div>
-        <Footer></Footer>
+        
         </>
       )
       }
+      <Footer></Footer>
 </div>
    
     );

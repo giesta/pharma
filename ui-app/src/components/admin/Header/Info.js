@@ -9,22 +9,15 @@ function  Info(props) {
   const user = AuthService.getCurrentUser();
     return (
       <React.Fragment>
-        <div className="name-user">{user.name}</div>
-        <div className="avatar-user">          
-          <Navbar brand='React-Bootstrap'>
+        <div>          
+          <Navbar brand='React-Bootstrap'bg="dark" variant="dark">
           <Nav>
-            <DropdownButton
-            variant="dark"
-              menuAlign={{ lg: 'left' }}
-              title={
-                <span><img src={require("../../../assets/img/thompson.jpg").default} /></span>
-              }
-            >
-              <Dropdown.Item eventKey='0'><BsPeopleCircle/> Naudotojo profilis</Dropdown.Item>
-              <Dropdown.Item divider="true" />
-              <Dropdown.Item eventKey='1' onClick={()=>{props.logOut(); history.push("/login")}}><BsBoxArrowRight/> Atsijungti</Dropdown.Item>
-            </DropdownButton>
-          </Nav>
+              <Nav.Link href={"/admin"}>{user.name}</Nav.Link>
+              <Nav.Link eventKey={2} onClick={()=>{props.logOut(); history.push("/login")}}>
+              Atsijungti
+      </Nav.Link>
+      </Nav>
+          
         </Navbar>
         </div>
         

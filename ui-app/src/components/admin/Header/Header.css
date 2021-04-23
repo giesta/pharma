@@ -2,7 +2,7 @@
   grid-area: header;
   display: flex;
   justify-content: space-between;
-  background-color: #000000;
+  background-color: #343a40;
 }
 
 .kanban__header-search {
@@ -216,7 +216,7 @@
 
 @media screen and (max-width: 670px) {
   .kanban__header-search {
-    display: none;
+    display: flex;
   }
 }
 

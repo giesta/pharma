@@ -1,14 +1,22 @@
 import React from 'react';
 
 import { Modal, Button } from "react-bootstrap";
+import ErrorBoundary from "./layout/error.component";
+import { connect } from "react-redux";
 
-export default function ModalDelete(props) {
+const mapStateToProps = state => {
+  return { errors: state.rootReducer.errors };
+};
+
+function ModalDelete(props) {
 
     return (
 <Modal show={props.confirm} onHide={props.handleCloseConfirm}>
-        <Modal.Header closeButton>
+  <Modal.Header closeButton>                 
     <Modal.Title>Trinti {props.name}</Modal.Title>
   </Modal.Header>
+    {props.errors.length > 0 ?<ErrorBoundary text={props.errors.map(item=>item)}/>:''} 
+  
   <Modal.Body>
   Ar jūs tuo tikras?
         </Modal.Body>
@@ -23,3 +31,5 @@ export default function ModalDelete(props) {
       </Modal>
     );
 }
+const Deletion = connect(mapStateToProps)(ModalDelete);
+export default Deletion;

@@ -65,10 +65,16 @@ export default function DiagramsList() {
     setError(false);
     dispatch(removeError());
   };
-  const handleCloseConfirm = () => setConfirm(false);
+  const handleCloseConfirm = () => {
+    setConfirm(false);
+    setError(false);
+    dispatch(removeError());
+  }
   const handleCloseInfo = () => {
     newDiagram();
     setInfo(false);
+    setError(false);
+    dispatch(removeError());
   };
 
   const handleInputChange = event => {
@@ -219,7 +225,6 @@ const updatediagram = () => {
 const deleteItem = (id) => {
   DiagramsDataService.remove(id)
     .then(() => {
-      //deleteItemFromState(id);
       if(diagrams.length > 1){
         retrieveDiagrams(page);
       }else if(page > 1){

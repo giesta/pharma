@@ -12,6 +12,8 @@ import Pagination from "react-js-pagination";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 import ErrorBoundary from "../layout/error.component";
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { removeError } from "../../js/actions/index";
+import store from "../../js/store/index";
 
 export default function DiseasesList() {
 
@@ -57,6 +59,8 @@ export default function DiseasesList() {
   const [isWriting, setIsWriting] = React.useState(false);
 
   const [fields, setFields] = React.useState([]);
+
+  const {dispatch} = store;
 
 
   const initialDiseaseState = {  
@@ -213,7 +217,11 @@ export default function DiseasesList() {
     setIsWriting(true);     
     setFields([]);
   };
-  const handleCloseConfirm = () => setConfirm(false);
+  const handleCloseConfirm = () => {
+    setConfirm(false);
+    setError(false);
+    dispatch(removeError());
+  }
   const handleCloseInfo = () => {
     newDisease();
     setInfo(false);

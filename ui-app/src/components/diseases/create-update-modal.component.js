@@ -49,6 +49,7 @@ export default function CreateModal(props) {
                             isClearable="true"
                             cacheOptions
                             defaultOptions
+                            placeholder={"Pasirinkti ..."}
                             loadOptions={props.loadDiseasesOptions}
                             onChange={props.handleDiseaseInputChange}
                             defaultValue={props.disease.disease_id!==null?({value: props.disease.disease_id, label: props.disease.name}):('')}
@@ -144,6 +145,7 @@ export default function CreateModal(props) {
                             isClearable="true"
                             cacheOptions
                             defaultOptions
+                            placeholder={"Pasirinkti ..."}
                             value={field.form!==''?({value: field.form, label: field.form}):('')}
                             onChange={(e)=>props.addSelectedForm(idx, e)}
                             options={field.drug !== ''?(makeOptions(field)):('')}
@@ -163,6 +165,7 @@ export default function CreateModal(props) {
                             isClearable="true"
                             cacheOptions
                             defaultOptions
+                            placeholder={"Pasirinkti ..."}
                             value={field.strength!==''?({value: field.strength, label: field.strength}):('')}
                             onChange={(e)=>props.addSelectedStrength(idx, e)}
                             options={field.form !== ''?(makeOptionsStrength(field)):('')}

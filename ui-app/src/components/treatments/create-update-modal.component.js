@@ -76,14 +76,13 @@ function makeDrugsOptions(field){
         return result;
       };
 
-      function getUsesValue(field, selectedDrug){    
-  
-       
-        //console.log(field);
-        //console.log(selectedDrug);
+      function getUsesValue(field, selectedDrug){
+        if(field!==null){
         var arr = field.drugs.find(item=>item.form===selectedDrug.form&&item.strength===selectedDrug.strength&&item.name==selectedDrug.selected[0].name);
-      //console.log(arr.uses);
-      return arr.uses;
+        return arr.uses;
+        }else{
+            return [];
+        }          
     };
     return (
     <Modal show={props.show} onHide={props.handleClose}>
@@ -226,6 +225,7 @@ function makeDrugsOptions(field){
                             isClearable="true"
                             cacheOptions
                             defaultOptions
+                            placeholder={"Pasirinkti ..."}
                             options={props.treatment.disease!==null?(makeDrugsOptions(props.treatment.disease)):('')}
                             value={field.drug!==''?({value: field.drug, label: field.drug.name}):('')}
                             onChange={e=>props.AddSelectedDrugs(idx, e)}
@@ -242,6 +242,7 @@ function makeDrugsOptions(field){
                             isClearable="true"
                             cacheOptions
                             defaultOptions
+                            placeholder={"Pasirinkti ..."}
                             value={field.form!==''?({value: field.form, label: field.form}):('')}
                             onChange={(e)=>props.addSelectedForm(idx, e)}
                             options={field.drug !== ''&&props.treatment.disease!==null?(makeOptionsForm(props.treatment.disease, field)):('')}
@@ -261,6 +262,7 @@ function makeDrugsOptions(field){
                             isClearable="true"
                             cacheOptions
                             defaultOptions
+                            placeholder={"Pasirinkti ..."}
                             value={field.strength!==''?({value: field.strength, label: field.strength}):('')}
                             onChange={(e)=>props.addSelectedStrength(idx, e)}
                             options={field.form !== ''&&props.treatment.disease!==null?(makeOptionsStrength(props.treatment.disease,field)):('')}

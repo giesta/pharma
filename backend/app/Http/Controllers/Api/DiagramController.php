@@ -202,9 +202,16 @@ class DiagramController extends Controller
     {
         $user = auth()->user();
         $diagram = $user->diagrams()->findOrFail($id);
-        $diagram->nodes()->delete();
-        $diagram->edges()->delete();
-        $diagram->delete();
-        return response()->noContent();
+        if($diagram->treatments()->count() === 0){
+            $diagram->nodes()->delete();
+            $diagram->edges()->delete();
+            $diagram->delete();
+            return response()->noContent();
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => "Could not delete the diagram",
+            ], Response::HTTP_CONFLICT);
+        }        
     }
 }

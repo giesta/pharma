@@ -159,15 +159,18 @@ class OverviewController extends Controller
     public function destroy($id)
     {
         $user = auth()->user();
-        $role = $user->roles()->first()->name;
-        if($role ==="admin"){
-            $overview = Overview::findOrFail($id);
+            
+        $overview = $user->overviews()->findOrFail($id);
+        if($overview->treatments()->count()===0){
+            $overview->drugs()->detach();
+            $overview->symptoms()->detach();
+            $overview->delete();
+            return response()->noContent();
         }else{
-            $overview = $user->overviews()->findOrFail($id);
-        } 
-        $overview->drugs()->detach();
-        $overview->symptoms()->detach();
-        $overview->delete();
-        return response()->noContent();
+            return response()->json([
+                'success' => false,
+                'message' => "Could not delete the overview",
+            ], Response::HTTP_CONFLICT);
+        }        
     }
 }

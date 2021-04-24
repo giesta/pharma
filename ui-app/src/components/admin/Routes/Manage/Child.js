@@ -13,7 +13,7 @@ class Child extends React.Component {
           </div>
         </section>
         <section className="kanban__main">
-          <div>
+          <div className="container">
           <UsersList/>
             </div>
         </section>

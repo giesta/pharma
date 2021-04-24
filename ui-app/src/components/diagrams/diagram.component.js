@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useRef  } from 'react';
 import DiagramsDataService from "../../services/diagrams/list.service";
 import { Button, Form, Row, Col} from "react-bootstrap";
+import { removeError } from "../../js/actions/index";
+import store from "../../js/store/index";
+import ErrorBoundary from "../layout/error.component";
+import { connect } from "react-redux";
+
+
 import ReactFlow, {
     removeElements,
   addEdge,
@@ -30,7 +36,9 @@ const initialElements = [
   ];
 
   
-
+  const mapStateToProps = state => {
+    return { errors: state.rootReducer.errors };
+  };
 
 const UpdateNode = (props) => {
   const reactFlowWrapper = useRef(null);
@@ -45,6 +53,8 @@ const UpdateNode = (props) => {
   const [edgeType, setEdgeType] = useState('step');
   const [animation, setAnimation] = useState(false);
   const [diagramName, setDiagramName] = useState(props.location.state!==undefined ? props.location.state.diagram.name:'');
+
+  const [errors, setErrors] = useState(false);
 
   const onElementClick=(event, element)=>{
       console.log(element);
@@ -291,6 +301,7 @@ setElements((els) =>
   };
   return (
     <div>
+      {errors.length > 0 ?<ErrorBoundary text={errors.map(item=>item)}/>:''} 
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="name"> <Form.Label>Diagramos pavadinimas</Form.Label>        
               <Form.Control type="text" placeholder="" defaultValue={diagramName} required onChange={(evt) => {setDiagramName(evt.target.value)}} name="name"/>

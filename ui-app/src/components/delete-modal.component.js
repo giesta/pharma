@@ -15,7 +15,7 @@ function ModalDelete(props) {
   <Modal.Header closeButton>                 
     <Modal.Title>Trinti {props.name}</Modal.Title>
   </Modal.Header>
-    {props.errors.length > 0 ?<ErrorBoundary text={props.errors.map(item=>item)}/>:''} 
+    {props.errors.length > 0 ?<ErrorBoundary text={props.errors.map(item=>item)} handleClose={props.handleCloseConfirm}/>:''} 
   
   <Modal.Body>
   Ar jūs tuo tikras?

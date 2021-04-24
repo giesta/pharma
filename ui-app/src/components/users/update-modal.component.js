@@ -27,9 +27,7 @@ const CreateModal=(props)=> (
       <Modal.Header closeButton>
                 <Modal.Title>Naudotojo informacija</Modal.Title>
             </Modal.Header>
-
-            {console.log(props.errors)}
-            {props.errors.length > 0 ?<ErrorBoundary text={props.errors.map(item=>item)}/>:''}
+            {props.errors.length > 0 ?<ErrorBoundary text={props.errors.map(item=>item)} handleClose={props.handleClose}/>:''}
                 
             <Formik
       validationSchema={schema}

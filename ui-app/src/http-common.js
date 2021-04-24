@@ -39,6 +39,8 @@ else if(err.response !== undefined && err.response.status === 409){
   }else{
     dispatch(addError(err.response.data.message));
   }  
+}else if(err.response !== undefined && err.response.status === 400){
+  dispatch(addError(err.response.data.message.email));
 }
   return new Promise((resolve, reject) => {
       const originalReq = err.config;    

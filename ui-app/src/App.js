@@ -101,8 +101,8 @@ class App extends Component {
 
         <div className="container main-container mt-3">
           <Switch>
-            <Route exact path={["/home"]} component={Home} />
-            <Route exact path={["/", "/login"]} component={Login} />
+            <ProtectedRoute exact path={["/","/home"]} component={Home} roles={["admin", "pharmacist"]}/>
+            <Route exact path="/login" component={Login} />
             <Route exact path="/register" component={Register} />            
             <ProtectedRoute exact path="/profile" component={Profile} roles={["admin", "pharmacist"]}/> 
             <ProtectedRoute exact path="/user" component={BoardUser} roles={["admin", "pharmacist"]}/> 

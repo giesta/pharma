@@ -27,6 +27,10 @@ class Overview extends Model
     {
         return $this->belongsTo(Disease::class);
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     public function drugs()
     {
         return $this->belongsToMany(Drug::class, 'overviews_drugs', 'overview_id', 'drug_id')->withPivot('uses');

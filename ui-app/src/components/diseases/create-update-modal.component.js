@@ -32,7 +32,7 @@ export default function CreateModal(props) {
     return (
         <Modal show={props.show} onHide={props.handleClose}>
             <Modal.Header closeButton>
-                <Modal.Title>Disease info {props.disease.id}</Modal.Title>
+                <Modal.Title>Ligos informacija</Modal.Title>
             </Modal.Header>
             <Form validated={props.validated} onSubmit={props.handleSubmit}>
                 <Modal.Body>  

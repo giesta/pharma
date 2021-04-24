@@ -557,7 +557,7 @@ const findByTitle = () => {
 
       { confirm && <DiseaseDelete 
         id={id} 
-        name={"Disease"} 
+        name={"ligą"} 
         deleteItem={deleteItem} 
         handleCloseConfirm={handleCloseConfirm} 
         confirm={confirm}

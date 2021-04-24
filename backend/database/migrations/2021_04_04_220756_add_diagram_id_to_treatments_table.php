@@ -31,7 +31,6 @@ class AddDiagramIdToTreatmentsTable extends Migration
     {
         Schema::table('treatments', function (Blueprint $table) {
             $table->dropForeign('treatments_diagram_id_foreign');
-            $table->dropIndex('treatments_diagram_index');
             $table->dropColumn('diagram_id');
         });
     }

@@ -2,17 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Overviews;
+use App\Models\Disease;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
-class OverviewsFactory extends Factory
+class DiseaseFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Overviews::class;
+    protected $model = Disease::class;
 
     /**
      * Define the model's default state.
@@ -22,7 +23,7 @@ class OverviewsFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => Str::random(10),
         ];
     }
 }

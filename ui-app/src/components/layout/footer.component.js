@@ -37,7 +37,7 @@ export default function Footer() {
 <h5 className="">Greitos nuorodos</h5>
 
 <ul className="footer_ul_amrc">
-    {user.role==="admin"?(
+    {user!==null&&user.role==="admin"?(
         <>
         <li><a href="/settings">Nustatymai</a></li>
         <li><a href="/manage">Naudotojai</a></li>

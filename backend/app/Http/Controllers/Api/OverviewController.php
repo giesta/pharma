@@ -66,7 +66,7 @@ class OverviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreDiseaseRequest $request)
+    public function store(Request $request)
     {
         $user = auth()->user();
         $validator = Validator::make($request->all(), 
@@ -91,10 +91,9 @@ class OverviewController extends Controller
         }catch (QueryException $ex) { // Anything that went wrong
             abort(500, $ex->getMessage());
         }
-        return new OverviewResource(
+        return (new OverviewResource(
             $user->overviews()->with('drugs')->findOrFail($overview->id)
-        );
-
+        ))->response()->setStatusCode(201);
     }
 
     /**
@@ -103,9 +102,11 @@ class OverviewController extends Controller
      * @param  \App\Models\Overviews  $overviews
      * @return \Illuminate\Http\Response
      */
-    public function show(Overviews $overviews)
+    public function show(Request $request, $id)
     {
-        //
+        $user = auth()->user();
+        
+        return new OverviewResource($user->overviews()->with('drugs')->findOrFail($id));
     }
 
 
@@ -147,7 +148,7 @@ class OverviewController extends Controller
         catch (QueryException $ex) { // Anything that went wrong
             abort(500, $ex);
         }
-        return new OverviewResource($overview->with('leaflets')->findOrFail($id));
+        return new OverviewResource($overview->findOrFail($id));
     }
 
     /**

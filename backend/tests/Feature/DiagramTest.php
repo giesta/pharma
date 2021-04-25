@@ -126,7 +126,7 @@ class DiagramTest extends TestCase
 
         $response->assertCreated()->assertJsonFragment(['name'=>$diagram['name']]);
         $data = [];
-        $response = $this->json('POST', '/api/diagrams/'.$diagram->id.'?token='.$token, $data);
+        $response = $this->json('POST', '/api/diagrams/?token='.$token, $data);
         $response->assertStatus(400);
     }
     /**

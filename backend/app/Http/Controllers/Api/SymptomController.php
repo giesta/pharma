@@ -41,7 +41,7 @@ class SymptomController extends Controller
             'success' => true,
             'data' => count($data),
             'updated_at'=>date("Y-m-d\TH:i:s\Z"),
-        ], Response::HTTP_OK);
+        ], Response::HTTP_CREATED);
     }
     /**
      * Make the specified array
@@ -84,7 +84,7 @@ class SymptomController extends Controller
             }else{
                 return response()->json([
                     'success' => false,
-                    'data' => 'Not Found',
+                    'data' => 'No Data',
                 ], Response::HTTP_OK);
             }
             
@@ -92,7 +92,7 @@ class SymptomController extends Controller
         return response()->json([
             'success' => false,
             'data' => 'Restricted permission',
-        ], Response::HTTP_OK);       
+        ], Response::HTTP_FORBIDDEN);       
     }
     /**
      * Update the specified resource in storage.

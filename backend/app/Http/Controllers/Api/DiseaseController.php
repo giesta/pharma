@@ -147,7 +147,7 @@ class DiseaseController extends Controller
             }else{
                 return response()->json([
                     'success' => false,
-                    'data' => 'Not Found',
+                    'data' => 'No Data',
                 ], Response::HTTP_OK);
             }            
         }

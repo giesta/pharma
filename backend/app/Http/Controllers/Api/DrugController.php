@@ -32,9 +32,11 @@ class DrugController extends ApiController
     {
         $user = auth()->user();
         $name = $request->name;      
-        return DrugResource::collection(Drug::where('drugs.substance', 'LIKE', "%$name%")->limit(900)->get());
-               
-    }
+        return (DrugResource::collection(Drug::with('substance')->join('substances', 'substances.id', '=', 'drugs.substance_id')->select('drugs.*', 'substances.name as substance', 'substances.ATC')
+        ->where('substances.name', 'LIKE', "%$name%")
+        ->orWhere('drugs.name', 'LIKE', "%$name%")
+        ->orWhere('substances.ATC', 'LIKE', "%$name%")->limit(900)->get()))->response()->setStatusCode(200);
+        }
      /**
      * Display a listing of the resource.
      *
@@ -96,7 +98,7 @@ class DrugController extends ApiController
             'success' => true,
             'data' => count($values),
             'updated_at'=>date("Y-m-d\TH:i:s\Z"),
-        ], Response::HTTP_OK);
+        ], Response::HTTP_CREATED);
     }
 
     /**
@@ -222,7 +224,7 @@ class DrugController extends ApiController
             }else{
                 return response()->json([
                     'success' => false,
-                    'data' => 'Not Found',
+                    'data' => 'No Data',
                 ], Response::HTTP_OK);
             }
             
@@ -230,7 +232,7 @@ class DrugController extends ApiController
         return response()->json([
             'success' => false,
             'data' => 'Restricted permission',
-        ], Response::HTTP_OK);       
+        ], Response::HTTP_FORBIDDEN);       
     }
     /**
      * Update the specified resource in storage.
@@ -306,7 +308,7 @@ class DrugController extends ApiController
 
         $data = [];
         $substances = [];
-        for ($i = 0; $i < count($drugsArr)-1; $i++)
+        for ($i = 0; $i < count($drugsArr); $i++)
         {
             if(isset($substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]) && !isset($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])){
                 $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}] = [
@@ -366,7 +368,7 @@ class DrugController extends ApiController
         $date=date("Y-m-d H:i:s");
         $array=[];
 
-        for ($i = 0; $i < count($drugsArr)-1; $i++)
+        for ($i = 0; $i < count($drugsArr); $i++)
         {
             $needle="/\b".strtolower($drugsArr[$i]->data->{'Stadija'})."\b/";
             $string = isset($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])?strtolower($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']):'';
@@ -459,7 +461,7 @@ class DrugController extends ApiController
         $downloadLink='https://vapris.vvkt.lt/vvkt-web/public/medications/view/';
         foreach ($drugs as $drug){
             $url = 'https://vapris.vvkt.lt/vvkt-web/public/medications?showData=true&mainSearchField='.$drug->name.'&strength='.$drug->strength.'&pharmaceuticalForm='.$drug->form;
-            $links = $linksService->scrap($url, $web); 
+            $links =[]; // $linksService->scrap($url, $web); 
             if(count($links)>0){
                 Drug::where('id', $drug->id)->update(array('link' => $downloadLink.$links[0]));
             }            

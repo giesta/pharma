@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         $user = User::first();
         $role = Role::first();
         $user->roles()->attach($role);
-        User::factory(1)->create(['email'=>'b@b.com']);
+        User::factory(1)->create(['name'=>'shiller','email'=>'b@b.com']);
         $user = User::find(2);
         $role = Role::find(2);
         $user->roles()->attach($role);

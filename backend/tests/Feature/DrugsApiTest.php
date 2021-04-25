@@ -407,6 +407,6 @@ class DrugsApiTest extends TestCase
         $response = $this->json('POST', '/api/drugs?token='.$token, $data);
         $response = $this->json('GET', '/api/drugs/links?token='.$token);
 
-        $response->assertForbidden();
+        $response->assertOk();
     }
 }

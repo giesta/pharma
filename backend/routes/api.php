@@ -47,9 +47,10 @@ Route::group(['middleware' => 'jwt.auth',
 ], function () {
     Route::get('treatments/list', 'TreatmentController@list'); 
     Route::get('treatments/private', 'TreatmentController@privateList');
+    Route::get('treatments/{id}', 'TreatmentController@show');
 });
 
-Route::get('treatments/{id}', 'App\Http\Controllers\Api\TreatmentController@show');
+
 Route::get('diseases/{id}/drugs', 'App\Http\Controllers\Api\DiseaseDrugController@index');
 Route::get('treatments/list', 'App\Http\Controllers\Api\TreatmentController@list'); 
 

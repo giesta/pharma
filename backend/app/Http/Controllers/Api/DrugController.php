@@ -461,7 +461,7 @@ class DrugController extends ApiController
         $downloadLink='https://vapris.vvkt.lt/vvkt-web/public/medications/view/';
         foreach ($drugs as $drug){
             $url = 'https://vapris.vvkt.lt/vvkt-web/public/medications?showData=true&mainSearchField='.$drug->name.'&strength='.$drug->strength.'&pharmaceuticalForm='.$drug->form;
-            $links =[]; // $linksService->scrap($url, $web); 
+            $links =[];// $linksService->scrap($url, $web); 
             if(count($links)>0){
                 Drug::where('id', $drug->id)->update(array('link' => $downloadLink.$links[0]));
             }            

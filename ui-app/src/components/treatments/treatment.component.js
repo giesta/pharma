@@ -3,7 +3,6 @@ import TreatmentsDataService from "../../services/treatments/list.service";
 import StarService from "../../services/treatments/stars.service";
 import ReportService from "../../services/treatments/reports.service";
 import CommentService from "../../services/treatments/comments.service";
-import DrugsDataService from "../../services/diseases/disease.drug.service";
 import DiseaseOverviewsDataService from "../../services/diseases/overviews.service";
 import DiagramsDataService from "../../services/diagrams/list.service";
 import DateParser from "../../services/parseDate.service";
@@ -109,19 +108,7 @@ export default function Treatment(props) {
       setValidated(false);
     }           
   };  
-  useEffect(()=>{ 
-    const getDrugs = (id) => {
-      DrugsDataService.getPublic(id)
-        .then(response => {    
-          if(response.data.data.length !== 0){
-            console.log(response.data.data);
-            setCurrentDrugs(response.data.data);
-          }      
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    };
+  useEffect(()=>{    
 
     const getTreatment = (id)=> {
       var get;
@@ -136,7 +123,6 @@ export default function Treatment(props) {
           if (response.data.data.length !== 0) {
             console.log(response.data.data);
             setCurrentTreatment(response.data.data);
-            getDrugs(response.data.data.disease.id);
           }else{
             setNoData('No');
           }
@@ -458,6 +444,7 @@ const getRelatedTreatments =()=>{
         return (<><a key={"related_"+idx} href={"/treatments/" + item.id}>"{item.title}"{' '}</a><br></br></>)
       }                  
     });
+    values = values.filter(item=>item!==undefined);
     setRelatedTreatments(values);
   }  
 };
@@ -556,7 +543,7 @@ useEffect(getRelatedTreatments, [currentTreatment])
       ):('')}
     <Row>
       <Col>
-      <div>
+      <div>{console.log(relatedTreatments.length)}
         {relatedTreatments.length>0?(                    
           <Accordion defaultActiveKey="0">
             <Card>

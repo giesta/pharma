@@ -444,7 +444,7 @@ drugsArr = newArr.map(item=>{
   return {id: item.id, uses:item.uses}
 });
     const data = new FormData();
-    console.log(treatment.disease);
+    console.log(JSON.stringify(drugsArr));
     data.append('Content-Type','multipart/formdata');
     if(selectedFile!==null){
         data.append("algorithm", selectedFile);        

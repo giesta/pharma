@@ -295,11 +295,9 @@ const downloadDiagram = async () => {
 };
 
 const updateDisease = async () => {
-  console.log(currentTreatment.disease.drugs);
   var drugsArr = currentTreatment.disease.drugs.map(item=>{
-    return {selected:[item], uses:item.uses}
+    return {selected:[item.id], uses:item.uses}
   });
-  console.log(drugsArr);
   var data = {
     id: idDisease,
     disease_id: currentTreatment.disease.disease_id,
@@ -323,11 +321,9 @@ const updateDisease = async () => {
     }
 };
 const createDisease = async () => {
-  console.log(currentTreatment.disease.drugs);
   var drugsArr = currentTreatment.disease.drugs.map(item=>{
-    return {selected:[item], uses:item.uses}
+    return {selected:[item.id], uses:item.uses}
   });
-  console.log(drugsArr);
   var data = {
     disease_id: currentTreatment.disease.disease_id,
     description: currentTreatment.disease.description,
@@ -376,8 +372,6 @@ if(currentTreatment.algorithm!==''){
 }else{
   data['algorithm']= '';
 }
-
-    console.log(data);
 const value = await TreatmentsDataService.create(data)
     .then((response) => {
       return response.data.data;
@@ -393,7 +387,6 @@ const value = await TreatmentsDataService.create(data)
 };
 
 const saveDiagram = async () => {
-  console.log(elements);
 var newElements = elements.map((el)=>{
     const {id: item_id, ...rest} = el;
     return {item_id, ...rest};
@@ -411,7 +404,6 @@ var newElements = elements.map((el)=>{
       }
     })),
   };
-  console.log(data);
   const value = await DiagramsDataService.create(data)
     .then((response) => {
       idDiagram = response.data.data.id;
@@ -473,7 +465,6 @@ useEffect(getRelatedTreatments, [currentTreatment])
   
   return (
     <div>
-      {console.log(currentTreatment)}
       {currentTreatment?(
       currentTreatment.disease === null && noData === ''?(        
         <Spinner></Spinner>

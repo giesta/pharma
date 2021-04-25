@@ -84,7 +84,7 @@ class OverviewController extends Controller
             $drugs = json_decode($request->drugs);
             foreach($drugs as $drug){
                 foreach($drug->selected as $selected){
-                    $overview->drugs()->attach($selected->id, ['uses'=> $drug->uses]);
+                    $overview->drugs()->attach($selected, ['uses'=> $drug->uses]);
                 }                
             }
             
@@ -141,7 +141,7 @@ class OverviewController extends Controller
             $tem = [];
             foreach($drugs as $drug){
                 foreach($drug->selected as $selected){
-                    $tem[$selected->id] = ['uses'=> $drug->uses];
+                    $tem[$selected] = ['uses'=> $drug->uses];
                 }                
             }$overview->drugs()->sync($tem);
         }

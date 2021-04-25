@@ -70,7 +70,7 @@ class OverviewTest extends TestCase
             'prevention' => Str::random(5),
             'disease_id' => $disease->id,
             'drugs' => json_encode([[
-                'selected'=>[$drug],
+                'selected'=>[$drug->id],
                 'uses' => Str::random(10),
             ]]),
             'symptoms' => json_encode([$symptom->id]),
@@ -109,7 +109,7 @@ class OverviewTest extends TestCase
         $data['description'] = 'Test';
         $data['symptoms'] = json_encode([$symptom->id]);  
         $data['drugs'] = json_encode([[
-            'selected'=>[$drug],
+            'selected'=>[$drug->id],
             'uses' => Str::random(10),
         ]]);
 

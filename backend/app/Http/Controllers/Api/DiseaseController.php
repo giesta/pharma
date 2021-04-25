@@ -54,24 +54,9 @@ class DiseaseController extends Controller
             'success' => true,
             'data' => count($data),
             'updated_at'=>date("Y-m-d\TH:i:s\Z"),
-        ], Response::HTTP_OK);
+        ], Response::HTTP_CREATED);
 
-    }
-
-    /**
-     * Return the specified resource.
-     */
-    public function show(Request $request, $id): DiseaseResource
-    {
-        $user = auth()->user();
-        $role = $user->roles()->first()->name;
-        if($role ==="admin"){
-            $disease = Disease::with('leaflets')->findOrFail($id);
-            return new DiseaseResource($disease);
-        }else{ 
-            return new DiseaseResource($user->diseases()->with('leaflets')->findOrFail($id));
-        }
-    }
+    }   
 
     /**
      * Update the specified resource in storage.
@@ -169,7 +154,7 @@ class DiseaseController extends Controller
         return response()->json([
             'success' => false,
             'data' => 'Restricted permission',
-        ], Response::HTTP_OK);       
+        ], Response::HTTP_FORBIDDEN);       
     }
     /**
      * Update the specified resource in storage.
@@ -184,7 +169,7 @@ class DiseaseController extends Controller
         
         $newDiseasesArr = $this->makeDiseasesArray($diseasesArr);
         $diseases = Disease::orderBy('created_at', 'DESC')->get();
-        $result = $this->checkSymptomsChanges($diseases, $newDiseasesArr);
+        $result = $this->checkDiseasesChanges($diseases, $newDiseasesArr);
         return response()->json([
             'success' => true,
             'data' => $result,
@@ -196,7 +181,7 @@ class DiseaseController extends Controller
      * @param array $drugsArr
      * @return array
      */
-    private function checkSymptomsChanges($diseasesArr, $newDiseasesArr){
+    private function checkDiseasesChanges($diseasesArr, $newDiseasesArr){
 
         $counter = 0;
         $date = $diseasesArr[0]->created_at;

@@ -386,7 +386,7 @@ const deleteItemFromState = (id) => {
 }
 const saveDisease = () => {
   var drugsArr = fields.map(item=>{
-    return {selected:item.selected, uses:item.uses}
+    return {selected:item.selected.map(x=>x.id), uses:item.uses}
   });
   var data = {
     disease_id: selectedDisease.id,
@@ -411,7 +411,7 @@ const saveDisease = () => {
 
 const updateDisease = () => {
   var drugsArr = fields.map(item=>{
-    return {selected:item.selected, uses:item.uses}
+    return {selected:item.selected.map(x=>x.id), uses:item.uses}
   });
   var data = {
     id: disease.id,

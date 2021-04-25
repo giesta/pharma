@@ -122,7 +122,7 @@ class DiagramController extends Controller
         return response()->json([
             'success' => true,
             'data' => $diagram,
-        ], Response::HTTP_OK);
+        ], Response::HTTP_CREATED);
     }
 
     
@@ -149,7 +149,7 @@ class DiagramController extends Controller
         $diagram = $user->diagrams()->findOrFail($id);
 
         try{
-            $diagram->update(array_merge($request->only(['name, updated_at']), ['updated_at' => date("Y-m-d H:i:s")]));
+            $diagram->update(array_merge($request->only(['name']), ['updated_at' => date("Y-m-d H:i:s")]));
             $diagram->nodes()->delete();
             $diagram->edges()->delete();
             $nodes = json_decode($request->nodes);

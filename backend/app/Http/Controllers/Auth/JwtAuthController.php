@@ -98,9 +98,6 @@ class JwtAuthController extends Controller
     {
         try {
             return $this->respondWithToken(JWTAuth::refresh(JWTAuth::getToken()));
-            $user = JWTAuth::setToken($refreshed)->toUser();
-            $request->headers->set('Authorization','Bearer '.$refreshed);
-
         } catch (JWTException $e) {
             return response()->json([
                 'code'   => 103,

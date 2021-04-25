@@ -237,7 +237,7 @@ class TreatmentTest extends TestCase
 
         $response = $this->json('PUT', '/api/treatments/'.$treatment->id.'?token='.$token, $data);
 
-        $response->assertOk();
+        $response->assertOk()->assertJsonFragment(['title'=>$name]);
     }
     /**
      * A basic feature test example.
@@ -273,7 +273,7 @@ class TreatmentTest extends TestCase
 
         $response = $this->json('PUT', '/api/treatments/'.$treatment->id.'?token='.$token, $data);
 
-        $response->assertOk();
+        $response->assertOk()->assertJsonFragment(['title'=>$name]);
     }
     /**
      * A basic feature test example.
@@ -341,7 +341,7 @@ class TreatmentTest extends TestCase
                     ->create(['public' => 1]);
         $treatment = Treatment::first();
         $response = $this->json('POST', '/api/rate/'.$treatment->id.'?token='.$token);
-        $response->assertOk();
+        $response->assertOk()->assertJsonFragment(['isStar'=>true]);
     }
     /**
      * A basic feature test example.
@@ -361,7 +361,7 @@ class TreatmentTest extends TestCase
                     ->create(['public' => 1]);
         $treatment = Treatment::first();
         $response = $this->json('POST', '/api/report/'.$treatment->id.'?token='.$token);
-        $response->assertOk();
+        $response->assertOk()->assertJsonFragment(['isReported'=>true]);
     }
     /**
      * A basic feature test example.
@@ -385,6 +385,6 @@ class TreatmentTest extends TestCase
          
         $token = JWTAuth::fromUser($user);
         $response = $this->json('POST', '/api/report/'.$treatment->id.'?token='.$token);
-        $response->assertOk();
+        $response->assertOk()->assertJsonFragment(['isReported'=>true]);
     }
 }

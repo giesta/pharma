@@ -25,7 +25,7 @@ const UserI = (props) => {
   )
 }
 
-test('modal shows the children and a close button', () => {
+test('modal shows the user and a close button', () => {
   // Arrange
   const handleClose = jest.fn()
 

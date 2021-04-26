@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { render, fireEvent, screen, waitFor } from '@testing-library/react'
 import UserUpdate from "../../components/users/update-modal.component";
-import { Modal, Button, Form } from "react-bootstrap";
 import { createStore, applyMiddleware } from "redux";
 import reducers from "../../js/reducers";
 import randomId from "../../js/middlewares/randomId";
@@ -42,7 +41,7 @@ beforeEach(() => {
 
   
 
-test('modal shows the children and a close button', async () => {
+test('modal shows the user and a close button, let to update', async () => {
   // Arrange
   const handleClose = jest.fn()
   const handleSubmit = jest.fn()
@@ -74,8 +73,5 @@ test('modal shows the children and a close button', async () => {
     password: "",
     passwordConfirmation: "",
   }, expect.anything())
-)
-
-
-  
+)  
 })

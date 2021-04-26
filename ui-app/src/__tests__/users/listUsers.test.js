@@ -34,7 +34,7 @@ const server = setupServer(
 
 
 
-test('download users from internets', async () => {
+test('Users list from internets', async () => {
     render(<UserList />);
     
     const tableItems = await screen.getByText('Loading...'); 

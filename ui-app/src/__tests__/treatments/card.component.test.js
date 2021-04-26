@@ -22,7 +22,7 @@ const InitialTreatment = {
 }
 
 
-it('Treatments table rendering', () => {
+it('Treatments card rendering', () => {
 
     render(<><TreatmentCard Treatments = {InitialTreatment.data}></TreatmentCard></>);
     expect(screen.getByText('Alergijos gydymas')).toBeInTheDocument();

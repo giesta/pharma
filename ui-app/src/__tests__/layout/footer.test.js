@@ -4,7 +4,7 @@ import {render, cleanup, screen} from '@testing-library/react';
 
 afterEach(cleanup)
 
-it('Error rendering', () => {
+it('Footer rendering', () => {
 
     render(<><Footer></Footer></>);
 

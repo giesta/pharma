@@ -60,7 +60,7 @@ const drugs = [
 
 const GetActionFormat = (row) =>{};
 
-it('Users table rendering', () => {
+it('Drugs table rendering', () => {
 
     render(<><DrugsTable columns ={columns} drugs = {drugs} GetActionFormat={GetActionFormat}/></>);
 

@@ -6,7 +6,7 @@ const buttonTitle = "Issaugoti";
 
 afterEach(cleanup)
 
-it('Users table rendering', () => {
+it('Drugs upload component rendering', () => {
 
     render(<><CSV buttonTitle ={buttonTitle}/></>);
 

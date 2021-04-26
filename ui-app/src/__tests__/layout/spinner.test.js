@@ -6,7 +6,7 @@ afterEach(cleanup)
 
 const text = "Loading..."
 
-it('Error rendering', () => {
+it('Spinner rendering', () => {
 
     render(<><Spinner></Spinner></>);
 

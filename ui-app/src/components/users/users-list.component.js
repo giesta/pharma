@@ -43,7 +43,6 @@ export default function UsersList() {
   };
 
   const handleSubmit = (form) => {
-    console.log(form);
     handleInputChange(form); 
     updateUser(form);       
   };
@@ -74,7 +73,6 @@ export default function UsersList() {
       .then(response => {  
         const { current_page, per_page, total } = response.data.meta;        
         if(response.data.data.length !== 0){
-          console.log(current_page);
           setUsers(response.data.data);
           setPageSize(per_page);
           setPage(current_page);     
@@ -125,11 +123,6 @@ export default function UsersList() {
         </td>
     );
 };
-
-const deleteItemFromState = (id) => {
-  const updatedItems = users.data.filter(x=>x.id!==id)
-  setUsers({ data: updatedItems })
-}
 
 const columns = [{  
     dataField: 'no',  
@@ -190,7 +183,6 @@ const deleteItem = (id) => {
       }else{
         retrieveUsers();
       }
-      //deleteItemFromState(id);
       handleCloseConfirm();
     })
     .catch(e => {

@@ -13,9 +13,7 @@ import { BsPen, BsTrash, BsInfoCircle, BsPlus, BsEye } from "react-icons/bs";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
 import ErrorBoundary from "../layout/error.component";
 
-export default function TreatmentList() {
-
-  
+export default function TreatmentList() {  
   const columns = [{  
       dataField: '',  
       text: 'Nr' },  
@@ -84,12 +82,10 @@ export default function TreatmentList() {
       setTreatment({
         ...treatment,
         diagram: selectedDiagram,
-      }
-      
+      }      
       );
       setError(false);
     }
-    console.log(treatment);
   }, [isWriting, selectedDiagram]);
 
   function handleAddInput() {
@@ -112,7 +108,6 @@ export default function TreatmentList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }else{
         const value = event.value;
         const values = [...fields];
@@ -121,10 +116,7 @@ export default function TreatmentList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }
-      
-      //setSelectedLeaflets(arr);
     };
 
     const addSelectedForm = (i, event) =>
@@ -135,7 +127,6 @@ export default function TreatmentList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }else{
         const value = event.value;
         const values = [...fields];
@@ -143,10 +134,7 @@ export default function TreatmentList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }
-      
-      //setSelectedLeaflets(arr);
     };
     const addSelectedStrength = (i, event) =>
     {
@@ -155,19 +143,14 @@ export default function TreatmentList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }else{
         const value = event.value;
         const values = [...fields];
         values[i]['strength'] = value;
         var arr = treatment.disease.drugs.filter(item=>item.form===values[i]['form']&&item.strength===values[i]['strength']);
         values[i]['selected'] = arr;
-        //console.log(arr);
         setFields(values);
-        console.log(fields);
       }
-      
-      //setSelectedLeaflets(arr);
     };
 
     const addSelectedDiagram = (event) =>
@@ -182,18 +165,14 @@ export default function TreatmentList() {
     };
 
   function handleAddedInputChange(i, event) {
-    console.log(event);
     const values = [...fields];
     const { name, value } = event.target;
     values[i][name] = value;
     setFields(values);
-    console.log(fields);
   }
 
   function handleRemoveInput(i) {
     const values = [...fields];
-    console.log(i);
-    console.log(values);
     values.splice(i, 1);
     setFields(values);
   }
@@ -206,8 +185,7 @@ export default function TreatmentList() {
 const map = new Map();
 for (const item of arr) {
     if(!map.has(item.drug+item.form+item.strength)){
-        map.set(item.drug+item.form+item.strength, true); 
-        console.log(drugs);   // set any value to Map
+        map.set(item.drug+item.form+item.strength, true);
         var arrNames = drugs.filter(x=>x.form===item.form&&x.strength===item.strength&&x.substance.name===item.drug.name);
         result.push({
           drug: item.drug, 
@@ -231,7 +209,6 @@ for (const item of arr) {
     setTreatment(initialTreatmentState);
     setPage(1);
   };
-
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -291,15 +268,13 @@ for (const item of arr) {
   };
   const handleChecked = event =>{
     setTreatment({ ...treatment, public: event.target.checked ? 1 : 0 });
-  };
-  
+  };  
 
   const retrieveTreatments = (pageNumber=1) => {
     TreatmentsDataService.findByTitle(pageNumber, searchTitle)
       .then(response => { 
         const { current_page, per_page, total } = response.data.meta;   
         if(response.data.data.length !== 0){
-          console.log(response.data.data);
           setTreatments({...Treatments, data: response.data.data});
           setPageSize(per_page);
           setPage(current_page);     
@@ -339,14 +314,12 @@ for (const item of arr) {
       }else{
         var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
         return item;
-      }
-      
+      }      
   });
 return items;
 }
 
-  const GetActionFormat = (row) =>{
-    
+  const GetActionFormat = (row) =>{    
     return (
         <td className="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
@@ -373,7 +346,6 @@ return items;
 const loadOptions = (inputValue, callback) => {
   DiseaseOverviewsDataService.findByName(inputValue)
     .then(response => {
-      console.log(response.data.data);
       const result = response.data.data.map(x => 
         {
           return { value: x, label: x.name }
@@ -391,8 +363,7 @@ const loadOptions = (inputValue, callback) => {
 const getDiagramsOptions = () => {
   DiagramsDataService.getAll()
     .then(response => {      
-      if(response.data.data.length !== 0){
-        //setDiagrams(response.data.data);  
+      if(response.data.data.length !== 0){  
         const result =  response.data.data.map(x=>
           {
             return { value: x, label: x.name }
@@ -419,7 +390,6 @@ const handleOverviewsInputChange = event =>
     
   }else{
     var selected = event.value;
-    console.log(selected);
     setTreatment({
       ...treatment,
       id: treatment.id,
@@ -435,7 +405,6 @@ const deleteItemFromState = (id) => {
   setTreatments({ data: updatedItems })
 }
 const saveTreatment = () => {
-  console.log(fields);
   var drugsArr = fields.map(item=>item.selected);
   var newArr = [];
 newArr = [].concat(...drugsArr);
@@ -444,7 +413,6 @@ drugsArr = newArr.map(item=>{
   return {id: item.id, uses:item.uses}
 });
     const data = new FormData();
-    console.log(JSON.stringify(drugsArr));
     data.append('Content-Type','multipart/formdata');
     if(selectedFile!==null){
         data.append("algorithm", selectedFile);        
@@ -462,7 +430,6 @@ drugsArr = newArr.map(item=>{
     }
 TreatmentsDataService.create(data)
     .then((response) => {
-      console.log(response.data.data);
       refreshList();
       setUrl(null);
       handleClose();
@@ -479,7 +446,7 @@ const updateTreatment = () => {
   newArr = [].concat(...drugsArr);
   drugsArr = newArr.map(item=>{
     return {id: item.id, uses:item.uses}
-  });console.log(drugsArr);
+  });
   const data = new FormData();
   data.append('Content-Type','multipart/formdata');
   data.append('_method', 'PUT');
@@ -526,7 +493,6 @@ const updateTreatment = () => {
 const deleteItem = (id) => {
   TreatmentsDataService.remove(id)
     .then(() => {
-      //deleteItemFromState(id);
       if(Treatments.data.length>1){
         retrieveTreatments(page);
       }else if(page > 1){
@@ -534,8 +500,7 @@ const deleteItem = (id) => {
       }
       else{
         retrieveTreatments();
-      }
-      
+      }      
       handleCloseConfirm();
     })
     .catch(e => {
@@ -556,7 +521,6 @@ const findByTitle = () => {
           setPage(current_page);     
           setTotal(total);          
         }
-      console.log(response.data.data);
     })
     .catch(e => {
       setError(true);
@@ -611,47 +575,53 @@ const findByTitle = () => {
       <div className="container">  
       
       <>
-  <TreatmentTable columns ={columns} Treatments={Treatments} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></TreatmentTable>
+  <TreatmentTable 
+    columns ={columns} 
+    Treatments={Treatments} 
+    GetActionFormat={GetActionFormat} 
+    rowNumber={(page*5-5)}
+  >    
+  </TreatmentTable>
 
   { show&&
   <TreatmentCreateUpdate 
-  selectRef = {selectRef} 
-  setSelectRef = {setSelectRef} 
-  loadOptions={loadOptions} 
-  show ={show} 
-  handleClose={handleClose} 
-  treatment={treatment} 
-  validated={validated} 
-  handleSubmit={handleSubmit} 
-  handleInputChange={handleInputChange} 
-  handleChecked={handleChecked} 
-  diseases={overviews} 
-  url={url} 
-  handleOverviewsInputChange={handleOverviewsInputChange}
-  fields={fields}
-  handleAddedInputChange={handleAddedInputChange}
-  addSelectedForm={addSelectedForm}        
-  addSelectedStrength={addSelectedStrength}
-  handleAddInput={handleAddInput}
-  handleRemoveInput={handleRemoveInput}
-  AddSelectedDrugs={AddSelectedDrugs}
-  diagramsOptions={diagramsOptions}
-  addSelectedDiagram={addSelectedDiagram}
-  getElements={getElements}
-  removeImageFile={removeImageFile}
-  imageRef={setImageRef}
-  error={error}
+    selectRef = {selectRef} 
+    setSelectRef = {setSelectRef} 
+    loadOptions={loadOptions} 
+    show ={show} 
+    handleClose={handleClose} 
+    treatment={treatment} 
+    validated={validated} 
+    handleSubmit={handleSubmit} 
+    handleInputChange={handleInputChange} 
+    handleChecked={handleChecked} 
+    diseases={overviews} 
+    url={url} 
+    handleOverviewsInputChange={handleOverviewsInputChange}
+    fields={fields}
+    handleAddedInputChange={handleAddedInputChange}
+    addSelectedForm={addSelectedForm}        
+    addSelectedStrength={addSelectedStrength}
+    handleAddInput={handleAddInput}
+    handleRemoveInput={handleRemoveInput}
+    AddSelectedDrugs={AddSelectedDrugs}
+    diagramsOptions={diagramsOptions}
+    addSelectedDiagram={addSelectedDiagram}
+    getElements={getElements}
+    removeImageFile={removeImageFile}
+    imageRef={setImageRef}
+    error={error}
   >
     </TreatmentCreateUpdate>}
       
   {confirm&&< TreatmentDelete id={id} name={"gydymą"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ TreatmentDelete>}
 
   {info&&<TreatmentInfo 
-  fields = {fields} 
-  info = {info}  
-  treatment={treatment} 
-  handleCloseInfo={handleCloseInfo} 
-  getElements={getElements}
+    fields = {fields} 
+    info = {info}  
+    treatment={treatment} 
+    handleCloseInfo={handleCloseInfo} 
+    getElements={getElements}
   >
   </TreatmentInfo>}
   <div>

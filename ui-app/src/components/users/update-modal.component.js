@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Modal, Button, Form, Col, InputGroup } from "react-bootstrap";
+import { Modal, Button, Form } from "react-bootstrap";
 import ErrorBoundary from "../layout/error.component";
 import { connect } from "react-redux";
 import { Formik } from 'formik';

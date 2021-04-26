@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Switch, Route} from "react-router-dom";
+import { BrowserRouter, Switch, Route} from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -85,14 +85,16 @@ class App extends Component {
           <Logo />
           <Header logOut = {this.logOut}/>
           <Sidebar />
-          <Switch>
-            <ProtectedRoute exact path="/boards" component={Basic} roles={["admin"]}/>
-            <ProtectedRoute exact path="/manage" component={Manage} roles={["admin"]}/>
-            <ProtectedRoute exact path="/schedule" component={Schedule} roles={["admin"]}/>
-            <ProtectedRoute exact path="/reports" component={Reports} roles={["admin"]}/>
-            <ProtectedRoute exact path="/settings" component={Settings} roles={["admin"]}/>
-            <ProtectedRoute exact path="/admin" component={AdminProfile} roles={["admin"]}/>
-          </Switch>
+          <BrowserRouter>
+            <Switch>
+              <ProtectedRoute exact path="/boards" component={Basic} roles={["admin"]}/>
+              <ProtectedRoute exact path="/manage" component={Manage} roles={["admin"]}/>
+              <ProtectedRoute exact path="/schedule" component={Schedule} roles={["admin"]}/>
+              <ProtectedRoute exact path="/reports" component={Reports} roles={["admin"]}/>
+              <ProtectedRoute exact path="/settings" component={Settings} roles={["admin"]}/>
+              <ProtectedRoute exact path="/admin" component={AdminProfile} roles={["admin"]}/>
+            </Switch>
+          </BrowserRouter>
         </div>
       </div>
       </div>
@@ -100,22 +102,24 @@ class App extends Component {
       <MainNavbar showPharmacistBoard = {showPharmacistBoard} showAdminBoard = {showAdminBoard} currentUser = {currentUser} logOut = {this.logOut} />
 
         <div className="container main-container mt-3">
-          <Switch>
-            <ProtectedRoute exact path={["/","/home"]} component={Home} roles={["admin", "pharmacist"]}/>
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/register" component={Register} />            
-            <ProtectedRoute exact path="/profile" component={Profile} roles={["admin", "pharmacist"]}/> 
-            <ProtectedRoute exact path="/user" component={BoardUser} roles={["admin", "pharmacist"]}/> 
-            <ProtectedRoute exact path="/drugs" component={DrugsList} roles={["admin", "pharmacist"]}/> 
-            <ProtectedRoute exact path="/diseases" component={DiseasesList} roles={["admin", "pharmacist"]}/> 
-            <ProtectedRoute exact path="/treatments" component={TreatmentsList} roles={["admin", "pharmacist"]}/> 
-            <ProtectedRoute exact path="/diagrams" component={Diagram} roles={["admin", "pharmacist"]}/>
-            <ProtectedRoute exact path="/interactions" component={DrugsInteractions} roles={["admin", "pharmacist"]}/>
-            <ProtectedRoute exact path="/diagrams/create" component={CreateDiagram} roles={["admin", "pharmacist"]}/>
-            <ProtectedRoute exact path="/diagrams/update" component={CreateDiagram} roles={["admin", "pharmacist"]}/>
-            <Route exact path="/treatments/:id" component={Treatment}/>            
-            <ProtectedRoute exact path="/users" component={UsersList} roles={["admin"]}/>
-          </Switch>
+          <BrowserRouter>
+            <Switch>
+              <ProtectedRoute exact path={["/","/home"]} component={Home} roles={["admin", "pharmacist"]}/>
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/register" component={Register} />            
+              <ProtectedRoute exact path="/profile" component={Profile} roles={["admin", "pharmacist"]}/> 
+              <ProtectedRoute exact path="/user" component={BoardUser} roles={["admin", "pharmacist"]}/> 
+              <ProtectedRoute exact path="/drugs" component={DrugsList} roles={["admin", "pharmacist"]}/> 
+              <ProtectedRoute exact path="/diseases" component={DiseasesList} roles={["admin", "pharmacist"]}/> 
+              <ProtectedRoute exact path="/treatments" component={TreatmentsList} roles={["admin", "pharmacist"]}/> 
+              <ProtectedRoute exact path="/diagrams" component={Diagram} roles={["admin", "pharmacist"]}/>
+              <ProtectedRoute exact path="/interactions" component={DrugsInteractions} roles={["admin", "pharmacist"]}/>
+              <ProtectedRoute exact path="/diagrams/create" component={CreateDiagram} roles={["admin", "pharmacist"]}/>
+              <ProtectedRoute exact path="/diagrams/update" component={CreateDiagram} roles={["admin", "pharmacist"]}/>
+              <Route exact path="/treatments/:id" component={Treatment}/>            
+              <ProtectedRoute exact path="/users" component={UsersList} roles={["admin"]}/>
+            </Switch>
+          </BrowserRouter>
         </div>
         
         </>

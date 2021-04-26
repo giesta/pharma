@@ -32,7 +32,6 @@ import Header from "./components/admin/Header/Header.js";
 import Basic from "./components/admin/Routes/Basic/Basic.js";
 import Manage from "./components/admin/Routes/Manage/Manage.js";
 import Reports from "./components/admin/Routes/Reports/Reports.js";
-import Schedule from "./components/admin/Routes/Schedule/Schedule.js";
 import Settings from "./components/admin/Routes/Settings/Settings.js";
 import AdminProfile from "./components/admin/Routes/Profile/Profile.js";
 
@@ -89,7 +88,6 @@ class App extends Component {
             <Switch>
               <ProtectedRoute exact path="/boards" component={Basic} roles={["admin"]}/>
               <ProtectedRoute exact path="/manage" component={Manage} roles={["admin"]}/>
-              <ProtectedRoute exact path="/schedule" component={Schedule} roles={["admin"]}/>
               <ProtectedRoute exact path="/reports" component={Reports} roles={["admin"]}/>
               <ProtectedRoute exact path="/settings" component={Settings} roles={["admin"]}/>
               <ProtectedRoute exact path="/admin" component={AdminProfile} roles={["admin"]}/>

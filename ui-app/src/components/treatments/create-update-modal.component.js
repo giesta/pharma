@@ -12,39 +12,31 @@ import ReactFlow, {
 
 export default function CreateModal(props) {
     const onLoad = (reactFlowInstance) => {
-        console.log('flow loaded:', reactFlowInstance);
         reactFlowInstance.fitView({ padding: 0.8, includeHiddenNodes: true });
       };
  
     function makeOptionsForm(field, selectedDrug){
-        //console.log(field);
-        console.log(field);
         var arr = field.drugs.filter(item=>item.substance.name===selectedDrug.drug.name);
         const result = [];
         const map = new Map();
         for (const item of arr) {
             if(!map.has(item.form)){
                 map.set(item.form, true); 
-                //console.log(drugs);   // set any value to Map
                 result.push({
                 value: item.form, 
                 label:item.form,
                 });
             }
 }
-        //console.log(arr);
         return result;        
       } 
       function makeOptionsStrength(field, selectedDrug){
-        //console.log(field);
-        //console.log(selectedDrug);
         var arr = field.drugs.filter(item=>item.substance.name===selectedDrug.drug.name&&item.form===selectedDrug.form);
         const result = [];
         const map = new Map();
         for (const item of arr) {
             if(!map.has(item.strength)){
                 map.set(item.strength, true); 
-                //console.log(drugs);   // set any value to Map
                 result.push({
                 value: item.strength, 
                 label:item.strength,
@@ -65,14 +57,12 @@ function makeDrugsOptions(field){
         for (const item of arr) {
             if(!map.has(item.label)){
                 map.set(item.label, true); 
-                //console.log(drugs);   // set any value to Map
                 result.push({
                 value: item.value, 
                 label:item.label,
                 });
             }
 }
-        //console.log(result);
         return result;
       };
 

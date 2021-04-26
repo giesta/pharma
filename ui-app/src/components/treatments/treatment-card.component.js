@@ -12,7 +12,6 @@ import ReactFlow, {
 export default function TreatmentCard(props) {
 
   const onLoad = (reactFlowInstance) => {
-    console.log('flow loaded:', reactFlowInstance);
     reactFlowInstance.fitView({ padding: 0.8, includeHiddenNodes: true });
   };
 

@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import {
   FaAngleRight,
   FaAngleDown,
-  FaRegFolder,
-  FaRegFolderOpen,
-  FaGlobe,
   FaPills,
   FaVial,
   FaBriefcaseMedical,
@@ -53,7 +50,6 @@ const Leaf2 = ({ drug, label }, idx) => {
                 setView(true);
                 const docs = drug.link;
                 setDocs(drug.link);
-                console.log(drug);
                 }} size="sm">
             <FaEye/>
         </a>

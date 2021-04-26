@@ -14,19 +14,18 @@ import DrugInfo from "../drugs/info-modal.component";
 import DownloadTreatment from "./download-modal.component";
 import { Alert, Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form, OverlayTrigger, Tooltip, Accordion } from "react-bootstrap";
 import { BsStar, BsPeopleCircle, BsExclamationCircle, BsInfoCircle, BsCloudDownload } from "react-icons/bs";
-import fetchNodes from "./fetchNodes";
+
 import ReactFlow, {
   Controls,
   Background,
   ReactFlowProvider,
 } from 'react-flow-renderer'; 
-const nodes = fetchNodes();
+const nodes = [];
 var idDiagram=null;
 var idDisease=null;
 export default function Treatment(props) {
 
   const onLoad = (reactFlowInstance) => {
-    console.log('flow loaded:', reactFlowInstance);
     reactFlowInstance.fitView({ padding: 0.2, includeHiddenNodes: true });
   };
 
@@ -121,7 +120,6 @@ export default function Treatment(props) {
         .then(response => {
           
           if (response.data.data.length !== 0) {
-            console.log(response.data.data);
             setCurrentTreatment(response.data.data);
           }else{
             setNoData('No');
@@ -205,7 +203,6 @@ export default function Treatment(props) {
                   t1.push({label:item2.form, children:t2});//form
               }
             }
-            //console.log(drugs);   // set any value to Map
             result.push({label:item.name, children:t1});//substance
         }
 }
@@ -234,7 +231,6 @@ const downloadItem = async () => {
   console.log(currentTreatment.disease.name);
   const values = await DiseaseOverviewsDataService.findByTitle(1, currentTreatment.disease.name)
       .then(response => {
-          //console.log(response.data);
           if(response.data.data.length > 0){
             idDisease = response.data.data[0].id;
             setText('Mes radome susijusią ligą! Ar norite perrašyti šią "'+currentTreatment.disease.name + '" ligą?');          
@@ -292,7 +288,7 @@ const updateDisease = async () => {
     prevention: currentTreatment.disease.prevention,
     drugs: JSON.stringify(drugsArr),
     symptoms: JSON.stringify(currentTreatment.disease.symptoms.map(item=>item.id)),
-  };console.log(data);
+  };
   const value = await DiseaseOverviewsDataService.update(data.id, data)
     .then((resp) => {  
       return resp.data.data;
@@ -317,7 +313,7 @@ const createDisease = async () => {
     prevention: currentTreatment.disease.prevention,
     drugs: JSON.stringify(drugsArr),
     symptoms: JSON.stringify(currentTreatment.disease.symptoms.map(item=>item.id)),
-  };console.log(data);
+  };
   const value = await DiseaseOverviewsDataService.create(data)
     .then((resp) => {  
       idDisease = resp.data.data.id;
@@ -439,9 +435,9 @@ const getRelatedTreatments =()=>{
                       
       if(item.id !== currentTreatment.id && currentTreatment.diagram.author === userData.id){
         
-        return (<><a key={"related_"+idx} href={"/treatments/" + item.id}>"{item.title}"{' '}</a><br></br></>)
+        return (<><a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a><br></br></>)
       }else if(item.id !== currentTreatment.id && item.public===1){
-        return (<><a key={"related_"+idx} href={"/treatments/" + item.id}>"{item.title}"{' '}</a><br></br></>)
+        return (<><a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a><br></br></>)
       }                  
     });
     values = values.filter(item=>item!==undefined);
@@ -513,14 +509,10 @@ useEffect(getRelatedTreatments, [currentTreatment])
         <Row>
         <Col>
           <div>
-            <h6>Diagrama: "{currentTreatment.diagram.name}" {" "}
+            <h6>Diagrama: {currentTreatment.diagram.name} {" "}
           </h6>
-          </div>
-
-          
-             
-        <div className=" mt-2 border">   
-              
+          </div>                
+        <div className=" mt-2 border">              
                 <ReactFlowProvider>
                 <ReactFlow
                     elements={currentTreatment.diagram!==undefined?(getElements(currentTreatment.diagram)):([])}
@@ -543,7 +535,7 @@ useEffect(getRelatedTreatments, [currentTreatment])
       ):('')}
     <Row>
       <Col>
-      <div>{console.log(relatedTreatments.length)}
+      <div>
         {relatedTreatments.length>0?(                    
           <Accordion defaultActiveKey="0">
             <Card>
@@ -574,7 +566,7 @@ useEffect(getRelatedTreatments, [currentTreatment])
                 {currentTreatment.disease.description}
               <label>
                 <strong>Simptomai:</strong>
-              </label>{" "}{console.log(currentTreatment.disease.symptoms)}
+              </label>{" "}
               {currentTreatment.disease.symptoms.map((item, idx)=>{
                 return  <><Badge key={idx} variant="secondary">{item.name}</Badge><br /></>
                   

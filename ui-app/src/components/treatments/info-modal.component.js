@@ -9,15 +9,8 @@ import ReactFlow, {
 
 export default function InfoModal(props) {
     const onLoad = (reactFlowInstance) => {
-        console.log('flow loaded:', reactFlowInstance);
         reactFlowInstance.fitView({ padding: 0.8, includeHiddenNodes: true });
       };
-    function getUsesValue(field, selectedDrug){    
-
-        var arr = field.drugs.find(item=>item.form===selectedDrug.form&&item.strength===selectedDrug.strength&&item.name==selectedDrug.selected[0].name);
-
-      return arr&&arr.uses;
-    };
     return (
         <div>
             <Modal show={props.info} onHide={props.handleCloseInfo}>

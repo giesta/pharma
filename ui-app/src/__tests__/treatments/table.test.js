@@ -1,50 +1,69 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import UserTable from '../../components/users/table.component';
+import TreatmentTable from '../../components/treatments/table.component';
 import {render, fireEvent, cleanup, screen} from '@testing-library/react';
 import App from '../../App'
 
 afterEach(cleanup)
 
 const columns = [{  
-    dataField: 'no',  
+    dataField: '',  
     text: 'Nr' },  
   {  
-    dataField: 'name',  
-    text: 'Vardas',  
+    dataField: 'title',  
+    text: 'Pavadinimas',  
     sort:true}, {  
-    dataField: 'email',  
-    text: 'El. paštas',  
-    sort: true  },   
+    dataField: 'description',  
+    text: 'Aprašymas',  
+    sort: true  }, {  
+    dataField: 'disease',  
+    text: 'Liga',  
+    sort: true  }, {  
+    dataField: 'public',  
+    text: 'Viešas',  
+    sort: false  },   
     {
-        text: 'Veiksmai',
-        dataField: 'Actions',
-        editable: false 
-     } 
+    text: 'Veiksmai',
+    dataField: 'Actions',
+    editable: false 
+  }
 ];
-const users = [
-    {
-        name: 'shiler',
-        email: 'a@a.com',
-    },
-    {
-        name: 'mark',
-        email: 'm@a.com',
-    },
+const treatments = {
+        data:[
+        {
+            title: 'Alergijos gydymas',
+            description: 'alergine reakcija',
+            disease: {
+                name: 'Alergija',
+            },
+            public: "1",
+        },
+        {
+            title: 'Skausmo gydymas',
+            description: 'skausmas',
+            disease: {
+                name: 'Galvos skausmas',
+            },
+            public: "1",
+        },
 
-]
+    ]
+}
+
 
 const GetActionFormat = (row) =>{};
 
-it('Users table rendering', () => {
+it('Treatments table rendering', () => {
 
-    render(<><UserTable columns ={columns} users = {users} GetActionFormat={GetActionFormat}/></>);
+    render(<><TreatmentTable columns ={columns} Treatments = {treatments} GetActionFormat={GetActionFormat}/></>);
 
-    expect(screen.getByText('El. paštas')).toBeInTheDocument();
-    expect(screen.getByText('Vardas')).toBeInTheDocument();
+    expect(screen.getByText('Pavadinimas')).toBeInTheDocument();
+    expect(screen.getByText('Aprašymas')).toBeInTheDocument();
+    expect(screen.getByText('Liga')).toBeInTheDocument();
+    expect(screen.getByText('Viešas')).toBeInTheDocument();
     expect(screen.getByText('Nr')).toBeInTheDocument();
-    expect(screen.getByText('shiler')).toBeInTheDocument();
-    expect(screen.getByText('a@a.com')).toBeInTheDocument();
-    expect(screen.getByText('mark')).toBeInTheDocument();
-    expect(screen.getByText('m@a.com')).toBeInTheDocument();
+    expect(screen.getByText('Alergijos gydymas')).toBeInTheDocument();
+    expect(screen.getByText('alergine reakcija')).toBeInTheDocument();
+    expect(screen.getByText('Skausmo gydymas')).toBeInTheDocument();
+    expect(screen.getByText('skausmas')).toBeInTheDocument();
  })

@@ -34,21 +34,10 @@ export default function Footer() {
 
 
 <div className="col">
-<h5 className="">Greitos nuorodos</h5>
-
-<ul className="footer_ul_amrc">
-    {user!==null&&user.role==="admin"?(
-        <>
-        <li><a href="/settings">Nustatymai</a></li>
-        <li><a href="/manage">Naudotojai</a></li>
-        </>
-):(<>
-        <li><a href="/diseases">Ligos</a></li>
-        <li><a href="/drugs">Vaistai</a></li>
-        <li><a href="/treatments">Algoritmai</a></li>
-        <li><a href="/interactions">Sąveikų tarp vaistų paieška</a></li>
-    </>)}
-
+<h5 className="">Sveikatos politika</h5>
+<ul className="footer_ul_amrc">    
+    <li><a href="https://sam.lrv.lt/">Lietuvos Respublikos sveikatos apsaugos ministerija</a></li>
+    <li><a href="https://ligoniukasa.lrv.lt/lt/">Valstybinė ligonių kasa prie Sveikatos apsaugos ministerijos</a></li>
 </ul>
 
 </div>

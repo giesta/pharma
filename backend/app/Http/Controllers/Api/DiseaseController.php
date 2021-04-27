@@ -36,18 +36,10 @@ class DiseaseController extends Controller
     {
         $user = auth()->user();
         $name = $request->name;
-        $diseases = Disease::where('diseases.name', 'LIKE', "%$name%")->limit(100)->get();
-        $myDiseases = Overview::select('diseases.*')
-        ->join('diseases','diseases.id', '=', 'overviews.disease_id')
-        ->where('overviews.user_id', '=', $user->id)
-        ->get();
-        $filtered = $diseases->filter(function ($item) use ($myDiseases) {
-            if(!$myDiseases->contains('id', $item->id)) {
-                return $item;
-            }            
-        });
-        $result = $filtered->all();
-        return DiseaseResource::collection($result);        
+        $diseases = Disease::where('diseases.name', 'LIKE', "%$name%")
+        ->whereRaw("diseases.id not in (select a.id from diseases a join overviews b on a.id=b.disease_id where b.user_id=".$user->id.")")
+        ->limit(100)->get();
+        return DiseaseResource::collection($diseases);        
     }
 
     /**

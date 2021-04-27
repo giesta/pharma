@@ -88,12 +88,12 @@ export default function Profile() {
             <div className="col-xs-12 col-sm-6 col-md-4 col-lg-4 col cell" style={{"wordWrap": "break-word"}}>
                                 
                     <p>
-                    <strong>Email:</strong>{" "}
+                    <strong>El. paštas:</strong>{" "}
                     {currentUser.email}
                     </p>
-                    <strong>Authorities:</strong>
+                    <strong>Profilio statusas:</strong>
                     <ul>
-                    {currentUser.role}
+                    {currentUser.role==='pharmacist'?"Farmacijos specialistas":''}
                     </ul>
             </div>
         </div>

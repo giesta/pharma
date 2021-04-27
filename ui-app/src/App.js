@@ -55,18 +55,7 @@ class App extends Component {
         showAdminBoard: user.role==="admin",
         showPharmacistBoard: user.role==="pharmacist",
       });
-    }
-      
-  }
-  register(){
-    const user = AuthService.getCurrentUser();
-    if(user){
-      this.setState({        
-        currentUser: user,
-        showAdminBoard: user.role==="admin",
-        showPharmacistBoard: user.role==="pharmacist",
-      });
-    }
+    }      
   }
 
   logOut() {
@@ -102,7 +91,7 @@ class App extends Component {
       </div>
       </div>
       ):(<>
-      <MainNavbar showPharmacistBoard = {showPharmacistBoard} showAdminBoard = {showAdminBoard} currentUser = {currentUser} logOut = {this.logOut} register ={this.register} />
+      <MainNavbar showPharmacistBoard = {showPharmacistBoard} showAdminBoard = {showAdminBoard} currentUser = {currentUser} logOut = {this.logOut} />
 
         <div className="container main-container mt-3">
             <Switch>
@@ -110,7 +99,6 @@ class App extends Component {
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />            
               <ProtectedRoute exact path="/profile" component={Profile} roles={["admin", "pharmacist"]}/> 
-              <ProtectedRoute exact path="/user" component={BoardUser} roles={["admin", "pharmacist"]}/> 
               <ProtectedRoute exact path="/drugs" component={DrugsList} roles={["admin", "pharmacist"]}/> 
               <ProtectedRoute exact path="/diseases" component={DiseasesList} roles={["admin", "pharmacist"]}/> 
               <ProtectedRoute exact path="/treatments" component={TreatmentsList} roles={["admin", "pharmacist"]}/> 

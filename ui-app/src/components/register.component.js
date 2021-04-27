@@ -105,11 +105,6 @@ setRedirect= ()=>{
     redirect: true
   })
 }
-renderRedirect = () => {
-  if (this.state.redirect) {
-    return <Redirect to='/profile' />
-  }
-}
 
   onChangeName(e) {
     this.setState({
@@ -168,8 +163,8 @@ renderRedirect = () => {
             message: [jwt_decode(response.data.access_token).user.name],
             successful: true
           });
-          this.register();
-          this.setRedirect();
+          this.props.history.push("/profile");
+          window.location.reload();
         },
         error => {
           var resMessage ="";
@@ -202,7 +197,6 @@ renderRedirect = () => {
   render() {
     return (
       <div className="col-md-12">
-        {this.renderRedirect()}
         <div className="card card-container">
           <img
             src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"

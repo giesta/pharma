@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef  } from 'react';
 import DiagramsDataService from "../../services/diagrams/list.service";
-import { Button, Form, Row, Col} from "react-bootstrap";
+import { Button, Form} from "react-bootstrap";
 import ErrorBoundary from "../layout/error.component";
 
 

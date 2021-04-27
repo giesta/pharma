@@ -17,17 +17,6 @@ const modalRoot = document.createElement('div')
 modalRoot.setAttribute('id', 'modal-root')
 document.body.appendChild(modalRoot)
 
-const initialTreatmentState = {  
-    id: null,  
-    title: "",
-    description: "",
-    algorithm: "",
-    diagram:null,
-    public: 0,
-    drugs:[],
-    disease: null
-  };
-
   const initialDiseaseState = {  
     id: null,
     description: "",

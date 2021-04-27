@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { BrowserRouter, Switch, Route} from "react-router-dom";
+import { Switch, Route} from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
@@ -11,7 +11,6 @@ import Login from "./components/login.component";
 import Register from "./components/register.component";
 import Home from "./components/home.component";
 import Profile from "./components/profile.component";
-import BoardUser from "./components/board-user.component";
 import DrugsList from "./components/drugs/drugs-list.component";
 import DrugsInteractions from "./components/drugs/interactions.component";
 import DiseasesList from "./components/diseases/diseases-list.component";

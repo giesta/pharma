@@ -1,8 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import UserTable from '../../components/users/table.component';
-import {render, fireEvent, cleanup, screen} from '@testing-library/react';
-import App from '../../App'
+import {render,  cleanup, screen} from '@testing-library/react';
 
 afterEach(cleanup)
 

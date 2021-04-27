@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import ReactDOM from 'react-dom'
-import { render, fireEvent, screen, waitFor } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import TreatmentCreate from "../../components/treatments/create-update-modal.component";
 import { createStore, applyMiddleware } from "redux";
 import reducers from "../../js/reducers";

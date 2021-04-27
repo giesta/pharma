@@ -45,7 +45,7 @@ export default function TreatmentList() {
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
 
-  const [overviews, setOverviews] = React.useState([]);
+  const [overviews] = React.useState([]);
   const [selectedDiagram, setSelectedDiagram] = React.useState(null); 
   const [diagramsOptions, setDiagramsOptions] = React.useState([]); 
   
@@ -62,7 +62,6 @@ export default function TreatmentList() {
 
   const [fields, setFields] = React.useState([]);
   const [isWriting, setIsWriting] = React.useState(false);
-  const [elements, setElements] = React.useState([]);
 
   const initialTreatmentState = {  
     id: null,  
@@ -312,8 +311,8 @@ for (const item of arr) {
         var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
         return item;
       }else{
-        var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
-        return item;
+        var itemVal = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
+        return itemVal;
       }      
   });
 return items;
@@ -400,10 +399,6 @@ const handleOverviewsInputChange = event =>
   }
 };
 
-const deleteItemFromState = (id) => {
-  const updatedItems = Treatments.data.filter(x=>x.id!==id)
-  setTreatments({ data: updatedItems })
-}
 const saveTreatment = () => {
   var drugsArr = fields.map(item=>item.selected);
   var newArr = [];

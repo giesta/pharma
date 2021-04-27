@@ -1,6 +1,6 @@
 import React from 'react';
 import TreatmentCard from '../../components/treatments/treatment-card.component';
-import {render, fireEvent, cleanup, screen} from '@testing-library/react';
+import {render, cleanup, screen} from '@testing-library/react';
 
 afterEach(cleanup)
 

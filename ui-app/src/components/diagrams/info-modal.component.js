@@ -11,7 +11,7 @@ import ReactFlow, {
     const onLoad = (reactFlowInstance) => {
       reactFlowInstance.fitView({ padding: 0.2, includeHiddenNodes: true });
     };
-      const [elements, setElements] = useState(props.elements);
+      const [elements ] = useState(props.elements);
     return (
         <Modal size="xl" show={props.info} onHide={props.handleCloseInfo}>
             <Modal.Header closeButton>

@@ -1,9 +1,6 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import UserList from '../../components/users/users-list.component';
-import {render, fireEvent, cleanup, screen} from '@testing-library/react';
-import App from '../../App'
-import UsersDataService from '../../services/users/users.service';
+import {render } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
@@ -37,7 +34,7 @@ const server = setupServer(
 test('Users list from internets', async () => {
     render(<UserList />);
     
-    const tableItems = await screen.getByText('Loading...'); 
+    //const tableItems = await screen.getByText('Loading...'); 
     //expect(tableItems[0]).toHaveTextContent('mark');
   });
 

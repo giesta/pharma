@@ -175,10 +175,10 @@ export default function CreateModal(props) {
                     }
                     <div>
                     <Form.Label>Pavadinimas</Form.Label> 
-                    {field.selected!==undefined && field.selected.length!==0?(field.selected.map((item)=>
+                    {field.selected!==undefined && field.selected.length!==0?(field.selected.map((item, idx)=>
                               item.registration.toUpperCase().includes("IŠREGISTRUOTAS")?
-                              <Badge pill variant="warning">{item.name}</Badge>
-                                  :<Badge pill variant="success">{item.name}</Badge>
+                              <Badge key={"badge__"+idx} pill variant="warning">{item.name}</Badge>
+                                  :<Badge key={"badge_success_"+idx} pill variant="success">{item.name}</Badge>
                           )):('')
                           }
                       </div>
@@ -187,7 +187,7 @@ export default function CreateModal(props) {
                         <Form.Label>Vartojimas</Form.Label>
                         <Form.Control type="text"  as="textarea" placeholder="" value={field.uses} onChange={(e)=>props.handleAddedInputChange(idx, e)}  name="uses"/>
                     </Form.Group>):('')}
-                    <div class="row">
+                    <div className="row">
   
   <div className="container text-right"><a type="button" className="link_danger" onClick={()=>props.handleRemoveInput(idx)} >
                         Šalinti <BsXCircle></BsXCircle>
@@ -198,9 +198,11 @@ export default function CreateModal(props) {
                     )
                 })}    
                 
-                <div class="col-auto mr-auto mt-2"><a type="button" className="link_success" size="sm" onClick={props.handleAddInput} >
-                Įtraukti vaistą <BsPlusCircle></BsPlusCircle>
-          </a></div>                      
+                <div className="col-auto mr-auto mt-2">
+                    <a type="button" className="link_success" size="sm" onClick={props.handleAddInput} >
+                    Įtraukti vaistą <BsPlusCircle></BsPlusCircle>
+                    </a>
+                </div>                      
                      
                 </Modal.Body>
                 <Modal.Footer>

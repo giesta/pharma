@@ -3,7 +3,6 @@ import DiagramsDataService from "../../services/diagrams/list.service";
 import { useHistory } from "react-router-dom";
 import DiagramDelete from "../delete-modal.component";
 import DiagramInfo from "./info-modal.component";
-//import diagramUpdate from "./update-modal.component";
 import DiagramsTable from "./table.component";
 import Spinner from "../layout/spinner.component";
 import Pagination from "react-js-pagination";
@@ -119,8 +118,7 @@ export default function DiagramsList() {
       });
   };
   
-  const GetActionFormat = (row) =>{
-    
+  const GetActionFormat = (row) =>{    
     return (
       <td className="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
@@ -128,33 +126,28 @@ export default function DiagramsList() {
                 setDiagram(row);
                 var arr = row.nodes.concat(row.edges);
                 var items = arr.map((el)=>{
-                  console.log(el);
                   if(el.source === undefined){
                     var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
                     return item;
                   }else{
                     var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
                     return item;
-                  }
-                  
+                  }                  
               });
                 setElements(items); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
               function(event){ 
-                var arr = row.nodes.concat(row.edges);
-                
+                var arr = row.nodes.concat(row.edges);                
                 var items = arr.map((el)=>{
-                  console.log(el);
                   if(el.source === undefined){
                     var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
                     return item;
                   }else{
                     var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
                     return item;
-                  }
-                  
+                  }                  
               });
                 setElements(items);setDiagram(row); setShow(true);
                 history.push({ 
@@ -171,11 +164,6 @@ export default function DiagramsList() {
         </td>
     );
 };
-
-const deleteItemFromState = (id) => {
-  const updatedItems = diagrams.filter(x=>x.id!==id)
-  setDiagrams(updatedItems)
-}
 
 const columns = [{  
     dataField: 'no',  

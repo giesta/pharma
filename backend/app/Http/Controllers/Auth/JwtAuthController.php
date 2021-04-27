@@ -106,12 +106,5 @@ class JwtAuthController extends Controller
         }
 
     }
-  
-    public function getMe(TokenRequest $request)
-    {
-        $user = JWTAuth::authenticate($request->token);
-
-        return response()->json(['user' => $user]);
-    }
     
 }

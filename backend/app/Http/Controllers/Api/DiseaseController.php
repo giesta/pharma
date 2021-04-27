@@ -60,35 +60,7 @@ class DiseaseController extends Controller
             'updated_at'=>date("Y-m-d\TH:i:s\Z"),
         ], Response::HTTP_CREATED);
 
-    }   
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {    
-        $user = auth()->user();
-        $role = $user->roles()->first()->name;
-        if($role ==="admin"){
-            $disease = Disease::findOrFail($id);
-        }else{
-            $disease = $user->diseases()->findOrFail($id);
-        }
-        try{         
-            $disease->update($request->only(['name', 'description']));
-            $disease->leaflets()->sync(json_decode($request->drugs));
-            $disease->symptoms()->sync(json_decode($request->symptoms));
-        }
-        catch (QueryException $ex) { // Anything that went wrong
-            abort(500, $ex->getMessage());
-        }
-        return new DiseaseResource($disease->with('leaflets')->findOrFail($id));
-    }
-
+    } 
     /**
      * Remove the specified resource from storage.
      *

@@ -58,6 +58,16 @@ class App extends Component {
     }
       
   }
+  register(){
+    const user = AuthService.getCurrentUser();
+    if(user){
+      this.setState({        
+        currentUser: user,
+        showAdminBoard: user.role==="admin",
+        showPharmacistBoard: user.role==="pharmacist",
+      });
+    }
+  }
 
   logOut() {
     AuthService.logout();
@@ -71,10 +81,7 @@ class App extends Component {
   render() {
     const { currentUser, showPharmacistBoard, showAdminBoard } = this.state;
 
-    return (
-
-      
-      
+    return (     
       <div>
         {
         showAdminBoard?(
@@ -84,7 +91,6 @@ class App extends Component {
           <Logo />
           <Header logOut = {this.logOut}/>
           <Sidebar />
-          <BrowserRouter>
             <Switch>
               <ProtectedRoute exact path="/boards" component={Basic} roles={["admin"]}/>
               <ProtectedRoute exact path="/manage" component={Manage} roles={["admin"]}/>
@@ -92,15 +98,13 @@ class App extends Component {
               <ProtectedRoute exact path="/settings" component={Settings} roles={["admin"]}/>
               <ProtectedRoute exact path="/admin" component={AdminProfile} roles={["admin"]}/>
             </Switch>
-          </BrowserRouter>
         </div>
       </div>
       </div>
       ):(<>
-      <MainNavbar showPharmacistBoard = {showPharmacistBoard} showAdminBoard = {showAdminBoard} currentUser = {currentUser} logOut = {this.logOut} />
+      <MainNavbar showPharmacistBoard = {showPharmacistBoard} showAdminBoard = {showAdminBoard} currentUser = {currentUser} logOut = {this.logOut} register ={this.register} />
 
         <div className="container main-container mt-3">
-          <BrowserRouter>
             <Switch>
               <ProtectedRoute exact path={["/","/home"]} component={Home} roles={["admin", "pharmacist"]}/>
               <Route exact path="/login" component={Login} />
@@ -117,7 +121,6 @@ class App extends Component {
               <Route exact path="/treatments/:id" component={Treatment}/>            
               <ProtectedRoute exact path="/users" component={UsersList} roles={["admin"]}/>
             </Switch>
-          </BrowserRouter>
         </div>
         
         </>

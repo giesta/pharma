@@ -1,5 +1,6 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import http from "../http-common";
 
 const API_URL = "http://127.0.0.1:8000/api/auth/";
 
@@ -20,7 +21,7 @@ class AuthService {
   }
 
   logout() {
-    return axios
+    return http
       .post(API_URL + "logout",{},{
         headers: {
           Authorization: 'Bearer ' + localStorage.getItem('token')

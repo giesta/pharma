@@ -15,9 +15,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { removeError } from "../../js/actions/index";
 import store from "../../js/store/index";
 
-export default function DiseasesList() {
-
-  
+export default function DiseasesList() { 
 
   const columns = [{  
     dataField: 'no',  
@@ -108,7 +106,6 @@ export default function DiseasesList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }else{
         const value = event.value;
         const values = [...fields];
@@ -117,7 +114,6 @@ export default function DiseasesList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }
       
       //setSelectedLeaflets(arr);
@@ -131,7 +127,6 @@ export default function DiseasesList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }else{
         const value = event.value;
         const values = [...fields];
@@ -139,7 +134,6 @@ export default function DiseasesList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }
       
       //setSelectedLeaflets(arr);
@@ -151,28 +145,21 @@ export default function DiseasesList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }else{
         const value = event.value;
         const values = [...fields];
         values[i]['strength'] = value;
         var arr = values[i]['drug'].drugs.filter(item=>item.form===values[i]['form']&&item.strength===values[i]['strength']);
         values[i]['selected'] = arr;
-        //console.log(arr);
         setFields(values);
-        console.log(fields);
       }
-      
-      //setSelectedLeaflets(arr);
     };
 
   function handleAddedInputChange(i, event) {
-    console.log(event);
     const values = [...fields];
     const { name, value } = event.target;
     values[i][name] = value;
     setFields(values);
-    console.log(fields);
   }
 
   function handleRemoveInput(i) {
@@ -241,7 +228,6 @@ export default function DiseasesList() {
   const loadDrugsOptions = (inputValue, callback) => {    
     DrugsSubstancesDataService.findBySubstance(inputValue)
         .then(response => {
-            console.log(response.data.data);
             const result = response.data.data.map(x => makeOptions(x));          
            callback(result);      
         })
@@ -253,7 +239,6 @@ export default function DiseasesList() {
   const loadOptions = (inputValue, callback) => {
     SymptomsDataService.findByTitle(inputValue)
       .then(response => {
-          console.log(response.data.data);
           const result = response.data.data.map(x => makeOptions(x));          
           callback(result);
       })
@@ -266,7 +251,6 @@ export default function DiseasesList() {
   const loadDiseasesOptions = (inputValue, callback) => {
     diseasesDataService.findByTitle(inputValue)
       .then(response => {
-          console.log(response.data.data);
           const result = response.data.data.map(x => makeOptions(x));          
           callback(result);
       })
@@ -291,8 +275,7 @@ const result = [];
 const map = new Map();
 for (const item of arr) {
     if(!map.has(item.drug+item.form+item.strength)){
-        map.set(item.drug+item.form+item.strength, true); 
-        console.log(drugs);   // set any value to Map
+        map.set(item.drug+item.form+item.strength, true);
         var arrNames = drugs.filter(x=>x.form===item.form&&x.strength===item.strength&&x.substance.name===item.drug.name);
         result.push({
           drug: item.drug, 
@@ -310,7 +293,6 @@ for (const item of arr) {
   
   const handleSymptomsInputChange = event =>
     {
-      console.log(event);
       const arr = event.map(item=>item.value.id);
       setSelectedSymptoms(arr);
     };
@@ -368,7 +350,6 @@ for (const item of arr) {
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
               function(event){
-                console.log(row.disease_id);
                 setFieldsArray(row.drugs);setSelectedDisease(row.disease_id); setDisease(row); setShow(true);setSelectedSymptoms(row.symptoms.map(item=>item.id));}}>
                 <BsPen></BsPen>
             </button>
@@ -396,10 +377,8 @@ const saveDisease = () => {
     drugs: JSON.stringify(drugsArr),
     symptoms: JSON.stringify(selectedSymptoms),
   };
-  console.log(data);
   DiseaseOverviewsDataService.create(data)
     .then((response) => {
-      console.log(response.data.data);
       refreshList();
       handleClose();            
     })
@@ -421,10 +400,9 @@ const updateDisease = () => {
     prevention: disease.prevention,
     drugs: JSON.stringify(drugsArr),
     symptoms: JSON.stringify(selectedSymptoms),
-  };console.log(data);
+  };
   DiseaseOverviewsDataService.update(data.id, data)
-    .then((resp) => {  
-      console.log(resp);
+    .then((resp) => {
       const updatedItems = overviews.filter(x=>x.id!==disease.id)
       updatedItems.push(resp.data.data);
       setOverviews(updatedItems);
@@ -441,16 +419,12 @@ const deleteItem = (id) => {
     .then(() => {
       //deleteItemFromState(id);
       if(overviews.length>1){
-        console.log(1)
         retrieveDiseasesOverviews(page);
       }else if(page > 1){
-        console.log(2)
         retrieveDiseasesOverviews(page-1);
       }else{
-        console.log(2)
         retrieveDiseasesOverviews();
-      }
-      
+      }      
       handleCloseConfirm();
     })
     .catch(e => {

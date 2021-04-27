@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Modal, Button, Form, Badge} from "react-bootstrap";
+import { BsDot } from "react-icons/bs";
 
 export default function InfoModal(props) {
     return (
@@ -26,28 +27,33 @@ export default function InfoModal(props) {
                         <Form.Label>Prevencija</Form.Label>
                         <Form.Control type="text" as="textarea" placeholder="" required value={props.disease.prevention} disabled/>
                     </Form.Group>
-                    <Form.Group controlId="symptoms">
+                    {props.disease.symptoms!==undefined?(
+                        <Form.Group controlId="symptoms">
+                        
                         <Form.Label>Simptomai</Form.Label>
-                        {props.disease.symptoms!==undefined??props.disease.symptoms.map(item=>
-                           <Badge pill variant="dark"> {item.name}</Badge>
-                            )}
-                    </Form.Group> {console.log(props.fields)}
+                        {props.disease.symptoms!==undefined?props.disease.symptoms.map((item, idx)=>{
+                            return <span key={"list_symptoms_" + idx}><BsDot key={"list_icon_" + idx}></BsDot>{item.name}</span>
+                        }                           
+                            ):('')}
+                    </Form.Group> 
+                    ):('')}
+                    
                     {(props.fields!==null && props.fields!==undefined)&&(
 
 props.fields.map((field, idx)=>{
     return (
         <div key={`${field}-${idx}`} className="border border-secondary p-3 mt-2">
-        <Form.Group controlId={"drugs"+`${idx}`}>
+        <Form.Group key={`${"dr"}-${idx}`} controlId={"drugs"+`${idx}`}>
         <h4>Vaistas</h4>    
-        <Form.Label>Veiklioji medžiaga</Form.Label>  
-        <Form.Control type="text" placeholder="" value={field.drug.name} disabled/>        
+        <Form.Label key={"substance_"+idx}>Veiklioji medžiaga</Form.Label>  
+        <Form.Control key={`${"dr_value"}-${idx}`} type="text" placeholder="" value={field.drug.name} disabled/>        
     </Form.Group>
     <div>
     <Form.Label>Pavadinimas</Form.Label>
-                    {field.selected!==undefined && field.selected.length!==0?(field.selected.map((item)=>
+                    {field.selected!==undefined && field.selected.length!==0?(field.selected.map((item, idx)=>
                               item.registration.toUpperCase().includes("IŠREGISTRUOTAS")?
-                              <Badge pill variant="warning">{item.name}</Badge>
-                                  :<Badge pill variant="success">{item.name}</Badge>
+                              <Badge key={"drug__"+idx} pill variant="warning">{item.name}</Badge>
+                                  :<Badge key={"drug_success_"+idx} pill variant="success">{item.name}</Badge>
                           )):('')
                           }
                       </div>
@@ -67,8 +73,6 @@ props.fields.map((field, idx)=>{
     </div>
     )
 })
-
-
                     )}
                 </Form>
             </Modal.Body>

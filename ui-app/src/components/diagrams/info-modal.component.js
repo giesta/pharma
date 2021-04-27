@@ -9,10 +9,8 @@ import ReactFlow, {
     
     export default function InfoModal(props) {
     const onLoad = (reactFlowInstance) => {
-      console.log('flow loaded:', reactFlowInstance);
       reactFlowInstance.fitView({ padding: 0.2, includeHiddenNodes: true });
     };
-        console.log(props.elements);
       const [elements, setElements] = useState(props.elements);
     return (
         <Modal size="xl" show={props.info} onHide={props.handleCloseInfo}>

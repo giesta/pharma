@@ -164,16 +164,15 @@ renderRedirect = () => {
         this.state.c_password,
       ).then(
         response => {
-          console.log(response.data)
           this.setState({
             message: [jwt_decode(response.data.access_token).user.name],
             successful: true
           });
+          this.register();
           this.setRedirect();
         },
         error => {
           var resMessage ="";
-          console.log(error.response.data);
           if(error.response!==undefined && error.response.data!==undefined&&error.response.data.message!==undefined){
             if(error.response.data.message.email!==undefined){
               resMessage=error.response.data.message.email;

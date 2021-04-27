@@ -1,7 +1,7 @@
 import React from "react";
 import Manage from "./Manage.js";
 import Settings from "./Settings.js";
-import Medication from "./Scraping.js";
+import Medication from "./Profile.js";
 
 class Sidebar extends React.Component {
   render() {

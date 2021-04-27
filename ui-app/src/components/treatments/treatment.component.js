@@ -13,7 +13,7 @@ import Spinner from "../layout/spinner.component";
 import DrugInfo from "../drugs/info-modal.component";
 import DownloadTreatment from "./download-modal.component";
 import { Alert, Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form, OverlayTrigger, Tooltip, Accordion } from "react-bootstrap";
-import { BsStar, BsPeopleCircle, BsExclamationCircle, BsInfoCircle, BsCloudDownload } from "react-icons/bs";
+import { BsDot, BsStar, BsPeopleCircle, BsExclamationCircle, BsCollection, BsCloudDownload } from "react-icons/bs";
 
 import ReactFlow, {
   Controls,
@@ -238,7 +238,6 @@ const downloadItem = async () => {
           return response.data.data;
           
       })
-      //idDisease = values[0].id;
       if(values.length > 0){
         handleCloseConfirm();
         setConfirmToOverwrite(true);
@@ -435,9 +434,9 @@ const getRelatedTreatments =()=>{
                       
       if(item.id !== currentTreatment.id && currentTreatment.diagram.author === userData.id){
         
-        return (<><a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a><br></br></>)
+        return (<div key={`treatments-${idx}`}><a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a><br></br></div>)
       }else if(item.id !== currentTreatment.id && item.public===1){
-        return (<><a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a><br></br></>)
+        return (<div key={`treatments-${idx}`}><a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a><br></br></div>)
       }                  
     });
     values = values.filter(item=>item!==undefined);
@@ -476,7 +475,7 @@ useEffect(getRelatedTreatments, [currentTreatment])
             placement="bottom"
             overlay={<Tooltip id="button-download-1">Įtraukti į asmeninį sąrašą</Tooltip>}
           >
-          <Button variant="outline-info" size="sm" onClick={()=>{if(currentTreatment.diagram!==null){setElements(getElements(currentTreatment.diagram))};setConfirm(true);}}> <BsCloudDownload/>{' '}
+          <Button variant="outline-info" size="sm" onClick={()=>{if(currentTreatment.diagram!==null){setElements(getElements(currentTreatment.diagram))};setConfirm(true);}}> Nukopijuoti <BsCollection/>{' '}
           </Button>
           </OverlayTrigger>
         </Col>
@@ -539,10 +538,10 @@ useEffect(getRelatedTreatments, [currentTreatment])
         {relatedTreatments.length>0?(                    
           <Accordion defaultActiveKey="0">
             <Card>
-              <Accordion.Toggle as={Card.Header} eventKey="1">
+              <Accordion.Toggle as={Card.Header} eventKey="0">
                 <h6>Susiję gydymo algoritmai</h6>
               </Accordion.Toggle>
-              <Accordion.Collapse eventKey="1">
+              <Accordion.Collapse eventKey="0">
                 <Card.Body>{relatedTreatments.map(item=>{return item})}</Card.Body>
               </Accordion.Collapse>
               </Card>
@@ -568,8 +567,7 @@ useEffect(getRelatedTreatments, [currentTreatment])
                 <strong>Simptomai:</strong>
               </label>{" "}
               {currentTreatment.disease.symptoms.map((item, idx)=>{
-                return  <><Badge key={idx} variant="secondary">{item.name}</Badge><br /></>
-                  
+                return <span key={"symptoms_list_"+idx}><BsDot></BsDot>{item.name}<br/></span>                  
               })}
               <label>
                 <strong>Diagnozė:</strong>
@@ -608,11 +606,11 @@ useEffect(getRelatedTreatments, [currentTreatment])
       ):('')}
       <Row className="justify-content-md-center">
         <Col>
-         <ListGroup className="mt-1">
-         <ListGroup.Item variant="light">Vaistai:</ListGroup.Item>
+         <ListGroup key={"list_d"} className="mt-1">
+         <ListGroup.Item key={"item_"} variant="light">Vaistai:</ListGroup.Item>
           
           
-<NestedList nodes={getDrugsSubstances(currentTreatment)}></NestedList></ListGroup>
+<NestedList key={"list_drugs_"} nodes={getDrugsSubstances(currentTreatment)}></NestedList></ListGroup>
         </Col>   
         </Row>
       <div className="container mt-4">
@@ -625,8 +623,8 @@ useEffect(getRelatedTreatments, [currentTreatment])
         <Col></Col>
         <Col className="col-9">
             <ListGroup variant="flush">
-              {currentTreatment.comments.length!==0?(currentTreatment.comments.map((field)=>
-                <ListGroup.Item key={field.id}>
+              {currentTreatment.comments.length!==0?(currentTreatment.comments.map((field, idx)=>
+                <ListGroup.Item key={"list_"+idx}>
                 <Row>
                   <div className="mr-4">
                     <BsPeopleCircle></BsPeopleCircle>

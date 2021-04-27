@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Http\Response;
 use App\Models\Disease;
+use App\Models\Overview;
 use App\Http\Resources\Disease as DiseaseResource;
 use App\Http\Requests\StoreDiseaseRequest;
 use App\Http\Requests\TokenRequest;
@@ -35,7 +36,18 @@ class DiseaseController extends Controller
     {
         $user = auth()->user();
         $name = $request->name;
-        return DiseaseResource::collection(Disease::where('diseases.name', 'LIKE', "%$name%")->limit(900)->get());         
+        $diseases = Disease::where('diseases.name', 'LIKE', "%$name%")->limit(100)->get();
+        $myDiseases = Overview::select('diseases.*')
+        ->join('diseases','diseases.id', '=', 'overviews.disease_id')
+        ->where('overviews.user_id', '=', $user->id)
+        ->get();
+        $filtered = $diseases->filter(function ($item) use ($myDiseases) {
+            if(!$myDiseases->contains('id', $item->id)) {
+                return $item;
+            }            
+        });
+        $result = $filtered->all();
+        return DiseaseResource::collection($result);        
     }
 
     /**

@@ -646,8 +646,6 @@ const findByTitle = () => {
       <p>Some Went Wrong...</p>
     </div>)
       
-    }</div>
-    
-    
+    }</div>    
   );
 }

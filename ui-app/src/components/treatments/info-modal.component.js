@@ -94,20 +94,15 @@ export default function InfoModal(props) {
                         <Form.Group controlId={"strength"+`${idx}`}>    
                             <Form.Label>Stiprumas</Form.Label>  
                             <Form.Control type="text" placeholder="" value={field.strength} disabled/>        
-                        </Form.Group>
-                        
+                        </Form.Group>                        
                             <Form.Group controlId={"uses"+`${idx}`}>    
                             <Form.Label>Vartojimas</Form.Label>  
                             <Form.Control type="text" as="textarea" placeholder="" value={field.uses} disabled/> 
-                            </Form.Group> 
-                           
-                        
+                            </Form.Group>                        
                         </div>
                         )
                     })
-                    }
-                    
-                    
+                    }                    
                 </Form>
             </Modal.Body>
             <Modal.Footer>

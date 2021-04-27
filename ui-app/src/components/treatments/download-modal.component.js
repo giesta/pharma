@@ -18,8 +18,7 @@ export default function ModalDelete(props) {
             Ne
           </Button>):(<Button variant="secondary" onClick={props.handleCloseConfirm}>
             Užverti
-          </Button>)}
-          
+          </Button>)}          
           <Button variant="primary" onClick={props.onClickMethod}>
             {props.buttonText}
           </Button>

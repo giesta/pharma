@@ -80,27 +80,7 @@ class DrugController extends ApiController
             'updated_at'=>date("Y-m-d\TH:i:s\Z"),
         ], Response::HTTP_CREATED);
     }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request, $id)
-    {
-        $user = auth()->user();
-        $role = $user->roles()->first()->name;
-        if($role ==="admin"){
-            $drug = Drug::findOrFail($id);
-        }else{
-            $drug = $user->drugs()->findOrFail($id);
-        } 
-        $drug->diseases()->detach();
-        $drug->delete();
-        return response()->noContent();        
-    }    
+    
     /**
      * Return when it was created and updated.
      *

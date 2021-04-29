@@ -3,7 +3,6 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import { isEmail } from "validator";
-import { Redirect } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 
 import AuthService from "../services/auth.service";
@@ -163,6 +162,7 @@ setRedirect= ()=>{
             message: [jwt_decode(response.data.access_token).user.name],
             successful: true
           });
+          this.props.history.replace('/profile', 'urlhistory')
           this.props.history.push("/profile");
           window.location.reload();
         },

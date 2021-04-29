@@ -37,8 +37,7 @@ Route::group([
     'prefix' => 'auth',
     'namespace' => 'App\Http\Controllers\Auth'
 ],function($router){
-    Route::post('logout', 'JwtAuthController@logout');
-    Route::get('getMe', 'JwtAuthController@getMe');    
+    Route::post('logout', 'JwtAuthController@logout');   
 });
 
 Route::group(['middleware' => 'jwt.auth',
@@ -51,7 +50,6 @@ Route::group(['middleware' => 'jwt.auth',
 });
 
 
-Route::get('diseases/{id}/drugs', 'App\Http\Controllers\Api\DiseaseDrugController@index');
 Route::get('treatments/list', 'App\Http\Controllers\Api\TreatmentController@list'); 
 
 Route::group(['middleware' => 'jwt.auth',
@@ -68,7 +66,6 @@ Route::group(['middleware' => 'jwt.auth',
     Route::put('drugs', 'DrugController@updateList');
     Route::get('drugs/links', 'DrugController@updateLinks');
 
-    Route::get('leaflets/list', 'LeafletController@list');
     Route::get('overviews/list', 'OverviewController@list');
 
     Route::get('diagrams/list', 'DiagramController@list');
@@ -81,16 +78,12 @@ Route::group(['middleware' => 'jwt.auth',
     Route::apiResource('substances', SubstanceController::class);
     Route::apiResource('overviews', OverviewController::class);   
     Route::apiResource('drugs', DrugController::class);
-    Route::apiResource('leaflets', LeafletController::class);
-    Route::resource('diseases.drugs', DiseaseDrugController::class);
-    Route::delete('diseases/{id}/drugs', 'DiseaseDrugController@deleteMany');
     Route::apiResource('users', UserController::class);
     Route::apiResource('diagrams', DiagramController::class);
     
     Route::apiResource('scrap', ScraperController::class);
     Route::apiResource('symptoms', SymptomController::class);
     Route::apiResource('treatments', TreatmentController::class);
-    //Route::post('stars/{id}', 'TreatmentStarsController@update');
     Route::post('rate/{id}', 'TreatmentController@rate');
     Route::post('report/{id}', 'TreatmentController@report');
     Route::post('comments', 'CommentController@store'); 

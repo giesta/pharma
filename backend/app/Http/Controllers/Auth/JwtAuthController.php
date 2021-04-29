@@ -39,7 +39,7 @@ class JwtAuthController extends Controller
         
         $data = $licenseService->scrap($url);
         if(empty($data) || $data[0]!==$request->name || $data[1]!==$request->last_name || $data[2] !== $request->stamp_number){
-            return response()->json(['message'=>'No such pharmacist was found'], 401);
+            return response()->json(['message'=>'Toks farmacijos specialistas nerastas arba licencija yra negaliojanti'], 401);
         }   
         $user = new User();
         $user->name = $request->name." ".$request->last_name;

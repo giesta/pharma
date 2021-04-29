@@ -68,7 +68,7 @@ function makeDrugsOptions(field){
 
       function getUsesValue(field, selectedDrug){
         if(field!==null){
-        var arr = field.drugs.find(item=>item.form===selectedDrug.form&&item.strength===selectedDrug.strength&&item.name==selectedDrug.selected[0].name);
+        var arr = field.drugs.find(item=>item.form===selectedDrug.form&&item.strength===selectedDrug.strength&&item.name===selectedDrug.selected[0].name);
         return arr.uses;
         }else{
             return [];

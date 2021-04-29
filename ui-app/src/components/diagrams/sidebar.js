@@ -26,7 +26,12 @@ export default (props) => {
         />
 
         <label className="updatenode__bglabel">Elemento spalva:</label>
-        <input value={props.nodeBg!==undefined?props.nodeBg:''} onChange={(evt) => props.setNodeBg(evt.target.value)} />
+        <select name="types" id="edgeType" onChange={(evt) => {props.setNodeBg(evt.target.value)}} value={props.nodeBg!==undefined?props.nodeBg:''}>
+            <option value="">Pasirinkti</option>
+            <option value="#ff0">Geltona</option>
+            <option value="#ff0000">Raudona</option>
+            <option value="#00FF00">Žalia</option>
+        </select>
 
 {props.edgeSelected?(
 <>

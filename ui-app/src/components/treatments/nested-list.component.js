@@ -10,7 +10,7 @@ import {
   FaFileDownload,
   FaInfoCircle
 } from "react-icons/fa";
-import { ListGroup} from "react-bootstrap";
+import { ListGroup, OverlayTrigger, Tooltip} from "react-bootstrap";
 import DrugInfo from "../drugs/info-modal.component";
 import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import DocViewer from "../drugs/doc-viewer-modal.component";
@@ -39,12 +39,19 @@ const Leaf2 = ({ drug, label }, idx) => {
       >
         <FaMedrt key={"medrt__"+idx} /> 
         {label}
+        <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="button-download-1">Peržiūrėti informaciją apie vaistą</Tooltip>}
+          >
         <a key={"button__"+idx} type="button" className="btn link_info btn-sm ts-buttom" size="sm" onClick={function(event){ setCurrentDrug(drug); setShow(true)}}>
             <FaInfoCircle/>
-        </a>
+        </a></OverlayTrigger>
         {drug.link!==null?(
             <>
-            
+            <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="button-download-1">Peržiūrėti informacinį lapelį</Tooltip>}
+          >
             <a key={"button_"+idx} type="button" className="btn btn-sm link_info ts-buttom" onClick={
               function(event){
                 setView(true);
@@ -52,9 +59,14 @@ const Leaf2 = ({ drug, label }, idx) => {
                 setDocs(drug.link);
                 }} size="sm">
             <FaEye key={"eye__"+idx}/>
-        </a>
+        </a></OverlayTrigger>
+        <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="button-download-1">Parsisiųsti informacinį lapelį</Tooltip>}
+          >
             <a key={"button"+idx} type="button" className="btn link_info btn-sm ts-buttom" href={drug.link} size="sm"><FaFileDownload/></a>
-            </>
+           </OverlayTrigger> 
+           </>
         ):('')}
          
         </ListGroup.Item >

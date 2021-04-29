@@ -16,7 +16,5 @@ class CommentController extends Controller
         return redirect()->action(
         [TreatmentController::class, 'show'], ['treatment' => $request->treatment_id]
         );
-        /*$treatment = Treatment::findOrFail($request->treatment_id);
-        return new TreatmentResource($treatment);*/
     }
 }

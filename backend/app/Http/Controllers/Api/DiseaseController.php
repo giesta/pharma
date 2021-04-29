@@ -60,28 +60,7 @@ class DiseaseController extends Controller
             'updated_at'=>date("Y-m-d\TH:i:s\Z"),
         ], Response::HTTP_CREATED);
 
-    } 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request, $id)
-    {
-        $user = auth()->user();
-        $role = $user->roles()->first()->name;
-        if($role ==="admin"){
-            $disease = Disease::findOrFail($id);
-        }else{
-            $disease = $user->diseases()->findOrFail($id);
-        }
-        $disease->leaflets()->detach();
-        $disease->symptoms()->detach();
-        $disease->delete();
-
-        return response()->noContent();
-    }
+    }     
     /**
      * Make the specified array
      * 

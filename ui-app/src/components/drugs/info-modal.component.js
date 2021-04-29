@@ -11,8 +11,7 @@ export default function InfoModal(props) {
             <Modal.Body>
                 <Form>
                     <Form.Group controlId="name">
-                        <Form.Label>Pavadinimas</Form.Label>
-                        
+                        <Form.Label>Pavadinimas</Form.Label>                        
                         {
                         props.drug.registration.toUpperCase().includes("IŠREGISTRUOTAS")?
                         <Badge pill variant="warning">{props.drug.name}</Badge>
@@ -21,13 +20,13 @@ export default function InfoModal(props) {
                     </Form.Group>
                     <Form.Group controlId="substance">
                         <Form.Label>Veiklioji mežiaga</Form.Label>
-                        {props.drug.substance.name===undefined?(props.drug.substance.split(/\/|\(|\)/).map(item=>
+                        {props.drug.substance.name===undefined?(props.drug.substance.split(/\/|\(|\)/).map((item, idx)=>
                         
-                        <Badge pill variant="primary">{item}</Badge>
+                        <Badge key={"badge_"+idx} pill variant="primary">{item}</Badge>
                             
-                            )):(props.drug.substance.name.split(/\/|\(|\)/).map(item=>
+                            )):(props.drug.substance.name.split(/\/|\(|\)/).map((item, idx)=>
                         
-                                <Badge pill variant="primary">{item}</Badge>
+                                <Badge key={"badge_"+idx} pill variant="primary">{item}</Badge>
                                     
                                     ))}
                     </Form.Group>

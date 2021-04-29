@@ -13,14 +13,13 @@ import Spinner from "../layout/spinner.component";
 import DrugInfo from "../drugs/info-modal.component";
 import DownloadTreatment from "./download-modal.component";
 import { Alert, Col, Row, Button, Jumbotron, Container, Badge, Image, ListGroup, Card, Form, OverlayTrigger, Tooltip, Accordion } from "react-bootstrap";
-import { BsDot, BsStar, BsPeopleCircle, BsExclamationCircle, BsCollection, BsCloudDownload } from "react-icons/bs";
+import { BsDot, BsStar, BsPeopleCircle, BsExclamationCircle, BsCollection } from "react-icons/bs";
 
 import ReactFlow, {
   Controls,
   Background,
   ReactFlowProvider,
 } from 'react-flow-renderer'; 
-const nodes = [];
 var idDiagram=null;
 var idDisease=null;
 export default function Treatment(props) {
@@ -51,7 +50,6 @@ export default function Treatment(props) {
   };
 
   const [currentTreatment, setCurrentTreatment] = React.useState(initialTreatmentState);
-  const [currentDrugs, setCurrentDrugs] = React.useState([]);
   const [drug, setDrug] = React.useState(initialDrugState);
   const [show, setShow] = React.useState(false);
   const [noData, setNoData] = React.useState('');
@@ -66,6 +64,7 @@ export default function Treatment(props) {
   const [text, setText] = React.useState('');
   const [successMessage, setSuccessMessage] = React.useState(false);
   const [relatedTreatments, setRelatedTreatments] = React.useState([]);
+  const [error, setError] = React.useState(false);
   
 
   const onChangeComment = e => {
@@ -142,6 +141,7 @@ export default function Treatment(props) {
         }      
       })
       .catch(e => {
+        setError(true);
         console.log(e);
       });
   };
@@ -153,6 +153,7 @@ export default function Treatment(props) {
         }      
       })
       .catch(e => {
+        setError(true);
         console.log(e);
       });
   };
@@ -166,49 +167,47 @@ export default function Treatment(props) {
       setCurrentTreatment(response.data.data);
       setComment("");
     }).catch(e => {
+      setError(true);
       console.log(e);
     });
   }
 
   function getDrugsSubstances(field){    
   
-    const arr =field.drugs.map(x =>x.substance);
+    const drugs =field.drugs.map(x =>x.substance);
     const result = [];
     const map = new Map();
-    for (const item of arr) {
-        if(!map.has(item.name)){
-            map.set(item.name, true);
+    for (const drug of drugs) {
+        if(!map.has(drug.name)){
+            map.set(drug.name, true);
             const map1 = new Map();
-            var temp = [];
-            temp = field.drugs.filter(x =>x.substance.name===item.name);
-            var t1 = [];
-            for (const item2 of temp) {
-              if(!map1.has(item2.form)){
-                  map1.set(item2.form, true);
+            var substancesArr = [];
+            substancesArr = field.drugs.filter(x =>x.substance.name===drug.name);
+            var formArray = [];
+            for (const drugWithSubstances of substancesArr) {
+              if(!map1.has(drugWithSubstances.form)){
+                  map1.set(drugWithSubstances.form, true);
                   const map2 = new Map();
-                  var t2 = [];
-                  var temp2 = [];
-                  temp2 = field.drugs.filter(x =>x.substance.name===item.name&&x.form===item2.form);
-                for (const item3 of temp2) {
-                  if(!map2.has(item.strength)){
-                      map2.set(item.strength, true);
-                      
-                      var array = field.drugs.filter(x =>x.substance.name===item.name&&x.form===item2.form&&x.strength===item3.strength);
-                      t2.push({label:item3.strength, children:array.map((item)=>{                        
+                  var drugArray = [];
+                  var strengthArray = [];
+                  strengthArray = field.drugs.filter(x =>x.substance.name===drug.name&&x.form===drugWithSubstances.form);
+                for (const drugWithStrength of strengthArray) {
+                  if(!map2.has(drug.strength)){
+                      map2.set(drug.strength, true);                      
+                      var finalDrugsArray = field.drugs.filter(x =>x.substance.name===drug.name&&x.form===drugWithSubstances.form&&x.strength===drugWithStrength.strength);
+                      drugArray.push({label:drugWithStrength.strength, children:finalDrugsArray.map((item)=>{                        
                         return {label:item.name, drug:item}
                       })});//drugs
                   }
                 }
-
-                  t1.push({label:item2.form, children:t2});//form
+                formArray.push({label:drugWithSubstances.form, children:drugArray});//form
               }
             }
-            result.push({label:item.name, children:t1});//substance
+            result.push({label:drug.name, children:formArray});//substance
         }
 }
     return result;
-  };
-  
+  }; 
 
   function getElements(diagram){
     var arr = diagram.nodes.concat(diagram.edges);
@@ -217,12 +216,11 @@ export default function Treatment(props) {
         var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
         return item;
       }else{
-        var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
-        return item;
+        var itemVal = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
+        return itemVal;
       }
       
-  });
-  //setElements(items);
+  });  
 return items;
 }
 
@@ -235,9 +233,12 @@ const downloadItem = async () => {
             idDisease = response.data.data[0].id;
             setText('Mes radome susijusią ligą! Ar norite perrašyti šią "'+currentTreatment.disease.name + '" ligą?');          
           }
-          return response.data.data;
-          
+          return response.data.data;          
       })
+      .catch(e => {
+        setError(true);
+        console.log(e);
+      });
       if(values.length > 0){
         handleCloseConfirm();
         setConfirmToOverwrite(true);
@@ -265,9 +266,12 @@ const downloadDiagram = async () => {
               }
             }           
           }
-          return response.data.data;
-          
+          return response.data.data;          
       })
+      .catch(e => {
+        setError(true);
+        console.log(e);
+      });
       if(values.length===0){
         handleCloseConfirm(); 
         handleCloseConfirmToOverwrite();       
@@ -293,6 +297,7 @@ const updateDisease = async () => {
       return resp.data.data;
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
     if(currentTreatment.diagram !==null){
@@ -319,6 +324,7 @@ const createDisease = async () => {
       return resp.data.data; 
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
     if(currentTreatment.diagram !==null){
@@ -353,17 +359,17 @@ if(currentTreatment.algorithm!==''){
 }else{
   data['algorithm']= '';
 }
-const value = await TreatmentsDataService.create(data)
+await TreatmentsDataService.create(data)
     .then((response) => {
       return response.data.data;
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
     handleClose();
     handleCloseConfirm();
     handleCloseDiagramToOverwrite();
-    //
     setSuccessMessage(true);
 };
 
@@ -391,6 +397,7 @@ var newElements = elements.map((el)=>{
       return response.data.data;
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
     idDiagram = value.id;
@@ -417,11 +424,12 @@ const updateDiagram = async () => {
       }
     })),
   };
-  const value = await DiagramsDataService.update(idDiagram, data)
-    .then((response) => {
+  await DiagramsDataService.update(idDiagram, data)
+    .then((response) => {    
       return response.data.data;   
     })
     .catch(e => {
+      setError(true);
       console.log(e);
     });
     saveTreatment();
@@ -430,10 +438,8 @@ const updateDiagram = async () => {
 
 const getRelatedTreatments =()=>{
   if(currentTreatment.diagram!== undefined){
-      let values = currentTreatment.diagram.related_treatments.map((item, idx)=>{
-                      
-      if(item.id !== currentTreatment.id && currentTreatment.diagram.author === userData.id){
-        
+      let values = currentTreatment.diagram.related_treatments.map((item, idx)=>{                      
+      if(item.id !== currentTreatment.id && currentTreatment.diagram.author === userData.id){        
         return (<div key={`treatments-${idx}`}><a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a><br></br></div>)
       }else if(item.id !== currentTreatment.id && item.public===1){
         return (<div key={`treatments-${idx}`}><a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a><br></br></div>)
@@ -456,6 +462,13 @@ useEffect(getRelatedTreatments, [currentTreatment])
           <Row className="mt-2">
             <Col>
               <Alert variant="success" onClose={() => setSuccessMessage(false)} dismissible>Operacija atlikta sėkmingai</Alert>
+            </Col>
+          </Row>
+        ):''}
+        {error?(
+          <Row className="mt-2">
+            <Col>
+              <Alert variant="danger" onClose={() => setError(false)} dismissible>Operacija nepavyko tinkamai atlikti</Alert>
             </Col>
           </Row>
         ):''}
@@ -607,8 +620,7 @@ useEffect(getRelatedTreatments, [currentTreatment])
       <Row className="justify-content-md-center">
         <Col>
          <ListGroup key={"list_d"} className="mt-1">
-         <ListGroup.Item key={"item_"} variant="light">Vaistai:</ListGroup.Item>
-          
+         <ListGroup.Item key={"item_"} variant="light">Vaistai:</ListGroup.Item>          
           
 <NestedList key={"list_drugs_"} nodes={getDrugsSubstances(currentTreatment)}></NestedList></ListGroup>
         </Col>   

@@ -11,6 +11,7 @@ import ReactFlow, {
   } from 'react-flow-renderer'; 
 
 export default function CreateModal(props) {
+    
     const onLoad = (reactFlowInstance) => {
         reactFlowInstance.fitView({ padding: 0.8, includeHiddenNodes: true });
       };
@@ -81,21 +82,18 @@ function makeDrugsOptions(field){
         </Modal.Header>
         <Form encType="multipart/form-data" validated={props.validated} onSubmit={props.handleSubmit}>
         <Modal.Body> 
-            {props.error?(<Alert variant="danger">Privalo būti pasirinktas arba schema ar ba diagrama!</Alert>):''}
+            {props.errorText!==''?(<Alert variant="danger">{props.errorText}</Alert>):''}
 
         {(props.treatment.diagram===undefined||props.treatment.diagram===null)?(
             <>
             <Form.Group > 
-            <Form.Label for="algorithm" className="btn btn-outline-success btn-sm ts-buttom">Pasirinkti schemą</Form.Label>  
+            <Form.Label htmlFor="algorithm" className="btn btn-outline-success btn-sm ts-buttom">Pasirinkti schemą</Form.Label>  
                 <Form.Control type = "file" id="algorithm" style={{display: "none"}}  label="Algorithm" onChange={props.handleInputChange} name="algorithm"/>        
-                <Form.Control.Feedback type="invalid">
-                    Failas būtinas.
-                </Form.Control.Feedback>
-                <Form.Control.Feedback>Atrodo gerai!</Form.Control.Feedback>
+                
             </Form.Group> 
             {props.url!==null||props.treatment.algorithm!==''?(
             <div className="img-wrap">
-                <a id="clear" type="button" className="link_danger" onClick={props.removeImageFile} ><BsXCircle/></a>
+                <a id="clear" type="button" className="link_danger" onClick={props.removeImageFile} >Šalinti <BsXCircle/></a>
                 {props.url===null?(<Image src={props.treatment.algorithm} fluid/>):(<Image src={props.url} fluid/>)}
             </div>
             ):''}
@@ -122,27 +120,24 @@ function makeDrugsOptions(field){
                     </ReactFlow>
                 </ReactFlowProvider>
                 </div>
-            ):('')}
-            
-                        <Select
-                            name="diagram"
-                            className="basic-multi-select"
-                            classNamePrefix="select"
-                            isClearable="true"
-                            cacheOptions
-                            defaultOptions
-                            placeholder={"Pasirinkti ..."}
-                            options={props.diagramsOptions}
-                            onChange={e=>props.addSelectedDiagram(e)}
-                            defaultValue={props.treatment.diagram!==null&&props.treatment.diagram!==undefined?({value: props.treatment.diagram, label: props.treatment.diagram.name}):('')}
-                     />
-                    </Form.Group>
-                ):''}  
-            
-                    
+            ):('')}           
+                <Select
+                    name="diagram"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    isClearable="true"
+                    cacheOptions
+                    defaultOptions
+                    placeholder={"Pasirinkti ..."}
+                    options={props.diagramsOptions}
+                    onChange={e=>props.addSelectedDiagram(e)}
+                    defaultValue={props.treatment.diagram!==null&&props.treatment.diagram!==undefined?({value: props.treatment.diagram, label: props.treatment.diagram.name}):('')}
+                />
+            </Form.Group>
+                ):''}                    
             <Form.Group controlId="title">
             <Form.Label>Pavadinimas</Form.Label>
-            <Form.Control required type="text" placeholder=""  value={props.treatment.title} onChange={props.handleInputChange} name="title"/>
+            <Form.Control required type="text" placeholder="" value={props.treatment.title} onChange={props.handleInputChange} name="title"/>
             <Form.Control.Feedback type="invalid">
                 Pavadinimas yra privalomas.
             </Form.Control.Feedback>
@@ -227,6 +222,7 @@ function makeDrugsOptions(field){
                         <Form.Label>Forma</Form.Label>     
                         <Select
                             name="form"
+                            ref={props.setSelectRef}
                             className="basic-multi-select"
                             classNamePrefix="select"
                             isClearable="true"
@@ -236,17 +232,32 @@ function makeDrugsOptions(field){
                             value={field.form!==''?({value: field.form, label: field.form}):('')}
                             onChange={(e)=>props.addSelectedForm(idx, e)}
                             options={field.drug !== ''&&props.treatment.disease!==null?(makeOptionsForm(props.treatment.disease, field)):('')}
-                            defaultValue={field.form!==''?({value: field.form, label: field.form}):('')}/>
-                    </Form.Group>
-                    ):('')
+                            defaultValue={field.form!==''?({value: field.form, label: field.form}):('')}/>                       
                         
-                     
+                        <Form.Control
+                            type="text"
+                            tabIndex={-1}
+                            autoComplete="off"
+                            style={{
+                            opacity: 0,
+                            width: "100%",
+                            height: 0,
+                            position: "absolute"
+                            }}
+                            required
+                            onFocus={() => props.selectRef.focus()}
+                            value = {field.form || ""}
+                            onChange={(e)=>props.addSelectedForm(idx, e)}
+                        />
+                        </Form.Group>
+                    ):('')                     
                     }
                     {field.form !== ''?(
                         <Form.Group controlId="strength">
                         <Form.Label>Stiprumas</Form.Label>     
                         <Select
-                            name="form"
+                            name="strength"
+                            ref={props.setSelectRef}
                             className="basic-multi-select"
                             classNamePrefix="select"
                             isClearable="true"
@@ -257,6 +268,21 @@ function makeDrugsOptions(field){
                             onChange={(e)=>props.addSelectedStrength(idx, e)}
                             options={field.form !== ''&&props.treatment.disease!==null?(makeOptionsStrength(props.treatment.disease,field)):('')}
                             defaultValue={field.strength!==''?({value: field.strength, label: field.strength}):('')}/>
+                        <Form.Control
+                            type="text"
+                            tabIndex={-1}
+                            autoComplete="off"
+                            style={{
+                            opacity: 0,
+                            width: "100%",
+                            height: 0,
+                            position: "absolute"
+                            }}
+                            required
+                            onFocus={() => props.selectRef.focus()}
+                            value = {field.strength || ""}
+                            onChange={(e)=>props.addSelectedStrength(idx, e)}
+                        />
                     </Form.Group>
                     ):('')                     
                     }

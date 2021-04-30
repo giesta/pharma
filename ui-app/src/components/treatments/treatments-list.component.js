@@ -63,6 +63,8 @@ export default function TreatmentList() {
   const [fields, setFields] = React.useState([]);
   const [isWriting, setIsWriting] = React.useState(false);
 
+  const [errorText, setErrorText] = React.useState("");
+
   const initialTreatmentState = {  
     id: null,  
     title: "",
@@ -160,6 +162,7 @@ export default function TreatmentList() {
       }else{
         const value = event.value;
         setSelectedDiagram(value);
+        setErrorText('');
       }
     };
 
@@ -209,14 +212,21 @@ for (const item of arr) {
     setPage(1);
   };
 
+  const handleInvalidForm = (e)=>{
+    if(e.currentTarget.checkValidity()){
+      
+    }    
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     if(treatment.diagram===null&&url===null&&treatment.algorithm===''){
-      setError(true);
+      setErrorText("Privalo būti pasirinktas arba schema arba diagrama!");
       event.stopPropagation();
     }
-    else if (form.checkValidity() === false) {      
+    else if (form.checkValidity() === false) { 
+          
       event.stopPropagation();
     }else{
       if(treatment.id===null){
@@ -234,6 +244,8 @@ for (const item of arr) {
     setValidated(false);
     setUrl(null);
     setFields([]);
+    setError(false);
+    setErrorText('');
   };
   const handleCloseConfirm = () => setConfirm(false);
   const handleCloseInfo = () => {
@@ -248,16 +260,26 @@ for (const item of arr) {
     data: [],
   });
   const handleInputChange = event => {
-    const { name, value } = event.target;    
+    const { name, value } = event.target; 
+    var extensions = ["jpg", "jpeg","png"];
     if(event.target.files!==undefined && event.target.files!==null ){
+      if(!extensions.includes(event.target.files[0].name.split('.').pop().toLowerCase())){
+        setErrorText("Schemos formatas turi būti jpg, jpeg arba png");
+      }else{
         setSelectedFile(event.target.files[0]);
         setUrl(URL.createObjectURL(event.target.files[0]));
         setError(false);
-    }  
-    setTreatment({ ...treatment, [name]: value });
+        setErrorText('');
+        setTreatment({ ...treatment, [name]: value });
+      }        
+    }else{
+      setTreatment({ ...treatment, [name]: value });
+    }      
   };
   const removeImageFile = event =>{
     setSelectedFile(null);
+    setError(false);
+    setErrorText('');
     setUrl(null);
     setTreatment({
       ...treatment,
@@ -606,6 +628,8 @@ const findByTitle = () => {
     removeImageFile={removeImageFile}
     imageRef={setImageRef}
     error={error}
+    errorText={errorText}
+    handleInvalidForm={handleInvalidForm}
   >
     </TreatmentCreateUpdate>}
       

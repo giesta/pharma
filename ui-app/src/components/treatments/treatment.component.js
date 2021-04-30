@@ -437,7 +437,7 @@ const updateDiagram = async () => {
 };
 
 const getRelatedTreatments =()=>{
-  if(currentTreatment.diagram!== undefined){
+  if(currentTreatment.diagram!== undefined&&currentTreatment.diagram!== null){
       let values = currentTreatment.diagram.related_treatments.map((item, idx)=>{                      
       if(item.id !== currentTreatment.id && currentTreatment.diagram.author === userData.id){        
         return (<div key={`treatments-${idx}`}><a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a><br></br></div>)
@@ -616,15 +616,17 @@ useEffect(getRelatedTreatments, [currentTreatment])
         </Card>
         </Col>
       </Row>
-      ):('')}
-      <Row className="justify-content-md-center">
+      ):('')}{console.log(currentTreatment.drugs)}
+      {currentTreatment.drugs.length!==0?(
+        <Row className="justify-content-md-center">
         <Col>
          <ListGroup key={"list_d"} className="mt-1">
-         <ListGroup.Item key={"item_"} variant="light">Vaistai:</ListGroup.Item>          
-          
-<NestedList key={"list_drugs_"} nodes={getDrugsSubstances(currentTreatment)}></NestedList></ListGroup>
+         <ListGroup.Item key={"item_"} variant="light">Vaistai:</ListGroup.Item>         
+          <NestedList key={"list_drugs_"} nodes={getDrugsSubstances(currentTreatment)}></NestedList></ListGroup>
         </Col>   
         </Row>
+      ):('')}
+      
       <div className="container mt-4">
       <Row>
         <Col className="border-bottom border-dark">        

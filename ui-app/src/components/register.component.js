@@ -283,7 +283,7 @@ setRedirect= ()=>{
                 </div>
 
                 <div className="form-group">
-                  <button className="btn btn-primary btn-block">Užsiregistruoti</button>
+                  <button className="btn btn-dark btn-block">Užsiregistruoti</button>
                 </div>
               </div>
             )}

@@ -221,6 +221,7 @@ const diseasesReports = () => {
     }    
   };
   const handleOnDropDrugs = (data) => {
+    console.log(data)
     if(data[0].data['ATC kodas']===undefined&&
       data[0].data['Preparato (sugalvotas) pavadinimas']===undefined&&
       data[0].data['Stiprumas']===undefined&&

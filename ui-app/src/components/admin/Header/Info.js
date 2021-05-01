@@ -1,6 +1,5 @@
 import React from "react";
-import { Navbar, Nav, Dropdown, DropdownButton } from 'react-bootstrap';
-import { BsBoxArrowRight, BsPeopleCircle } from "react-icons/bs";
+import { Navbar, Nav } from 'react-bootstrap';
 import AuthService from "../../../services/auth.service";
 import { useHistory } from "react-router-dom";
 

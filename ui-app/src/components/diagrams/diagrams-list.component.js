@@ -24,8 +24,6 @@ export default function DiagramsList() {
   const [diagrams, setDiagrams] = React.useState([]);
   const [elements, setElements] = React.useState([]);
   const history = useHistory();
-  const [show, setShow] = React.useState(false);
-  const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
   const [error, setError] = React.useState(false);
@@ -35,8 +33,6 @@ export default function DiagramsList() {
   const [noData, setNoData] = React.useState('');
 
   const [searchTitle, setSearchTitle] = React.useState("");
-  
-  const [validated, setValidated] = React.useState(false);
 
   const {dispatch} = store;
 
@@ -53,14 +49,11 @@ export default function DiagramsList() {
     }else{
         handleInputChange(event); 
         updatediagram();
-    }
-    setValidated(true);       
+    }      
   };
 
   const handleClose = () =>{
-    newDiagram();
-    setShow(false);
-    setValidated(false);    
+    newDiagram();    
     setError(false);
     dispatch(removeError());
   };
@@ -149,7 +142,7 @@ export default function DiagramsList() {
                     return item;
                   }                  
               });
-                setElements(items);setDiagram(row); setShow(true);
+                setElements(items);setDiagram(row);
                 history.push({ 
                   pathname: "/diagrams/update",
                   state: { elements: items, diagram: row }

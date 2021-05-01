@@ -146,49 +146,52 @@ class DrugController extends ApiController
 
         $data = [];
         $substances = [];
-        for ($i = 0; $i < count($drugsArr); $i++)
+        for ($i = 0; $i < count($drugsArr)-1; $i++)
         {
-            if(isset($substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]) && !isset($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])){
-                $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}] = [
-                    'name' => $drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'},
-                    'strength' => $drugsArr[$i]->data->{'Stiprumas'},
-                    'form' => $drugsArr[$i]->data->{'Farmacinė forma'},
-                    'package' => $drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'},
-                    'package_description' => $drugsArr[$i]->data->{'(pakuotės) Aprašymas'},
-                    'substance_id' => $substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['id'],
-                    'registration' => $drugsArr[$i]->data->{'Stadija'},
-                    'created_at' => date("Y-m-d H:i:s"),
-                    'updated_at' => date("Y-m-d H:i:s"),
-                ];
+            if($drugsArr[$i]->data->{'VID'}!==""){
+                if(isset($substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]) && !isset($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])){
+                    $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}] = [
+                        'name' => $drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'},
+                        'strength' => $drugsArr[$i]->data->{'Stiprumas'},
+                        'form' => $drugsArr[$i]->data->{'Farmacinė forma'},
+                        'package' => $drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'},
+                        'package_description' => $drugsArr[$i]->data->{'(pakuotės) Aprašymas'},
+                        'substance_id' => $substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['id'],
+                        'registration' => $drugsArr[$i]->data->{'Stadija'},
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'updated_at' => date("Y-m-d H:i:s"),
+                    ];
+                }
+                elseif(isset($substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]) && isset($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])){
+                    $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']),strtolower($drugsArr[$i]->data->{'Stadija'})) === false) ? $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']."; ".$drugsArr[$i]->data->{'Stadija'} : $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'];
+                    $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']),strtolower($drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'})) === false) ? $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']."; ".$drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'} : $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'];
+                    $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']),strtolower($drugsArr[$i]->data->{'(pakuotės) Aprašymas'})) === false) ? $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']."; ".$drugsArr[$i]->data->{'(pakuotės) Aprašymas'} : $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'];
+                }elseif(!isset($substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}])){
+                    
+                    $substance = Substance::create([
+                        'name' => $drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'},
+                        'name_en' => $drugsArr[$i]->data->{'Pavadinimas anglų kalba'},
+                        'ATC' => $drugsArr[$i]->data->{'ATC kodas'},                    
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'updated_at' => date("Y-m-d H:i:s"),
+                    ]);
+                    $substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}] = [
+                        'id' => $substance->id,
+                    ];
+                    $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}] = [
+                        'name' => $drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'},
+                        'strength' => $drugsArr[$i]->data->{'Stiprumas'},
+                        'form' => $drugsArr[$i]->data->{'Farmacinė forma'},
+                        'package' => $drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'},
+                        'package_description' => $drugsArr[$i]->data->{'(pakuotės) Aprašymas'},
+                        'substance_id' => $substance->id,
+                        'registration' => $drugsArr[$i]->data->{'Stadija'},
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'updated_at' => date("Y-m-d H:i:s"),
+                    ];
+                } 
             }
-            elseif(isset($substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]) && isset($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])){
-                $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']),strtolower($drugsArr[$i]->data->{'Stadija'})) === false) ? $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']."; ".$drugsArr[$i]->data->{'Stadija'} : $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'];
-                $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']),strtolower($drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'})) === false) ? $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']."; ".$drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'} : $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'];
-                $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']),strtolower($drugsArr[$i]->data->{'(pakuotės) Aprašymas'})) === false) ? $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']."; ".$drugsArr[$i]->data->{'(pakuotės) Aprašymas'} : $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'];
-            }elseif(!isset($substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]) && $drugsArr[$i]->data->{'VID'}!==""){
-                
-                $substance = Substance::create([
-                    'name' => $drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'},
-                    'name_en' => $drugsArr[$i]->data->{'Pavadinimas anglų kalba'},
-                    'ATC' => $drugsArr[$i]->data->{'ATC kodas'},                    
-                    'created_at' => date("Y-m-d H:i:s"),
-                    'updated_at' => date("Y-m-d H:i:s"),
-                ]);
-                $substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}] = [
-                    'id' => $substance->id,
-                ];
-                $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}] = [
-                    'name' => $drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'},
-                    'strength' => $drugsArr[$i]->data->{'Stiprumas'},
-                    'form' => $drugsArr[$i]->data->{'Farmacinė forma'},
-                    'package' => $drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'},
-                    'package_description' => $drugsArr[$i]->data->{'(pakuotės) Aprašymas'},
-                    'substance_id' => $substance->id,
-                    'registration' => $drugsArr[$i]->data->{'Stadija'},
-                    'created_at' => date("Y-m-d H:i:s"),
-                    'updated_at' => date("Y-m-d H:i:s"),
-                ];
-            }            
+                       
         }       
         return $data;
     }
@@ -208,82 +211,85 @@ class DrugController extends ApiController
 
         for ($i = 0; $i < count($drugsArr); $i++)
         {
-            $needle="/\b".strtolower($drugsArr[$i]->data->{'Stadija'})."\b/";
-            $string = isset($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])?strtolower($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']):'';
-            if(isset($substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]) && !isset($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]) && !isset($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])){
-                $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}] = [
-                    'name' => $drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'},
-                    'strength' => $drugsArr[$i]->data->{'Stiprumas'},
-                    'form' => $drugsArr[$i]->data->{'Farmacinė forma'},
-                    'package' => $drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'},
-                    'package_description' => $drugsArr[$i]->data->{'(pakuotės) Aprašymas'},
-                    'substance_id' => $substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['id'],
-                    'registration' => $drugsArr[$i]->data->{'Stadija'},
-                    'created_at' => date("Y-m-d H:i:s"),
-                    'updated_at' => date("Y-m-d H:i:s"),
-                ];
-            }
-            elseif(isset($substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]) && isset($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])){
-                $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']),strtolower($drugsArr[$i]->data->{'Stadija'})) === false) ? $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']."; ".$drugsArr[$i]->data->{'Stadija'} : $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'];
-                $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']),strtolower($drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'})) === false) ? $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']."; ".$drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'} : $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'];
-                $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']),strtolower($drugsArr[$i]->data->{'(pakuotės) Aprašymas'})) === false) ? $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']."; ".$drugsArr[$i]->data->{'(pakuotės) Aprašymas'} : $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'];
-            }
-            elseif(isset($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])
-                &&
-                (
-                    preg_match($needle, $string)===0||
-                    strpos(strtolower($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']),strtolower($drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'})) === false ||
-                    strpos(strtolower($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']),strtolower($drugsArr[$i]->data->{'(pakuotės) Aprašymas'})) === false
-                )                
-            )
-            {
-                $date = date("Y-m-d H:i:s");
-                $array[$counter]=[
-                    $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['name'],
-                    $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'] ."->". $drugsArr[$i]->data->{'Stadija'}, 
-                    $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'] ."->".  $drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'},
-                    $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'] ."->".  $drugsArr[$i]->data->{'(pakuotės) Aprašymas'},                
-                ];
-                $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']=preg_match($needle, $string)===0?$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']."; ".$drugsArr[$i]->data->{'Stadija'}:$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'];
-            
-                $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']=strpos(strtolower($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']),strtolower($drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'})) === false?$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']."; ".$drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'}:$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'];
-                $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']=strpos(strtolower($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']),strtolower($drugsArr[$i]->data->{'(pakuotės) Aprašymas'})) === false?$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']."; ".$drugsArr[$i]->data->{'(pakuotės) Aprašymas'}:$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'];
-                $temp = [
-                    'registration'=>$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'],
-                    'package'=>$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'],
-                    'package_description'=>$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'],
-                    'updated_at' => $date,
-                ];
-                Drug::where('id', $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['id'])->update($temp);
+            if($drugsArr[$i]->data->{'VID'}!==""){
+                $needle="/\b".strtolower($drugsArr[$i]->data->{'Stadija'})."\b/";
+                $string = isset($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])?strtolower($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']):'';
+                if(isset($substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]) && !isset($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]) && !isset($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])){
+                    $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}] = [
+                        'name' => $drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'},
+                        'strength' => $drugsArr[$i]->data->{'Stiprumas'},
+                        'form' => $drugsArr[$i]->data->{'Farmacinė forma'},
+                        'package' => $drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'},
+                        'package_description' => $drugsArr[$i]->data->{'(pakuotės) Aprašymas'},
+                        'substance_id' => $substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['id'],
+                        'registration' => $drugsArr[$i]->data->{'Stadija'},
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'updated_at' => date("Y-m-d H:i:s"),
+                    ];
+                }
+                elseif(isset($substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]) && isset($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])){
+                    $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']),strtolower($drugsArr[$i]->data->{'Stadija'})) === false) ? $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']."; ".$drugsArr[$i]->data->{'Stadija'} : $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'];
+                    $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']),strtolower($drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'})) === false) ? $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']."; ".$drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'} : $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'];
+                    $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'] = (strpos(strtolower($data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']),strtolower($drugsArr[$i]->data->{'(pakuotės) Aprašymas'})) === false) ? $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']."; ".$drugsArr[$i]->data->{'(pakuotės) Aprašymas'} : $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'];
+                }
+                elseif(isset($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}])
+                    &&
+                    (
+                        preg_match($needle, $string)===0||
+                        strpos(strtolower($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']),strtolower($drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'})) === false ||
+                        strpos(strtolower($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']),strtolower($drugsArr[$i]->data->{'(pakuotės) Aprašymas'})) === false
+                    )                
+                )
+                {
+                    $date = date("Y-m-d H:i:s");
+                    $array[$counter]=[
+                        $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['name'],
+                        $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'] ."->". $drugsArr[$i]->data->{'Stadija'}, 
+                        $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'] ."->".  $drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'},
+                        $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'] ."->".  $drugsArr[$i]->data->{'(pakuotės) Aprašymas'},                
+                    ];
+                    $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']=preg_match($needle, $string)===0?$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration']."; ".$drugsArr[$i]->data->{'Stadija'}:$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'];
                 
-                //unset($newDrugsArr[$drugsArr[$i]->substance]);
-                $counter++;
-                
+                    $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']=strpos(strtolower($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']),strtolower($drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'})) === false?$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package']."; ".$drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'}:$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'];
+                    $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']=strpos(strtolower($oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']),strtolower($drugsArr[$i]->data->{'(pakuotės) Aprašymas'})) === false?$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description']."; ".$drugsArr[$i]->data->{'(pakuotės) Aprašymas'}:$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'];
+                    $temp = [
+                        'registration'=>$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['registration'],
+                        'package'=>$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package'],
+                        'package_description'=>$oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['package_description'],
+                        'updated_at' => $date,
+                    ];
+                    Drug::where('id', $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['id'])->update($temp);
+                    
+                    //unset($newDrugsArr[$drugsArr[$i]->substance]);
+                    $counter++;
+                    
+                }
+                elseif(!isset($oldSubstancesArr[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]) &&!isset($substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}])){
+                    
+                    $substance = Substance::create([
+                        'name' => $drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'},
+                        'name_en' => $drugsArr[$i]->data->{'Pavadinimas anglų kalba'},
+                        'ATC' => $drugsArr[$i]->data->{'ATC kodas'},                    
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'updated_at' => date("Y-m-d H:i:s"),
+                    ]);
+                    $substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}] = [
+                        'id' => $substance->id,
+                    ];
+                    $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}] = [
+                        'name' => $drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'},
+                        'strength' => $drugsArr[$i]->data->{'Stiprumas'},
+                        'form' => $drugsArr[$i]->data->{'Farmacinė forma'},
+                        'package' => $drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'},
+                        'package_description' => $drugsArr[$i]->data->{'(pakuotės) Aprašymas'},
+                        'substance_id' => $substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['id'],
+                        'registration' => $drugsArr[$i]->data->{'Stadija'},
+                        'created_at' => date("Y-m-d H:i:s"),
+                        'updated_at' => date("Y-m-d H:i:s"),
+                    ];
+                }  
             }
-            elseif(!isset($oldSubstancesArr[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]) &&!isset($substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]) && $drugsArr[$i]->data->{'VID'}!==""){
-                
-                $substance = Substance::create([
-                    'name' => $drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'},
-                    'name_en' => $drugsArr[$i]->data->{'Pavadinimas anglų kalba'},
-                    'ATC' => $drugsArr[$i]->data->{'ATC kodas'},                    
-                    'created_at' => date("Y-m-d H:i:s"),
-                    'updated_at' => date("Y-m-d H:i:s"),
-                ]);
-                $substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}] = [
-                    'id' => $substance->id,
-                ];
-                $data[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}] = [
-                    'name' => $drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'},
-                    'strength' => $drugsArr[$i]->data->{'Stiprumas'},
-                    'form' => $drugsArr[$i]->data->{'Farmacinė forma'},
-                    'package' => $drugsArr[$i]->data->{'(pakuotės) Pakuotės tipas'},
-                    'package_description' => $drugsArr[$i]->data->{'(pakuotės) Aprašymas'},
-                    'substance_id' => $substances[$drugsArr[$i]->data->{'Veiklioji (-osios) medžiaga (-os)'}]['id'],
-                    'registration' => $drugsArr[$i]->data->{'Stadija'},
-                    'created_at' => date("Y-m-d H:i:s"),
-                    'updated_at' => date("Y-m-d H:i:s"),
-                ];
-            }            
+                      
         }       
         return ['array'=>$array, 'updated'=>$counter, 'added_substances'=>count($substances), 'added_drugs'=>count($data), 'updated_at' => date("Y-m-d\TH:i:s\Z",strtotime($date))];
     }

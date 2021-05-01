@@ -49,9 +49,6 @@ Route::group(['middleware' => 'jwt.auth',
     Route::get('treatments/{id}', 'TreatmentController@show');
 });
 
-
-Route::get('treatments/list', 'App\Http\Controllers\Api\TreatmentController@list'); 
-
 Route::group(['middleware' => 'jwt.auth',
     'namespace' => 'App\Http\Controllers\Api',
 

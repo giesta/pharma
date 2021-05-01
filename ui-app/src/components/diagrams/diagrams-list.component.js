@@ -277,7 +277,7 @@ const newDiagram = () => {
       <div className="container">
       <DiagramsTable columns ={columns} diagrams={diagrams} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiagramsTable>
       { info &&<DiagramInfo name={diagram.name} elements={elements} info = {info} handleCloseInfo={handleCloseInfo}></DiagramInfo> } 
-      { confirm &&<DiagramDelete id={diagram.id} name={diagram.name} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiagramDelete> }
+      { confirm &&<DiagramDelete id={diagram.id} name={"diagramą "+diagram.name} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiagramDelete> }
       <div>
         <Pagination 
         className="my-3"

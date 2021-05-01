@@ -41,7 +41,7 @@ const findByTitle = (pageNumber, name) => {
   return http.get(`/treatments/list?page=${pageNumber}&&name=${name}`);
 };
 const findByTitlePublic = (pageNumber, name) => {
-  return httpPublic.get(`/treatments/list?page=${pageNumber}&&name=${name}`);
+  return http.get(`/treatments/list?page=${pageNumber}&&name=${name}`);
 };
 const findByTitlePrivate = (pageNumber, name) => {
   return http.get(`/treatments/private?page=${pageNumber}&&name=${name}`);

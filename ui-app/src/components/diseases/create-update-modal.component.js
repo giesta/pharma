@@ -140,6 +140,7 @@ export default function CreateModal(props) {
                         <Form.Label>Forma</Form.Label>     
                         <Select
                             name="form"
+                            ref={props.setSelectRef}
                             className="basic-multi-select"
                             classNamePrefix="select"
                             isClearable="true"
@@ -150,6 +151,24 @@ export default function CreateModal(props) {
                             onChange={(e)=>props.addSelectedForm(idx, e)}
                             options={field.drug !== ''?(makeOptions(field)):('')}
                             defaultValue={field.form!==''?({value: field.form, label: field.form}):('')}/>
+                            <Form.Control
+                            type="text"
+                            tabIndex={-1}
+                            autoComplete="off"
+                            style={{
+                            opacity: 0,
+                            width: "100%",
+                            height: 0,
+                            position: "absolute"
+                            }}
+                            required
+                            onFocus={() => props.selectRef.focus()}
+                            value = {field.form || ""}
+                            onChange={(e)=>props.addSelectedForm(idx, e)}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Pavadinimas yra privalomas.
+                        </Form.Control.Feedback >
                     </Form.Group>
                     ):('')
                         
@@ -160,6 +179,7 @@ export default function CreateModal(props) {
                         <Form.Label>Stiprumas</Form.Label>     
                         <Select
                             name="form"
+                            ref={props.setSelectRef}
                             className="basic-multi-select"
                             classNamePrefix="select"
                             isClearable="true"
@@ -170,6 +190,24 @@ export default function CreateModal(props) {
                             onChange={(e)=>props.addSelectedStrength(idx, e)}
                             options={field.form !== ''?(makeOptionsStrength(field)):('')}
                             defaultValue={field.strength!==''?({value: field.strength, label: field.strength}):('')}/>
+                             <Form.Control
+                            type="text"
+                            tabIndex={-1}
+                            autoComplete="off"
+                            style={{
+                            opacity: 0,
+                            width: "100%",
+                            height: 0,
+                            position: "absolute"
+                            }}
+                            required
+                            onFocus={() => props.selectRef.focus()}
+                            value = {field.strength || ""}
+                            onChange={(e)=>props.addSelectedStrength(idx, e)}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                            Pavadinimas yra privalomas.
+                        </Form.Control.Feedback >
                     </Form.Group>
                     ):('')                     
                     }
@@ -185,7 +223,7 @@ export default function CreateModal(props) {
                       {field.strength !== ''?(
                     <Form.Group controlId={`${field}-${idx}`}>
                         <Form.Label>Vartojimas</Form.Label>
-                        <Form.Control type="text"  as="textarea" placeholder="" value={field.uses} onChange={(e)=>props.handleAddedInputChange(idx, e)}  name="uses"/>
+                        <Form.Control type="text"  as="textarea" required placeholder="" value={field.uses} onChange={(e)=>props.handleAddedInputChange(idx, e)}  name="uses"/>
                     </Form.Group>):('')}
                     <div className="row">
   

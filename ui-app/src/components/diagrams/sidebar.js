@@ -42,7 +42,7 @@ export default (props) => {
             onChange={(evt) => {props.setAnimation(evt.target.checked);}}
           /></div>
 
-<div><label>type:</label>
+<div><label>Briaunos tipas:</label>
 <select name="types" id="edgeType" onChange={(evt) => {props.setEdgeType(evt.target.value)}} value={props.edgeType}>
             <option value="default">Bezier briauna</option>
             <option value="straight">Tiesi briauna</option>

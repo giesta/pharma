@@ -35,7 +35,7 @@ class DrugController extends ApiController
         return (DrugResource::collection(Drug::with('substance')->join('substances', 'substances.id', '=', 'drugs.substance_id')->select('drugs.*', 'substances.name as substance', 'substances.ATC')
         ->where('substances.name', 'LIKE', "%$name%")
         ->orWhere('drugs.name', 'LIKE', "%$name%")
-        ->orWhere('substances.ATC', 'LIKE', "%$name%")->limit(900)->get()))->response()->setStatusCode(200);
+        ->orWhere('substances.ATC', 'LIKE', "%$name%")->limit(100)->get()))->response()->setStatusCode(200);
         }
      /**
      * Display a listing of the resource.

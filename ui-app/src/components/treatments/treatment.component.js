@@ -231,7 +231,7 @@ const downloadItem = async () => {
       .then(response => {
           if(response.data.data.length > 0){
             idDisease = response.data.data[0].id;
-            setText('Mes radome susijusią ligą! Ar norite perrašyti šią "'+currentTreatment.disease.name + '" ligą?');          
+            setText('Mes radome susijusią ligą! Ar norite perrašyti šią '+currentTreatment.disease.name + ' ligą?');          
           }
           return response.data.data;          
       })
@@ -255,7 +255,7 @@ const downloadDiagram = async () => {
             for( var i = 0; i < response.data.data.length; i++) {
               if(response.data.data[i].name===currentTreatment.diagram.name&&response.data.data[i].nodes.length===currentTreatment.diagram.nodes.length&&response.data.data[i].edges.length===currentTreatment.diagram.edges.length){
                 idDiagram = response.data.data[i].id;
-                setText('Mes radome susijusią diagramą! Ar norite perrašyti šią "'+currentTreatment.diagram.name+ '" diagramą?');
+                setText('Mes radome susijusią diagramą! Ar norite perrašyti šią '+currentTreatment.diagram.name+ ' diagramą?');
                 handleCloseConfirmToOverwrite();                
                 setDiagramToOverwrite(true);
                 break;
@@ -486,7 +486,7 @@ useEffect(getRelatedTreatments, [currentTreatment])
           </OverlayTrigger>{' '}
           <OverlayTrigger
             placement="bottom"
-            overlay={<Tooltip id="button-download-1">Įtraukti į asmeninį sąrašą</Tooltip>}
+            overlay={<Tooltip id="button-download-1">Nukopijuoti į asmeninį sąrašą</Tooltip>}
           >
           <Button variant="outline-info" size="sm" onClick={()=>{if(currentTreatment.diagram!==null){setElements(getElements(currentTreatment.diagram))};setConfirm(true);}}> Nukopijuoti <BsCollection/>{' '}
           </Button>
@@ -683,7 +683,7 @@ useEffect(getRelatedTreatments, [currentTreatment])
       </div>
 { show &&<DrugInfo info = {show} leaflet = {drug} handleCloseInfo={handleClose}></DrugInfo> } 
 { showDiagram &&<DiagramInfo name={currentTreatment.diagram.name} elements={elements} info = {showDiagram} handleCloseInfo={handleCloseInfo}></DiagramInfo> }
-{confirm&&< DownloadTreatment treatment={currentTreatment} buttonText={'Įtraukti'} text={'Visa susijusi informacija gali būti perrašyta!'} name={"gydymo algoritmą"} onClickMethod={downloadItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ DownloadTreatment>}
+{confirm&&< DownloadTreatment treatment={currentTreatment} buttonText={'Kopijuoti'} text={'Visa susijusi informacija su jūsų esamais ligų aprašymais ir diagramomis gali būti perrašyta!'} name={"gydymo algoritmą"} onClickMethod={downloadItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ DownloadTreatment>}
 {confirmToOverwrite&&< DownloadTreatment identifier={idDisease} treatment={currentTreatment} buttonText={'Perrašyti'} text={text} name={"ligą"} onClickMethod={updateDisease} onClickMethodCancel={currentTreatment.diagram!==null?downloadDiagram:saveTreatment} handleCloseConfirm={handleCloseConfirmToOverwrite} confirm={confirmToOverwrite} ></ DownloadTreatment>}
 {diagramToOverwrite&&< DownloadTreatment identifier={idDiagram} treatment={currentTreatment} buttonText={'Perrašyti'} text={text} name={"diagramą"} onClickMethod={updateDiagram} onClickMethodCancel={saveTreatment} handleCloseConfirm={handleCloseDiagramToOverwrite} confirm={diagramToOverwrite} ></ DownloadTreatment>}
   </div>  )

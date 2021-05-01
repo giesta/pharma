@@ -222,7 +222,7 @@ for (const item of arr) {
     event.preventDefault();
     const form = event.currentTarget;
     if(treatment.diagram===null&&url===null&&treatment.algorithm===''){
-      setErrorText("Privalo būti pasirinktas arba schema arba diagrama!");
+      setErrorText("Privalo būti pasirinkta arba schema arba diagrama!");
       event.stopPropagation();
     }
     else if (form.checkValidity() === false) { 
@@ -292,7 +292,7 @@ for (const item of arr) {
   };  
 
   const retrieveTreatments = (pageNumber=1) => {
-    TreatmentsDataService.findByTitle(pageNumber, searchTitle)
+    TreatmentsDataService.findByTitlePrivate(pageNumber, searchTitle)
       .then(response => { 
         const { current_page, per_page, total } = response.data.meta;   
         if(response.data.data.length !== 0){
@@ -529,7 +529,7 @@ const newTreatment = () => {
   setTreatment(initialTreatmentState);
 };
 const findByTitle = () => {
-  TreatmentsDataService.findByTitle(1, searchTitle)
+  TreatmentsDataService.findByTitlePrivate(1, searchTitle)
     .then(response => {
       const { current_page, per_page, total } = response.data.meta;          
         if(response.data.data.length !== 0){

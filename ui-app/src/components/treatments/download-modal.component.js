@@ -7,7 +7,7 @@ export default function ModalDelete(props) {
     return (
 <Modal show={props.confirm} onHide={props.handleCloseConfirm}>
         <Modal.Header closeButton>
-    <Modal.Title>Įtraukti {props.name}</Modal.Title>
+    <Modal.Title>Kopijuoti {props.name}</Modal.Title>
   </Modal.Header>
   <Modal.Body>
     {props.text}{' '}

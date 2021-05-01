@@ -5,22 +5,20 @@ import { CSVReader } from 'react-papaparse';
 export default function CSVReader2(props) {
   
     return (
+      
       <>
       <div className="container">
         <div className="row">
         <div className="col-6 col-sm-3">
-          <button type="button" disabled={props.loading || props.disabled} className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
+          <button type="button" disabled={props.loading || props.disabled} className="btn btn-outline-success btn-sm ts-buttom mb-2" size="sm" onClick={
             function(event){props.save()}}>
               {props.loading && (
                   <span className="spinner-border spinner-border-sm"></span>
                 )} {props.buttonTitle}
           </button>
-          
+          <h6>{props.updated} </h6>
     </div>
-          <div className="col-6 col-sm-3">
-            <h5>{props.title} </h5>
-            <h6>{props.updated} </h6>
-          </div>
+          
           <div className="col-6 col-sm-3">
             <CSVReader
               onDrop={props.handleOnDrop}

@@ -12,10 +12,10 @@ export default function Footer() {
         <div className="container-fluid">
 <div className="row">
 <div className="col">
-<h5 className="">Mus rasite: </h5>
+<h5 className="">Mus rasite </h5>
 <p><BsGeoAlt></BsGeoAlt> 9878/25 Laisves - 4, Kaunas </p>
 <p><BsPhone></BsPhone>  +370-60000001  </p>
-<p><BsFillEnvelopeFill></BsFillEnvelopeFill> info@pharmaH2O.com  </p>
+<p><BsFillEnvelopeFill></BsFillEnvelopeFill> info@pharma.com  </p>
 
 
 </div>

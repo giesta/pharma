@@ -8,7 +8,7 @@ use Tests\TestCase;
 use App\Models\User;
 use JWTAuth;
 
-class AuthTest extends TestCase
+class AuthJWTTest extends TestCase
 {
     use RefreshDatabase;
     /**

@@ -48,13 +48,9 @@ export default (props) => {
             <option value="straight">Tiesi briauna</option>
             <option value="step">Laiptuota briauna</option>
             <option value="smoothstep">Apvalinta briauna</option>
-        </select>
-        
-        
+        </select>        
        </div> 
-        </>):('')}
-        
-        
+        </>):('')}        
       </div>
     </aside>
   );

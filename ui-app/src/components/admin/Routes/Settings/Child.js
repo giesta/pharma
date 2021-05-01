@@ -19,6 +19,7 @@ function Child()  {
   const [loadingDiseases, setLoadingDiseases] = React.useState(false);
   const [loadingLinks, setLoadingLinks] = React.useState(false);
   const [disabled, setDisabled] = React.useState(false);
+  const [errorText, setErrorText] = React.useState('');
 
   const drugsReports = () => {        
       DrugsDataService.reports()
@@ -31,9 +32,7 @@ function Child()  {
           }           
         } 
         symptomsReports(); 
-        diseasesReports();  
-         
-          
+        diseasesReports();           
       })
       .catch(e => {
         console.log(e);
@@ -87,6 +86,10 @@ const diseasesReports = () => {
         setDisabled(false);
         console.log(e);
       });
+    }else{
+      setErrorText('Nurodytas failas tuščias arba nenurodytas')
+      setLoading(false);
+      setDisabled(false);
     }    
   };
   const updateDrugs = () => {
@@ -108,6 +111,10 @@ const diseasesReports = () => {
         setDisabled(false);
         console.log(e);
       });
+    }else{
+      setErrorText('Nurodytas failas tuščias arba nenurodytas')
+      setLoading(false);
+      setDisabled(false);
     }    
   };
 
@@ -131,6 +138,10 @@ const diseasesReports = () => {
         setDisabled(false);
         console.log(e);
       });
+    }else{
+      setErrorText('Nurodytas failas tuščias arba nenurodytas')
+      setLoadingSymptoms(false);
+      setDisabled(false);
     }    
   };
   const updateSymptoms = () => {
@@ -152,7 +163,11 @@ const diseasesReports = () => {
         setDisabled(false);
         console.log(e);
       });
-    }    
+    }else{
+      setErrorText('Nurodytas failas tuščias arba nenurodytas')
+      setLoadingSymptoms(false);
+      setDisabled(false);
+    }     
   };
   const saveDiseases = () => {
     setLoadingDiseases(true);
@@ -174,7 +189,11 @@ const diseasesReports = () => {
         setDisabled(false);
         console.log(e);
       });
-    }    
+    }else{
+      setErrorText('Nurodytas failas tuščias arba nenurodytas')
+      setLoadingDiseases(false);
+      setDisabled(false);
+    }     
   };
   const updateDiseases = () => {
     setLoadingDiseases(true);
@@ -182,8 +201,7 @@ const diseasesReports = () => {
     const data = new FormData();
     data.append('diseases', JSON.stringify(diseases));
     data.append('_method', 'PUT');
-    if(diseases.length > 0){ 
-      console.log(data);     
+    if(diseases.length > 0){      
       DiseasesDataService.create(data)
       .then(response => {
         setText("Pridėta " + response.data.data.added + " naujų elementų");
@@ -196,16 +214,44 @@ const diseasesReports = () => {
         setDisabled(false);
         console.log(e);
       });
+    }else{
+      setErrorText('Nurodytas failas tuščias arba nenurodytas')
+      setLoadingDiseases(false);
+      setDisabled(false);
     }    
   };
   const handleOnDropDrugs = (data) => {
-    setDrugs(data);
+    if(data[0].data['ATC kodas']===undefined&&
+      data[0].data['Preparato (sugalvotas) pavadinimas']===undefined&&
+      data[0].data['Stiprumas']===undefined&&
+      data[0].data['Farmacinė forma']===undefined&&
+      data[0].data['(pakuotės) Pakuotės tipas']===undefined&&
+      data[0].data['(pakuotės) Aprašymas']===undefined&&
+      data[0].data['Veiklioji (-osios) medžiaga (-os)']===undefined&&
+      data[0].data['Stadija']===undefined&&
+      data[0].data['Pavadinimas anglų kalba']===undefined
+    ){
+      setErrorText('Neatitinka duomenys reikalingos struktūros!')
+    }else{
+      setErrorText('');
+      setDrugs(data);
+    }    
   };
   const handleOnDropSymptoms = (data) => {
-    setSymptoms(data);
+    if(data[0].data['Pavadinimas']===undefined){
+      setErrorText('Neatitinka duomenys reikalingos struktūros!')
+    }else{
+      setErrorText('');
+      setSymptoms(data);
+    }    
   };
   const handleOnDropDiseases = (data) => {
-    setDiseases(data);
+    if(data[0].data['Pavadinimas']===undefined){
+      setErrorText('Neatitinka duomenys reikalingos struktūros!')
+    }else{
+      setErrorText('');
+      setDiseases(data);
+    }    
   };
 
   const handleOnError = (err, file, inputElem, reason) => {
@@ -213,6 +259,7 @@ const diseasesReports = () => {
   };
 
   const handleOnRemoveFile = (data) => {
+    setErrorText('');
     console.log(data);
   };
 
@@ -234,12 +281,14 @@ const diseasesReports = () => {
     return (
       <React.Fragment>
         <section className="kanban__nav">
-          <div>{text!==""?(<Alert variant={'success'}>{text}</Alert>):('')}</div>
+          <div>
+            {text!==""?(<Alert variant={'success'}>{text}</Alert>):('')}
+            {errorText!==""?(<Alert variant={'danger'}>{errorText}</Alert>):('')}
+          </div>
           <div className="kanban__nav-wrapper">          
             <div className="kanban__nav-name">
               <div className="kanban-name">Nustatymai</div>                
-            </div>
-            
+            </div>            
           </div>
         </section>
         <section className="kanban__main">          

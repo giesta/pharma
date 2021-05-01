@@ -147,7 +147,7 @@ const findByTitle = () => {
   return (
     <div>
       {error?<ErrorBoundary/>:''}
-      <div className="mb-2 ml-4"><h5>Vaistai</h5></div>
+      <div className="mb-2 ml-4"><h2>Vaistai</h2></div>
       {drugs?(
       drugs.length === 0 && noData === ''?(        
         <Spinner></Spinner>

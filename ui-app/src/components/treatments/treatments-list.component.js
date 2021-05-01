@@ -547,7 +547,7 @@ const findByTitle = () => {
 
   return (
     <div>
-      <div className="mb-2"><h5>Gydymo algoritmai</h5></div>
+      <div className="mb-4"><h2>Gydymo algoritmai</h2></div>
       
       {Treatments?(
       Treatments.data.length === 0 && noData === ''?(        

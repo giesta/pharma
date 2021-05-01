@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import DrugsSubstancesDataService from "../../services/drugs/substances.service";
 import { Alert} from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
-import Select from 'react-select';
 import { BsPlusCircle, BsXCircle } from "react-icons/bs";
 import ErrorBoundary from "../layout/error.component";
 
@@ -93,18 +92,14 @@ export default function Interactions() {
           }
           showInteraction(values);
       }
-
-
   return (
     <div>
       {error?<ErrorBoundary/>:''}
         <div>      
       <div className="container">
         <div className="mb-4">
-          <h4>Sąveikų tarp vaistų patikrinimas</h4>
+          <h2>Sąveikų tarp vaistų patikrinimas</h2>
         </div>
-          
-
       {fields.map((field, idx)=>{
                     return (
                         <div key={`${field}-${idx}`} className="border border-secondary p-3 mt-2">
@@ -124,11 +119,8 @@ export default function Interactions() {
                             loadingMessage={() => "Ieškoma ..."}
                             noOptionsMessage={() => "Nerasta"}
                             onChange={e=>AddSelectedDrugs(idx, e)}
-                     />
-                    
-                    
-                   {idx>0?(<div className="row">
-  
+                     />                    
+  {idx>0?(<div className="row">  
   <div className="container text-right mt-2"><a type="button" className="link_danger" onClick={()=>handleRemoveInput(idx)} >
                         Šalinti <BsXCircle></BsXCircle>
                     </a></div></div>):('')} 
@@ -140,10 +132,7 @@ export default function Interactions() {
                 
                 <div className="col-auto mr-auto mt-2 mb-2"><a type="button" className="link_success" size="sm" onClick={handleAddInput} >
                 Įtraukti vaistą <BsPlusCircle></BsPlusCircle>
-          </a></div>  
-      
-  
-  
+          </a></div> 
   <button type="button" disabled={loading} className="btn btn-outline-dark btn-sm ts-buttom mt-2" size="sm" onClick={
             function(event){setLoading(true);getInteraction();}}>
               {loading && (
@@ -168,9 +157,8 @@ export default function Interactions() {
       })):(interactions)}
   </div>
   ):('')}
-  </div></div></div>
-  
-    
-    
+  </div>
+  </div>
+  </div>    
   );
 }

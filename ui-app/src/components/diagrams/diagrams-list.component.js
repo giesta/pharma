@@ -237,7 +237,7 @@ const newDiagram = () => {
 
   return (
     <div>
-      <div className="mb-2"><h5>Diagramos</h5></div>
+      <div className="mb-4"><h2>Diagramos</h2></div>
       {diagrams?(
       diagrams.length===0 && noData===''?(        
         <Spinner></Spinner>

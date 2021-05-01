@@ -43,9 +43,12 @@ class UserController extends Controller
         $name = $request->name;
         if($user->roles()->first()->name === "admin"){
             if($name){
-                return UserResource::collection(User::where('users.name', 'LIKE', "%$name%")->paginate(5));
+                return UserResource::collection(User::where('users.name', 'LIKE', "%$name%")
+                ->orWhere('users.email', 'LIKE', "%$name%")
+                ->where('id', '!=', $user->id)
+                ->paginate(5));
             }else{
-                return UserResource::collection(User::paginate(5));
+                return UserResource::collection(User::where('id', '!=', $user->id)->paginate(5));
             }
         
         }else{

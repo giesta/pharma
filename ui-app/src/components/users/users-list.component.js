@@ -209,7 +209,7 @@ const newUser = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Ieškoti pagal vardą"
+            placeholder="Ieškoti pagal vardą, el. pašto adresą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />

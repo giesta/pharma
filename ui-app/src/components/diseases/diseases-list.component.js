@@ -456,7 +456,7 @@ const findByTitle = () => {
   return (
     <div>
       {error?<ErrorBoundary/>:''}
-      <div className="mb-2"><h5>Ligos</h5></div>
+      <div className="mb-4"><h2>Ligos</h2></div>
       {overviews?(
       overviews.length===0 && noData===''?( 
         <div> <Spinner></Spinner> </div>         

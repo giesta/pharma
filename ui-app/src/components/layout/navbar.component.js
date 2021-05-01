@@ -8,9 +8,9 @@ export default function MainNavbar(props) {
   let history = useHistory();
 
     return (
-        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+        <Navbar className="d-flex justify-content-center" collapseOnSelect expand="lg" bg="dark" variant="dark">
   <Navbar.Brand href="/home"><img className="brand" src={logo}></img>{' '}
-    PharmaH2O</Navbar.Brand>
+    Pharma</Navbar.Brand>
   <Navbar.Toggle aria-controls="responsive-navbar-nav" />
   <Navbar.Collapse id="responsive-navbar-nav">
 

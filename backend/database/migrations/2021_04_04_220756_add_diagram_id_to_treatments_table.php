@@ -18,7 +18,7 @@ class AddDiagramIdToTreatmentsTable extends Migration
             
             $table->foreign('diagram_id')
               ->references('id')
-              ->on('diagrams')->onDelete('no action')->onUpdate('no action');
+              ->on('diagrams')->onDelete('cascade')->onUpdate('no action');
         });
     }
 
@@ -31,7 +31,6 @@ class AddDiagramIdToTreatmentsTable extends Migration
     {
         Schema::table('treatments', function (Blueprint $table) {
             $table->dropForeign('treatments_diagram_id_foreign');
-            $table->dropIndex('treatments_diagram_index');
             $table->dropColumn('diagram_id');
         });
     }

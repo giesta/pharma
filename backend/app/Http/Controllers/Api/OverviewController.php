@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Overview;
 use Illuminate\Http\Request;
-
+use Validator;
 use JWTAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Resources\Json\ResourceCollection;
@@ -66,9 +66,17 @@ class OverviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreDiseaseRequest $request)
+    public function store(Request $request)
     {
         $user = auth()->user();
+        $validator = Validator::make($request->all(), 
+        [ 
+        'disease_id' => 'required',
+        ]);  
+ 
+        if ($validator->fails()) { 
+            return response()->json(['message'=>$validator->errors()], 400);  
+        }
         try{
             $overview = Overview::create(array_merge($request->all(), ['user_id' => $user->id]));
             
@@ -76,17 +84,16 @@ class OverviewController extends Controller
             $drugs = json_decode($request->drugs);
             foreach($drugs as $drug){
                 foreach($drug->selected as $selected){
-                    $overview->drugs()->attach($selected->id, ['uses'=> $drug->uses]);
+                    $overview->drugs()->attach($selected, ['uses'=> $drug->uses]);
                 }                
             }
             
         }catch (QueryException $ex) { // Anything that went wrong
             abort(500, $ex->getMessage());
         }
-        return new OverviewResource(
+        return (new OverviewResource(
             $user->overviews()->with('drugs')->findOrFail($overview->id)
-        );
-
+        ))->response()->setStatusCode(201);
     }
 
     /**
@@ -95,9 +102,11 @@ class OverviewController extends Controller
      * @param  \App\Models\Overviews  $overviews
      * @return \Illuminate\Http\Response
      */
-    public function show(Overviews $overviews)
+    public function show(Request $request, $id)
     {
-        //
+        $user = auth()->user();
+        
+        return new OverviewResource($user->overviews()->with('drugs')->findOrFail($id));
     }
 
 
@@ -112,6 +121,14 @@ class OverviewController extends Controller
     {
         $user = auth()->user();
         $role = $user->roles()->first()->name;
+        $validator = Validator::make($request->all(), 
+        [ 
+        'disease_id' => 'required',
+        ]);  
+ 
+        if ($validator->fails()) { 
+            return response()->json(['message'=>$validator->errors()], 400);  
+        }
         if($role ==="admin"){
             $overview = Overview::findOrFail($id);
         }else{
@@ -124,14 +141,14 @@ class OverviewController extends Controller
             $tem = [];
             foreach($drugs as $drug){
                 foreach($drug->selected as $selected){
-                    $tem[$selected->id] = ['uses'=> $drug->uses];
+                    $tem[$selected] = ['uses'=> $drug->uses];
                 }                
             }$overview->drugs()->sync($tem);
         }
         catch (QueryException $ex) { // Anything that went wrong
             abort(500, $ex);
         }
-        return new OverviewResource($overview->with('leaflets')->findOrFail($id));
+        return new OverviewResource($overview->findOrFail($id));
     }
 
     /**
@@ -143,15 +160,18 @@ class OverviewController extends Controller
     public function destroy($id)
     {
         $user = auth()->user();
-        $role = $user->roles()->first()->name;
-        if($role ==="admin"){
-            $overview = Overview::findOrFail($id);
+            
+        $overview = $user->overviews()->findOrFail($id);
+        if($overview->treatments()->count()===0){
+            $overview->drugs()->detach();
+            $overview->symptoms()->detach();
+            $overview->delete();
+            return response()->noContent();
         }else{
-            $overview = $user->overviews()->findOrFail($id);
-        } 
-        $overview->drugs()->detach();
-        $overview->symptoms()->detach();
-        $overview->delete();
-        return response()->noContent();
+            return response()->json([
+                'success' => false,
+                'message' => "Could not delete the overview",
+            ], Response::HTTP_CONFLICT);
+        }        
     }
 }

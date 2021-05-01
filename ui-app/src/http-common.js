@@ -31,6 +31,17 @@ instance.interceptors.response.use(response => {
   if(err.response !== undefined && err.response.status === 422){
     dispatch(addError(err.response.data.message.email));
 }
+else if(err.response !== undefined && err.response.status === 409){
+  if(err.response.data.message==="Could not delete the diagram"){
+    dispatch(addError("Negalima pašalinti diagramos, nes yra susijusių gydymo algoritmų."));
+  }else if(err.response.data.message==="Could not delete the overview"){
+    dispatch(addError("Negalima pašalinti ligos aprašymo, nes yra susijusių gydymo algoritmų."));
+  }else{
+    dispatch(addError(err.response.data.message));
+  }  
+}else if(err.response !== undefined && err.response.status === 400){
+  dispatch(addError(err.response.data.message.email));
+}
   return new Promise((resolve, reject) => {
       const originalReq = err.config;    
       

@@ -8,7 +8,7 @@ export default function HomePage() {
       <div className="container">
         <header>
           <h3>
-              Home
+              Gydymų algoritmai
           </h3>
         </header>
         

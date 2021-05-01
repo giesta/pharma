@@ -27,7 +27,7 @@ class CreateNodesTable extends Migration
             $table->index('diagram_id');
             $table->foreign('diagram_id')
                 ->references('id')->on('diagrams')
-                ->onDelete('no action')
+                ->onDelete('cascade')
                 ->onUpdate('no action');
         });
     }

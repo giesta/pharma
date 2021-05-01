@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
+use Validator;
 use App\Models\Diagram;
 use App\Models\Node;
 use App\Models\Edge;
@@ -74,6 +74,14 @@ class DiagramController extends Controller
     public function store(Request $request)
     {
         $user = auth()->user();
+        $validator = Validator::make($request->all(), 
+        [ 
+        'name' => 'required',
+        ]);  
+ 
+        if ($validator->fails()) { 
+            return response()->json(['message'=>$validator->errors()], 400);  
+        }
 
         try{
             $diagram = Diagram::create(['name'=>$request->name,'user_id' => $user->id]);
@@ -114,7 +122,7 @@ class DiagramController extends Controller
         return response()->json([
             'success' => true,
             'data' => $diagram,
-        ], Response::HTTP_OK);
+        ], Response::HTTP_CREATED);
     }
 
     
@@ -129,10 +137,19 @@ class DiagramController extends Controller
     {
         $user = auth()->user();
 
+        $validator = Validator::make($request->all(), 
+        [ 
+        'name' => 'required',
+        ]);  
+ 
+        if ($validator->fails()) { 
+            return response()->json(['message'=>$validator->errors()], 400);  
+        }
+
         $diagram = $user->diagrams()->findOrFail($id);
 
         try{
-            $diagram->update(array_merge($request->only(['name, updated_at']), ['updated_at' => date("Y-m-d H:i:s")]));
+            $diagram->update(array_merge($request->only(['name']), ['updated_at' => date("Y-m-d H:i:s")]));
             $diagram->nodes()->delete();
             $diagram->edges()->delete();
             $nodes = json_decode($request->nodes);
@@ -185,9 +202,16 @@ class DiagramController extends Controller
     {
         $user = auth()->user();
         $diagram = $user->diagrams()->findOrFail($id);
-        $diagram->nodes()->delete();
-        $diagram->edges()->delete();
-        $diagram->delete();
-        return response()->noContent();
+        if($diagram->treatments()->count() === 0){
+            $diagram->nodes()->delete();
+            $diagram->edges()->delete();
+            $diagram->delete();
+            return response()->noContent();
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => "Could not delete the diagram",
+            ], Response::HTTP_CONFLICT);
+        }        
     }
 }

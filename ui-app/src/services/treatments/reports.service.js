@@ -1,11 +1,11 @@
 import http from "../../http-common";
 
-const update = (id) => {
-  return http.put(`/reports/${id}`);
+const report = (id) => {
+  return http.post(`/report/${id}`);
 };
 
 const services = {
-  update
+  report
 }
 
 export default services;

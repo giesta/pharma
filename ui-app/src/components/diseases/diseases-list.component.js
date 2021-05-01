@@ -11,26 +11,27 @@ import Spinner from "../layout/spinner.component";
 import Pagination from "react-js-pagination";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
 import ErrorBoundary from "../layout/error.component";
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { removeError } from "../../js/actions/index";
+import store from "../../js/store/index";
 
-export default function DiseasesList() {
-
-  
+export default function DiseasesList() { 
 
   const columns = [{  
     dataField: 'no',  
-    text: 'No' },  
+    text: 'Nr' },  
   {  
     dataField: 'name',  
-    text: 'Name',  
+    text: 'Pavadinimas',  
     sort:true}, {  
     dataField: 'description',  
-    text: 'Description',  
+    text: 'Aprašymas',  
     sort: true  },  
   { dataField: 'symptoms',  
-    text: 'Symptoms',  
+    text: 'Simptomai',  
     sort: true  },  
   {
-    text: 'Actions',
+    text: 'Veiksmai',
     dataField: 'Actions',
     editable: false 
   }];
@@ -56,6 +57,8 @@ export default function DiseasesList() {
   const [isWriting, setIsWriting] = React.useState(false);
 
   const [fields, setFields] = React.useState([]);
+
+  const {dispatch} = store;
 
 
   const initialDiseaseState = {  
@@ -103,7 +106,6 @@ export default function DiseasesList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }else{
         const value = event.value;
         const values = [...fields];
@@ -112,7 +114,6 @@ export default function DiseasesList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }
       
       //setSelectedLeaflets(arr);
@@ -126,7 +127,6 @@ export default function DiseasesList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }else{
         const value = event.value;
         const values = [...fields];
@@ -134,7 +134,6 @@ export default function DiseasesList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }
       
       //setSelectedLeaflets(arr);
@@ -146,28 +145,21 @@ export default function DiseasesList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }else{
         const value = event.value;
         const values = [...fields];
         values[i]['strength'] = value;
         var arr = values[i]['drug'].drugs.filter(item=>item.form===values[i]['form']&&item.strength===values[i]['strength']);
         values[i]['selected'] = arr;
-        //console.log(arr);
         setFields(values);
-        console.log(fields);
       }
-      
-      //setSelectedLeaflets(arr);
     };
 
   function handleAddedInputChange(i, event) {
-    console.log(event);
     const values = [...fields];
     const { name, value } = event.target;
     values[i][name] = value;
     setFields(values);
-    console.log(fields);
   }
 
   function handleRemoveInput(i) {
@@ -212,7 +204,11 @@ export default function DiseasesList() {
     setIsWriting(true);     
     setFields([]);
   };
-  const handleCloseConfirm = () => setConfirm(false);
+  const handleCloseConfirm = () => {
+    setConfirm(false);
+    setError(false);
+    dispatch(removeError());
+  }
   const handleCloseInfo = () => {
     newDisease();
     setInfo(false);
@@ -232,7 +228,6 @@ export default function DiseasesList() {
   const loadDrugsOptions = (inputValue, callback) => {    
     DrugsSubstancesDataService.findBySubstance(inputValue)
         .then(response => {
-            console.log(response.data.data);
             const result = response.data.data.map(x => makeOptions(x));          
            callback(result);      
         })
@@ -244,7 +239,6 @@ export default function DiseasesList() {
   const loadOptions = (inputValue, callback) => {
     SymptomsDataService.findByTitle(inputValue)
       .then(response => {
-          console.log(response.data.data);
           const result = response.data.data.map(x => makeOptions(x));          
           callback(result);
       })
@@ -257,7 +251,6 @@ export default function DiseasesList() {
   const loadDiseasesOptions = (inputValue, callback) => {
     diseasesDataService.findByTitle(inputValue)
       .then(response => {
-          console.log(response.data.data);
           const result = response.data.data.map(x => makeOptions(x));          
           callback(result);
       })
@@ -282,8 +275,7 @@ const result = [];
 const map = new Map();
 for (const item of arr) {
     if(!map.has(item.drug+item.form+item.strength)){
-        map.set(item.drug+item.form+item.strength, true); 
-        console.log(drugs);   // set any value to Map
+        map.set(item.drug+item.form+item.strength, true);
         var arrNames = drugs.filter(x=>x.form===item.form&&x.strength===item.strength&&x.substance.name===item.drug.name);
         result.push({
           drug: item.drug, 
@@ -301,7 +293,6 @@ for (const item of arr) {
   
   const handleSymptomsInputChange = event =>
     {
-      console.log(event);
       const arr = event.map(item=>item.value.id);
       setSelectedSymptoms(arr);
     };
@@ -323,7 +314,6 @@ for (const item of arr) {
       .then(response => {        
         if(response.data.data.length !== 0){
           setSymptoms(response.data.data);
-          console.log(symptoms);
         }        
       })
       .catch(e => {
@@ -335,7 +325,6 @@ for (const item of arr) {
       .then(response => {
         const { current_page, per_page, total } = response.data.meta;          
         if(response.data.data.length !== 0){
-          console.log(response.data.data);
           setOverviews(response.data.data); 
           setPageSize(per_page);
           setPage(current_page);     
@@ -361,7 +350,6 @@ for (const item of arr) {
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
               function(event){
-                console.log(row.disease_id);
                 setFieldsArray(row.drugs);setSelectedDisease(row.disease_id); setDisease(row); setShow(true);setSelectedSymptoms(row.symptoms.map(item=>item.id));}}>
                 <BsPen></BsPen>
             </button>
@@ -379,7 +367,7 @@ const deleteItemFromState = (id) => {
 }
 const saveDisease = () => {
   var drugsArr = fields.map(item=>{
-    return {selected:item.selected, uses:item.uses}
+    return {selected:item.selected.map(x=>x.id), uses:item.uses}
   });
   var data = {
     disease_id: selectedDisease.id,
@@ -389,10 +377,8 @@ const saveDisease = () => {
     drugs: JSON.stringify(drugsArr),
     symptoms: JSON.stringify(selectedSymptoms),
   };
-  console.log(data);
   DiseaseOverviewsDataService.create(data)
     .then((response) => {
-      console.log(response.data.data);
       refreshList();
       handleClose();            
     })
@@ -404,7 +390,7 @@ const saveDisease = () => {
 
 const updateDisease = () => {
   var drugsArr = fields.map(item=>{
-    return {selected:item.selected, uses:item.uses}
+    return {selected:item.selected.map(x=>x.id), uses:item.uses}
   });
   var data = {
     id: disease.id,
@@ -414,10 +400,9 @@ const updateDisease = () => {
     prevention: disease.prevention,
     drugs: JSON.stringify(drugsArr),
     symptoms: JSON.stringify(selectedSymptoms),
-  };console.log(data);
+  };
   DiseaseOverviewsDataService.update(data.id, data)
-    .then((resp) => {  
-      console.log(resp);
+    .then((resp) => {
       const updatedItems = overviews.filter(x=>x.id!==disease.id)
       updatedItems.push(resp.data.data);
       setOverviews(updatedItems);
@@ -434,16 +419,12 @@ const deleteItem = (id) => {
     .then(() => {
       //deleteItemFromState(id);
       if(overviews.length>1){
-        console.log(1)
         retrieveDiseasesOverviews(page);
       }else if(page > 1){
-        console.log(2)
         retrieveDiseasesOverviews(page-1);
       }else{
-        console.log(2)
         retrieveDiseasesOverviews();
-      }
-      
+      }      
       handleCloseConfirm();
     })
     .catch(e => {
@@ -475,6 +456,7 @@ const findByTitle = () => {
   return (
     <div>
       {error?<ErrorBoundary/>:''}
+      <div className="mb-4"><h2>Ligos</h2></div>
       {overviews?(
       overviews.length===0 && noData===''?( 
         <div> <Spinner></Spinner> </div>         
@@ -483,10 +465,15 @@ const findByTitle = () => {
           
         <div className="d-flex justify-content-between">
         <div className="mb-3">
+        <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="button-rate-1">Sukurti naują</Tooltip>}
+          >
     <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
             function(event){setShow(true)}}>
               <BsPlus></BsPlus>
           </button>
+          </OverlayTrigger>
           
     </div>
           <div className="col-md-6">
@@ -494,7 +481,7 @@ const findByTitle = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search by title"
+            placeholder="Ieškoti pagal pavadinimą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
@@ -504,7 +491,7 @@ const findByTitle = () => {
               type="button"
               onClick={findByTitle}
             >
-              Search
+              Ieškoti
             </button>
           </div>
         </div>
@@ -544,7 +531,7 @@ const findByTitle = () => {
 
       { confirm && <DiseaseDelete 
         id={id} 
-        name={"Disease"} 
+        name={"ligą"} 
         deleteItem={deleteItem} 
         handleCloseConfirm={handleCloseConfirm} 
         confirm={confirm}
@@ -560,8 +547,8 @@ const findByTitle = () => {
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"
-        firstPageText="First"
-        lastPageText="Last"
+        firstPageText="Pradžia"
+        lastPageText="Pabaiga"
         ></Pagination> 
       </div>
   </div> 

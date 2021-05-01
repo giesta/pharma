@@ -1,7 +1,7 @@
 import React from 'react';
 import DateParser from "../../services/parseDate.service";
 
-import { Table, Badge } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 
 export default function TableOfItems(props) {
     const handleIncrement = (counter) => {
@@ -16,7 +16,7 @@ export default function TableOfItems(props) {
                 )}
                 </tr>
             </thead>
-            <tbody>{console.log(props.diagrams)}
+            <tbody>
             {props.diagrams.map((field, counter)=>
                 <tr key = {field.id}>
                     

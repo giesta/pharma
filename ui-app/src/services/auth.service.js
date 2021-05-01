@@ -1,5 +1,6 @@
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import http from "../http-common";
 
 const API_URL = "http://127.0.0.1:8000/api/auth/";
 
@@ -20,7 +21,18 @@ class AuthService {
   }
 
   logout() {
-    localStorage.removeItem("user");
+    return http
+      .post(API_URL + "logout",{},{
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+      .then(response => {
+        if (response.data.success) { 
+          localStorage.removeItem("user");
+          localStorage.removeItem("token");
+        }
+      });    
   }
 
   register(name, last_name, stamp_number, email, password, c_password) {

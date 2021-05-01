@@ -13,7 +13,7 @@ class ErrorBoundary extends React.Component {
     render() {
       if (this.state.hasError) {
         // You can render any custom fallback UI
-        return <Alert variant={'danger'}>{this.props.text}</Alert>;
+        return <Alert variant={'danger'} onClose={this.props.handleCose}>{this.props.text}</Alert>;
       }
   
       return this.props.children; 

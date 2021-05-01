@@ -71,13 +71,13 @@ export default function Profile() {
         {successMessage?(
           <Row>
             <Col>
-              <Alert variant="success" onClose={() => setSuccessMessage(false)} dismissible>Profile updated successfully</Alert>
+              <Alert variant="success" onClose={() => setSuccessMessage(false)} dismissible>Profilis atnaujintas sėkmingai</Alert>
             </Col>
           </Row>
         ):''}
         <header className="jumbotron">
           <h3>
-            <strong>{currentUser.name}</strong> Profile
+            <strong>{currentUser.name}</strong> profilis
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
               function(event){ setUser(currentUser); setShow(true)}}>
                 <BsPencilSquare/>
@@ -88,12 +88,12 @@ export default function Profile() {
             <div className="col-xs-12 col-sm-6 col-md-4 col-lg-4 col cell" style={{"wordWrap": "break-word"}}>
                                 
                     <p>
-                    <strong>Email:</strong>{" "}
+                    <strong>El. paštas:</strong>{" "}
                     {currentUser.email}
                     </p>
-                    <strong>Authorities:</strong>
+                    <strong>Profilio statusas:</strong>
                     <ul>
-                    {currentUser.role}
+                    {currentUser.role==='pharmacist'?"Farmacijos specialistas":''}
                     </ul>
             </div>
         </div>

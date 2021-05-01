@@ -9,30 +9,29 @@ import TreatmentCreateUpdate from "./create-update-modal.component";
 import TreatmentInfo from "./info-modal.component";
 import Spinner from "../layout/spinner.component";
 import Pagination from "react-js-pagination";
-import { BsPen, BsTrash, BsInfoCircle, BsPlus } from "react-icons/bs";
+import { BsPen, BsTrash, BsInfoCircle, BsPlus, BsEye } from "react-icons/bs";
+import {OverlayTrigger, Tooltip} from "react-bootstrap";
 import ErrorBoundary from "../layout/error.component";
 
-export default function TreatmentList() {
-
-  
+export default function TreatmentList() {  
   const columns = [{  
       dataField: '',  
-      text: 'No' },  
+      text: 'Nr' },  
     {  
       dataField: 'title',  
-      text: 'Title',  
+      text: 'Pavadinimas',  
       sort:true}, {  
       dataField: 'description',  
-      text: 'Description',  
+      text: 'Aprašymas',  
       sort: true  }, {  
       dataField: 'disease',  
-      text: 'Disease',  
+      text: 'Liga',  
       sort: true  }, {  
       dataField: 'public',  
-      text: 'Public',  
+      text: 'Viešas',  
       sort: false  },   
       {
-      text: 'Actions',
+      text: 'Veiksmai',
       dataField: 'Actions',
       editable: false 
     }
@@ -46,7 +45,7 @@ export default function TreatmentList() {
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
 
-  const [overviews, setOverviews] = React.useState([]);
+  const [overviews] = React.useState([]);
   const [selectedDiagram, setSelectedDiagram] = React.useState(null); 
   const [diagramsOptions, setDiagramsOptions] = React.useState([]); 
   
@@ -63,7 +62,8 @@ export default function TreatmentList() {
 
   const [fields, setFields] = React.useState([]);
   const [isWriting, setIsWriting] = React.useState(false);
-  const [elements, setElements] = React.useState([]);
+
+  const [errorText, setErrorText] = React.useState("");
 
   const initialTreatmentState = {  
     id: null,  
@@ -83,12 +83,10 @@ export default function TreatmentList() {
       setTreatment({
         ...treatment,
         diagram: selectedDiagram,
-      }
-      
+      }      
       );
       setError(false);
     }
-    console.log(treatment);
   }, [isWriting, selectedDiagram]);
 
   function handleAddInput() {
@@ -111,7 +109,6 @@ export default function TreatmentList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }else{
         const value = event.value;
         const values = [...fields];
@@ -120,10 +117,7 @@ export default function TreatmentList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }
-      
-      //setSelectedLeaflets(arr);
     };
 
     const addSelectedForm = (i, event) =>
@@ -134,7 +128,6 @@ export default function TreatmentList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }else{
         const value = event.value;
         const values = [...fields];
@@ -142,10 +135,7 @@ export default function TreatmentList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }
-      
-      //setSelectedLeaflets(arr);
     };
     const addSelectedStrength = (i, event) =>
     {
@@ -154,19 +144,14 @@ export default function TreatmentList() {
         values[i]['strength']='';
         values[i]['selected']=[];
         setFields(values);
-        console.log(fields);
       }else{
         const value = event.value;
         const values = [...fields];
         values[i]['strength'] = value;
         var arr = treatment.disease.drugs.filter(item=>item.form===values[i]['form']&&item.strength===values[i]['strength']);
         values[i]['selected'] = arr;
-        //console.log(arr);
         setFields(values);
-        console.log(fields);
       }
-      
-      //setSelectedLeaflets(arr);
     };
 
     const addSelectedDiagram = (event) =>
@@ -177,22 +162,19 @@ export default function TreatmentList() {
       }else{
         const value = event.value;
         setSelectedDiagram(value);
+        setErrorText('');
       }
     };
 
   function handleAddedInputChange(i, event) {
-    console.log(event);
     const values = [...fields];
     const { name, value } = event.target;
     values[i][name] = value;
     setFields(values);
-    console.log(fields);
   }
 
   function handleRemoveInput(i) {
     const values = [...fields];
-    console.log(i);
-    console.log(values);
     values.splice(i, 1);
     setFields(values);
   }
@@ -205,8 +187,7 @@ export default function TreatmentList() {
 const map = new Map();
 for (const item of arr) {
     if(!map.has(item.drug+item.form+item.strength)){
-        map.set(item.drug+item.form+item.strength, true); 
-        console.log(drugs);   // set any value to Map
+        map.set(item.drug+item.form+item.strength, true);
         var arrNames = drugs.filter(x=>x.form===item.form&&x.strength===item.strength&&x.substance.name===item.drug.name);
         result.push({
           drug: item.drug, 
@@ -231,15 +212,21 @@ for (const item of arr) {
     setPage(1);
   };
 
+  const handleInvalidForm = (e)=>{
+    if(e.currentTarget.checkValidity()){
+      
+    }    
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
     if(treatment.diagram===null&&url===null&&treatment.algorithm===''){
-      setError(true);
+      setErrorText("Privalo būti pasirinkta arba schema arba diagrama!");
       event.stopPropagation();
     }
-    else if (form.checkValidity() === false) {      
+    else if (form.checkValidity() === false) { 
+          
       event.stopPropagation();
     }else{
       if(treatment.id===null){
@@ -257,6 +244,8 @@ for (const item of arr) {
     setValidated(false);
     setUrl(null);
     setFields([]);
+    setError(false);
+    setErrorText('');
   };
   const handleCloseConfirm = () => setConfirm(false);
   const handleCloseInfo = () => {
@@ -271,16 +260,26 @@ for (const item of arr) {
     data: [],
   });
   const handleInputChange = event => {
-    const { name, value } = event.target;    
+    const { name, value } = event.target; 
+    var extensions = ["jpg", "jpeg","png"];
     if(event.target.files!==undefined && event.target.files!==null ){
+      if(!extensions.includes(event.target.files[0].name.split('.').pop().toLowerCase())){
+        setErrorText("Schemos formatas turi būti jpg, jpeg arba png");
+      }else{
         setSelectedFile(event.target.files[0]);
         setUrl(URL.createObjectURL(event.target.files[0]));
         setError(false);
-    }  
-    setTreatment({ ...treatment, [name]: value });
+        setErrorText('');
+        setTreatment({ ...treatment, [name]: value });
+      }        
+    }else{
+      setTreatment({ ...treatment, [name]: value });
+    }      
   };
   const removeImageFile = event =>{
     setSelectedFile(null);
+    setError(false);
+    setErrorText('');
     setUrl(null);
     setTreatment({
       ...treatment,
@@ -290,15 +289,13 @@ for (const item of arr) {
   };
   const handleChecked = event =>{
     setTreatment({ ...treatment, public: event.target.checked ? 1 : 0 });
-  };
-  
+  };  
 
   const retrieveTreatments = (pageNumber=1) => {
-    TreatmentsDataService.findByTitle(pageNumber, searchTitle)
+    TreatmentsDataService.findByTitlePrivate(pageNumber, searchTitle)
       .then(response => { 
         const { current_page, per_page, total } = response.data.meta;   
         if(response.data.data.length !== 0){
-          console.log(response.data.data);
           setTreatments({...Treatments, data: response.data.data});
           setPageSize(per_page);
           setPage(current_page);     
@@ -336,22 +333,23 @@ for (const item of arr) {
         var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
         return item;
       }else{
-        var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
-        return item;
-      }
-      
+        var itemVal = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
+        return itemVal;
+      }      
   });
 return items;
 }
 
-  const GetActionFormat = (row) =>{
-    
+  const GetActionFormat = (row) =>{    
     return (
         <td className="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
               function(event){ setFieldsArray(row.drugs); setTreatment(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
             </button>
+            <a type="button" href={"/treatments/"+row.id} className="btn btn-outline-secondary btn-sm ml-2 ts-buttom" size="sm">
+                <BsEye/>
+            </a>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
               function(event){ setFieldsArray(row.drugs);setTreatment(row);
                 
@@ -369,7 +367,6 @@ return items;
 const loadOptions = (inputValue, callback) => {
   DiseaseOverviewsDataService.findByName(inputValue)
     .then(response => {
-      console.log(response.data.data);
       const result = response.data.data.map(x => 
         {
           return { value: x, label: x.name }
@@ -387,8 +384,7 @@ const loadOptions = (inputValue, callback) => {
 const getDiagramsOptions = () => {
   DiagramsDataService.getAll()
     .then(response => {      
-      if(response.data.data.length !== 0){
-        //setDiagrams(response.data.data);  
+      if(response.data.data.length !== 0){  
         const result =  response.data.data.map(x=>
           {
             return { value: x, label: x.name }
@@ -415,7 +411,6 @@ const handleOverviewsInputChange = event =>
     
   }else{
     var selected = event.value;
-    console.log(selected);
     setTreatment({
       ...treatment,
       id: treatment.id,
@@ -426,12 +421,7 @@ const handleOverviewsInputChange = event =>
   }
 };
 
-const deleteItemFromState = (id) => {
-  const updatedItems = Treatments.data.filter(x=>x.id!==id)
-  setTreatments({ data: updatedItems })
-}
 const saveTreatment = () => {
-  console.log(fields);
   var drugsArr = fields.map(item=>item.selected);
   var newArr = [];
 newArr = [].concat(...drugsArr);
@@ -440,7 +430,6 @@ drugsArr = newArr.map(item=>{
   return {id: item.id, uses:item.uses}
 });
     const data = new FormData();
-    console.log(treatment.disease);
     data.append('Content-Type','multipart/formdata');
     if(selectedFile!==null){
         data.append("algorithm", selectedFile);        
@@ -458,7 +447,6 @@ drugsArr = newArr.map(item=>{
     }
 TreatmentsDataService.create(data)
     .then((response) => {
-      console.log(response.data.data);
       refreshList();
       setUrl(null);
       handleClose();
@@ -475,7 +463,7 @@ const updateTreatment = () => {
   newArr = [].concat(...drugsArr);
   drugsArr = newArr.map(item=>{
     return {id: item.id, uses:item.uses}
-  });console.log(drugsArr);
+  });
   const data = new FormData();
   data.append('Content-Type','multipart/formdata');
   data.append('_method', 'PUT');
@@ -505,7 +493,7 @@ const updateTreatment = () => {
         description: response.data.data.description,
         algorithm: response.data.data.algorithm,
         public: response.data.data.public,
-        disease: response.data.data.disease
+        disease: response.data.data.disease,
       });
       setUrl(null);
       setSelectedDiagram(null);
@@ -522,7 +510,6 @@ const updateTreatment = () => {
 const deleteItem = (id) => {
   TreatmentsDataService.remove(id)
     .then(() => {
-      //deleteItemFromState(id);
       if(Treatments.data.length>1){
         retrieveTreatments(page);
       }else if(page > 1){
@@ -530,8 +517,7 @@ const deleteItem = (id) => {
       }
       else{
         retrieveTreatments();
-      }
-      
+      }      
       handleCloseConfirm();
     })
     .catch(e => {
@@ -543,7 +529,7 @@ const newTreatment = () => {
   setTreatment(initialTreatmentState);
 };
 const findByTitle = () => {
-  TreatmentsDataService.findByTitle(1, searchTitle)
+  TreatmentsDataService.findByTitlePrivate(1, searchTitle)
     .then(response => {
       const { current_page, per_page, total } = response.data.meta;          
         if(response.data.data.length !== 0){
@@ -552,7 +538,6 @@ const findByTitle = () => {
           setPage(current_page);     
           setTotal(total);          
         }
-      console.log(response.data.data);
     })
     .catch(e => {
       setError(true);
@@ -562,6 +547,8 @@ const findByTitle = () => {
 
   return (
     <div>
+      <div className="mb-4"><h2>Gydymo algoritmai</h2></div>
+      
       {Treatments?(
       Treatments.data.length === 0 && noData === ''?(        
         <Spinner></Spinner>
@@ -570,10 +557,15 @@ const findByTitle = () => {
           {error?<ErrorBoundary/>:''}
         <div className="d-flex justify-content-between">
         <div className="mb-3">
+        <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="button-rate-1">Sukurti naują</Tooltip>}
+          >
     <button type="button" className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={
             function(event){setShow(true)}}>
               <BsPlus></BsPlus>
           </button>
+          </OverlayTrigger>
           
     </div>
           <div className="col-md-6">
@@ -581,7 +573,7 @@ const findByTitle = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search by title"
+            placeholder="Ieškoti pagal pavadinimą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
@@ -591,7 +583,7 @@ const findByTitle = () => {
               type="button"
               onClick={findByTitle}
             >
-              Search
+              Ieškoti
             </button>
           </div>
         </div>
@@ -600,47 +592,55 @@ const findByTitle = () => {
       <div className="container">  
       
       <>
-  <TreatmentTable columns ={columns} Treatments={Treatments} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></TreatmentTable>
+  <TreatmentTable 
+    columns ={columns} 
+    Treatments={Treatments} 
+    GetActionFormat={GetActionFormat} 
+    rowNumber={(page*5-5)}
+  >    
+  </TreatmentTable>
 
   { show&&
   <TreatmentCreateUpdate 
-  selectRef = {selectRef} 
-  setSelectRef = {setSelectRef} 
-  loadOptions={loadOptions} 
-  show ={show} 
-  handleClose={handleClose} 
-  treatment={treatment} 
-  validated={validated} 
-  handleSubmit={handleSubmit} 
-  handleInputChange={handleInputChange} 
-  handleChecked={handleChecked} 
-  diseases={overviews} 
-  url={url} 
-  handleOverviewsInputChange={handleOverviewsInputChange}
-  fields={fields}
-  handleAddedInputChange={handleAddedInputChange}
-  addSelectedForm={addSelectedForm}        
-  addSelectedStrength={addSelectedStrength}
-  handleAddInput={handleAddInput}
-  handleRemoveInput={handleRemoveInput}
-  AddSelectedDrugs={AddSelectedDrugs}
-  diagramsOptions={diagramsOptions}
-  addSelectedDiagram={addSelectedDiagram}
-  getElements={getElements}
-  removeImageFile={removeImageFile}
-  imageRef={setImageRef}
-  error={error}
+    selectRef = {selectRef} 
+    setSelectRef = {setSelectRef} 
+    loadOptions={loadOptions} 
+    show ={show} 
+    handleClose={handleClose} 
+    treatment={treatment} 
+    validated={validated} 
+    handleSubmit={handleSubmit} 
+    handleInputChange={handleInputChange} 
+    handleChecked={handleChecked} 
+    diseases={overviews} 
+    url={url} 
+    handleOverviewsInputChange={handleOverviewsInputChange}
+    fields={fields}
+    handleAddedInputChange={handleAddedInputChange}
+    addSelectedForm={addSelectedForm}        
+    addSelectedStrength={addSelectedStrength}
+    handleAddInput={handleAddInput}
+    handleRemoveInput={handleRemoveInput}
+    AddSelectedDrugs={AddSelectedDrugs}
+    diagramsOptions={diagramsOptions}
+    addSelectedDiagram={addSelectedDiagram}
+    getElements={getElements}
+    removeImageFile={removeImageFile}
+    imageRef={setImageRef}
+    error={error}
+    errorText={errorText}
+    handleInvalidForm={handleInvalidForm}
   >
     </TreatmentCreateUpdate>}
       
-  {confirm&&< TreatmentDelete id={id} name={"Treatment"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ TreatmentDelete>}
+  {confirm&&< TreatmentDelete id={id} name={"gydymą"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm} ></ TreatmentDelete>}
 
   {info&&<TreatmentInfo 
-  fields = {fields} 
-  info = {info}  
-  treatment={treatment} 
-  handleCloseInfo={handleCloseInfo} 
-  getElements={getElements}
+    fields = {fields} 
+    info = {info}  
+    treatment={treatment} 
+    handleCloseInfo={handleCloseInfo} 
+    getElements={getElements}
   >
   </TreatmentInfo>}
   <div>
@@ -653,8 +653,8 @@ const findByTitle = () => {
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"
-        firstPageText="First"
-        lastPageText="Last"
+        firstPageText="Pradžia"
+        lastPageText="Pabaiga"
         ></Pagination> 
       </div>
       
@@ -665,8 +665,6 @@ const findByTitle = () => {
       <p>Some Went Wrong...</p>
     </div>)
       
-    }</div>
-    
-    
+    }</div>    
   );
 }

@@ -9,7 +9,7 @@ const required = value => {
   if (!value) {
     return (
       <div className="alert alert-danger" role="alert">
-        This field is required!
+        Šis laukas privalomas!
       </div>
     );
   }
@@ -56,12 +56,14 @@ export default class Login extends Component {
       AuthService.login(this.state.username, this.state.password).then(
         (user) => {
           if(user.role === "admin"){
-            this.props.history.push("/settings");
+            this.props.history.replace('/admin', 'urlhistory')
+            window.location.reload();
+            this.props.history.push("/admin");
           }else{
+            this.props.history.replace('/profile', 'urlhistory')
+            window.location.reload();
             this.props.history.push("/profile");
-          }
-          
-          window.location.reload();
+          }          
         },
         error => {
           const resMessage =
@@ -101,7 +103,7 @@ export default class Login extends Component {
             }}
           >
             <div className="form-group">
-              <label htmlFor="username">Email</label>
+              <label>El. pašto adresas</label>
               <Input
                 type="text"
                 className="form-control"
@@ -113,7 +115,7 @@ export default class Login extends Component {
             </div>
 
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label>Slaptažodis</label>
               <Input
                 type="password"
                 className="form-control"
@@ -126,13 +128,13 @@ export default class Login extends Component {
 
             <div className="form-group">
               <button
-                className="btn btn-primary btn-block"
+                className="btn btn-dark btn-block"
                 disabled={this.state.loading}
               >
                 {this.state.loading && (
                   <span className="spinner-border spinner-border-sm"></span>
                 )}
-                <span>Login</span>
+                <span>Prisijungti</span>
               </button>
             </div>
 

@@ -6,13 +6,12 @@ export default function InfoModal(props) {
     return (
         <Modal show={props.info} onHide={props.handleCloseInfo}>
             <Modal.Header closeButton>
-                <Modal.Title>Drug info</Modal.Title>
+                <Modal.Title>Vaisto informacija</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <Form>
                     <Form.Group controlId="name">
-                        <Form.Label>Name</Form.Label>
-                        
+                        <Form.Label>Pavadinimas</Form.Label>                        
                         {
                         props.drug.registration.toUpperCase().includes("IŠREGISTRUOTAS")?
                         <Badge pill variant="warning">{props.drug.name}</Badge>
@@ -20,14 +19,14 @@ export default function InfoModal(props) {
                             }
                     </Form.Group>
                     <Form.Group controlId="substance">
-                        <Form.Label>Substance</Form.Label>
-                        {props.drug.substance.name===undefined?(props.drug.substance.split(/\/|\(|\)/).map(item=>
+                        <Form.Label>Veiklioji mežiaga</Form.Label>
+                        {props.drug.substance.name===undefined?(props.drug.substance.split(/\/|\(|\)/).map((item, idx)=>
                         
-                        <Badge pill variant="primary">{item}</Badge>
+                        <Badge key={"badge_"+idx} pill variant="primary">{item}</Badge>
                             
-                            )):(props.drug.substance.name.split(/\/|\(|\)/).map(item=>
+                            )):(props.drug.substance.name.split(/\/|\(|\)/).map((item, idx)=>
                         
-                                <Badge pill variant="primary">{item}</Badge>
+                                <Badge key={"badge_"+idx} pill variant="primary">{item}</Badge>
                                     
                                     ))}
                     </Form.Group>
@@ -36,30 +35,30 @@ export default function InfoModal(props) {
                         <Form.Control type="text" placeholder="" value={props.drug.ATC!==null?(props.drug.ATC):(props.drug.substance.ATC)} disabled name="indication"/>
                     </Form.Group>
                     <Form.Group controlId="strength">
-                        <Form.Label>Strength</Form.Label>
+                        <Form.Label>Stiprumas</Form.Label>
                         <Form.Control type="text" placeholder="" value={props.drug.strength} disabled name="contraindication"/>
                     </Form.Group>
                     <Form.Group controlId="form">
-                        <Form.Label>Form</Form.Label>
+                        <Form.Label>Forma</Form.Label>
                         <Form.Control type="text" placeholder="" value={props.drug.form} disabled name="reaction"/>
                     </Form.Group>
                     <Form.Group controlId="package">
-                        <Form.Label>Package</Form.Label>
+                        <Form.Label>Pakuotė</Form.Label>
                         <Form.Control type="text" placeholder="" value={props.drug.package} disabled name="use"/>
                     </Form.Group>
                     <Form.Group controlId="package_description">
-                        <Form.Label>Package Description</Form.Label>
+                        <Form.Label>Pakuotės aprašymas</Form.Label>
                         <Form.Control type="text"  as="textarea" placeholder="" value={props.drug.package_description} disabled name="use"/>
                     </Form.Group>
                     {props.drug.uses!==undefined && props.drug.uses!==null?( 
                     <Form.Group controlId="uses">
-                        <Form.Label>Uses</Form.Label>
+                        <Form.Label>Vartojimas</Form.Label>
                         <Form.Control type="text"  as="textarea" placeholder="" value={props.drug.uses} disabled name="use"/>
                     </Form.Group>
                     ):('')}
                    
                     <Form.Group controlId="exampleForm.ControlInput1">
-                        <Form.Label>Updated</Form.Label>
+                        <Form.Label>Atnaujinta</Form.Label>
                         <Form.Control type="text" placeholder="" value={DateParser.getParsedDate(props.drug.updated_at)} disabled name="use"/>
                     </Form.Group>
                         
@@ -67,7 +66,7 @@ export default function InfoModal(props) {
             </Modal.Body>
             <Modal.Footer>
                 <Button variant="secondary" onClick={props.handleCloseInfo}>
-                    Close
+                    Užverti
                 </Button>
             </Modal.Footer>
         </Modal>

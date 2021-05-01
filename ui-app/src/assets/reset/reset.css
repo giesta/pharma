@@ -5,14 +5,14 @@
 
 :root {
   --logoHeader: 60px;
-  --sidebarNav: 120px;
-  --colorLogo: #888fdc;
+  --sidebarNav: 100px;
+  --colorLogo: #343a40;
   --colorBar: #d2d7e0;
   --colorBarW: #b7bec7;
-  --colorWhite: white;
-  --colorNav: #eef2f9;
+  --colorWhite: rgb(234, 238, 238);
+  --colorNav: #ffffff;
   --colorIcon: #a1ffff;
-  --colorName: #707090;
+  --colorName: #030303;
 }
 
 body {
@@ -48,11 +48,11 @@ body {
   display: grid;
   grid-template:
     "logo header" var(--logoHeader) "sidebar nav" var(--sidebarNav) "sidebar main" auto
-    / minmax(auto, 120px) minmax(290px, 1320px);
+    / minmax(auto, 120px);    
 }
 
 .kanban-wrapper {
-  padding: 10px;
+  padding: 0px;
 }
 
 a {
@@ -63,4 +63,7 @@ a {
   color: var(--colorWhite);
   font-size: 14px;
   margin: auto;
+}
+a:hover{
+  text-decoration: none!important;
 }

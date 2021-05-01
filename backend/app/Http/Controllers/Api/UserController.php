@@ -43,25 +43,17 @@ class UserController extends Controller
         $name = $request->name;
         if($user->roles()->first()->name === "admin"){
             if($name){
-                return UserResource::collection(User::where('users.name', 'LIKE', "%$name%")->paginate(5));
+                return UserResource::collection(User::where('users.name', 'LIKE', "%$name%")
+                ->orWhere('users.email', 'LIKE', "%$name%")
+                ->where('id', '!=', $user->id)
+                ->paginate(5));
             }else{
-                return UserResource::collection(User::paginate(5));
+                return UserResource::collection(User::where('id', '!=', $user->id)->paginate(5));
             }
         
         }else{
             abort(403, "Permission denied");
         }
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -133,6 +125,7 @@ class UserController extends Controller
             $userCurrent = auth()->user();
             if($userCurrent->id != $id && $userCurrent->roles()->first()->name === "admin"){
                 $user = User::findOrFail($id);
+                $user->roles()->detach();
                 $user->delete();
                 return response()->noContent();
             }else{

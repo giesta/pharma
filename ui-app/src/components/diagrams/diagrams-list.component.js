@@ -3,7 +3,6 @@ import DiagramsDataService from "../../services/diagrams/list.service";
 import { useHistory } from "react-router-dom";
 import DiagramDelete from "../delete-modal.component";
 import DiagramInfo from "./info-modal.component";
-//import diagramUpdate from "./update-modal.component";
 import DiagramsTable from "./table.component";
 import Spinner from "../layout/spinner.component";
 import Pagination from "react-js-pagination";
@@ -11,6 +10,7 @@ import { BsPlus, BsPen, BsTrash, BsInfoCircle} from "react-icons/bs";
 import { removeError } from "../../js/actions/index";
 import store from "../../js/store/index";
 import { Link } from 'react-router-dom';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 
 export default function DiagramsList() {
@@ -64,10 +64,16 @@ export default function DiagramsList() {
     setError(false);
     dispatch(removeError());
   };
-  const handleCloseConfirm = () => setConfirm(false);
+  const handleCloseConfirm = () => {
+    setConfirm(false);
+    setError(false);
+    dispatch(removeError());
+  }
   const handleCloseInfo = () => {
     newDiagram();
     setInfo(false);
+    setError(false);
+    dispatch(removeError());
   };
 
   const handleInputChange = event => {
@@ -112,8 +118,7 @@ export default function DiagramsList() {
       });
   };
   
-  const GetActionFormat = (row) =>{
-    
+  const GetActionFormat = (row) =>{    
     return (
       <td className="table-col">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
@@ -121,33 +126,28 @@ export default function DiagramsList() {
                 setDiagram(row);
                 var arr = row.nodes.concat(row.edges);
                 var items = arr.map((el)=>{
-                  console.log(el);
                   if(el.source === undefined){
                     var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
                     return item;
                   }else{
                     var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
                     return item;
-                  }
-                  
+                  }                  
               });
                 setElements(items); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
             </button>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
               function(event){ 
-                var arr = row.nodes.concat(row.edges);
-                
+                var arr = row.nodes.concat(row.edges);                
                 var items = arr.map((el)=>{
-                  console.log(el);
                   if(el.source === undefined){
                     var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
                     return item;
                   }else{
                     var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
                     return item;
-                  }
-                  
+                  }                  
               });
                 setElements(items);setDiagram(row); setShow(true);
                 history.push({ 
@@ -165,27 +165,22 @@ export default function DiagramsList() {
     );
 };
 
-const deleteItemFromState = (id) => {
-  const updatedItems = diagrams.filter(x=>x.id!==id)
-  setDiagrams(updatedItems)
-}
-
 const columns = [{  
     dataField: 'no',  
-    text: 'No' },  
+    text: 'Nr' },  
   {  
     dataField: 'name',  
-    text: 'Name',  
+    text: 'Pavadinimas',  
     sort:true}, {  
     dataField: 'created_at',  
-    text: 'Created',  
+    text: 'Sukurta',  
     sort: true  }, 
     {  
       dataField: 'updated_at',  
-      text: 'Updated',  
+      text: 'Atnaujinta',  
       sort: true  },  
     {
-        text: 'Actions',
+        text: 'Veiksmai',
         dataField: 'Actions',
         editable: false 
      } 
@@ -218,7 +213,6 @@ const updatediagram = () => {
 const deleteItem = (id) => {
   DiagramsDataService.remove(id)
     .then(() => {
-      //deleteItemFromState(id);
       if(diagrams.length > 1){
         retrieveDiagrams(page);
       }else if(page > 1){
@@ -243,15 +237,21 @@ const newDiagram = () => {
 
   return (
     <div>
+      <div className="mb-4"><h2>Diagramos</h2></div>
       {diagrams?(
       diagrams.length===0 && noData===''?(        
         <Spinner></Spinner>
       ):(  
         <div>
           <div className="mb-3">
+          <OverlayTrigger
+            placement="bottom"
+            overlay={<Tooltip id="button-rate-1">Sukurti naują</Tooltip>}
+          >
           <Link to="/diagrams/create" className="btn btn-outline-success btn-sm ts-buttom" size="sm">
               <BsPlus></BsPlus>
           </Link>
+          </OverlayTrigger>
           
     </div>
         <div className="col-md-6 float-right">
@@ -259,7 +259,7 @@ const newDiagram = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search by name"
+            placeholder="Ieškoti pagal pavadinimą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
@@ -269,7 +269,7 @@ const newDiagram = () => {
               type="button"
               onClick={findByTitle}
             >
-              Search
+              Ieškoti
             </button>
           </div>
         </div>
@@ -277,7 +277,7 @@ const newDiagram = () => {
       <div className="container">
       <DiagramsTable columns ={columns} diagrams={diagrams} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiagramsTable>
       { info &&<DiagramInfo name={diagram.name} elements={elements} info = {info} handleCloseInfo={handleCloseInfo}></DiagramInfo> } 
-      { confirm &&<DiagramDelete id={diagram.id} name={diagram.name} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiagramDelete> }
+      { confirm &&<DiagramDelete id={diagram.id} name={"diagramą "+diagram.name} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiagramDelete> }
       <div>
         <Pagination 
         className="my-3"
@@ -288,8 +288,8 @@ const newDiagram = () => {
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"
-        firstPageText="First"
-        lastPageText="Last"
+        firstPageText="Pradžia"
+        lastPageText="Pabaiga"
         ></Pagination> 
       </div>
   </div>

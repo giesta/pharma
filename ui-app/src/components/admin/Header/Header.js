@@ -7,12 +7,10 @@ import Notification from "./Notification.js";
 class Header extends React.Component {
   render() {
     return (
-      <section className="kanban__header">
-        <Search />
-        <div className="kanban__header-info">
-          <Messages />
-          <Notification />
-          <Info />
+      <section className="kanban__header text-right">
+        <div className="kanban__header-search"></div>
+        <div className="kanban__header-info ">        
+          <Info logOut = {this.props.logOut}/>
         </div>
       </section>
     );

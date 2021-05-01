@@ -29,6 +29,13 @@
   color: #61dafb;
 }
 
+.admin-container {
+  min-height: 100vh; /* will cover the 100% of viewport */
+  overflow: auto;
+  display: block;
+  position: relative;
+ }
+
 body {
   font-family: 'Roboto', sans-serif;
 }
@@ -51,9 +58,12 @@ label {
   padding: 40px 40px;
 }
 
-.card {
-  background-color: #f7f7f7;
+.card-padding{
   padding: 20px 25px 30px;
+}
+
+.card {
+  background-color: #f7f7f7;  
   margin: 0 auto 25px;
   margin-top: 50px;
   -moz-border-radius: 2px;
@@ -145,7 +155,7 @@ footer p { font-size:13px; color:#CCC; padding-bottom:0px; margin-bottom:8px;}
   }
 }
 .link_danger {color: #f00;}
-.link_danger:hover {color: #f00;}
+.link_danger:hover {color: #f00;text-decoration: none;}
 .link_success {color: rgb(12, 134, 42);}
 .link_success:hover {color: rgb(12, 134, 42);text-decoration: none;}
 .link_info {color: rgb(26, 115, 232);}
@@ -175,5 +185,34 @@ td{
    .hide{
     display:none;
    }
+
+   /* _border-width-customs.scss */
+   .border-1{
+    border-style:solid;
+     border-width: 1px;
+    }
+.border-2{
+border-style:solid;
+border-width: 2px;
+}
+.border-3{
+border-width: 3px;
+}
+.border-4{
+border-width: 4px;
+}
+.border-5{
+border-style:solid;
+  border-width: 5px;
+}
+.border-10{
+border-style:solid;
+  border-width: 10px;
+}
+.brand{
+  max-height: 30px;
+  
+}
+
 
  

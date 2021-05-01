@@ -13,7 +13,7 @@ class Overview extends Model
     ];
 
     public function treatments(){
-        return $this->hasMany(Treatment::class,'treatment_id', 'id');
+        return $this->hasMany(Treatment::class,'overview_id', 'id');
     }
     public function leaflets()
     {
@@ -26,6 +26,10 @@ class Overview extends Model
     public function disease()
     {
         return $this->belongsTo(Disease::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
     public function drugs()
     {

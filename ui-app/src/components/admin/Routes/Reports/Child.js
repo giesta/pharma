@@ -7,10 +7,7 @@ class Child extends React.Component {
       <React.Fragment>
         <section className="kanban__nav">
           <div className="kanban__nav-wrapper">
-            <div className="kanban__nav-name">
-              <div className="kanban-name">Studio Drugs</div>
-
-            </div>
+            
           </div>
         </section>
         <section className="kanban__main">

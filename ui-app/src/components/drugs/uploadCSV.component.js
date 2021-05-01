@@ -65,7 +65,7 @@ export default function CSVReader2(props) {
                 },
               }}
             >
-            <span>Drop CSV file here or click to upload.</span>
+            <span>Įkelti CSV failą čia arba spausti, kad įkelti.</span>
             </CSVReader>
           </div>
         </div>

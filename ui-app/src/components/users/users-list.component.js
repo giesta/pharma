@@ -43,7 +43,6 @@ export default function UsersList() {
   };
 
   const handleSubmit = (form) => {
-    console.log(form);
     handleInputChange(form); 
     updateUser(form);       
   };
@@ -74,7 +73,6 @@ export default function UsersList() {
       .then(response => {  
         const { current_page, per_page, total } = response.data.meta;        
         if(response.data.data.length !== 0){
-          console.log(current_page);
           setUsers(response.data.data);
           setPageSize(per_page);
           setPage(current_page);     
@@ -126,23 +124,18 @@ export default function UsersList() {
     );
 };
 
-const deleteItemFromState = (id) => {
-  const updatedItems = users.data.filter(x=>x.id!==id)
-  setUsers({ data: updatedItems })
-}
-
 const columns = [{  
     dataField: 'no',  
-    text: 'No' },  
+    text: 'Nr' },  
   {  
     dataField: 'name',  
-    text: 'Name',  
+    text: 'Vardas',  
     sort:true}, {  
     dataField: 'email',  
-    text: 'Email',  
+    text: 'El. paštas',  
     sort: true  },   
     {
-        text: 'Actions',
+        text: 'Veiksmai',
         dataField: 'Actions',
         editable: false 
      } 
@@ -158,7 +151,6 @@ const updateUser = (form) => {
   }
   UsersDataService.update(data.id, data)
     .then(response => {
-      console.log(response.data);
       setUser({
         id: response.data.data.id,
         name: response.data.data.name,
@@ -184,14 +176,13 @@ const updateUser = (form) => {
 const deleteItem = (id) => {
   UsersDataService.remove(id)
     .then(() => {
-      if(users.data.length > 1){
+      if(users.length > 1){
         retrieveUsers(page);
       }else if(page > 1){
         retrieveUsers(page - 1);
       }else{
         retrieveUsers();
       }
-      //deleteItemFromState(id);
       handleCloseConfirm();
     })
     .catch(e => {
@@ -218,7 +209,7 @@ const newUser = () => {
           <input
             type="text"
             className="form-control"
-            placeholder="Search by name"
+            placeholder="Ieškoti pagal vardą, el. pašto adresą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
           />
@@ -228,7 +219,7 @@ const newUser = () => {
               type="button"
               onClick={findByTitle}
             >
-              Search
+              Ieškoti
             </button>
           </div>
         </div>
@@ -236,7 +227,7 @@ const newUser = () => {
       <div className="container">
       <UsersTable columns ={columns} users={users} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></UsersTable>
       { show &&<UserUpdate error={error} show ={show} handleClose={handleClose} user={user} validated={validated} handleSubmit={handleSubmit} handleInputChange={handleInputChange}></UserUpdate> }
-      { confirm &&<UserDelete id={id} name={"User"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></UserDelete> }
+      { confirm &&<UserDelete id={id} name={"naudotoją"} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></UserDelete> }
       { info && <UserInfo info = {info} user={user} handleCloseInfo={handleCloseInfo}></UserInfo> }
       <div>
         <Pagination 
@@ -248,8 +239,8 @@ const newUser = () => {
         itemClass="page-item"
         linkClass="page-link"
         activeLinkClass="bg-dark"
-        firstPageText="First"
-        lastPageText="Last"
+        firstPageText="Pradžia"
+        lastPageText="Pabaiga"
         ></Pagination> 
       </div>
   </div>

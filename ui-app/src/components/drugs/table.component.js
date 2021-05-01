@@ -23,12 +23,12 @@ export default function TableOfItems(props) {
                     
                     <td>{handleIncrement(++counter)}</td>
                     <td>{field.registration.toUpperCase().includes("IŠREGISTRUOTAS")?
-                        <Badge pill variant="warning">{field.name}</Badge>
-                            :<Badge pill variant="success">{field.name}</Badge>
+                        <Badge key={"badge_warning_"+counter} pill variant="warning">{field.name}</Badge>
+                            :<Badge key={"badge_success_"+counter} pill variant="success">{field.name}</Badge>
                             }</td>
-                    <td>{field.substance.split(/\/|\(|\)/).map(item=>
+                    <td>{field.substance.split(/\/|\(|\)/).map((item, idx)=>
                         
-                        <Badge pill variant="primary">{item}</Badge>
+                        <Badge key={"badge_primary_"+idx} pill variant="primary">{item}</Badge>
                             
                             )}</td>
                     <td>{field.ATC}</td>

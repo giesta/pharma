@@ -303,19 +303,7 @@
   display: none;
 }
 
-.card {
-  border-radius: 5px;
-  border: 1px dashed var(--colorWhite);
-  background-color: var(--colorWhite);
-  width: 260px;
-  height: auto;
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: url(https://ssl.gstatic.com/ui/v1/icons/mail/images/2/openhand.cur),
-    default !important;
-}
+
 
 .card-dragging {
   border: 1px dashed var(--colorBarW);

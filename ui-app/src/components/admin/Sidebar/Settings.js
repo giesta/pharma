@@ -7,7 +7,7 @@ class Settings extends React.Component {
       <NavLink to="/settings" activeClassName="active-area">
         <div className="kanban__sidebar-settings">
           <i className="material-icons">settings</i>
-          <span>Settings</span>
+          <span>Nustatymai</span>
         </div>
       </NavLink>
     );

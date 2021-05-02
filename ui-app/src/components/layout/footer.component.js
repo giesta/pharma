@@ -52,7 +52,7 @@ export default function Footer() {
 <li><a href="https://vapris.vvkt.lt/vvkt-web/public/medications">Vaistų paieška vvkt</a></li>
 <li><a href="https://ec.europa.eu/health/documents/community-register/html/reg_hum_act.htm?sort=a">Bendrijos vaistinių preparatų registras</a></li>
 </ul>
-<p className="text-center">Gydymo algoritmai @2021 | Sukurta <a href="http://www.angis.tech/">AngisTech</a></p>
+<p className="text-center">Gydymo algoritmai @2021 | Sukurta <a href="http://www.angis.tech/">Giedrius Stankevičius</a></p>
 
 
 </div>

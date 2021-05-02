@@ -31,7 +31,7 @@ const removeAll = () => {
 };
 
 const findByTitle = (name) => {
-  return http.get(`/symptoms/?name=${name}`);
+  return http.get(`/symptoms?name=${name}`);
 };
 const reports = () => {
   return http.get(`/symptoms/reports`);

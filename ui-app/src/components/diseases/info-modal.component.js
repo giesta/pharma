@@ -32,7 +32,7 @@ export default function InfoModal(props) {
                         
                         <Form.Label>Simptomai</Form.Label>
                         {props.disease.symptoms!==undefined?props.disease.symptoms.map((item, idx)=>{
-                            return <span key={"list_symptoms_" + idx}><BsDot key={"list_icon_" + idx}></BsDot>{item.name}</span>
+                            return <span key={"list_symptoms_" + idx}><BsDot key={"list_icon_" + idx}></BsDot>{item.name}<br/></span>
                         }                           
                             ):('')}
                     </Form.Group> 

@@ -156,7 +156,7 @@ const diseasesReports = () => {
         setText("Pridėta " + response.data.data.added + " naujų elementų");
         setSymptomsUpdated("Last update " + DateParser.getParsedDate(response.data.data.updated_at));
         setLoadingSymptoms(false);
-        setDisabled(true);
+        setDisabled(false);
       })
       .catch(e => {
         setLoadingSymptoms(false);

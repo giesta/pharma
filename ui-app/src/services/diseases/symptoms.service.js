@@ -6,28 +6,9 @@ const scrap = () => {
 const getAll = () => {
     return http.get(`/symptoms`);
   };
-const getAllPaginate = (pageNumber) => {
-  return http.get(`/symptoms/list?page=${pageNumber}`);
-};
-
-const get = id => {
-  return http.get(`/symptoms/${id}`);
-};
 
 const create = data => {
   return http.post("/symptoms", data);
-};
-
-const update = (id, data) => {
-  return http.put(`/symptoms/${id}`, data);
-};
-
-const remove = id => {
-  return http.delete(`/symptoms/${id}`);
-};
-
-const removeAll = () => {
-  return http.delete(`/symptoms`);
 };
 
 const findByTitle = (name) => {

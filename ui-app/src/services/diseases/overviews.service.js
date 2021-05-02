@@ -31,7 +31,7 @@ const findByTitle = (pageNumber, name) => {
   return http.get(`/overviews/list?page=${pageNumber}&&name=${name}`);
 };
 const findByName = (name) => {
-    return http.get(`/overviews/?name=${name}`);
+    return http.get(`/overviews?name=${name}`);
   };
 
 const services = {

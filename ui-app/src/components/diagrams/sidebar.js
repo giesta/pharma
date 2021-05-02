@@ -8,7 +8,7 @@ export default (props) => {
 
   return (
     <aside>
-      <div className="description">Jūs galite nuvilkti viršūnę į sudarymo langą dešinėje.</div>
+      <div className="description">Jūs galite nuvilkti viršūnę į sudarymo langą kairėje.</div>
       <div className="dndnode input" onDragStart={(event) => onDragStart(event, 'input')} draggable>
         Įvesties viršūnė
       </div>

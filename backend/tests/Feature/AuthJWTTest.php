@@ -30,7 +30,7 @@ class AuthJWTTest extends TestCase
 
         $response->assertStatus(200)->assertJsonStructure([
             'access_token', 'token_type', 'expires_in'
-        ]);;
+        ]);
     }
     /**
      * A basic feature test example.

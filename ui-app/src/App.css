@@ -213,6 +213,11 @@ border-style:solid;
   max-height: 30px;
   
 }
-
+.card-title{
+    width: auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
 
  

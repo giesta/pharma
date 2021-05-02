@@ -56,7 +56,7 @@ return items;
                 )}
               
               <Card.Body>
-          <Card.Title>{field.title} {field.public?(<BsEye color="#ACD1B6"></BsEye>):(<BsEyeSlash color="#E96166"></BsEyeSlash>)}</Card.Title>               
+          <Card.Title className="card-title">{field.title} {field.public?(<BsEye color="#ACD1B6"></BsEye>):(<BsEyeSlash color="#E96166"></BsEyeSlash>)}</Card.Title>               
               </Card.Body>
               <ListGroup className="list-group-flush">
                 <ListGroupItem>Sukurta: {field.created}</ListGroupItem>

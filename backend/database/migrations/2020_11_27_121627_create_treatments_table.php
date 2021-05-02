@@ -17,7 +17,7 @@ class CreateTreatmentsTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->string('algorithm');
+            $table->string('algorithm')->nullable();
             $table->integer('public')->default(0);
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('overview_id');           

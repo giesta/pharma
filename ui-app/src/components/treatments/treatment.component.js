@@ -231,7 +231,7 @@ const downloadItem = async () => {
       .then(response => {
           if(response.data.data.length > 0){
             idDisease = response.data.data[0].id;
-            setText('Mes radome susijusią ligą! Ar norite perrašyti šią '+currentTreatment.disease.name + ' ligą?');          
+            setText('Mes radome susijusią ligą! Ar norite perrašyti šią ligą: '+currentTreatment.disease.name + ' ?');          
           }
           return response.data.data;          
       })
@@ -255,7 +255,7 @@ const downloadDiagram = async () => {
             for( var i = 0; i < response.data.data.length; i++) {
               if(response.data.data[i].name===currentTreatment.diagram.name&&response.data.data[i].nodes.length===currentTreatment.diagram.nodes.length&&response.data.data[i].edges.length===currentTreatment.diagram.edges.length){
                 idDiagram = response.data.data[i].id;
-                setText('Mes radome susijusią diagramą! Ar norite perrašyti šią '+currentTreatment.diagram.name+ ' diagramą?');
+                setText('Mes radome susijusią diagramą! Ar norite perrašyti šią diagramą: '+currentTreatment.diagram.name+ ' ?');
                 handleCloseConfirmToOverwrite();                
                 setDiagramToOverwrite(true);
                 break;

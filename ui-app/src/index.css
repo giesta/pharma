@@ -3,7 +3,6 @@
 @import "components/admin/Header/Header.css";
 @import "components/admin/Sidebar/Sidebar.css";
 @import "components/admin/Nav/Nav.css";
-@import "components/admin/Main/Main.css";
 
 body {
   margin: 0;

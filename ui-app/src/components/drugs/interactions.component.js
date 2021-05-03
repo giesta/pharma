@@ -67,8 +67,7 @@ export default function Interactions() {
                 setInteractions(response.data.fullInteractionTypeGroup);
             }else{
                 setInteractions("Vaistų tarpusavio sąveika nerasta, bet tai nereiškia, kad jos nėra.");
-            }
-            
+            }            
         }).catch(e => {
           setError(true);
           console.log(e);

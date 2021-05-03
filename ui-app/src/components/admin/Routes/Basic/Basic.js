@@ -6,18 +6,12 @@ class Basic extends React.Component {
     return (
       <React.Fragment>
         <Nav />
-        <Main />
       </React.Fragment>
     );
   }
 }
 
 const Loading = () => <div className="loading">Loading...</div>;
-
-const Main = Loadable({
-  loader: () => import("../../Main/Main.js"),
-  loading: Loading
-});
 
 const Nav = Loadable({
   loader: () => import("../../Nav/Nav.js"),

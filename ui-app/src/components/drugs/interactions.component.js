@@ -120,7 +120,7 @@ export default function Interactions() {
                   />                    
                     {idx>0?(<div className="row">  
                       <div className="container text-right mt-2">
-                        <a href="#" type="button" className="link_danger" onClick={()=>handleRemoveInput(idx)} >
+                        <a type="button" className="link_danger" onClick={()=>handleRemoveInput(idx)} >
                           Šalinti <BsXCircle></BsXCircle>
                         </a>
                       </div>
@@ -130,7 +130,7 @@ export default function Interactions() {
                 })}    
                 
                 <div className="col-auto mr-auto mt-2 mb-2">
-                  <a href="#" type="button" className="link_success" size="sm" onClick={handleAddInput} >
+                  <a type="button" className="link_success" size="sm" onClick={handleAddInput} >
                     Įtraukti vaistą <BsPlusCircle></BsPlusCircle>
                   </a>
                 </div> 

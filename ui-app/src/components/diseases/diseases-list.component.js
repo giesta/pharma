@@ -39,7 +39,6 @@ export default function DiseasesList() {
   
   const [selectedDisease, setSelectedDisease] = React.useState(null);
   const [noData, setNoData] = React.useState('');
-  const [symptoms, setSymptoms] = React.useState([]);
   const [selectedSymptoms, setSelectedSymptoms] = React.useState([]);
 
   const [show, setShow] = React.useState(false);
@@ -84,7 +83,7 @@ export default function DiseasesList() {
       }
       );
     }
-  }, [isWriting,selectedDisease]);
+  }, [isWriting,selectedDisease, disease]);
 
   function handleAddInput() {
     const values = [...fields];
@@ -215,9 +214,6 @@ export default function DiseasesList() {
     setValidated(false);
     setFields([]);
   };
-  const [diseases, setDiseases] = React.useState({
-    data: [],
-  });
   const [overviews, setOverviews] = React.useState([]);
   
   const handleInputChange = event => {
@@ -308,18 +304,6 @@ for (const item of arr) {
       }
       
     };
-  
-  const retrieveSymptoms = () => {
-    SymptomsDataService.getAll()
-      .then(response => {        
-        if(response.data.data.length !== 0){
-          setSymptoms(response.data.data);
-        }        
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
   const retrieveDiseasesOverviews = (pageNumber  = 1) => {
     DiseaseOverviewsDataService.findByTitle(pageNumber, searchTitle)
       .then(response => {

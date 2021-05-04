@@ -152,7 +152,7 @@ setElements((els) =>
         return el;
       })
     );
-  }, [nodeBg, setElements, element.id]);
+  }, [nodeBg, setElements, element.id, element.source]);
 
   useEffect(() => {
     setElements((els) =>
@@ -165,7 +165,7 @@ setElements((els) =>
         return el;
       })
     );
-  }, [edgeType, setElements, element.id]);
+  }, [edgeType, setElements, element.id, element.source]);
   useEffect(() => {
     setElements((els) =>
       els.map((el) => {
@@ -181,7 +181,7 @@ setElements((els) =>
         return el;
       })
     );
-  }, [animation, setElements, element.id]);  
+  }, [animation, setElements, element.id, element.source]);  
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -263,7 +263,6 @@ setElements((els) =>
       onDragOver={onDragOver}
       onEdgeUpdate={onEdgeUpdate}
       onElementClick={onElementClick}
-      snapToGrid={true}
       onNodeDragStop={onNodeDragStop}
     >      
       <MiniMap

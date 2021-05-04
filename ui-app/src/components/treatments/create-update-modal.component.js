@@ -304,7 +304,7 @@ export default function CreateModal(props) {
                     </Form.Group>):('')}
                     <div className="row">  
                         <div className="container text-right">
-                            <a href="#" type="button" className="link_danger" onClick={()=>props.handleRemoveInput(idx)} >
+                            <a type="button" className="link_danger" onClick={()=>props.handleRemoveInput(idx)} >
                                 Šalinti <BsXCircle/>
                             </a>
                         </div>
@@ -314,7 +314,7 @@ export default function CreateModal(props) {
             })}    
             {props.treatment.disease!==null?(
             <div className="col-auto mr-auto mt-2">
-                <a href="#" type="button" className="link_success" size="sm" onClick={props.handleAddInput} >
+                <a type="button" className="link_success" size="sm" onClick={props.handleAddInput} >
                     Įtraukti vaistą <BsPlusCircle></BsPlusCircle>
                 </a>
             </div>

@@ -41,7 +41,7 @@ export default function InfoModal(props) {
                         props.fields.map((field, idx)=>{
                             return (
                                 <div key={`${field}-${idx}`} className="border border-secondary p-3 mt-2">
-                                    <Form.Group key={`${"dr"}-${idx}`} controlId={"drugs"+`${idx}`}>
+                                    <Form.Group key={`${"dr"}-${idx}`} controlId={"drugs_"+idx}>
                                         <h4>Vaistas</h4>    
                                         <Form.Label key={"substance_"+idx}>Veiklioji medžiaga</Form.Label>  
                                         <Form.Control key={`${"dr_value"}-${idx}`} type="text" placeholder="" value={field.drug.name} disabled/>        
@@ -55,15 +55,15 @@ export default function InfoModal(props) {
                                                     )):('')
                                                     }
                                     </div>
-                                    <Form.Group controlId={"form"+`${idx}`}>    
+                                    <Form.Group controlId={"form_"+idx}>    
                                         <Form.Label>Forma</Form.Label>  
                                         <Form.Control type="text" placeholder="" value={field.form} disabled/>        
                                     </Form.Group>
-                                    <Form.Group controlId={"strength"+`${idx}`}>    
+                                    <Form.Group controlId={"strength_"+idx}>    
                                         <Form.Label>Stiprumas</Form.Label>  
                                         <Form.Control type="text" placeholder="" value={field.strength} disabled/>        
                                     </Form.Group>
-                                    <Form.Group controlId={"uses"+`${idx}`}>    
+                                    <Form.Group controlId={"uses_"+idx}>    
                                         <Form.Label>Vartojimas</Form.Label>  
                                         <Form.Control type="text" as="textarea" placeholder="" value={field.uses} disabled/> 
                                     </Form.Group>                            

@@ -73,7 +73,6 @@ export default function DrugsList() {
     setInfo(false);
   };
   const [drugs, setDrugs] = React.useState([]);
-  const [leaflets, setLeaflets] = React.useState([]);
   
   const retrieveDrugs = (pageNumber = 1) => {
     DrugsDataService.findByTitle(pageNumber, searchTitle)

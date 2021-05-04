@@ -1,40 +1,34 @@
 import React from 'react';
 
 import { Modal, Button, Form, Badge} from "react-bootstrap";
-import { Link } from 'react-router-dom';
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import { BsPlusCircle, BsXCircle } from "react-icons/bs";
 
 export default function CreateModal(props) {
     function makeOptions(field){
-
         var arr = field.drug.drugs.map(item=>item.form);
         arr = [...new Set(arr)];
         return arr.map(item=>{
             return { value: item, label: item}
-        }
-
-        )
-        
-      } 
-      function makeOptionsStrength(field){
+        })        
+    } 
+    function makeOptionsStrength(field){
         var arrStrength = field.drug.drugs.filter(item=>item.form===field.form);
         var strengths = arrStrength.map(item=>item.strength);
         arr = [...new Set(strengths)];
         var arr = arr.map(item=>{
             return { value: item, label: item}
-        });
-        
-        return arr;
-        
-      } 
+        });        
+        return arr;        
+    } 
     return (
         <Modal show={props.show} onHide={props.handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>Ligos informacija</Modal.Title>
             </Modal.Header>
-            <Form validated={props.validated} onSubmit={props.handleSubmit}>
+            
+            <Form noValidate validated={props.validated} onSubmit={props.handleSubmit}>
                 <Modal.Body>  
                     <Form.Group controlId="name">
                         <Form.Label>Pavadinimas</Form.Label>
@@ -79,7 +73,6 @@ export default function CreateModal(props) {
                         <Form.Control.Feedback type="invalid">
                             Aprašymas yra privalomas.
                         </Form.Control.Feedback >
-                        <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
                     </Form.Group>  
                     <Form.Group controlId="diagnosis">
                         <Form.Label>Diagnozavimas</Form.Label>
@@ -167,12 +160,10 @@ export default function CreateModal(props) {
                             onChange={(e)=>props.addSelectedForm(idx, e)}
                         />
                         <Form.Control.Feedback type="invalid">
-                            Pavadinimas yra privalomas.
+                            Forma yra privaloma.
                         </Form.Control.Feedback >
                     </Form.Group>
-                    ):('')
-                        
-                     
+                    ):('')                    
                     }
                     {field.form !== ''?(
                         <Form.Group controlId="strength">
@@ -206,7 +197,7 @@ export default function CreateModal(props) {
                             onChange={(e)=>props.addSelectedStrength(idx, e)}
                         />
                         <Form.Control.Feedback type="invalid">
-                            Pavadinimas yra privalomas.
+                            Stiprumas yra privalomas.
                         </Form.Control.Feedback >
                     </Form.Group>
                     ):('')                     
@@ -225,23 +216,17 @@ export default function CreateModal(props) {
                         <Form.Label>Vartojimas</Form.Label>
                         <Form.Control type="text"  as="textarea" required placeholder="" value={field.uses} onChange={(e)=>props.handleAddedInputChange(idx, e)}  name="uses"/>
                     </Form.Group>):('')}
-                    <div className="row">
-  
-  <div className="container text-right"><a type="button" className="link_danger" onClick={()=>props.handleRemoveInput(idx)} >
-                        Šalinti <BsXCircle></BsXCircle>
-                    </a></div>
-</div>
-                    
+                        <div className="row">  
+                            <div className="container text-right">
+                                <a type="button" className="link_danger" onClick={()=>props.handleRemoveInput(idx)} >Šalinti <BsXCircle/></a>
+                            </div>
+                        </div>                    
                     </div>
                     )
-                })}    
-                
+                })}               
                 <div className="col-auto mr-auto mt-2">
-                    <a type="button" className="link_success" size="sm" onClick={props.handleAddInput} >
-                    Įtraukti vaistą <BsPlusCircle></BsPlusCircle>
-                    </a>
-                </div>                      
-                     
+                    <a type="button" className="link_success" size="sm" onClick={props.handleAddInput} >Įtraukti vaistą <BsPlusCircle></BsPlusCircle></a>
+                </div>                       
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={props.handleClose}>
@@ -255,6 +240,5 @@ export default function CreateModal(props) {
                 </Modal.Footer>
             </Form>
       </Modal>
-
     );
 }

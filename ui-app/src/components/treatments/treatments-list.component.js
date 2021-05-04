@@ -498,9 +498,15 @@ const updateTreatment = () => {
       setUrl(null);
       setSelectedDiagram(null);
       handleClose();
-      const updatedItems = Treatments.data.filter(x=>x.id!==treatment.id)
-      updatedItems.push(response.data.data);
-      setTreatments({...Treatments, data: updatedItems});
+      let values = [...Treatments.data];
+      values = values.map((item)=>{
+        if(item.id === response.data.data.id){
+          return response.data.data;
+        }else{
+          return item;
+        }
+      });
+      setTreatments({...Treatments, data: values});
     })
     .catch(e => {
       setError(true);

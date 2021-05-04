@@ -71,6 +71,7 @@ export default function Interactions() {
         }).catch(e => {
           setError(true);
           console.log(e);
+          return;
         });
         setLoading(false);
      }
@@ -86,6 +87,7 @@ export default function Interactions() {
             }).catch(e => {
               setError(true);
               console.log(e);
+              return;
             });
             values.push(value);             
           }

@@ -403,9 +403,16 @@ const updateDisease = () => {
   };
   DiseaseOverviewsDataService.update(data.id, data)
     .then((resp) => {
-      const updatedItems = overviews.filter(x=>x.id!==disease.id)
-      updatedItems.push(resp.data.data);
-      setOverviews(updatedItems);
+
+      let values = [...overviews];
+      values = values.map((item)=>{
+        if(item.id === resp.data.data.id){
+          return resp.data.data;
+        }else{
+          return item;
+        }
+      });
+      setOverviews(values);
       handleClose();
     })
     .catch(e => {

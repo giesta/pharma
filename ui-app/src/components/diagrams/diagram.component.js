@@ -36,7 +36,7 @@ const UpdateNode = (props) => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [elements, setElements] = useState(props.location.state!==undefined ? props.location.state.elements:initialElements);
   const [nodesCount] = useState(props.location.state!==undefined&&props.location.state.diagram!==undefined&&props.location.state.diagram.nodes[props.location.state.diagram.nodes.length-1]!==undefined ? props.location.state.diagram.nodes[props.location.state.diagram.nodes.length-1].item_id.split('_')[1]:1);
- 
+  const [validated, setValidated] = React.useState(false);
   const [element, setElement] = useState({});
   const [nodeName, setNodeName] = useState('Viršūnė');
   const [nodeBg, setNodeBg] = useState('#eee');
@@ -188,10 +188,12 @@ setElements((els) =>
     const form = event.currentTarget;
     if (form.checkValidity() === false) {      
       event.stopPropagation();
+      setValidated(true);
     }else if(props.location.state!==undefined){
        updateDiagram(props.location.state.diagram.id);
     }else{
-      saveDiagram();
+      setValidated(true);
+      saveDiagram();      
     }      
   };
   const saveDiagram = () => {
@@ -253,7 +255,7 @@ setElements((els) =>
   return (
     <div>
       {errors.length > 0 ?<ErrorBoundary text={errors.map(item=>item)}/>:''} 
-      <Form onSubmit={handleSubmit}>
+      <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Form.Group controlId="name"> <Form.Label>Diagramos pavadinimas</Form.Label>        
           <Form.Control type="text" placeholder="" defaultValue={diagramName} required onChange={(evt) => {setDiagramName(evt.target.value)}} name="name"/>
           <Form.Control.Feedback type="invalid">

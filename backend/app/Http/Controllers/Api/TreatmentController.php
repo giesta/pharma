@@ -160,8 +160,11 @@ class TreatmentController extends Controller
                 abort(500, $ex->getMessage());
             } 
         }else{
-            if($request->algorithm===''&&$treatment->algorithm!==''){
+            if(($request->algorithm===''|| $request->algorithm===null)&&$treatment->algorithm!==''){
                 Storage::delete($treatment->algorithm);
+                $request->merge([
+                    'algorithm' => '',
+                ]);
             }
             try{
                 $treatment->update($request->only(['title', 'description', 'overview_id', 'public', 'dislikes', 'likes', 'diagram_id', 'algorithm', 'uses']));

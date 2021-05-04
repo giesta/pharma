@@ -54,6 +54,7 @@ export default function ControlledTabs() {
           console.log(e);
         });
     };
+    /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(retrieveTreatments, []);
     const retrieveTreatmentsPrivate = (pageNumber = 1) => {
         TreatmentsDataService.findByTitlePrivate(pageNumber, searchTitle)
@@ -104,6 +105,7 @@ export default function ControlledTabs() {
           console.log(e);
         });
     };
+    /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(retrieveTreatmentsPrivate, []);
     return (
         <div>

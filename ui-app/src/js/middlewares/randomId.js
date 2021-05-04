@@ -1,3 +1,8 @@
+
+function newId() {
+  return Math.round(Math.random() * 36 ** 8).toString(36);
+}
+
 export default store => next => action => {
   if (!action.generateId) return next(action);
   next({
@@ -6,6 +11,4 @@ export default store => next => action => {
   });
 };
 
-function newId() {
-  return Math.round(Math.random() * 36 ** 8).toString(36);
-}
+

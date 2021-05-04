@@ -1,7 +1,7 @@
 import { normalizedTasks } from "../../api/data";
 import { ADD_TASK, DELETE_TASK, DRAG_AND_DROP } from "../constants/action-types";
 
-export default (tasks = normalizedTasks, action) => {
+const fn = (tasks = normalizedTasks, action) => {
   const { type, payload, randomId } = action;
 
   switch (type) {
@@ -28,3 +28,4 @@ export default (tasks = normalizedTasks, action) => {
       return tasks;
   }
 };
+export default fn;

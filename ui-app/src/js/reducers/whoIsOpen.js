@@ -1,6 +1,6 @@
 import { WHO_OPEN } from "../constants/action-types";
 
-export default (whoIsOpen = true, action) => {
+const fn = (whoIsOpen = true, action) => {
   const { type, payload } = action;
 
   switch (type) {
@@ -11,3 +11,4 @@ export default (whoIsOpen = true, action) => {
       return null;
   }
 };
+export default fn;

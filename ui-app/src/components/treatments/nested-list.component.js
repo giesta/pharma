@@ -55,7 +55,6 @@ const Leaf2 = ({ drug, label }, idx) => {
             <a key={"button_"+idx} type="button" className="btn btn-sm link_info ts-buttom" onClick={
               function(event){
                 setView(true);
-                const docs = drug.link;
                 setDocs(drug.link);
                 }} size="sm">
             <FaEye key={"eye__"+idx}/>

@@ -4,7 +4,6 @@ import { Button, Badge, Card, CardDeck, ListGroup, ListGroupItem } from "react-b
 import { BsEyeSlash, BsEye, BsStar } from "react-icons/bs";
 import { FaCommentMedical } from "react-icons/fa";
 import ReactFlow, {
-  Controls,
   Background,
   ReactFlowProvider,
 } from 'react-flow-renderer';
@@ -22,8 +21,8 @@ export default function TreatmentCard(props) {
         var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
         return item;
       }else{
-        var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
-        return item;
+        var item2 = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
+        return item2;
       }
       
   });

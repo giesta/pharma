@@ -58,7 +58,6 @@ export default function TreatmentList() {
   const [validated, setValidated] = React.useState(false);
 
   const [selectRef, setSelectRef] = React.useState(null);
-  const [imageRef, setImageRef] = React.useState(null);
 
   const [fields, setFields] = React.useState([]);
   const [isWriting, setIsWriting] = React.useState(false);
@@ -87,6 +86,7 @@ export default function TreatmentList() {
       );
       setError(false);
     }
+  /* eslint-disable react-hooks/exhaustive-deps */  
   }, [isWriting, selectedDiagram]);
 
   function handleAddInput() {
@@ -633,7 +633,6 @@ const findByTitle = () => {
     addSelectedDiagram={addSelectedDiagram}
     getElements={getElements}
     removeImageFile={removeImageFile}
-    imageRef={setImageRef}
     error={error}
     errorText={errorText}
     handleInvalidForm={handleInvalidForm}

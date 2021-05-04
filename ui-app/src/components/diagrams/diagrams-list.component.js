@@ -71,6 +71,7 @@ export default function DiagramsList() {
         setError(true);
       });
   };
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(retrieveDiagrams, []);
   const findByTitle = () => {
     DiagramsDataService.findByTitle(1, searchTitle)

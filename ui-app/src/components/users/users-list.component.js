@@ -84,6 +84,7 @@ export default function UsersList() {
         setError(true);
       });
   };
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(retrieveUsers, []);
   const findByTitle = () => {
     UsersDataService.findByTitle(1, searchTitle)

@@ -1,4 +1,4 @@
-import React, { useEffect, callback, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
 import StarService from "../../services/treatments/stars.service";
 import ReportService from "../../services/treatments/reports.service";
@@ -292,7 +292,7 @@ const updateDisease = async () => {
     drugs: JSON.stringify(drugsArr),
     symptoms: JSON.stringify(currentTreatment.disease.symptoms.map(item=>item.id)),
   };
-  const value = await DiseaseOverviewsDataService.update(data.id, data)
+  await DiseaseOverviewsDataService.update(data.id, data)
     .then((resp) => {  
       return resp.data.data;
     })
@@ -318,7 +318,7 @@ const createDisease = async () => {
     drugs: JSON.stringify(drugsArr),
     symptoms: JSON.stringify(currentTreatment.disease.symptoms.map(item=>item.id)),
   };
-  const value = await DiseaseOverviewsDataService.create(data)
+  await DiseaseOverviewsDataService.create(data)
     .then((resp) => {  
       idDisease = resp.data.data.id;
       return resp.data.data; 
@@ -380,16 +380,8 @@ var newElements = elements.map((el)=>{
 });
   var data = {
     name: currentTreatment.diagram.name,
-    nodes: JSON.stringify(newElements.filter((el)=>{
-      if(el.source === undefined){
-        return el;
-      }
-    })),
-    edges: JSON.stringify(newElements.filter((el)=>{
-      if(el.source !== undefined){
-        return el;
-      }
-    })),
+    nodes: JSON.stringify(newElements.filter((el)=>{ return el.source === undefined })),
+    edges: JSON.stringify(newElements.filter((el)=>{ return el.source !== undefined })),
   };
   const value = await DiagramsDataService.create(data)
     .then((response) => {
@@ -413,16 +405,8 @@ const updateDiagram = async () => {
 });
   var data = {
     name: currentTreatment.diagram.name,
-    nodes: JSON.stringify(newElements.filter((el)=>{
-      if(el.source === undefined){
-        return el;
-      }
-    })),
-    edges: JSON.stringify(newElements.filter((el)=>{
-      if(el.source !== undefined){
-        return el;
-      }
-    })),
+    nodes: JSON.stringify(newElements.filter((el)=>{ return el.source === undefined })),
+    edges: JSON.stringify(newElements.filter((el)=>{ return el.source !== undefined })),
   };
   await DiagramsDataService.update(idDiagram, data)
     .then((response) => {    
@@ -449,6 +433,7 @@ const getRelatedTreatments =()=>{
     setRelatedTreatments(values);
   }  
 };
+/* eslint-disable react-hooks/exhaustive-deps */
 useEffect(getRelatedTreatments, [currentTreatment])
   
   return (
@@ -512,7 +497,7 @@ useEffect(getRelatedTreatments, [currentTreatment])
         </Row>
         {currentTreatment.algorithm!==''?(
         <Row className="mb-2"><Col></Col>
-        <Col className="col-md-auto"><a target="_blank" href={currentTreatment.algorithm}><Image src={currentTreatment.algorithm} fluid/></a></Col>        
+        <Col className="col-md-auto"><a target="_blank" rel="noopener noreferrer" href={currentTreatment.algorithm}><Image src={currentTreatment.algorithm} fluid/></a></Col>        
         <Col></Col>
       </Row>
       ):('')}

@@ -129,7 +129,7 @@ setElements((els) =>
         return el;
       })
     );
-  }, [nodeName, setElements]);
+  }, [nodeName, setElements, element.id]);
 
   useEffect(() => {
     setElements((els) =>
@@ -152,7 +152,7 @@ setElements((els) =>
         return el;
       })
     );
-  }, [nodeBg, setElements]);
+  }, [nodeBg, setElements, element.id]);
 
   useEffect(() => {
     setElements((els) =>
@@ -165,7 +165,7 @@ setElements((els) =>
         return el;
       })
     );
-  }, [edgeType, setElements]);
+  }, [edgeType, setElements, element.id]);
   useEffect(() => {
     setElements((els) =>
       els.map((el) => {
@@ -181,7 +181,7 @@ setElements((els) =>
         return el;
       })
     );
-  }, [animation, setElements]);  
+  }, [animation, setElements, element.id]);  
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -203,16 +203,8 @@ setElements((els) =>
   });
     var data = {
       name: diagramName,
-      nodes: JSON.stringify(newElements.filter((el)=>{
-        if(el.source === undefined){
-          return el;
-        }
-      })),
-      edges: JSON.stringify(newElements.filter((el)=>{
-        if(el.source !== undefined){
-          return el;
-        }
-      })),
+      nodes: JSON.stringify(newElements.filter((el)=>{ return el.source === undefined})),
+      edges: JSON.stringify(newElements.filter((el)=>{return el.source !== undefined})),
     };
     DiagramsDataService.create(data)
       .then((response) => {
@@ -228,16 +220,8 @@ setElements((els) =>
       const {id: item_id, ...rest} = el;
       return {item_id, ...rest};
   });
-  var nodes = newElements.filter((el)=>{
-    if(el.source === undefined){
-      return el;
-    }
-  });
-  var edges = newElements.filter((el)=>{
-    if(el.source !== undefined){
-      return el;
-    }
-  });
+  var nodes = newElements.filter((el)=>{return el.source === undefined });
+  var edges = newElements.filter((el)=>{return el.source !== undefined });
     var data = {
       name: diagramName,
       nodes: JSON.stringify(nodes),

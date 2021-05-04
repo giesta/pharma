@@ -11,6 +11,7 @@ import { removeError } from "../../js/actions/index";
 import store from "../../js/store/index";
 import { Link } from 'react-router-dom';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import ErrorBoundary from "../layout/error.component";
 
 
 export default function DiagramsList() {
@@ -39,11 +40,6 @@ export default function DiagramsList() {
   const onChangeSearchTitle = e => {
     const searchTitle = e.target.value;
     setSearchTitle(searchTitle);
-  };
-  const handleClose = () =>{
-    newDiagram();    
-    setError(false);
-    dispatch(removeError());
   };
   const handleCloseConfirm = () => {
     setConfirm(false);
@@ -96,6 +92,7 @@ export default function DiagramsList() {
   const GetActionFormat = (row) =>{    
     return (
       <td className="table-col">
+        {error?<ErrorBoundary/>:''}
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
               function(event){ 
                 setDiagram(row);
@@ -105,8 +102,8 @@ export default function DiagramsList() {
                     var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
                     return item;
                   }else{
-                    var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
-                    return item;
+                    var item2 = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
+                    return item2;
                   }                  
               });
                 setElements(items); setInfo(true)}}>
@@ -120,8 +117,8 @@ export default function DiagramsList() {
                     var item = {id:el.item_id, data:{label:el.label, style:{backgroundColor:el.background}}, style:{backgroundColor:el.background}, type:el.type, position:{x:parseInt(el.x), y:parseInt(el.y)}};
                     return item;
                   }else{
-                    var item = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
-                    return item;
+                    var item2 = {id:el.item_id, data:{label:el.label, style:{stroke:el.stroke}, animated:el.animated===1?true:false}, animated:el.animated===1?true:false, arrowHeadType:el.arrow, label:el.label, style:{stroke:el.stroke}, type:el.type, source:el.source, target:el.target};
+                    return item2;
                   }                  
               });
                 setElements(items);setDiagram(row);

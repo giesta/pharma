@@ -16,8 +16,8 @@ export default function CreateModal(props) {
     function makeOptionsStrength(field){
         var arrStrength = field.drug.drugs.filter(item=>item.form===field.form);
         var strengths = arrStrength.map(item=>item.strength);
-        arr = [...new Set(strengths)];
-        var arr = arr.map(item=>{
+        var arr = [...new Set(strengths)];
+        arr = arr.map(item=>{
             return { value: item, label: item}
         });        
         return arr;        
@@ -43,7 +43,6 @@ export default function CreateModal(props) {
                             isClearable="true"
                             cacheOptions
                             defaultOptions
-                            placeholder={"Pasirinkti ..."}
                             loadOptions={props.loadDiseasesOptions}
                             onChange={props.handleDiseaseInputChange}
                             defaultValue={props.disease.disease_id!==null?({value: props.disease.disease_id, label: props.disease.name}):('')}
@@ -218,14 +217,14 @@ export default function CreateModal(props) {
                     </Form.Group>):('')}
                         <div className="row">  
                             <div className="container text-right">
-                                <a type="button" className="link_danger" onClick={()=>props.handleRemoveInput(idx)} >Šalinti <BsXCircle/></a>
+                                <a href="#" type="button" className="link_danger" onClick={()=>props.handleRemoveInput(idx)} >Šalinti <BsXCircle/></a>
                             </div>
                         </div>                    
                     </div>
                     )
                 })}               
                 <div className="col-auto mr-auto mt-2">
-                    <a type="button" className="link_success" size="sm" onClick={props.handleAddInput} >Įtraukti vaistą <BsPlusCircle></BsPlusCircle></a>
+                    <a href="#" type="button" className="link_success" size="sm" onClick={props.handleAddInput} >Įtraukti vaistą <BsPlusCircle></BsPlusCircle></a>
                 </div>                       
                 </Modal.Body>
                 <Modal.Footer>

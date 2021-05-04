@@ -101,63 +101,65 @@ export default function Interactions() {
           <h2>Sąveikų tarp vaistų patikrinimas</h2>
         </div>
       {fields.map((field, idx)=>{
-                    return (
-                        <div key={`${field}-${idx}`} className="border border-secondary p-3 mt-2">
-                        
-                        <h4>Vaistas</h4>    
-                        <label>Veiklioji medžiaga</label>  
-                        <AsyncSelect
-                            name="drugs"
-                            className="basic-multi-select"
-                            classNamePrefix="select"
-                            isClearable="true"
-                            cacheOptions
-                            defaultOptions                            
-                            loadOptions={loadDrugsOptions}
-                            placeholder={"Pasirinkti ..."}
-                            loadingMessage={() => "Ieškoma ..."}
-                            noOptionsMessage={() => "Nerasta"}
-                            onChange={e=>AddSelectedDrugs(idx, e)}
-                     />                    
-  {idx>0?(<div className="row">  
-  <div className="container text-right mt-2"><a type="button" className="link_danger" onClick={()=>handleRemoveInput(idx)} >
-                        Šalinti <BsXCircle></BsXCircle>
-                    </a></div></div>):('')} 
-
-                    
-                    </div>
+        return (
+                <div key={`${field}-${idx}`} className="border border-secondary p-3 mt-2">
+                  <h4>Vaistas</h4>    
+                  <label>Veiklioji medžiaga</label>  
+                  <AsyncSelect
+                    name="drugs"
+                    className="basic-multi-select"
+                    classNamePrefix="select"
+                    isClearable="true"
+                    cacheOptions
+                    defaultOptions                            
+                    loadOptions={loadDrugsOptions}
+                    placeholder={"Pasirinkti ..."}
+                    loadingMessage={() => "Ieškoma ..."}
+                    noOptionsMessage={() => "Nerasta"}
+                    onChange={e=>AddSelectedDrugs(idx, e)}
+                  />                    
+                    {idx>0?(<div className="row">  
+                      <div className="container text-right mt-2">
+                        <a href="#" type="button" className="link_danger" onClick={()=>handleRemoveInput(idx)} >
+                          Šalinti <BsXCircle></BsXCircle>
+                        </a>
+                      </div>
+                  </div>):('')} 
+                </div>
                     )
                 })}    
                 
-                <div className="col-auto mr-auto mt-2 mb-2"><a type="button" className="link_success" size="sm" onClick={handleAddInput} >
-                Įtraukti vaistą <BsPlusCircle></BsPlusCircle>
-          </a></div> 
-  <button type="button" disabled={loading} className="btn btn-outline-dark btn-sm ts-buttom mt-2" size="sm" onClick={
-            function(event){setLoading(true);getInteraction();}}>
-              {loading && (
-                  <span className="spinner-border spinner-border-sm"></span>
-                )} Tikrinti sąveiką
-  </button>
-  {interactions.length > 0?(
-  <div className="border border-secondary p-3 mt-2">
-    <h6>Gauti duomenys apie vaistų sąveiką (anglų kalba):</h6>
-      {interactions[0].fullInteractionType!==undefined?(interactions.map((item, idz)=>{
-         return item.fullInteractionType.map((item, idy)=>{
-             return item.interactionPair.map((item, idx)=>{
-                  if(item.severity==="high"){
-                      return (<Alert key={"interaction_high_"+idx+"_"+idy+"_"+idz} variant="danger">{item.description}</Alert>)
-                  }else{
-                      return (<div key={"title_interaction_"+idx+"_"+idy+"_"+idz}><p key={"interaction_"+idx+"_"+idy+"_"+idz}><strong>{"Interaction between "+item.interactionConcept[0].minConceptItem.name+" and "+item.interactionConcept[1].minConceptItem.name}</strong></p>
-                      <p key={"description_interaction_"+idx+"_"+idy+"_"+idz}>{item.description}</p></div>)
-                  }
-                  
-              })
-          })
-      })):(interactions)}
-  </div>
-  ):('')}
-  </div>
-  </div>
-  </div>    
+                <div className="col-auto mr-auto mt-2 mb-2">
+                  <a href="#" type="button" className="link_success" size="sm" onClick={handleAddInput} >
+                    Įtraukti vaistą <BsPlusCircle></BsPlusCircle>
+                  </a>
+                </div> 
+              <button type="button" disabled={loading} className="btn btn-outline-dark btn-sm ts-buttom mt-2" size="sm" onClick={
+                function(event){setLoading(true);getInteraction();}}>
+                  {loading && (
+                    <span className="spinner-border spinner-border-sm"></span>
+                  )} Tikrinti sąveiką
+              </button>
+            {interactions.length > 0?(
+            <div className="border border-secondary p-3 mt-2">
+              <h6>Gauti duomenys apie vaistų sąveiką (anglų kalba):</h6>
+                {interactions[0].fullInteractionType!==undefined?(interactions.map((item, idz)=>{
+                  return item.fullInteractionType.map((item, idy)=>{
+                      return item.interactionPair.map((item, idx)=>{
+                            if(item.severity==="high"){
+                                return (<Alert key={"interaction_high_"+idx+"_"+idy+"_"+idz} variant="danger">{item.description}</Alert>)
+                            }else{
+                                return (<div key={"title_interaction_"+idx+"_"+idy+"_"+idz}><p key={"interaction_"+idx+"_"+idy+"_"+idz}><strong>{"Interaction between "+item.interactionConcept[0].minConceptItem.name+" and "+item.interactionConcept[1].minConceptItem.name}</strong></p>
+                                <p key={"description_interaction_"+idx+"_"+idy+"_"+idz}>{item.description}</p></div>)
+                            }
+                            
+                        })
+                    })
+                })):(interactions)}
+            </div>
+            ):('')}
+          </div>
+        </div>
+      </div>    
   );
 }

@@ -602,7 +602,7 @@ const findByTitle = () => {
     columns ={columns} 
     Treatments={Treatments} 
     GetActionFormat={GetActionFormat} 
-    rowNumber={(page*5-5)}
+    rowNumber={(page*6-6)}
   >    
   </TreatmentTable>
 

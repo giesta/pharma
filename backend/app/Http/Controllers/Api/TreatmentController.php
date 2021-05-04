@@ -47,9 +47,9 @@ class TreatmentController extends Controller
         $user = auth()->user();
         $name = $request->name;
         if($name){
-            return TreatmentResource::collection($user->treatments()->where('treatments.title', 'LIKE', "%$name%")->paginate(5));
+            return TreatmentResource::collection($user->treatments()->where('treatments.title', 'LIKE', "%$name%")->paginate(6));
         }else{
-            return TreatmentResource::collection($user->treatments()->paginate(5));
+            return TreatmentResource::collection($user->treatments()->paginate(6));
         }   
     }
     /**
@@ -62,9 +62,9 @@ class TreatmentController extends Controller
         $user = auth()->user();
         $name = $request->name;
         if($name){
-            return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->where('treatments.public', '=', 1)->paginate(5));
+            return TreatmentResource::collection(Treatment::where('treatments.title', 'LIKE', "%$name%")->where('treatments.public', '=', 1)->paginate(6));
         }else{
-            return TreatmentResource::collection(Treatment::where('treatments.public', '=', 1)->paginate(5));
+            return TreatmentResource::collection(Treatment::where('treatments.public', '=', 1)->paginate(6));
         }     
     }
     /**

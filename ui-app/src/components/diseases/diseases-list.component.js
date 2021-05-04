@@ -323,7 +323,7 @@ for (const item of arr) {
         console.log(e);
       });
   };
-  
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(retrieveDiseasesOverviews, []);
   const GetActionFormat = (row) =>{    
     return (

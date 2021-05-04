@@ -1,5 +1,4 @@
 import React from 'react';
-import AuthService from "../../services/auth.service";
 import { BsPhone, BsGeoAlt, BsFillEnvelopeFill} from "react-icons/bs";
 export default function Footer() {
 

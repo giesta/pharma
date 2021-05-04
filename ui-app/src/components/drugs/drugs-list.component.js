@@ -92,6 +92,7 @@ export default function DrugsList() {
         console.log(e);
       });
   };
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(retrieveDrugs, []);
 
   const GetActionFormat = (row) =>{

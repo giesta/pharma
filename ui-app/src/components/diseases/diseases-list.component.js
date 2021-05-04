@@ -344,11 +344,6 @@ for (const item of arr) {
         </td>
     );
 };
-
-const deleteItemFromState = (id) => {
-  const updatedItems = overviews.filter(x=>x.id!==id);
-  setOverviews(updatedItems);
-}
 const saveDisease = () => {
   var drugsArr = fields.map(item=>{
     return {selected:item.selected.map(x=>x.id), uses:item.uses}

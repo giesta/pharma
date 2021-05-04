@@ -9,7 +9,7 @@ export default function MainNavbar(props) {
 
     return (
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-  <Navbar.Brand href="/home"><img className="brand" src={logo}></img>{' '}
+  <Navbar.Brand href="/home"><img alt="" className="brand" src={logo}></img>{' '}
     Pharma</Navbar.Brand>
   <Navbar.Toggle aria-controls="responsive-navbar-nav" />
   <Navbar.Collapse id="responsive-navbar-nav">

@@ -214,6 +214,9 @@ export default function CreateModal(props) {
                     <Form.Group controlId={`${field}-${idx}`}>
                         <Form.Label>Vartojimas</Form.Label>
                         <Form.Control type="text"  as="textarea" required placeholder="" value={field.uses} onChange={(e)=>props.handleAddedInputChange(idx, e)}  name="uses"/>
+                        <Form.Control.Feedback type="invalid">
+                            Vartojimas yra privalomas.
+                        </Form.Control.Feedback >
                     </Form.Group>):('')}
                         <div className="row">  
                             <div className="container text-right">

@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from "react";
+import React from "react";
 import AuthService from "../services/auth.service";
 import UserUpdate from "./users/update-modal.component";
 import { BsPencilSquare} from "react-icons/bs";

@@ -225,8 +225,6 @@ return items;
 }
 
 const downloadItem = async () => {
-  
-  console.log(currentTreatment.disease.name);
   const values = await DiseaseOverviewsDataService.findByTitle(1, currentTreatment.disease.name)
       .then(response => {
           if(response.data.data.length > 0){
@@ -601,7 +599,7 @@ useEffect(getRelatedTreatments, [currentTreatment])
         </Card>
         </Col>
       </Row>
-      ):('')}{console.log(currentTreatment.drugs)}
+      ):('')}
       {currentTreatment.drugs.length!==0?(
         <Row className="justify-content-md-center">
         <Col>

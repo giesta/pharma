@@ -33,7 +33,6 @@ class OverviewController extends Controller
             return OverviewResource::collection($user->overviews()->with('leaflets')->select('overviews.*', 'diseases.id as did','diseases.name')->join('diseases', 'diseases.id', '=', 'overviews.disease_id')->where('diseases.name', 'LIKE', "%$name%")->limit(900)->get());  
         }
     }
-
     /**
      * Display a listing of the resource.
      *
@@ -104,8 +103,7 @@ class OverviewController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $user = auth()->user();
-        
+        $user = auth()->user();        
         return new OverviewResource($user->overviews()->with('drugs')->findOrFail($id));
     }
 

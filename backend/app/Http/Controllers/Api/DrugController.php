@@ -52,8 +52,7 @@ class DrugController extends ApiController
             ->where('substances.name', 'LIKE', "%$name%")
             ->orWhere('drugs.name', 'LIKE', "%$name%")
             ->orWhere('substances.ATC', 'LIKE', "%$name%")->paginate(5));
-        }
-               
+        }               
     }
 
     /**
@@ -73,7 +72,6 @@ class DrugController extends ApiController
                 DB::table('drugs')->insert($chunk_data_val);
             }
         }
-        //DB::table('drugs')->insert($values);
         return response()->json([
             'success' => true,
             'data' => count($values),
@@ -259,8 +257,6 @@ class DrugController extends ApiController
                         'updated_at' => $date,
                     ];
                     Drug::where('id', $oldDrugsArr[$drugsArr[$i]->data->{'Preparato (sugalvotas) pavadinimas'}.$drugsArr[$i]->data->{'Stiprumas'}.$drugsArr[$i]->data->{'Farmacinė forma'}]['id'])->update($temp);
-                    
-                    //unset($newDrugsArr[$drugsArr[$i]->substance]);
                     $counter++;
                     
                 }
@@ -296,9 +292,7 @@ class DrugController extends ApiController
     public function updateLinks(LinksService $linksService)
     {
         ini_set('max_execution_time', 10000);
-        //$drugs = Drug::where('id','>', '8144')->get();
         $drugs = Drug::all();
-        //$url = 'https://vapris.vvkt.lt/vvkt-web/public/medications?showData=true&mainSearchField=ranitidinas&strength=&pharmaceuticalForm=&atcCode=';
         $links = '';
         $url = '';
         $web = 'https://vapris.vvkt.lt';

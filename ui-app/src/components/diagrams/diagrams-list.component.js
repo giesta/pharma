@@ -40,18 +40,6 @@ export default function DiagramsList() {
     const searchTitle = e.target.value;
     setSearchTitle(searchTitle);
   };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {      
-      event.stopPropagation();
-    }else{
-        handleInputChange(event); 
-        updatediagram();
-    }      
-  };
-
   const handleClose = () =>{
     newDiagram();    
     setError(false);
@@ -67,13 +55,7 @@ export default function DiagramsList() {
     setInfo(false);
     setError(false);
     dispatch(removeError());
-  };
-
-  const handleInputChange = event => {
-    const { name, value } = event.target;
-    setDiagram({ ...diagram, [name]: value });
-  };
-  
+  };  
   const retrieveDiagrams = (pageNumber = 1) => {
     DiagramsDataService.findByTitle(pageNumber, searchTitle)
       .then(response => {  
@@ -178,31 +160,6 @@ const columns = [{
         editable: false 
      } 
 ];
-
-const updatediagram = () => {
-  var data = {
-    id: diagram.id,
-    name: diagram.name,
-    email: diagram.email
-  };
-  DiagramsDataService.update(data.id, data)
-    .then(response => {
-      setDiagram({
-        id: response.data.data.id,
-        name: response.data.data.name,
-        email: response.data.data.email,
-      });
-      handleClose();
-      const updatedItems = diagrams.data.filter(x=>x.id!==diagram.id)
-      updatedItems.push(response.data.data);
-      setDiagrams(updatedItems);
-    })
-    .catch(e => {
-      setError(true);
-      console.log(e);
-    });
-};
-
 const deleteItem = (id) => {
   DiagramsDataService.remove(id)
     .then(() => {
@@ -268,9 +225,30 @@ const newDiagram = () => {
         </div>
       </div>       
       <div className="container">
-      <DiagramsTable columns ={columns} diagrams={diagrams} GetActionFormat={GetActionFormat} rowNumber={(page*5-5)}></DiagramsTable>
-      { info &&<DiagramInfo name={diagram.name} elements={elements} info = {info} handleCloseInfo={handleCloseInfo}></DiagramInfo> } 
-      { confirm &&<DiagramDelete id={diagram.id} name={"diagramą "+diagram.name} deleteItem={deleteItem} handleCloseConfirm={handleCloseConfirm} confirm={confirm}></DiagramDelete> }
+      <DiagramsTable 
+        columns ={columns} 
+        diagrams={diagrams} 
+        GetActionFormat={GetActionFormat} 
+        rowNumber={(page*5-5)}
+      >
+      </DiagramsTable>
+      { info &&
+      <DiagramInfo 
+        name={diagram.name} 
+        elements={elements} 
+        info = {info} 
+        handleCloseInfo={handleCloseInfo}
+      >
+      </DiagramInfo> } 
+      { confirm &&
+      <DiagramDelete 
+        id={diagram.id} 
+        name={"diagramą "+diagram.name} 
+        deleteItem={deleteItem} 
+        handleCloseConfirm={handleCloseConfirm} 
+        confirm={confirm}
+        >
+      </DiagramDelete> }
       <div>
         <Pagination 
         className="my-3"

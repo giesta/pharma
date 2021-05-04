@@ -14,7 +14,6 @@ export default function Interactions() {
     }]
 
     const [fields, setFields] = React.useState(initialFieldsArray);
-    const [valuesOfId, setValuesOfId] = React.useState([]);
     const [interactions, setInteractions] = React.useState([]);
     const [error, setError] = React.useState(false);
     function handleAddInput() {
@@ -113,8 +112,7 @@ export default function Interactions() {
                             classNamePrefix="select"
                             isClearable="true"
                             cacheOptions
-                            defaultOptions
-                            
+                            defaultOptions                            
                             loadOptions={loadDrugsOptions}
                             placeholder={"Pasirinkti ..."}
                             loadingMessage={() => "Ieškoma ..."}
@@ -143,14 +141,14 @@ export default function Interactions() {
   {interactions.length > 0?(
   <div className="border border-secondary p-3 mt-2">
     <h6>Gauti duomenys apie vaistų sąveiką (anglų kalba):</h6>
-      {interactions[0].fullInteractionType!==undefined?(interactions.map(item=>{
-         return item.fullInteractionType.map(item=>{
+      {interactions[0].fullInteractionType!==undefined?(interactions.map((item, idz)=>{
+         return item.fullInteractionType.map((item, idy)=>{
              return item.interactionPair.map((item, idx)=>{
                   if(item.severity==="high"){
-                      return (<Alert key={idx} variant="danger">{item.description}</Alert>)
+                      return (<Alert key={"interaction_high_"+idx+"_"+idy+"_"+idz} variant="danger">{item.description}</Alert>)
                   }else{
-                      return (<div><p key={idx}><strong>{"Interaction between "+item.interactionConcept[0].minConceptItem.name+" and "+item.interactionConcept[1].minConceptItem.name}</strong></p>
-                      <p key={idx}>{item.description}</p></div>)
+                      return (<div key={"title_interaction_"+idx+"_"+idy+"_"+idz}><p key={"interaction_"+idx+"_"+idy+"_"+idz}><strong>{"Interaction between "+item.interactionConcept[0].minConceptItem.name+" and "+item.interactionConcept[1].minConceptItem.name}</strong></p>
+                      <p key={"description_interaction_"+idx+"_"+idy+"_"+idz}>{item.description}</p></div>)
                   }
                   
               })

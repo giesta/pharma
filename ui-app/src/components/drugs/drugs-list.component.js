@@ -123,12 +123,6 @@ export default function DrugsList() {
         </td>
     );
 };
-
-const deleteItemFromState = (id) => {
-  const updatedItems = leaflets.filter(x=>x.id!==id)
-  setLeaflets(updatedItems)
-}
-
 const findByTitle = () => {
   DrugsDataService.findByTitle(1, searchTitle)
     .then(response => {

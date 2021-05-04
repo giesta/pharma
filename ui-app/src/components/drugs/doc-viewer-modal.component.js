@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Button, Form, Badge} from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 
 export default function InfoModal(props) {
     return (

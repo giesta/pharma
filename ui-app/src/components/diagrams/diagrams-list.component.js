@@ -76,19 +76,25 @@ export default function DiagramsList() {
   const findByTitle = () => {
     DiagramsDataService.findByTitle(1, searchTitle)
       .then(response => {
-        const { current_page, per_page, total } = response.data.meta;          
-          if(response.data.data.length !== 0){
-            setDiagrams(response.data.data);
-            setPageSize(per_page);
-            setPage(current_page);     
-            setTotal(total);          
-          }
+        const { current_page, per_page, total } = response.data.meta;            
+        setDiagrams(response.data.data);
+        setPageSize(per_page);
+        setPage(current_page);     
+        setTotal(total);          
+        if(response.data.data.length === 0){
+          setNoData('No')
+        }
       })
       .catch(e => {
         console.log(e);
         setError(true);
       });
   };
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      findByTitle();
+    }
+  }
   
   const GetActionFormat = (row) =>{    
     return (
@@ -210,6 +216,7 @@ const newDiagram = () => {
             placeholder="Ieškoti pagal pavadinimą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
+            onKeyDown={handleKeyDown}
           />
           <div className="input-group-append">
             <button

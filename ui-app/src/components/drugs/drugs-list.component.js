@@ -123,15 +123,22 @@ export default function DrugsList() {
         </td>
     );
 };
+const handleKeyDown = (event) => {
+  if (event.key === 'Enter') {
+    findByTitle();
+  }
+}
 const findByTitle = () => {
   DrugsDataService.findByTitle(1, searchTitle)
     .then(response => {
-      const { current_page, per_page, total } = response.data.meta;          
-        
-          setDrugs(response.data.data);
-          setPageSize(per_page);
-          setPage(current_page);     
-          setTotal(total);
+      const { current_page, per_page, total } = response.data.meta;        
+        setDrugs(response.data.data);
+        setPageSize(per_page);
+        setPage(current_page);     
+        setTotal(total);
+        if(response.data.data.length === 0){
+          setNoData('No Data')
+        }          
     })
     .catch(e => {
       setError(true);
@@ -158,6 +165,7 @@ const findByTitle = () => {
             placeholder="Ieškoti pagal pavadinimą, veikliąją medžiagą ar ATC"
             value={searchTitle}
             onChange={onChangeSearchTitle}
+            onKeyDown={handleKeyDown}
           />
           <div className="input-group-append">
             <button

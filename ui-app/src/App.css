@@ -164,9 +164,15 @@ footer p { font-size:13px; color:#CCC; padding-bottom:0px; margin-bottom:8px;}
 
 td{
   white-space: nowrap;
-  text-overflow: hidden;
+  text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 200px;
+  max-width: 150px;
+  white-space: nowrap;
+}
+.badge{
+  max-width: 150px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .img-wrap {

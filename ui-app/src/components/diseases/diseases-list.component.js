@@ -323,6 +323,11 @@ for (const item of arr) {
         console.log(e);
       });
   };
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      findByTitle();
+    }
+  }
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(retrieveDiseasesOverviews, []);
   const GetActionFormat = (row) =>{    
@@ -426,13 +431,14 @@ const newDisease = () => {
 const findByTitle = () => {
   DiseaseOverviewsDataService.findByTitle(1, searchTitle)
     .then(response => {
-      const { current_page, per_page, total } = response.data.meta;          
-        
-          setOverviews(response.data.data); 
-          setPageSize(per_page);
-          setPage(current_page);     
-          setTotal(total);          
-        
+      const { current_page, per_page, total } = response.data.meta;        
+      setOverviews(response.data.data); 
+      setPageSize(per_page);
+      setPage(current_page);     
+      setTotal(total);   
+      if(response.data.data.length===0){
+        setNoData('No');
+      }       
     })
     .catch(e => {
       setError(true);
@@ -470,6 +476,7 @@ const findByTitle = () => {
             placeholder="Ieškoti pagal pavadinimą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
+            onKeyDown={handleKeyDown}
           />
           <div className="input-group-append">
             <button

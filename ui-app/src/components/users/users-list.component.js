@@ -30,6 +30,7 @@ export default function UsersList() {
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(3);
+  const [noData, setNoData] = React.useState(true);
 
   const [searchTitle, setSearchTitle] = React.useState("");
   
@@ -77,6 +78,7 @@ export default function UsersList() {
           setPageSize(per_page);
           setPage(current_page);     
           setTotal(total);
+          setNoData(false);
         }       
       })
       .catch(e => {
@@ -103,7 +105,11 @@ export default function UsersList() {
       });
   };
 
-
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter') {
+      findByTitle();
+    }
+  }
   
   const GetActionFormat = (row) =>{
     
@@ -200,7 +206,7 @@ const newUser = () => {
   return (
     <div>
       {users?(
-      users.length===0?(        
+      users.length===0 && noData?(        
         <Spinner></Spinner>
       ):(  
         <div>
@@ -213,6 +219,7 @@ const newUser = () => {
             placeholder="Ieškoti pagal vardą, el. pašto adresą"
             value={searchTitle}
             onChange={onChangeSearchTitle}
+            onKeyDown={handleKeyDown}
           />
           <div className="input-group-append">
             <button

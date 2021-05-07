@@ -89,7 +89,12 @@ export default function ControlledTabs() {
           console.log(e);
         });
     };
-    const findByTitle2 = () => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+        findByTitle();
+      }
+    }
+    const findByTitlePrivate = () => {
       TreatmentsDataService.findByTitlePrivate(1, searchTitle)
         .then(response => {
           const { current_page, per_page, total } = response.data.meta;
@@ -105,6 +110,11 @@ export default function ControlledTabs() {
           console.log(e);
         });
     };
+    const handleKeyDownPrivate = (event) => {
+      if (event.key === 'Enter') {
+        findByTitlePrivate();
+      }
+    }
     /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(retrieveTreatmentsPrivate, []);
     return (
@@ -127,7 +137,8 @@ export default function ControlledTabs() {
             className="form-control"
             placeholder="Ieškoti pagal pavadinimą"
             value={searchTitle}
-            onChange={onChangeSearchTitle}
+            onChange={onChangeSearchTitle}            
+            onKeyDown={handleKeyDown}
           />
           <div className="input-group-append">
             <button
@@ -164,13 +175,14 @@ export default function ControlledTabs() {
             className="form-control"
             placeholder="Ieškoti pagal pavadinimą"
             value={searchTitle}
-            onChange={onChangeSearchTitle}
+            onChange={onChangeSearchTitle}            
+            onKeyDown={handleKeyDownPrivate}
           />
           <div className="input-group-append">
             <button
               className="btn btn-outline-secondary"
               type="button"
-              onClick={findByTitle2}
+              onClick={findByTitlePrivate}
             >
               Ieškoti
             </button>

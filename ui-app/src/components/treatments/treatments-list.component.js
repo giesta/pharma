@@ -538,20 +538,25 @@ const newTreatment = () => {
 const findByTitle = () => {
   TreatmentsDataService.findByTitlePrivate(1, searchTitle)
     .then(response => {
-      const { current_page, per_page, total } = response.data.meta;          
-        if(response.data.data.length !== 0){
-          setTreatments({...Treatments, data: response.data.data}); 
-          setPageSize(per_page);
-          setPage(current_page);     
-          setTotal(total);          
-        }
+      const { current_page, per_page, total } = response.data.meta;       
+      setTreatments({...Treatments, data: response.data.data}); 
+      setPageSize(per_page);
+      setPage(current_page);     
+      setTotal(total);
+      if(response.data.data.length===0){
+        setNoData('No');
+      }
     })
     .catch(e => {
       setError(true);
       console.log(e);
     });
 };
-
+const handleKeyDown = (event) => {
+  if (event.key === 'Enter') {
+    findByTitle();
+  }
+}
   return (
     <div>
       <div className="mb-4"><h2>Gydymo algoritmai</h2></div>
@@ -582,7 +587,8 @@ const findByTitle = () => {
             className="form-control"
             placeholder="Ieškoti pagal pavadinimą"
             value={searchTitle}
-            onChange={onChangeSearchTitle}
+            onChange={onChangeSearchTitle}            
+            onKeyDown={handleKeyDown}
           />
           <div className="input-group-append">
             <button

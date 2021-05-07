@@ -162,9 +162,9 @@ setRedirect= ()=>{
             message: [jwt_decode(response.data.access_token).user.name],
             successful: true
           });
-          this.props.history.replace('/profile', 'urlhistory')
-          this.props.history.push("/profile");
-          window.location.reload();
+          this.props.history.replace('/profile', 'urlhistory');
+          this.props.logIn();
+          this.props.history.push("/profile");          
         },
         error => {
           var resMessage ="";

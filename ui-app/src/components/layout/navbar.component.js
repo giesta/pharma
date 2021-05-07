@@ -15,13 +15,12 @@ export default function MainNavbar(props) {
   <Navbar.Collapse id="responsive-navbar-nav">
 
     <Nav className="mr-auto">
-    {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/home"}>Pagrindinis</Nav.Link>)}
-      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/drugs"}>Vaistai</Nav.Link>)}
-      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/diseases"}>Ligos</Nav.Link>)}
-      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/treatments"}>Algoritmai</Nav.Link>)}
-      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/diagrams"}>Diagramos</Nav.Link>)}
-      {(props.showPharmacistBoard || props.showAdminBoard) && (<Nav.Link href={"/interactions"}>Sąveikos</Nav.Link>)}
-      {props.showAdminBoard && (<Nav.Link href={"/users"}>Users</Nav.Link>)}
+    {(props.showPharmacistBoard) && (<Nav.Link href={"/home"}>Pagrindinis</Nav.Link>)}
+      {(props.showPharmacistBoard) && (<Nav.Link href={"/drugs"}>Vaistai</Nav.Link>)}
+      {(props.showPharmacistBoard) && (<Nav.Link href={"/diseases"}>Ligos</Nav.Link>)}
+      {(props.showPharmacistBoard) && (<Nav.Link href={"/treatments"}>Algoritmai</Nav.Link>)}
+      {(props.showPharmacistBoard) && (<Nav.Link href={"/diagrams"}>Diagramos</Nav.Link>)}
+      {(props.showPharmacistBoard) && (<Nav.Link href={"/interactions"}>Sąveikos</Nav.Link>)}
     </Nav>
     
     {props.currentUser ? (

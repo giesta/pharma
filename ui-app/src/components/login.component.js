@@ -57,11 +57,12 @@ export default class Login extends Component {
         (user) => {
           if(user.role === "admin"){
             this.props.history.replace('/admin', 'urlhistory')
-            window.location.reload();
+            this.props.logIn();
             this.props.history.push("/admin");
           }else{
+            
             this.props.history.replace('/profile', 'urlhistory')
-            window.location.reload();
+            this.props.logIn();
             this.props.history.push("/profile");
           }          
         },

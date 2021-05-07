@@ -38,6 +38,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.logOut = this.logOut.bind(this);
+    this.logIn = this.logIn.bind(this);
 
     this.state = {
       showPharmacistBoard: false,
@@ -65,6 +66,16 @@ class App extends Component {
       showPharmacistBoard: false,
     });
   } 
+  logIn() {
+    const user = AuthService.getCurrentUser();
+    if(user){
+      this.setState({        
+        currentUser: user,
+        showAdminBoard: user.role==="admin",
+        showPharmacistBoard: user.role==="pharmacist",
+      });
+    }
+  }
 
   render() {
     const { currentUser, showPharmacistBoard, showAdminBoard } = this.state;
@@ -80,11 +91,9 @@ class App extends Component {
           <Header logOut = {this.logOut}/>
           <Sidebar />
             <Switch>
-              <ProtectedRoute exact path="/boards" component={Basic} roles={["admin"]}/>
               <ProtectedRoute exact path="/manage" component={Manage} roles={["admin"]}/>
-              <ProtectedRoute exact path="/reports" component={Reports} roles={["admin"]}/>
               <ProtectedRoute exact path="/settings" component={Settings} roles={["admin"]}/>
-              <ProtectedRoute exact path="/admin" component={AdminProfile} roles={["admin"]}/>
+              <ProtectedRoute exact path={["/","/admin"]} component={AdminProfile} roles={["admin"]}/>
             </Switch>
         </div>
       </div>
@@ -94,19 +103,18 @@ class App extends Component {
 
         <div className="container main-container mt-3">
             <Switch>
-              <ProtectedRoute exact path={["/","/home"]} component={Home} roles={["admin", "pharmacist"]}/>
-              <Route exact path="/login" component={Login} />
-              <Route exact path="/register" component={Register} />            
-              <ProtectedRoute exact path="/profile" component={Profile} roles={["admin", "pharmacist"]}/> 
-              <ProtectedRoute exact path="/drugs" component={DrugsList} roles={["admin", "pharmacist"]}/> 
-              <ProtectedRoute exact path="/diseases" component={DiseasesList} roles={["admin", "pharmacist"]}/> 
-              <ProtectedRoute exact path="/treatments" component={TreatmentsList} roles={["admin", "pharmacist"]}/> 
-              <ProtectedRoute exact path="/diagrams" component={Diagram} roles={["admin", "pharmacist"]}/>
-              <ProtectedRoute exact path="/interactions" component={DrugsInteractions} roles={["admin", "pharmacist"]}/>
-              <ProtectedRoute exact path="/diagrams/create" component={CreateDiagram} roles={["admin", "pharmacist"]}/>
-              <ProtectedRoute exact path="/diagrams/update" component={CreateDiagram} roles={["admin", "pharmacist"]}/>
-              <ProtectedRoute exact path="/treatments/:id" component={Treatment}roles={["admin", "pharmacist"]}/>            
-              <ProtectedRoute exact path="/users" component={UsersList} roles={["admin"]}/>
+              <ProtectedRoute exact path={["/","/home"]} component={Home} roles={["pharmacist"]}/>
+              <Route exact path="/login" render={(props) => <Login logIn = {this.logIn} {...props}/>} />
+              <Route exact path="/register" render={(props) => <Register logIn = {this.logIn} {...props}/>}/>           
+              <ProtectedRoute exact path="/profile" component={Profile} roles={["pharmacist"]}/> 
+              <ProtectedRoute exact path="/drugs" component={DrugsList} roles={["pharmacist"]}/> 
+              <ProtectedRoute exact path="/diseases" component={DiseasesList} roles={["pharmacist"]}/> 
+              <ProtectedRoute exact path="/treatments" component={TreatmentsList} roles={["pharmacist"]}/> 
+              <ProtectedRoute exact path="/diagrams" component={Diagram} roles={["pharmacist"]}/>
+              <ProtectedRoute exact path="/interactions" component={DrugsInteractions} roles={["pharmacist"]}/>
+              <ProtectedRoute exact path="/diagrams/create" component={CreateDiagram} roles={["pharmacist"]}/>
+              <ProtectedRoute exact path="/diagrams/update" component={CreateDiagram} roles={["pharmacist"]}/>
+              <ProtectedRoute exact path="/treatments/:id" component={Treatment}roles={["pharmacist"]}/>
             </Switch>
         </div>
         

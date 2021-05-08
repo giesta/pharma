@@ -93,7 +93,7 @@ export default function Profile() {
                     </p>
                     <strong>Profilio statusas:</strong>
                     <ul>
-                    {currentUser.role==='pharmacist'?"Farmacijos specialistas":''}
+                    {currentUser.role==='pharmacist'?"Farmacijos specialistas":'Administratorius'}
                     </ul>
             </div>
         </div>

@@ -93,8 +93,8 @@ label {
 }
 .table-column{
   white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
  .main-container {
   min-height: 100vh; /* will cover the 100% of viewport */
@@ -112,6 +112,9 @@ label {
  .table-col{
    min-width: 137px;
  }
+ .table-col-4{
+  min-width: 180px;
+}
 
  /*footer*/
 .col_white_amrc { color:#FFF;}

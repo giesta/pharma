@@ -343,7 +343,7 @@ return items;
 
   const GetActionFormat = (row) =>{    
     return (
-        <td className="table-col">
+        <td className="table-col-4">
           <button type="button" className="btn btn-outline-info btn-sm ts-buttom" size="sm" onClick={
               function(event){ setFieldsArray(row.drugs); setTreatment(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>

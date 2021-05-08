@@ -2,7 +2,9 @@ import React, { useEffect, useState, useRef  } from 'react';
 import DiagramsDataService from "../../services/diagrams/list.service";
 import { Button, Form} from "react-bootstrap";
 import ErrorBoundary from "../layout/error.component";
-
+import { removeError } from "../../js/actions/index";
+import store from "../../js/store/index";
+import { connect } from "react-redux";
 
 import ReactFlow, {
     removeElements,
@@ -17,6 +19,10 @@ import ReactFlow, {
 import './updatenode.css';
 
 import Sidebar from './sidebar';
+
+const mapStateToProps = state => {
+  return { errors: state.rootReducer.errors };
+};
 
 let id = 0;
 const getId = (count=0) => {
@@ -44,7 +50,8 @@ const UpdateNode = (props) => {
   const [animation, setAnimation] = useState(false);
   const [diagramName, setDiagramName] = useState(props.location.state!==undefined ? props.location.state.diagram.name:'');
 
-  const [errors, setErrors] = useState(false);
+  const [error, setError] = useState(false);
+  const {dispatch} = store; 
 
   const onElementClick=(event, element)=>{
       setElement(element);
@@ -60,7 +67,10 @@ const UpdateNode = (props) => {
         setNodeName(element.label);
       }      
   }  
-
+  const handleClose = () => {
+    dispatch(removeError());
+    console.log(props.errors);
+  }
   const onElementsRemove = (elementsToRemove) =>
     setElements((els) => removeElements(elementsToRemove, els));
   const onLoad = (_reactFlowInstance) => {
@@ -207,11 +217,12 @@ setElements((els) =>
       edges: JSON.stringify(newElements.filter((el)=>{return el.source !== undefined})),
     };
     DiagramsDataService.create(data)
-      .then((response) => {
+      .then(() => {
+        dispatch(removeError());
         props.history.push("/diagrams");
       })
       .catch(e => {
-        setErrors(true);
+        setError(true);
         console.log(e);
       });      
   };
@@ -228,17 +239,19 @@ setElements((els) =>
       edges: JSON.stringify(edges),
     };
     DiagramsDataService.update(id, data)
-      .then((response) => {
+      .then(() => {
+        dispatch(removeError());
         props.history.push("/diagrams");
       })
       .catch(e => {
-        setErrors(true);
+        setError(true);
         console.log(e);
       });      
   };
   return (
     <div>
-      {errors.length > 0 ?<ErrorBoundary text={errors.map(item=>item)}/>:''} 
+      {error ?<ErrorBoundary text="Atsiprašome, įvyko klaida"/>:''}
+      {props.errors.length > 0 ?<ErrorBoundary text={props.errors.map(item=>item)} handleClose={handleClose}/>:''} {console.log(props.errors)}
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Form.Group controlId="name"> <Form.Label>Diagramos pavadinimas</Form.Label>        
           <Form.Control type="text" placeholder="" defaultValue={diagramName} required onChange={(evt) => {setDiagramName(evt.target.value)}} name="name"/>
@@ -297,10 +310,10 @@ setElements((els) =>
     
     </ReactFlowProvider>
     </div>
-      <Button className="mt-3" type="submit" variant="primary">Išsaugoti</Button>
+      <Button className="mt-3" disabled={props.errors.length > 0} type="submit" variant="primary">Išsaugoti</Button>
     </Form>
     </div>
   );
 };
-
-export default UpdateNode;
+const Creation = connect(mapStateToProps)(UpdateNode);
+export default Creation;

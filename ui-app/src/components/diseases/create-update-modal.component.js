@@ -4,8 +4,14 @@ import { Modal, Button, Form, Badge} from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import { BsPlusCircle, BsXCircle } from "react-icons/bs";
+import { connect } from "react-redux";
+import ErrorBoundary from "../layout/error.component";
 
-export default function CreateModal(props) {
+const mapStateToProps = state => {
+    return { errors: state.rootReducer.errors };
+};
+
+const CreateModal = (props) => {
     function makeOptions(field){
         var arr = field.drug.drugs.map(item=>item.form);
         arr = [...new Set(arr)];
@@ -27,7 +33,7 @@ export default function CreateModal(props) {
             <Modal.Header closeButton>
                 <Modal.Title>Ligos informacija</Modal.Title>
             </Modal.Header>
-            
+            {props.errors.length > 0 ?<ErrorBoundary text={props.errors.map(item=>item)} handleClose={props.closeError}/>:('')}
             <Form noValidate validated={props.validated} onSubmit={props.handleSubmit}>
                 <Modal.Body>  
                     <Form.Group controlId="name">
@@ -234,9 +240,9 @@ export default function CreateModal(props) {
                     <Button variant="secondary" onClick={props.handleClose}>
                         Užverti
                     </Button>
-                        {props.disease.id===null?(<Button type="submit" variant="primary">
+                        {props.disease.id===null?(<Button type="submit" disabled={props.errors.length > 0} variant="primary">
                             Sukurti
-                    </Button>):(<Button type="submit" variant="primary">
+                    </Button>):(<Button type="submit" disabled={props.errors.length > 0} variant="primary">
                         Atnaujinti
                     </Button>)}          
                 </Modal.Footer>
@@ -244,3 +250,5 @@ export default function CreateModal(props) {
       </Modal>
     );
 }
+const Creation = connect(mapStateToProps)(CreateModal);
+export default Creation;

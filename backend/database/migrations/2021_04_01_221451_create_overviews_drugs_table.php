@@ -15,7 +15,7 @@ class CreateOverviewsDrugsTable extends Migration
     {
         Schema::create('overviews_drugs', function (Blueprint $table) {
             $table->id();
-            $table->string('uses');
+            $table->text('uses');
             $table->unsignedBigInteger('overview_id');
 
             $table->foreign('overview_id')

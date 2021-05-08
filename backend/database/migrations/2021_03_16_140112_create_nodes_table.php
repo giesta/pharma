@@ -15,7 +15,7 @@ class CreateNodesTable extends Migration
     {
         Schema::create('nodes', function (Blueprint $table) {
             $table->id();
-            $table->string('label')->nullable();
+            $table->text('label')->nullable();
             $table->string('item_id');
             $table->string('x');
             $table->string('y');

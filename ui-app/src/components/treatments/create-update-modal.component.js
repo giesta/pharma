@@ -4,13 +4,19 @@ import { Modal, Button, Form, Image, Badge, Alert } from "react-bootstrap";
 import AsyncSelect from 'react-select/async';
 import Select from 'react-select';
 import { BsPlusCircle, BsXCircle } from "react-icons/bs";
+import { connect } from "react-redux";
+import ErrorBoundary from "../layout/error.component";
 import ReactFlow, {
     Controls,
     Background,
     ReactFlowProvider,
-  } from 'react-flow-renderer'; 
+  } from 'react-flow-renderer';
+  
+const mapStateToProps = state => {
+    return { errors: state.rootReducer.errors };
+};
 
-export default function CreateModal(props) {
+const CreateUpdateModal = (props) =>{
     
     const onLoad = (reactFlowInstance) => {
         reactFlowInstance.fitView({ padding: 0.8, includeHiddenNodes: true });
@@ -81,6 +87,7 @@ export default function CreateModal(props) {
         <Form noValidate encType="multipart/form-data" validated={props.validated} onSubmit={props.handleSubmit}>
         <Modal.Body> 
             {props.errorText!==''?(<Alert variant="danger">{props.errorText}</Alert>):''}
+            {props.errors.length > 0 ?<ErrorBoundary text={props.errors.map(item=>item)} handleClose={props.closeError}/>:('')}
             {(props.treatment.diagram===undefined||props.treatment.diagram===null)?(
                 <>
                     <Form.Group > 
@@ -324,9 +331,9 @@ export default function CreateModal(props) {
             <Button variant="secondary" onClick={props.handleClose}>
                 Užverti
             </Button>
-            {props.treatment.id===null?(<Button type="submit" variant="primary">
+            {props.treatment.id===null?(<Button type="submit" disabled={props.errors.length > 0} variant="primary">
                 Sukurti
-            </Button>):(<Button type="submit" variant="primary">
+            </Button>):(<Button type="submit" disabled={props.errors.length > 0} variant="primary">
                 Atnaujinti
             </Button>)}          
         </Modal.Footer>
@@ -334,3 +341,5 @@ export default function CreateModal(props) {
     </Modal>
     );
 }
+const Creation = connect(mapStateToProps)(CreateUpdateModal);
+export default Creation;

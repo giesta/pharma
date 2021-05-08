@@ -19,7 +19,7 @@ export default function Sidebar(props){
       </div>
       <div className="updatenode__controls">
         <label>Elemento tekstas:</label>
-        <input
+        <textarea
           value={props.nodeName}
           onChange={(evt) => props.setNodeName(evt.target.value)}
         />

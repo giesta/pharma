@@ -202,7 +202,12 @@ export default function DiseasesList() {
     setSelectedDisease(null); 
     setIsWriting(true);     
     setFields([]);
+    setError(false);
+    dispatch(removeError());
   };
+  const closeError = () => {
+    dispatch(removeError());
+  }
   const handleCloseConfirm = () => {
     setConfirm(false);
     setError(false);
@@ -520,6 +525,7 @@ const findByTitle = () => {
         handleAddedInputChange={handleAddedInputChange}
         addSelectedForm={addSelectedForm}        
         addSelectedStrength={addSelectedStrength}
+        closeError={closeError}
       ></DiseaseCreateUpdate> }
 
       { confirm && <DiseaseDelete 

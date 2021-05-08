@@ -15,7 +15,7 @@ class CreateEdgesTable extends Migration
     {
         Schema::create('edges', function (Blueprint $table) {
             $table->id();
-            $table->string('label')->nullable();
+            $table->text('label')->nullable();
             $table->string('item_id');
             $table->integer('animated');
             $table->string('arrow');

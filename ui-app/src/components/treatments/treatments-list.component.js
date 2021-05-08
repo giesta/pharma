@@ -12,6 +12,8 @@ import Pagination from "react-js-pagination";
 import { BsPen, BsTrash, BsInfoCircle, BsPlus, BsEye } from "react-icons/bs";
 import {OverlayTrigger, Tooltip} from "react-bootstrap";
 import ErrorBoundary from "../layout/error.component";
+import { removeError } from "../../js/actions/index";
+import store from "../../js/store/index";
 
 export default function TreatmentList() {  
   const columns = [{  
@@ -44,25 +46,20 @@ export default function TreatmentList() {
   const [id, setId] = React.useState(0);
   const [confirm, setConfirm] = React.useState(false);
   const [info, setInfo] = React.useState(false);
-
   const [overviews] = React.useState([]);
   const [selectedDiagram, setSelectedDiagram] = React.useState(null); 
-  const [diagramsOptions, setDiagramsOptions] = React.useState([]); 
-  
+  const [diagramsOptions, setDiagramsOptions] = React.useState([]);  
   const [page, setPage] = React.useState(1);
   const [total, setTotal] = React.useState(0);
   const [pageSize, setPageSize] = React.useState(3);
-
   const [searchTitle, setSearchTitle] = React.useState("");
-
   const [validated, setValidated] = React.useState(false);
-
   const [selectRef, setSelectRef] = React.useState(null);
-
   const [fields, setFields] = React.useState([]);
   const [isWriting, setIsWriting] = React.useState(false);
-
   const [errorText, setErrorText] = React.useState("");
+
+  const {dispatch} = store;
 
   const initialTreatmentState = {  
     id: null,  
@@ -246,7 +243,11 @@ for (const item of arr) {
     setFields([]);
     setError(false);
     setErrorText('');
+    dispatch(removeError());
   };
+  const closeError = () => {
+    dispatch(removeError());
+  }
   const handleCloseConfirm = () => setConfirm(false);
   const handleCloseInfo = () => {
     newTreatment();
@@ -642,6 +643,7 @@ const handleKeyDown = (event) => {
     error={error}
     errorText={errorText}
     handleInvalidForm={handleInvalidForm}
+    closeError={closeError}
   >
     </TreatmentCreateUpdate>}
       

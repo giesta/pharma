@@ -41,6 +41,8 @@ else if(err.response !== undefined && err.response.status === 409){
   }  
 }else if(err.response !== undefined && err.response.status === 400){
   dispatch(addError(err.response.data.message.email));
+}else if(err.response !== undefined && err.response.status === 500){
+  dispatch(addError("Atsiprašome, įvyko klaida."));
 }
   return new Promise((resolve, reject) => {
       const originalReq = err.config;    

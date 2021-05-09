@@ -249,19 +249,13 @@ const downloadItem = async () => {
 const downloadDiagram = async () => {
   const values = await DiagramsDataService.findByTitle(1, currentTreatment.diagram.name)
       .then(response => {
-          if(response.data.data.length > 0){           
-            if(response.data.data[0].name===currentTreatment.diagram.name){
-              idDiagram = response.data.data[0].id;
-              setText('Mes radome susijusią diagramą! Ar norite perrašyti šią diagramą: '+currentTreatment.diagram.name+ '?');
-              handleCloseConfirmToOverwrite();                
-              setDiagramToOverwrite(true);
-            }else{
-              handleCloseConfirm(); 
-              handleCloseConfirmToOverwrite();       
-              saveDiagram();
-            }          
-          }
-          return response.data.data;          
+        if(response.data.data.length > 0){
+          idDiagram = response.data.data[0].id;
+          setText('Mes radome susijusią diagramą! Ar norite perrašyti šią diagramą: '+currentTreatment.diagram.name+ '?');
+          handleCloseConfirmToOverwrite();                
+          setDiagramToOverwrite(true);         
+        }
+        return response.data.data;          
       })
       .catch(e => {
         setError(true);

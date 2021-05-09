@@ -255,7 +255,6 @@ const downloadDiagram = async () => {
               setText('Mes radome susijusią diagramą! Ar norite perrašyti šią diagramą: '+currentTreatment.diagram.name+ '?');
               handleCloseConfirmToOverwrite();                
               setDiagramToOverwrite(true);
-              break;
             }else{
               handleCloseConfirm(); 
               handleCloseConfirmToOverwrite();       

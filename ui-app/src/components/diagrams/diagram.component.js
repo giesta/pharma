@@ -69,7 +69,6 @@ const UpdateNode = (props) => {
   }  
   const handleClose = () => {
     dispatch(removeError());
-    console.log(props.errors);
   }
   const onElementsRemove = (elementsToRemove) =>
     setElements((els) => removeElements(elementsToRemove, els));
@@ -79,8 +78,14 @@ const UpdateNode = (props) => {
   };
   const onEdgeUpdate = (oldEdge, newConnection) =>{  
     var oldValue = elements.find(element=>element.id===oldEdge.id);
-    setElements((els) => updateEdge(oldValue, newConnection, els));     
+    setElements((els) =>{
+      if(els.find(element=>element.id==='reactflow__edge-'+newConnection.source+newConnection.sourceHandle+'-'+newConnection.target+newConnection.targetHandle)!==undefined){
+        return els;
+      }
+      return updateEdge(oldValue, newConnection, els);        
+    });     
   } 
+
 const onNodeDragStop =(event, node)=>{
 setElements((els) =>
       els.map((el) => {
@@ -95,12 +100,13 @@ setElements((els) =>
       })
     );
 }
-  const onConnect = (params) =>
+  const onConnect = (params) =>{
     setElements((els) =>
       addEdge({ ...params, label:'', animated:false, type: 'step', data: {
         label: '', style:'', animated:false
       }, arrowHeadType: 'arrowclosed' }, els)
     );
+  }  
 
     const onDragOver = (event) => {
         event.preventDefault();
@@ -139,7 +145,7 @@ setElements((els) =>
         return el;
       })
     );
-  }, [nodeName, setElements, element.id]);
+  }, [nodeName,  element]);
 
   useEffect(() => {
     setElements((els) =>
@@ -162,7 +168,7 @@ setElements((els) =>
         return el;
       })
     );
-  }, [nodeBg, setElements, element.id, element.source]);
+  }, [nodeBg, element]);
 
   useEffect(() => {
     setElements((els) =>
@@ -175,7 +181,7 @@ setElements((els) =>
         return el;
       })
     );
-  }, [edgeType, setElements, element.id, element.source]);
+  }, [edgeType]);
   useEffect(() => {
     setElements((els) =>
       els.map((el) => {
@@ -191,7 +197,7 @@ setElements((els) =>
         return el;
       })
     );
-  }, [animation, setElements, element.id, element.source]);  
+  }, [animation, element]);  
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -251,7 +257,7 @@ setElements((els) =>
   return (
     <div>
       {error ?<ErrorBoundary text="Atsiprašome, įvyko klaida"/>:''}
-      {props.errors.length > 0 ?<ErrorBoundary text={props.errors.map(item=>item)} handleClose={handleClose}/>:''} {console.log(props.errors)}
+      {props.errors.length > 0 ?<ErrorBoundary text={props.errors.map(item=>item)} handleClose={handleClose}/>:''}
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Form.Group controlId="name"> <Form.Label>Diagramos pavadinimas</Form.Label>        
           <Form.Control type="text" placeholder="" defaultValue={diagramName} required onChange={(evt) => {setDiagramName(evt.target.value)}} name="name"/>

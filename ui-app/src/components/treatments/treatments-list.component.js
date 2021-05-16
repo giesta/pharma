@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from "react-router-dom";
 import TreatmentsDataService from "../../services/treatments/list.service";
 import DiagramsDataService from "../../services/diagrams/list.service";
 import DiseasesDataService from "../../services/diseases/list.service";
@@ -349,9 +350,14 @@ return items;
               function(event){ setFieldsArray(row.drugs); setTreatment(row); setInfo(true)}}>
                 <BsInfoCircle></BsInfoCircle>
             </button>
-            <a type="button" href={"/treatments/"+row.id} className="btn btn-outline-secondary btn-sm ml-2 ts-buttom" size="sm">
+            <Link to={{
+                  pathname: `/treatment`,
+                  state: {
+                    id: row.id
+                  }
+                }} type="button" className="btn btn-outline-secondary btn-sm ml-2 ts-buttom" size="sm">
                 <BsEye/>
-            </a>
+            </Link>
             <button type="button" className="btn btn-outline-primary btn-sm ml-2 ts-buttom" size="sm" onClick={
               function(event){ setFieldsArray(row.drugs);setTreatment(row);
                 

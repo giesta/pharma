@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import TreatmentsDataService from "../../services/treatments/list.service";
 import StarService from "../../services/treatments/stars.service";
 import ReportService from "../../services/treatments/reports.service";
@@ -105,7 +105,10 @@ export default function Treatment(props) {
       tweet();
       setValidated(false);
     }           
-  };  
+  }; 
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0)
+}); 
   useEffect(()=>{    
 
     const getTreatment = (id)=> {
@@ -128,9 +131,9 @@ export default function Treatment(props) {
           console.log(e);
         });
     };
-    getTreatment(props.match.params.id);
+    getTreatment(props.location.state.id);
 
-  }, [props.match.params.id]);
+  }, [props.location.state.id]);
 
   
   const rate = () => {

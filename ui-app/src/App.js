@@ -93,7 +93,7 @@ class App extends Component {
             <Switch>
               <ProtectedRoute exact path="/manage" component={Manage} roles={["admin"]}/>
               <ProtectedRoute exact path="/settings" component={Settings} roles={["admin"]}/>
-              <ProtectedRoute exact path={["/","/admin"]} component={AdminProfile} roles={["admin"]}/>
+              <ProtectedRoute exact path="/admin" component={AdminProfile} roles={["admin"]}/>
             </Switch>
         </div>
       </div>
@@ -114,7 +114,7 @@ class App extends Component {
               <ProtectedRoute exact path="/interactions" component={DrugsInteractions} roles={["pharmacist"]}/>
               <ProtectedRoute exact path="/diagrams/create" component={CreateDiagram} roles={["pharmacist"]}/>
               <ProtectedRoute exact path="/diagrams/update" component={CreateDiagram} roles={["pharmacist"]}/>
-              <ProtectedRoute exact path="/treatments/:id" component={Treatment}roles={["pharmacist"]}/>
+              <ProtectedRoute exact path="/treatment" component={Treatment}roles={["pharmacist"]}/>
             </Switch>
         </div>
         

@@ -422,14 +422,14 @@ const getRelatedTreatments =()=>{
           state: {
             id: item.id
           }
-        }} replace>{item.title}{' '} </Link><br></br></div>)
+        }} onClick={()=>setCurrentTreatment(initialTreatmentState)}>{item.title}{' '}</Link><br></br></div>)
       }else if(item.id !== currentTreatment.id && item.public===1){
         return (<div key={`treatments_e-${idx}`}><Link key={"related_"+idx} to={{
           pathname: `/treatment`,
           state: {
             id: item.id
           }
-        }} replace>{item.title}{' '} </Link><br></br></div>)
+        }} onClick={()=>setCurrentTreatment(initialTreatmentState)}>{item.title}{' '} </Link><br></br></div>)
       }                  
     });
     values = values.filter(item=>item!==undefined);

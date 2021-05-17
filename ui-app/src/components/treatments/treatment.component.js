@@ -1,4 +1,5 @@
 import React, { useEffect, useLayoutEffect } from 'react';
+import { Link } from "react-router-dom";
 import TreatmentsDataService from "../../services/treatments/list.service";
 import StarService from "../../services/treatments/stars.service";
 import ReportService from "../../services/treatments/reports.service";
@@ -416,9 +417,19 @@ const getRelatedTreatments =()=>{
   if(currentTreatment.diagram!== undefined&&currentTreatment.diagram!== null){
       let values = currentTreatment.diagram.related_treatments.map((item, idx)=>{                      
       if(item.id !== currentTreatment.id && currentTreatment.diagram.author === userData.id){        
-        return (<div key={`treatments-${idx}`}><a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a><br></br></div>)
+        return (<div key={`treatments-${idx}`}><Link key={"related_"+idx} to={{
+          pathname: `/treatment`,
+          state: {
+            id: item.id
+          }
+        }} replace>{item.title}{' '} </Link><br></br></div>)
       }else if(item.id !== currentTreatment.id && item.public===1){
-        return (<div key={`treatments-${idx}`}><a key={"related_"+idx} href={"/treatments/" + item.id}>{item.title}{' '}</a><br></br></div>)
+        return (<div key={`treatments_e-${idx}`}><Link key={"related_"+idx} to={{
+          pathname: `/treatment`,
+          state: {
+            id: item.id
+          }
+        }} replace>{item.title}{' '} </Link><br></br></div>)
       }                  
     });
     values = values.filter(item=>item!==undefined);
@@ -429,7 +440,7 @@ const getRelatedTreatments =()=>{
 useEffect(getRelatedTreatments, [currentTreatment])
   
   return (
-    <div>
+    <div key={currentTreatment.id}>
       {currentTreatment?(
       currentTreatment.disease === null && noData === ''?(        
         <Spinner></Spinner>

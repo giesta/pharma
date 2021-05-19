@@ -283,7 +283,7 @@ const diseasesReports = () => {
       <React.Fragment>
         <section className="kanban__nav">
           <div>
-            {text!==""?(<Alert className="m-2" variant={'success'}>kazkas</Alert>):('')}
+            {text!==""?(<Alert className="m-2" variant={'success'}>{text}</Alert>):('')}
             {errorText!==""?(<Alert className="m-2" variant={'danger'}>{errorText}</Alert>):('')}
           </div>
           <div className="kanban__nav-wrapper">          

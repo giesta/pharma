@@ -283,16 +283,16 @@ const diseasesReports = () => {
       <React.Fragment>
         <section className="kanban__nav">
           <div>
-            {text!==""?(<Alert variant={'success'}>{text}</Alert>):('')}
-            {errorText!==""?(<Alert variant={'danger'}>{errorText}</Alert>):('')}
+            {text!==""?(<Alert className="m-2" variant={'success'}>kazkas</Alert>):('')}
+            {errorText!==""?(<Alert className="m-2" variant={'danger'}>{errorText}</Alert>):('')}
           </div>
           <div className="kanban__nav-wrapper">          
             <div className="kanban__nav-name">
-              <div className="kanban-name">Nustatymai</div>                
+              <div className="kanban-name ">Nustatymai</div>                
             </div>            
           </div>
         </section>
-        <section className="kanban__main">          
+        <section className="kanban__main mt-2">          
           <div className="ml-1 kanban__main-wrapper">
             <UploadCSV 
               buttonTitle={drugsUpdated===""?("Importuoti vaistus"):("Atnaujinti vaistus") } 
@@ -339,7 +339,7 @@ const diseasesReports = () => {
             <div className="container">
               <div className="row">
                 <div className="col-6 col-sm-3">
-                  <button type="button" disabled={disabled} className="btn btn-outline-success btn-sm ts-buttom" size="sm" onClick={()=>updateLinks()}>
+                  <button type="button" disabled={disabled} className="btn btn-outline-success btn-sm ts-buttom mb-2" size="sm" onClick={()=>updateLinks()}>
                   {loadingLinks && (
                   <span className="spinner-border spinner-border-sm"></span>
                 )}Atnaujinti vaistų nuorodas

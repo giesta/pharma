@@ -73,7 +73,7 @@ const UpdateNode = (props) => {
   const onElementsRemove = (elementsToRemove) =>
     setElements((els) => removeElements(elementsToRemove, els));
   const onLoad = (_reactFlowInstance) => {
-    _reactFlowInstance.fitView();
+    _reactFlowInstance.fitView({ padding: 0.2, includeHiddenNodes: true });
     setReactFlowInstance(_reactFlowInstance);
   };
   const onEdgeUpdate = (oldEdge, newConnection) =>{  

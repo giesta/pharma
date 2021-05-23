@@ -66,6 +66,8 @@ export default function Treatment(props) {
   const [successMessage, setSuccessMessage] = React.useState(false);
   const [relatedTreatments, setRelatedTreatments] = React.useState([]);
   const [error, setError] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [disabled, setDisabled] = React.useState(false);
   
 
   const onChangeComment = e => {
@@ -229,6 +231,8 @@ return items;
 }
 
 const downloadItem = async () => {
+  setDisabled(true);
+  setLoading(true);
   const values = await DiseaseOverviewsDataService.findByTitle(1, currentTreatment.disease.name)
       .then(response => {
           if(response.data.data.length > 0){
@@ -364,6 +368,8 @@ await TreatmentsDataService.create(data)
     handleCloseConfirm();
     handleCloseDiagramToOverwrite();
     setSuccessMessage(true);
+    setDisabled(false);
+    setLoading(false);
 };
 
 const saveDiagram = async () => {
@@ -456,7 +462,15 @@ useEffect(getRelatedTreatments, [currentTreatment])
         {error?(
           <Row className="mt-2">
             <Col>
-              <Alert variant="danger" onClose={() => setError(false)} dismissible>Operacija nepavyko tinkamai atlikti</Alert>
+              <Alert variant="danger" onClose={() => {
+                  setError(false);
+                  setDisabled(false);
+                  setLoading(false);
+                  }
+                } 
+                dismissible>
+                Operacijos nepavyko tinkamai atlikti
+              </Alert>
             </Col>
           </Row>
         ):''}
@@ -476,7 +490,9 @@ useEffect(getRelatedTreatments, [currentTreatment])
             placement="bottom"
             overlay={<Tooltip id="button-download-1">Nukopijuoti į asmeninį sąrašą</Tooltip>}
           >
-          <Button variant="outline-info" size="sm" onClick={()=>{if(currentTreatment.diagram!==null){setElements(getElements(currentTreatment.diagram))};setConfirm(true);}}> Nukopijuoti <BsCollection/>{' '}
+          <Button variant="outline-info" size="sm" disabled={disabled} onClick={()=>{if(currentTreatment.diagram!==null){setElements(getElements(currentTreatment.diagram))};setConfirm(true);}}>{loading && (
+                  <span className="spinner-border spinner-border-sm"></span>
+                )} Nukopijuoti <BsCollection/>{' '}
           </Button>
           </OverlayTrigger>
         </Col>

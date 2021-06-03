@@ -197,6 +197,7 @@ const newDiagram = () => {
         <Spinner></Spinner>
       ):(  
         <div>
+          <div className="d-flex justify-content-between">
           <div className="mb-3">
           <OverlayTrigger
             placement="bottom"
@@ -206,6 +207,7 @@ const newDiagram = () => {
               <BsPlus></BsPlus>
           </Link>
           </OverlayTrigger>
+          
           
     </div>
         <div className="col-md-6 float-right">
@@ -228,7 +230,7 @@ const newDiagram = () => {
             </button>
           </div>
         </div>
-      </div>       
+      </div></div>       
       <div className="container">
       <DiagramsTable 
         columns ={columns} 
